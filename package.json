@@ -22,5 +22,10 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "eslint": "5.16.0",
+    "eslint-plugin-react": "7.12.4",
+    "prettier": "1.16.4"
+  }
 }
