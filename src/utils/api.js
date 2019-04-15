@@ -16,7 +16,7 @@ const makeBaseUrl = () => {
 
 const getBaseUrl = makeBaseUrl();
 
-export const setBaseUrl = url => makeBaseUrl(url);
+export const setBaseUrl = url => getBaseUrl(url);
 
 const makeHeaders = () => {
   var cache = DEFAULT_HEADERS;
