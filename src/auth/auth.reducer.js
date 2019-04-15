@@ -6,7 +6,7 @@ export const initialState = {
   data: {}
 };
 
-const user = {
+const auth = {
   [LOGIN]: state => ({
     ...state,
     loading: true
@@ -19,4 +19,4 @@ const user = {
 };
 
 export default (state, action) =>
-  bindReducer(state, action, user, initialState);
+  bindReducer(state, action, auth, initialState);

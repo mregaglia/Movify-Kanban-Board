@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { func, object } from "prop-types";
 import { login } from "./auth.actions";
 
-const Login = ({ login, user }) => {
+const Login = ({ login, auth }) => {
   useEffect(() => {
     login();
   }, []);
@@ -11,17 +11,17 @@ const Login = ({ login, user }) => {
   return (
     <div>
       <span>hello</span>
-      {user.loading && <p>loading...</p>}
+      {auth.loading && <p>loading...</p>}
     </div>
   );
 };
 
 Login.propTypes = {
   login: func,
-  user: object
+  auth: object
 };
 
 export default connect(
-  state => ({ user: state.user }),
+  state => ({ auth: state.auth }),
   { login }
 )(Login);
