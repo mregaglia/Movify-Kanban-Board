@@ -38,12 +38,12 @@ const handleError = res => {
   }
 };
 
-const formatQueryParams = params => {
+export const formatQueryParams = params => {
   const queryParams = [];
   for (var key in params) {
     if (params.hasOwnProperty(key)) {
       const value = params[key];
-      if (!isNil(value) && !isEmpty(value)) queryParams.add(`${key}=${value}`);
+      if (!isNil(value) && !isEmpty(value)) queryParams.push(`${key}=${value}`);
     }
   }
   return !isEmpty(queryParams) ? `?${queryParams.join("&")}` : "";
