@@ -3,7 +3,7 @@ import { LOGIN, LOGIN_SUCCESS, LOGIN_FAIL } from "./auth.actions";
 
 export const initialState = {
   loading: false,
-  authenticated: false
+  authenticated: undefined
 };
 
 const auth = {
