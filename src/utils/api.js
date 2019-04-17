@@ -1,4 +1,4 @@
-import { isEmpty, isNil } from "ramda";
+import { isEmpty, isNil, propOr } from "ramda";
 
 const DEFAULT_BASE_URL = process.env.REACT_APP_BASE_URL;
 
@@ -27,10 +27,20 @@ const getToken = makeToken();
 export const setToken = token => getToken(token);
 
 const handleError = res => {
+  const response = getJson(res);
+  if (res.ok) {
+    return response;
+  } else {
+    throw new Error(propOr(response, "error", response));
+  }
+};
+
+const getJson = value => {
   try {
-    return res.json();
-  } catch (error) {
-    return res;
+    const json = value.json();
+    return json;
+  } catch (_e) {
+    return value;
   }
 };
 
