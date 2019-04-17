@@ -8,7 +8,7 @@ export const getAuthorizeUrl = () =>
   formatQueryParams({
     client_id: process.env.REACT_APP_BH_CLIENT_ID,
     response_type: "code",
-    redirect_uri: "http://localhost:4200"
+    redirect_uri: "http://localhost:4200/login"
   });
 
 const hasCode = url => (url || "").split("code=").length > 1;
@@ -25,7 +25,7 @@ export const getAccessToken = code =>
         code,
         client_id: process.env.REACT_APP_BH_CLIENT_ID,
         client_secret: process.env.REACT_APP_BH_CLIENT_SECRET,
-        redirect_uri: "http://localhost:4200"
+        redirect_uri: "http://localhost:4200/login"
       }),
     {
       method: "POST"
