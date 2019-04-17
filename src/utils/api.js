@@ -10,7 +10,7 @@ const makeBaseUrl = () => {
   };
 };
 
-export const getBaseUrl = makeBaseUrl();
+const getBaseUrl = makeBaseUrl();
 
 export const setBaseUrl = url => getBaseUrl(url);
 
