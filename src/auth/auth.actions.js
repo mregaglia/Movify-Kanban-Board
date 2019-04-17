@@ -1,5 +1,9 @@
 export const LOGIN = "LOGIN";
-export const SET_USER = "SET_USER";
+export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_FAIL = "LOGIN_FAIL";
+export const CHECK_AUTH = "CHECK_AUTH";
 
-export const login = values => ({ type: LOGIN, payload: values });
-export const setUser = user => ({ type: SET_USER, payload: user });
+export const login = code => ({ type: LOGIN, payload: code });
+export const loginSuccess = () => ({ type: LOGIN_SUCCESS });
+export const loginFail = () => ({ type: LOGIN_FAIL });
+export const checkAuth = () => ({ type: CHECK_AUTH });
