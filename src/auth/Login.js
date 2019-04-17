@@ -1,27 +1,33 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { func, object } from "prop-types";
-import { login } from "./auth.actions";
+import { checkAuth, login } from "./auth.actions";
+import { getAuthorizeUrl, getCode } from "./auth.service";
 
-const Login = ({ login, auth }) => {
+const Login = ({ checkAuth, login, auth }) => {
   useEffect(() => {
-    login();
+    checkAuth();
+    const code = getCode(window.location.href);
+    if (code.length > 0) login(code);
   }, []);
 
   return (
     <div>
-      <span>hello</span>
+      {auth.authenticated && <p>Logged in</p>}
+      {!auth.authenticated && <p>Logged out</p>}
       {auth.loading && <p>loading...</p>}
+      <a href={getAuthorizeUrl()}>Login on BullHorn</a>
     </div>
   );
 };
 
 Login.propTypes = {
-  login: func,
-  auth: object
+  auth: object,
+  checkAuth: func,
+  login: func
 };
 
 export default connect(
   state => ({ auth: state.auth }),
-  { login }
+  { checkAuth, login }
 )(Login);
