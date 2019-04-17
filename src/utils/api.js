@@ -28,7 +28,7 @@ const makeHeaders = () => {
 
 const getHeaders = makeHeaders();
 
-export const setToken = token => getHeaders({ Authorization: token });
+export const setToken = token => getHeaders({ BhRestToken: token });
 
 const handleError = res => {
   try {
