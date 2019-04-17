@@ -1,9 +1,5 @@
 import { isEmpty, isNil } from "ramda";
 
-const DEFAULT_HEADERS = {
-  "Content-Type": "application/json"
-};
-
 const DEFAULT_BASE_URL = process.env.REACT_APP_BASE_URL;
 
 const makeBaseUrl = () => {
@@ -14,21 +10,21 @@ const makeBaseUrl = () => {
   };
 };
 
-const getBaseUrl = makeBaseUrl();
+export const getBaseUrl = makeBaseUrl();
 
 export const setBaseUrl = url => getBaseUrl(url);
 
-const makeHeaders = () => {
-  var cache = DEFAULT_HEADERS;
-  return (headers = {}) => {
-    cache = { ...cache, ...headers };
+const makeToken = () => {
+  var cache = { BhRestToken: "" };
+  return token => {
+    if (!isNil(token)) cache.BhRestToken = token;
     return cache;
   };
 };
 
-const getHeaders = makeHeaders();
+const getToken = makeToken();
 
-export const setToken = token => getHeaders({ BhRestToken: token });
+export const setToken = token => getToken(token);
 
 const handleError = res => {
   try {
@@ -49,20 +45,21 @@ export const formatQueryParams = params => {
   return !isEmpty(queryParams) ? `?${queryParams.join("&")}` : "";
 };
 
-export const get = (url, params = {}, headers = {}) => {
+export const get = (url, params = {}) => {
+  params = { ...getToken(), ...params };
   const queryParams = formatQueryParams(params);
   return request(url + queryParams, {
-    method: "GET",
-    headers: { ...getHeaders(), ...headers }
+    method: "GET"
   });
 };
 
-export const post = (url, body = {}, headers = {}) =>
-  request(url, {
+export const post = (url, body = {}) => {
+  const queryParams = formatQueryParams(getToken());
+  request(url + queryParams, {
     method: "POST",
-    headers: { ...getHeaders(), ...headers },
     body: JSON.stringify(body)
   });
+};
 
 const request = (url, requestParams = {}) =>
   fetch(getBaseUrl() + url, requestParams).then(handleError);
