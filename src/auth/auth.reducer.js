@@ -1,5 +1,11 @@
 import { bindReducer } from "../utils/reducer";
-import { LOGIN, LOGIN_SUCCESS, LOGIN_FAIL } from "./auth.actions";
+import {
+  LOGIN,
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  AUTH_SUCCESS,
+  AUTH_FAIL
+} from "./auth.actions";
 
 export const initialState = {
   isCheckingAuth: true,
@@ -15,12 +21,20 @@ const auth = {
   [LOGIN_SUCCESS]: state => ({
     ...state,
     loading: false,
-    authenticated: true,
-    isCheckingAuth: false
+    authenticated: true
   }),
   [LOGIN_FAIL]: state => ({
     ...state,
     loading: false,
+    authenticated: false
+  }),
+  [AUTH_SUCCESS]: state => ({
+    ...state,
+    authenticated: true,
+    isCheckingAuth: false
+  }),
+  [AUTH_FAIL]: state => ({
+    ...state,
     authenticated: false,
     isCheckingAuth: false
   })

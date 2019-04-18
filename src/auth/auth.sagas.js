@@ -1,6 +1,13 @@
-import { put, takeLatest } from "redux-saga/effects";
+import { call, put, takeLatest } from "redux-saga/effects";
 import { prop } from "ramda";
-import { LOGIN, CHECK_AUTH, loginSuccess, loginFail } from "./auth.actions";
+import {
+  LOGIN,
+  CHECK_AUTH,
+  loginSuccess,
+  loginFail,
+  authSuccess,
+  authFail
+} from "./auth.actions";
 import { setBaseUrl, setToken } from "../utils/api";
 import {
   setToken as setTokenStorage,
@@ -12,19 +19,20 @@ export function* login(action) {
   const code = prop("payload", action);
 
   try {
-    const accessTokenResponse = yield getAccessToken(code);
+    const accessTokenResponse = yield call(getAccessToken, code);
 
     if (prop("access_token", accessTokenResponse)) {
-      const loginResponse = yield loginService(
+      const loginResponse = yield call(
+        loginService,
         accessTokenResponse.access_token
       );
 
       const sessionToken = prop("BhRestToken", loginResponse);
-      yield setToken(sessionToken);
-      yield setTokenStorage(sessionToken);
+      yield call(setToken, sessionToken);
+      yield call(setTokenStorage, sessionToken);
       const baseUrl = prop("restUrl", loginResponse);
-      yield setBaseUrl(baseUrl);
-      yield setBaseUrlStorage(baseUrl);
+      yield call(setBaseUrl, baseUrl);
+      yield call(setBaseUrlStorage, baseUrl);
 
       yield put(loginSuccess());
     } else {
@@ -37,10 +45,10 @@ export function* login(action) {
 
 export function* checkAuth() {
   try {
-    yield ping();
-    yield put(loginSuccess());
+    yield call(ping);
+    yield put(authSuccess());
   } catch (e) {
-    yield put(loginFail());
+    yield put(authFail());
   }
 }
 
