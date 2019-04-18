@@ -1,4 +1,4 @@
-import { get } from "../utils/api";
+import { get, post } from "../utils/api";
 
 export const getBusinessManagers = () =>
   get("query/CorporateUser", {
@@ -7,11 +7,16 @@ export const getBusinessManagers = () =>
   });
 
 export const getJobOrders = bmId =>
-  get("search/JobOrder", {
-    fields: "id,clientContact,clientCorporation,isOpen,owner,status,title",
-    query: `owner.id:${bmId}`,
-    sort: "clientCorporation.name"
-  });
+  post(
+    "search/JobOrder",
+    {
+      query: `owner.id:${bmId} AND (status:Open OR status:"Accepting Candidates")`
+    },
+    {
+      fields: "id,clientContact,clientCorporation,isOpen,owner,status,title",
+      sort: "clientCorporation.name"
+    }
+  );
 
 export const getJobSubmissions = jobOrderId =>
   get("search/JobSubmission", {
