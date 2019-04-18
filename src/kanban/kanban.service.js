@@ -1,13 +1,10 @@
-import { get, post } from "../utils/api";
+import { get } from "../utils/api";
 
 export const getBusinessManagers = () =>
-  post(
-    "query/CorporateUser",
-    {
-      where: "personSubtype='CorporateUser' AND occupation='Business Manager'"
-    },
-    { fields: "id,firstName,lastName,occupation" }
-  );
+  get("query/CorporateUser", {
+    fields: "id,firstName,lastName,occupation",
+    where: "occupation='Business Manager'"
+  });
 
 export const getJobOrders = bmId =>
   get("search/JobOrder", {
