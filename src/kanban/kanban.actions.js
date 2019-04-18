@@ -9,7 +9,7 @@ export const updateKanban = kanban => ({
   payload: kanban
 });
 export const getJobOrders = bmId => ({ type: GET_JOB_ORDERS, payload: bmId });
-export const getJobSubmissions = (bmId, jobOrderId) => ({
+export const getJobSubmissions = (bmId, clientCorporationId, jobOrderId) => ({
   type: GET_JOB_SUBMISSIONS,
-  payload: { bmId, jobOrderId }
+  payload: { bmId, clientCorporationId, jobOrderId }
 });

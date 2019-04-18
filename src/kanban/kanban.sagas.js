@@ -6,7 +6,7 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import { pathOr, prop, propOr } from "ramda";
+import { path, pathOr, prop, propOr } from "ramda";
 import {
   GET_KANBAN,
   GET_JOB_ORDERS,
@@ -34,21 +34,51 @@ export function* getKanbanBoard() {
   }
 }
 
+const groupByClientCorporations = jobOrders =>
+  jobOrders.reduce((acc, jobOrder) => {
+    const clientCorporationIndex = acc.findIndex(
+      clientCorporation =>
+        prop("id", clientCorporation) ===
+        path(["clientCorporation", "id"], jobOrder)
+    );
+
+    if (clientCorporationIndex >= 0) {
+      acc[clientCorporationIndex].jobOrders.push(jobOrder);
+    } else {
+      acc.push({
+        ...jobOrder.clientCorporation,
+        jobOrders: [jobOrder]
+      });
+    }
+
+    return acc;
+  }, []);
+
 export function* getJobOrders(action) {
   const bmId = action.payload;
   try {
     const jobOrders = yield call(getJobOrdersService, bmId);
     const jobOrderList = yield call(propOr, [], "data", jobOrders);
+    const clientCorporations = yield call(
+      groupByClientCorporations,
+      jobOrderList
+    );
     const kanban = yield select(getKanban);
     const updatedKanban = kanban.map(bm => {
       if (bm.id === bmId) {
-        return { ...bm, jobOrders: jobOrderList };
+        return { ...bm, clientCorporations };
       } else return { ...bm };
     });
     yield put(updateKanban(updatedKanban));
     yield all(
       jobOrderList.map(jobOrder =>
-        put(getJobSubmissionsAction(bmId, prop("id", jobOrder)))
+        put(
+          getJobSubmissionsAction(
+            bmId,
+            path(["clientCorporation", "id"], jobOrder),
+            prop("id", jobOrder)
+          )
+        )
       )
     );
   } catch (e) {
@@ -58,7 +88,7 @@ export function* getJobOrders(action) {
 
 export function* getJobSubmissions(action) {
   const {
-    payload: { bmId, jobOrderId }
+    payload: { bmId, clientCorporationId, jobOrderId }
   } = action;
   try {
     const jobSubmissions = yield call(getJobSubmissionsService, jobOrderId);
@@ -66,12 +96,23 @@ export function* getJobSubmissions(action) {
     const kanban = yield select(getKanban);
     const updatedKanban = kanban.map(bm => {
       if (bm.id === bmId) {
-        const jobOrders = propOr([], "jobOrders", bm).map(jobOrder => {
-          if (jobOrder.id === jobOrderId) {
-            return { ...jobOrder, jobSubmissions: jobSubmissionList };
-          } else return { ...jobOrder };
-        });
-        return { ...bm, jobOrders };
+        const clientCorporations = propOr([], "clientCorporations", bm).map(
+          clientCorporation => {
+            if (clientCorporation.id === clientCorporationId) {
+              const jobOrders = propOr([], "jobOrders", clientCorporation).map(
+                jobOrder => {
+                  if (jobOrder.id === jobOrderId) {
+                    return { ...jobOrder, jobSubmissions: jobSubmissionList };
+                  } else {
+                    return { ...jobOrder };
+                  }
+                }
+              );
+              return { ...clientCorporation, jobOrders };
+            } else return { ...clientCorporation };
+          }
+        );
+        return { ...bm, clientCorporations };
       } else return { ...bm };
     });
     yield put(updateKanban(updatedKanban));

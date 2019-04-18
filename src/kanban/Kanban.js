@@ -18,21 +18,26 @@ const Kanban = ({ getKanban, kanban, loading }) => {
         <div key={bm.id}>
           <span>{`${bm.firstName} ${bm.lastName} `}</span>
           <p />
-          {propOr([], "jobOrders", bm).map(jobOrder => (
-            <div key={jobOrder.id}>
-              <span>{`${jobOrder.clientCorporation.name} ${jobOrder.title} ${
-                jobOrder.clientContact.firstName
-              } ${jobOrder.clientContact.lastName} `}</span>
-              <span>
-                {propOr([], "jobSubmissions", jobOrder)
-                  .map(
-                    jobSubmission =>
-                      `${jobSubmission.candidate.firstName} ${
-                        jobSubmission.candidate.lastName
-                      } `
-                  )
-                  .join(" - ")}
-              </span>
+          {propOr([], "clientCorporations", bm).map(clientCorporation => (
+            <div key={clientCorporation.id}>
+              <p>{clientCorporation.name}</p>
+              {propOr([], "jobOrders", clientCorporation).map(jobOrder => (
+                <div key={jobOrder.id}>
+                  <span>{`${jobOrder.title} ${
+                    jobOrder.clientContact.firstName
+                  } ${jobOrder.clientContact.lastName} `}</span>
+                  <span>
+                    {propOr([], "jobSubmissions", jobOrder)
+                      .map(
+                        jobSubmission =>
+                          `${jobSubmission.candidate.firstName} ${
+                            jobSubmission.candidate.lastName
+                          } `
+                      )
+                      .join(" - ")}
+                  </span>
+                </div>
+              ))}
             </div>
           ))}
           <br />
