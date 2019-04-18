@@ -1,4 +1,4 @@
-import { all, put, takeLatest } from "redux-saga/effects";
+import { put, takeLatest } from "redux-saga/effects";
 import { prop } from "ramda";
 import { LOGIN, CHECK_AUTH, loginSuccess, loginFail } from "./auth.actions";
 import { setBaseUrl, setToken } from "../utils/api";
@@ -45,5 +45,5 @@ export function* checkAuth() {
 }
 
 export default function authSagas() {
-  return all([takeLatest(LOGIN, login), takeLatest(CHECK_AUTH, checkAuth)]);
+  return [takeLatest(LOGIN, login), takeLatest(CHECK_AUTH, checkAuth)];
 }
