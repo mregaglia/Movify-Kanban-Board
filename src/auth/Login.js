@@ -3,12 +3,11 @@ import { connect } from "react-redux";
 import { pathOr } from "ramda";
 import { func, object } from "prop-types";
 import { Redirect } from "react-router-dom";
-import { checkAuth, login } from "./auth.actions";
+import { login } from "./auth.actions";
 import { getAuthorizeUrl, getCode } from "./auth.service";
 
-const Login = ({ checkAuth, login, auth, location }) => {
+const Login = ({ login, auth, location }) => {
   useEffect(() => {
-    checkAuth();
     const code = getCode(window.location.href);
     if (code.length > 0) login(code);
   }, []);
@@ -35,5 +34,5 @@ Login.propTypes = {
 
 export default connect(
   state => ({ auth: state.auth }),
-  { checkAuth, login }
+  { login }
 )(Login);
