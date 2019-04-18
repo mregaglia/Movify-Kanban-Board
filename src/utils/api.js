@@ -37,8 +37,7 @@ const handleError = res => {
 
 const getJson = value => {
   try {
-    const json = value.json();
-    return json;
+    return value.json();
   } catch (_e) {
     return value;
   }
@@ -65,7 +64,7 @@ export const get = (url, params = {}) => {
 
 export const post = (url, body = {}, queryParams: {}) => {
   const params = formatQueryParams({ ...getToken(), ...queryParams });
-  request(url + params, {
+  return request(url + params, {
     method: "POST",
     body: JSON.stringify(body)
   });
