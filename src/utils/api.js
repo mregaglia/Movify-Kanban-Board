@@ -63,9 +63,9 @@ export const get = (url, params = {}) => {
   });
 };
 
-export const post = (url, body = {}) => {
-  const queryParams = formatQueryParams(getToken());
-  request(url + queryParams, {
+export const post = (url, body = {}, queryParams: {}) => {
+  const params = formatQueryParams({ ...getToken(), ...queryParams });
+  request(url + params, {
     method: "POST",
     body: JSON.stringify(body)
   });
