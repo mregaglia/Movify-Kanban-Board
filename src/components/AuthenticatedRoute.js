@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { path } from "ramda";
-import { bool, func } from "prop-types";
+import { bool, func, object, oneOfType } from "prop-types";
 import { Redirect, Route } from "react-router-dom";
 
 const AuthenticatedRoute = ({
@@ -25,7 +25,7 @@ const AuthenticatedRoute = ({
 
 AuthenticatedRoute.propTypes = {
   authenticated: bool,
-  component: func
+  component: oneOfType([func, object])
 };
 
 export default connect(state => ({
