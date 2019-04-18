@@ -25,11 +25,10 @@ export const getKanban = state => pathOr([], ["kanban", "kanban"], state);
 
 export function* getKanbanBoard() {
   try {
-    console.log("here");
     const bms = yield call(getBusinessManagers);
-    console.log("bms", bms);
-    yield put(updateKanban(bms));
-    yield all(bms.map(bm => put(getJobOrdersAction(prop("id", bm)))));
+    const bmList = yield call(propOr, [], "data", bms);
+    yield put(updateKanban(bmList));
+    yield all(bmList.map(bm => put(getJobOrdersAction(prop("id", bm)))));
   } catch (e) {
     //
   }
@@ -39,15 +38,16 @@ export function* getJobOrders(action) {
   const bmId = action.payload;
   try {
     const jobOrders = yield call(getJobOrdersService, bmId);
+    const jobOrderList = yield call(propOr, [], "data", jobOrders);
     const kanban = yield select(getKanban);
     const updatedKanban = kanban.map(bm => {
       if (bm.id === bmId) {
-        return { ...bm, jobOrders };
+        return { ...bm, jobOrders: jobOrderList };
       } else return { ...bm };
     });
     yield put(updateKanban(updatedKanban));
     yield all(
-      jobOrders.map(jobOrder =>
+      jobOrderList.map(jobOrder =>
         put(getJobSubmissionsAction(bmId, prop("id", jobOrder)))
       )
     );
@@ -62,14 +62,16 @@ export function* getJobSubmissions(action) {
   } = action;
   try {
     const jobSubmissions = yield call(getJobSubmissionsService, jobOrderId);
+    const jobSubmissionList = yield call(propOr, [], "data", jobSubmissions);
     const kanban = yield select(getKanban);
     const updatedKanban = kanban.map(bm => {
       if (bm.id === bmId) {
-        return propOr([], "jobOrders", bm).map(jobOrder => {
+        const jobOrders = propOr([], "jobOrders", bm).map(jobOrder => {
           if (jobOrder.id === jobOrderId) {
-            return { ...jobOrder, jobSubmissions };
+            return { ...jobOrder, jobSubmissions: jobSubmissionList };
           } else return { ...jobOrder };
         });
+        return { ...bm, jobOrders };
       } else return { ...bm };
     });
     yield put(updateKanban(updatedKanban));
