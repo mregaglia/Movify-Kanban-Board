@@ -58,4 +58,4 @@ export const refreshToken = refreshToken =>
         client_secret: process.env.REACT_APP_BH_CLIENT_SECRET
       }),
     { method: "POST" }
-  );
+  ).then(res => res.json());

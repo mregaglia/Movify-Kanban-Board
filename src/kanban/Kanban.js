@@ -19,10 +19,10 @@ const Kanban = ({ getKanban, kanban, loading }) => {
           <span>{`${bm.firstName} ${bm.lastName} `}</span>
           <p />
           {propOr([], "clientCorporations", bm).map(clientCorporation => (
-            <div key={clientCorporation.id} style={{ paddingLeft: 10 }}>
+            <div key={clientCorporation.id} style={{ paddingLeft: 20  }}>
               <p>{clientCorporation.name}</p>
               {propOr([], "jobOrders", clientCorporation).map(jobOrder => (
-                <div key={jobOrder.id} style={{ paddingLeft: 10 }}>
+                <div key={jobOrder.id} style={{ paddingLeft: 20  }}>
                   <span>{`${jobOrder.title} ${
                     jobOrder.clientContact.firstName
                   } ${jobOrder.clientContact.lastName} `}</span>

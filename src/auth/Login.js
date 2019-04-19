@@ -20,7 +20,10 @@ const Login = ({ login, auth, location }) => {
   return (
     <div>
       {auth.loading && <p>loading...</p>}
-      <a href={getAuthorizeUrl()}>Login on BullHorn</a>
+      {auth.isCheckingAuth && <p>checking auth</p>}
+      {!auth.loading && !auth.isCheckingAuth && (
+        <a href={getAuthorizeUrl()}>Login on BullHorn</a>
+      )}
     </div>
   );
 };
