@@ -46,3 +46,16 @@ export const login = accessToken =>
   ).then(res => res.json());
 
 export const ping = () => get("ping");
+
+export const refreshToken = refreshToken =>
+  fetch(
+    AUTH_URL +
+      "token" +
+      formatQueryParams({
+        grant_type: "refresh_token",
+        refresh_token: refreshToken,
+        client_id: process.env.REACT_APP_BH_CLIENT_ID,
+        client_secret: process.env.REACT_APP_BH_CLIENT_SECRET
+      }),
+    { method: "POST" }
+  );
