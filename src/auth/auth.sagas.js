@@ -3,10 +3,12 @@ import { pathOr, prop } from "ramda";
 import {
   LOGIN,
   CHECK_AUTH,
+  REFRESH_TOKEN,
   loginSuccess,
   loginFail,
   authSuccess,
-  authFail
+  authFail,
+  refreshToken as refreshTokenAction
 } from "./auth.actions";
 import { setBaseUrl, setToken } from "../utils/api";
 import {
@@ -18,7 +20,8 @@ import {
 import {
   getAccessToken,
   login as loginService,
-  refreshToken as refreshTokenService
+  refreshToken as refreshTokenService,
+  ping
 } from "./auth.service";
 
 export function* login(action) {
@@ -56,7 +59,16 @@ const getAuthenticatedState = state =>
 
 export function* checkAuth() {
   try {
-    const refresh = getRefreshToken();
+    yield call(ping);
+    yield put(authSuccess());
+  } catch (e) {
+    yield put(refreshTokenAction());
+  }
+}
+
+export function* refreshToken() {
+  try {
+    const refresh = yield call(getRefreshToken);
     if (refresh) {
       const refreshTokenResponse = yield call(refreshTokenService, refresh);
       yield loginWithToken(refreshTokenResponse);
@@ -71,5 +83,9 @@ export function* checkAuth() {
 }
 
 export default function authSagas() {
-  return [takeLatest(LOGIN, login), takeLatest(CHECK_AUTH, checkAuth)];
+  return [
+    takeLatest(LOGIN, login),
+    takeLatest(CHECK_AUTH, checkAuth),
+    takeLatest(REFRESH_TOKEN, refreshToken)
+  ];
 }
