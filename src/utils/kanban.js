@@ -7,7 +7,7 @@ export const STATUS_WF_RESPONSE = "CV Sent";
 export const STATUS_INTAKE = "INTAKE";
 export const STATUS_WF_FEEDBACK = "WFF";
 
-const AVAILABLE_STATUSES = [
+export const AVAILABLE_STATUSES = [
   STATUS_ITV1,
   STATUS_ITV2,
   STATUS_TO_SEND,

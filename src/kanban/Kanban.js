@@ -4,7 +4,7 @@ import { pathOr, propOr } from "ramda";
 import { array, bool, func } from "prop-types";
 import styled from "styled-components";
 import { getKanban } from "./kanban.actions";
-import CandidateCard from "./CandidateCard";
+import Board from "./board/Board";
 
 const Container = styled.div({
   paddingLeft: 30,
@@ -60,22 +60,7 @@ const Kanban = ({ getKanban, kanban, loading }) => {
               <Text>Client contact</Text>
             </th>
             <th>
-              <Text>ITV1</Text>
-            </th>
-            <th>
-              <Text>ITV2</Text>
-            </th>
-            <th>
-              <Text>TO SEND</Text>
-            </th>
-            <th>
-              <Text>WF RESPONSE</Text>
-            </th>
-            <th>
-              <Text>INTAKE</Text>
-            </th>
-            <th>
-              <Text>WF FEEDBACK</Text>
+              <Text>Process</Text>
             </th>
           </tr>
         </thead>
@@ -85,50 +70,42 @@ const Kanban = ({ getKanban, kanban, loading }) => {
             propOr([], "clientCorporations", bm).map(
               (clientCorporation, indexCC) =>
                 propOr([], "jobOrders", clientCorporation).map(
-                  (jobOrder, indexJO) =>
-                    propOr([], "jobSubmissions", jobOrder).map(
-                      (jobSubmission, indexJS) => (
-                        <tr key={jobSubmission.id}>
-                          <TD>
-                            <Text>
-                              {indexCC === 0 &&
-                                indexJO === 0 &&
-                                indexJS === 0 &&
-                                `${bm.firstName} ${bm.lastName} `}
-                            </Text>
-                          </TD>
-                          <TD>
-                            <Text>
-                              {indexJO === 0 &&
-                                indexJS === 0 &&
-                                clientCorporation.name}
-                            </Text>
-                          </TD>
-                          <TD>
-                            <Text>{indexJS === 0 && jobOrder.title}</Text>
-                          </TD>
-                          <TD>
-                            <Text>
-                              {indexJS === 0 &&
-                                `${jobOrder.clientContact.firstName} ${
-                                  jobOrder.clientContact.lastName
-                                } `}
-                            </Text>
-                          </TD>
-                          <TD>{}</TD>
-                          <TD>
-                            <CandidateCard
-                              key={jobSubmission.id}
-                              candidate={jobSubmission.candidate}
-                            />
-                          </TD>
-                          <TD>{}</TD>
-                          <TD>{}</TD>
-                          <TD>{}</TD>
-                          <TD>{}</TD>
-                        </tr>
-                      )
-                    )
+                  (jobOrder, indexJO) => (
+                    <tr key={jobOrder.id}>
+                      <TD>
+                        <Text>
+                          {indexCC === 0 &&
+                            indexJO === 0 &&
+                            `${bm.firstName} ${bm.lastName} `}
+                        </Text>
+                      </TD>
+                      <TD>
+                        <Text>{indexJO === 0 && clientCorporation.name}</Text>
+                      </TD>
+                      <TD>
+                        <Text>{indexJO === 0 && jobOrder.title}</Text>
+                      </TD>
+                      <TD>
+                        <Text>
+                          {indexJO === 0 &&
+                            `${jobOrder.clientContact.firstName} ${
+                              jobOrder.clientContact.lastName
+                            } `}
+                        </Text>
+                      </TD>
+                      <TD>
+                        {
+                          <Board
+                            jobSubmissions={propOr(
+                              {},
+                              "jobSubmissions",
+                              jobOrder
+                            )}
+                          />
+                        }
+                      </TD>
+                    </tr>
+                  )
                 )
             )
           )}
