@@ -3,8 +3,8 @@ import { propOr } from "ramda";
 export const STATUS_ITV1 = "ITV1";
 export const STATUS_ITV2 = "ITV2";
 export const STATUS_TO_SEND = "To Send";
-export const STATUS_WF_RESPONSE = "CV Sent";
-export const STATUS_INTAKE = "INTAKE";
+export const STATUS_WF_RESPONSE = "WF Response";
+export const STATUS_INTAKE = "Intake";
 export const STATUS_WF_FEEDBACK = "WFF";
 
 export const AVAILABLE_STATUSES = [
@@ -22,10 +22,9 @@ export const formatJobSubmissions = jobSubmissions =>
       const submissions = propOr([], jobSubmission.status, acc);
       submissions.push(jobSubmission);
       acc[jobSubmission.status] = submissions;
-    } else {
-      const submissions = propOr([], "OTHER", acc);
-      submissions.push(jobSubmission);
-      acc["OTHER"] = submissions;
     }
     return acc;
   }, {});
+
+export const getFilterStatusRequest = () =>
+  AVAILABLE_STATUSES.map(status => `status:"${status}"`).join(" OR ");
