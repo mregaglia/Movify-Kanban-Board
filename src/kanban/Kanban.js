@@ -83,14 +83,13 @@ const Kanban = ({ getKanban, kanban, loading }) => {
                         <Text>{indexJO === 0 && clientCorporation.name}</Text>
                       </TD>
                       <TD>
-                        <Text>{indexJO === 0 && jobOrder.title}</Text>
+                        <Text>{jobOrder.title}</Text>
                       </TD>
                       <TD>
                         <Text>
-                          {indexJO === 0 &&
-                            `${jobOrder.clientContact.firstName} ${
-                              jobOrder.clientContact.lastName
-                            } `}
+                          {`${jobOrder.clientContact.firstName} ${
+                            jobOrder.clientContact.lastName
+                          } `}
                         </Text>
                       </TD>
                       <TD>

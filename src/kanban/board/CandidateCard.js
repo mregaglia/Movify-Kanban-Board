@@ -1,7 +1,8 @@
 import React from "react";
 import { prop } from "ramda";
-import { object } from "prop-types";
+import { number, object } from "prop-types";
 import styled from "styled-components";
+import { Draggable } from "react-beautiful-dnd";
 
 const Container = styled.div(({ theme }) => ({
   display: "inline-block",
@@ -20,16 +21,25 @@ const Text = styled.div(({ theme }) => ({
   fontSize: 14
 }));
 
-const CandidateCard = ({ candidate }) => (
-  <Container>
-    <Text>
-      {prop("firstName", candidate)} {prop("lastName", candidate)}
-    </Text>
-  </Container>
+const CandidateCard = ({ candidate, index }) => (
+  <Draggable draggableId={candidate.id} index={index}>
+    {provided => (
+      <Container
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+      >
+        <Text>
+          {prop("firstName", candidate)} {prop("lastName", candidate)}
+        </Text>
+      </Container>
+    )}
+  </Draggable>
 );
 
 CandidateCard.propTypes = {
-  candidate: object
+  candidate: object,
+  index: number
 };
 
 export default CandidateCard;
