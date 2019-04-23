@@ -20,6 +20,7 @@ import {
   getJobOrders as getJobOrdersService,
   getJobSubmissions as getJobSubmissionsService
 } from "./kanban.service";
+import { formatJobSubmissions } from "../utils/kanban";
 
 export const getKanban = state => pathOr([], ["kanban", "kanban"], state);
 
@@ -91,8 +92,17 @@ export function* getJobSubmissions(action) {
     payload: { bmId, clientCorporationId, jobOrderId }
   } = action;
   try {
-    const jobSubmissions = yield call(getJobSubmissionsService, jobOrderId);
-    const jobSubmissionList = yield call(propOr, [], "data", jobSubmissions);
+    const jobSubmissionsResponse = yield call(
+      getJobSubmissionsService,
+      jobOrderId
+    );
+    const jobSubmissionList = yield call(
+      propOr,
+      [],
+      "data",
+      jobSubmissionsResponse
+    );
+    const jobSubmissions = yield call(formatJobSubmissions, jobSubmissionList);
     const kanban = yield select(getKanban);
     const updatedKanban = kanban.map(bm => {
       if (bm.id === bmId) {
@@ -102,7 +112,7 @@ export function* getJobSubmissions(action) {
               const jobOrders = propOr([], "jobOrders", clientCorporation).map(
                 jobOrder => {
                   if (jobOrder.id === jobOrderId) {
-                    return { ...jobOrder, jobSubmissions: jobSubmissionList };
+                    return { ...jobOrder, jobSubmissions };
                   } else {
                     return { ...jobOrder };
                   }
