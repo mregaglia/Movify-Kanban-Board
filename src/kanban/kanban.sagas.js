@@ -12,66 +12,113 @@ import {
   GET_JOB_ORDERS,
   GET_JOB_SUBMISSIONS,
   UPDATE_JOB_SUBMISSION,
-  updateKanban,
+  setBms,
+  setClientCorporations,
   getJobOrders as getJobOrdersAction,
-  getJobSubmissions as getJobSubmissionsAction
+  setJobOrders,
+  getJobSubmissions as getJobSubmissionsAction,
+  setJobSubmissions
 } from "./kanban.actions";
 import {
   getBusinessManagers,
   getJobOrders as getJobOrdersService,
   getJobSubmissions as getJobSubmissionsService
 } from "./kanban.service";
-import { formatJobSubmissions } from "../utils/kanban";
 
 export const getKanban = state => pathOr([], ["kanban", "kanban"], state);
+export const getStateBms = state => pathOr([], ["kanban", "bms"], state);
+export const getStateClientCorporations = state =>
+  pathOr([], ["kanban", "clientCorporations"], state);
+export const getStateJobOrders = state =>
+  pathOr([], ["kanban", "jobOrders"], state);
+export const getStateJobSubmissions = state =>
+  pathOr([], ["kanban", "jobSubmissions"], state);
 
 export function* getKanbanBoard() {
   try {
-    const bms = yield call(getBusinessManagers);
-    const bmList = yield call(propOr, [], "data", bms);
-    yield put(updateKanban(bmList));
+    const bmsResponse = yield call(getBusinessManagers);
+    const bmList = yield call(propOr, [], "data", bmsResponse);
+    const bms = yield all(
+      bmList.reduce(
+        (acc, bm) => ({ ...acc, [bm.id]: { ...bm, clientCorporations: [] } }),
+        {}
+      )
+    );
+    yield put(setBms(bms));
     yield all(bmList.map(bm => put(getJobOrdersAction(prop("id", bm)))));
   } catch (e) {
     //
   }
 }
 
-const groupByClientCorporations = jobOrders =>
-  jobOrders.reduce((acc, jobOrder) => {
-    const clientCorporationIndex = acc.findIndex(
-      clientCorporation =>
-        prop("id", clientCorporation) ===
-        path(["clientCorporation", "id"], jobOrder)
-    );
+function* getClientCorporations(bmId, jobOrders) {
+  const stateBms = yield select(getStateBms);
+  const bms = { ...stateBms };
+  const joClientCorporations = yield all(
+    jobOrders.map(jo => prop("clientCorporation", jo))
+  );
 
-    if (clientCorporationIndex >= 0) {
-      acc[clientCorporationIndex].jobOrders.push(jobOrder);
-    } else {
-      acc.push({
-        ...jobOrder.clientCorporation,
-        jobOrders: [jobOrder]
-      });
-    }
+  const clientCorporations = yield all(
+    joClientCorporations.reduce((acc, jocc) => {
+      if (!bms[bmId].clientCorporations.find(cc => cc.id === jocc.id))
+        bms[bmId].clientCorporations.push(jocc.id);
 
-    return acc;
-  }, []);
+      const clientCorporation = prop(jocc.id, clientCorporations);
+      if (clientCorporation) {
+        if (!clientCorporation.bmIds.bmId)
+          acc[jocc.id] = {
+            ...jocc,
+            bmIds: { ...clientCorporation.bmIds, [bmId]: [] }
+          };
+        else
+          acc[jocc.id] = {
+            ...clientCorporation
+          };
+      } else {
+        acc[jocc.id] = { ...jocc, bmIds: { [bmId]: [] } };
+      }
+      return acc;
+    }, {})
+  );
+
+  const stateClientCorporations = yield select(getStateClientCorporations);
+  yield put(
+    setClientCorporations({ ...stateClientCorporations, ...clientCorporations })
+  );
+  yield put(setBms(bms));
+}
 
 export function* getJobOrders(action) {
   const bmId = action.payload;
   try {
-    const jobOrders = yield call(getJobOrdersService, bmId);
-    const jobOrderList = yield call(propOr, [], "data", jobOrders);
-    const clientCorporations = yield call(
-      groupByClientCorporations,
-      jobOrderList
+    const jobOrdersResponse = yield call(getJobOrdersService, bmId);
+    const jobOrderList = yield call(propOr, [], "data", jobOrdersResponse);
+
+    yield getClientCorporations(bmId, jobOrderList);
+
+    const stateClientCorporations = yield select(getStateClientCorporations);
+    const clientCorporations = { ...stateClientCorporations };
+
+    const jobOrders = yield all(
+      jobOrderList.reduce((acc, jobOrder) => {
+        const ccId = path(["clientCorporation", "id"], jobOrder);
+
+        clientCorporations[ccId].bmIds[bmId].push(jobOrder.id);
+
+        acc[jobOrder.id] = {
+          ...jobOrder,
+          bmId,
+          clientCorporationId: ccId,
+          jobSubmissions: []
+        };
+        return acc;
+      }, {})
     );
-    const kanban = yield select(getKanban);
-    const updatedKanban = kanban.map(bm => {
-      if (bm.id === bmId) {
-        return { ...bm, clientCorporations };
-      } else return { ...bm };
-    });
-    yield put(updateKanban(updatedKanban));
+
+    const stateJobOrders = yield select(getStateJobOrders);
+    yield put(setJobOrders({ ...stateJobOrders, ...jobOrders }));
+    yield put(setClientCorporations(clientCorporations));
+
     yield all(
       jobOrderList.map(jobOrder =>
         put(
@@ -93,40 +140,31 @@ export function* getJobSubmissions(action) {
     payload: { bmId, clientCorporationId, jobOrderId }
   } = action;
   try {
+    const stateJobOrders = yield select(getStateJobOrders);
+    const jobOrders = { ...stateJobOrders };
+
     const jobSubmissionsResponse = yield call(
       getJobSubmissionsService,
       jobOrderId
     );
-    const jobSubmissionList = yield call(
-      propOr,
-      [],
-      "data",
-      jobSubmissionsResponse
+
+    const jobSubmissions = yield all(
+      propOr([], "data", jobSubmissionsResponse).reduce((acc, js) => {
+        jobOrders[jobOrderId].jobSubmissions.push(js.id);
+
+        acc[js.id] = {
+          ...js,
+          bmId,
+          clientCorporationId,
+          jobOrderId
+        };
+        return acc;
+      }, {})
     );
-    const jobSubmissions = yield call(formatJobSubmissions, jobSubmissionList);
-    const kanban = yield select(getKanban);
-    const updatedKanban = kanban.map(bm => {
-      if (bm.id === bmId) {
-        const clientCorporations = propOr([], "clientCorporations", bm).map(
-          clientCorporation => {
-            if (clientCorporation.id === clientCorporationId) {
-              const jobOrders = propOr([], "jobOrders", clientCorporation).map(
-                jobOrder => {
-                  if (jobOrder.id === jobOrderId) {
-                    return { ...jobOrder, jobSubmissions };
-                  } else {
-                    return { ...jobOrder };
-                  }
-                }
-              );
-              return { ...clientCorporation, jobOrders };
-            } else return { ...clientCorporation };
-          }
-        );
-        return { ...bm, clientCorporations };
-      } else return { ...bm };
-    });
-    yield put(updateKanban(updatedKanban));
+
+    const stateJobSubmissions = yield select(getStateJobSubmissions);
+    yield put(setJobSubmissions({ ...stateJobSubmissions, ...jobSubmissions }));
+    yield put(setJobOrders(jobOrders));
   } catch (e) {
     //
   }
@@ -134,63 +172,20 @@ export function* getJobSubmissions(action) {
 
 export function* updateJobSubmission(action) {
   const {
-    payload: {
-      srcStatus,
-      bmId,
-      clientCorporationId,
-      jobOrderId,
-      jobSubmissionId,
+    payload: { jobSubmissionId, status }
+  } = action;
+
+  const stateJobSubmissions = yield select(getStateJobSubmissions);
+  const jobSubmission = stateJobSubmissions[jobSubmissionId];
+  const jobSubmissions = {
+    ...stateJobSubmissions,
+    [jobSubmissionId]: {
+      ...jobSubmission,
       status
     }
-  } = action;
-  const kanban = yield select(getKanban);
+  };
 
-  const updatedKanban = kanban.map(bm => {
-    if (bm.id.toString() === bmId) {
-      const clientCorporations = propOr([], "clientCorporations", bm).map(
-        clientCorporation => {
-          if (clientCorporation.id.toString() === clientCorporationId) {
-            const jobOrders = propOr([], "jobOrders", clientCorporation).map(
-              jobOrder => {
-                if (jobOrder.id.toString() === jobOrderId) {
-                  const prevJobSubmissions = propOr(
-                    {},
-                    "jobSubmissions",
-                    jobOrder
-                  );
-                  const srcStatusjobSubmissions = propOr(
-                    [],
-                    srcStatus,
-                    prevJobSubmissions
-                  );
-                  const jobSubmission = srcStatusjobSubmissions.find(
-                    js => js.id === jobSubmissionId
-                  );
-
-                  const jobSubmissions = {
-                    ...prevJobSubmissions,
-                    [srcStatus]: srcStatusjobSubmissions.filter(
-                      js => js.id !== jobSubmissionId
-                    ),
-                    [status]: propOr([], status, prevJobSubmissions).concat({
-                      ...jobSubmission,
-                      status
-                    })
-                  };
-
-                  return { ...jobOrder, jobSubmissions };
-                } else return { ...jobOrder };
-              }
-            );
-            return { ...clientCorporation, jobOrders };
-          } else return { ...clientCorporation };
-        }
-      );
-      return { ...bm, clientCorporations };
-    } else return { ...bm };
-  });
-
-  yield put(updateKanban(updatedKanban));
+  yield put(setJobSubmissions(jobSubmissions));
 }
 
 export default function kanbanSagas() {

@@ -1,9 +1,18 @@
 import { bindReducer } from "../utils/reducer";
-import { GET_KANBAN, UPDATE_KANBAN } from "./kanban.actions";
+import {
+  GET_KANBAN,
+  SET_BMS,
+  SET_CLIENT_CORPORATIONS,
+  SET_JOB_ORDERS,
+  SET_JOB_SUBMISSIONS
+} from "./kanban.actions";
 
 export const initialState = {
   loading: false,
-  kanban: []
+  bms: {},
+  clientCorporations: {},
+  jobOrders: {},
+  jobSubmissions: {}
 };
 
 const kanban = {
@@ -11,10 +20,22 @@ const kanban = {
     ...initialState,
     loading: true
   }),
-  [UPDATE_KANBAN]: (state, payload) => ({
+  [SET_BMS]: (state, payload) => ({
     ...state,
     loading: false,
-    kanban: payload
+    bms: payload
+  }),
+  [SET_CLIENT_CORPORATIONS]: (state, payload) => ({
+    ...state,
+    clientCorporations: payload
+  }),
+  [SET_JOB_ORDERS]: (state, payload) => ({
+    ...state,
+    jobOrders: payload
+  }),
+  [SET_JOB_SUBMISSIONS]: (state, payload) => ({
+    ...state,
+    jobSubmissions: payload
   })
 };
 

@@ -1,4 +1,4 @@
-import { prop, propOr } from "ramda";
+import { prop } from "ramda";
 
 export const STATUS_ITV1 = "ITV1";
 export const STATUS_ITV2 = "ITV2";
@@ -15,16 +15,6 @@ export const AVAILABLE_STATUSES = [
   STATUS_INTAKE,
   STATUS_WF_FEEDBACK
 ];
-
-export const formatJobSubmissions = jobSubmissions =>
-  jobSubmissions.reduce((acc, jobSubmission) => {
-    if (AVAILABLE_STATUSES.includes(jobSubmission.status)) {
-      const submissions = propOr([], jobSubmission.status, acc);
-      submissions.push(jobSubmission);
-      acc[jobSubmission.status] = submissions;
-    }
-    return acc;
-  }, {});
 
 export const getFilterStatusRequest = () =>
   AVAILABLE_STATUSES.map(status => `status:"${status}"`).join(" OR ");
