@@ -1,8 +1,7 @@
 import React from "react";
-import { propOr } from "ramda";
+import { pathOr, prop } from "ramda";
 import { object } from "prop-types";
 import styled from "styled-components";
-import { DragDropContext } from "react-beautiful-dnd";
 import { AVAILABLE_STATUSES } from "../../utils/kanban";
 import Column from "./Column";
 
@@ -17,22 +16,23 @@ const Container = styled.div(({ theme }) => ({
   padding: 8
 }));
 
-const Board = ({ jobSubmissions }) => {
+const Board = ({ jobOrder }) => {
   return (
     <Container>
-      <DragDropContext onDragEnd={() => null}>
-        {AVAILABLE_STATUSES.map(status => (
-          <Column
-            key={status}
-            status={status}
-            jobSubmissions={propOr([], status, jobSubmissions)}
-          />
-        ))}
-      </DragDropContext>
+      {AVAILABLE_STATUSES.map(status => (
+        <Column
+          key={status}
+          status={status}
+          jobSubmissions={pathOr([], ["jobSubmissions", status], jobOrder)}
+          jobOrderId={prop("id", jobOrder)}
+        />
+      ))}
     </Container>
   );
 };
+
 Board.propTypes = {
-  jobSubmissions: object
+  jobOrder: object
 };
+
 export default Board;
