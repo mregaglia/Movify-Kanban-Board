@@ -1,4 +1,4 @@
-import { propOr } from "ramda";
+import { prop, propOr } from "ramda";
 
 export const STATUS_ITV1 = "ITV1";
 export const STATUS_ITV2 = "ITV2";
@@ -28,3 +28,21 @@ export const formatJobSubmissions = jobSubmissions =>
 
 export const getFilterStatusRequest = () =>
   AVAILABLE_STATUSES.map(status => `status:"${status}"`).join(" OR ");
+
+export const createColumnId = (bmId, clientCorporationId, jobOrderId, status) =>
+  `${bmId}.${clientCorporationId}.${jobOrderId}.${status}`;
+
+export const getColumnData = droppableId => {
+  const splits = droppableId.split(".");
+  return {
+    bmId: prop("0", splits),
+    clientCorporationId: prop("1", splits),
+    jobOrderId: prop("2", splits),
+    status: prop("3", splits)
+  };
+};
+
+export const isFromSameBoard = (src, dest) =>
+  prop("bmId", src) === prop("bmId", dest) &&
+  prop("clientCorporationId", src) === prop("clientCorporationId", dest) &&
+  prop("jobOrderId", src) === prop("jobOrderId", dest);
