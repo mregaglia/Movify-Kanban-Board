@@ -11,6 +11,7 @@ import {
   GET_KANBAN,
   GET_JOB_ORDERS,
   GET_JOB_SUBMISSIONS,
+  UPDATE_JOB_SUBMISSION,
   updateKanban,
   getJobOrders as getJobOrdersAction,
   getJobSubmissions as getJobSubmissionsAction
@@ -131,10 +132,72 @@ export function* getJobSubmissions(action) {
   }
 }
 
+export function* updateJobSubmission(action) {
+  const {
+    payload: {
+      srcStatus,
+      bmId,
+      clientCorporationId,
+      jobOrderId,
+      jobSubmissionId,
+      status
+    }
+  } = action;
+  const kanban = yield select(getKanban);
+
+  const updatedKanban = kanban.map(bm => {
+    if (bm.id.toString() === bmId) {
+      const clientCorporations = propOr([], "clientCorporations", bm).map(
+        clientCorporation => {
+          if (clientCorporation.id.toString() === clientCorporationId) {
+            const jobOrders = propOr([], "jobOrders", clientCorporation).map(
+              jobOrder => {
+                if (jobOrder.id.toString() === jobOrderId) {
+                  const prevJobSubmissions = propOr(
+                    {},
+                    "jobSubmissions",
+                    jobOrder
+                  );
+                  const srcStatusjobSubmissions = propOr(
+                    [],
+                    srcStatus,
+                    prevJobSubmissions
+                  );
+                  const jobSubmission = srcStatusjobSubmissions.find(
+                    js => js.id === jobSubmissionId
+                  );
+
+                  const jobSubmissions = {
+                    ...prevJobSubmissions,
+                    [srcStatus]: srcStatusjobSubmissions.filter(
+                      js => js.id !== jobSubmissionId
+                    ),
+                    [status]: propOr([], status, prevJobSubmissions).concat({
+                      ...jobSubmission,
+                      status
+                    })
+                  };
+
+                  return { ...jobOrder, jobSubmissions };
+                } else return { ...jobOrder };
+              }
+            );
+            return { ...clientCorporation, jobOrders };
+          } else return { ...clientCorporation };
+        }
+      );
+      return { ...bm, clientCorporations };
+    } else return { ...bm };
+  });
+
+  yield put(updateKanban(updatedKanban));
+}
+
 export default function kanbanSagas() {
   return [
     takeLatest(GET_KANBAN, getKanbanBoard),
     takeEvery(GET_JOB_ORDERS, getJobOrders),
-    takeEvery(GET_JOB_SUBMISSIONS, getJobSubmissions)
+    takeEvery(GET_JOB_SUBMISSIONS, getJobSubmissions),
+    takeEvery(UPDATE_JOB_SUBMISSION, updateJobSubmission)
   ];
 }
