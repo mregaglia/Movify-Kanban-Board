@@ -4,7 +4,8 @@ import { path, pathOr, prop, propOr } from "ramda";
 import { array, bool, func } from "prop-types";
 import styled from "styled-components";
 import { DragDropContext } from "react-beautiful-dnd";
-import { getKanban } from "./kanban.actions";
+import { getColumnData, isFromSameBoard } from "../utils/kanban";
+import { getKanban, updateJobSubmission } from "./kanban.actions";
 import Board from "./board/Board";
 
 const Container = styled.div({
@@ -29,12 +30,7 @@ const TD = styled.td({
   textAlign: "center"
 });
 
-const getColumnData = droppableId => {
-  const splits = droppableId.split(".");
-  return { jobOrderId: prop("0", splits), status: prop("1", splits) };
-};
-
-const Kanban = ({ getKanban, kanban, loading }) => {
+const Kanban = ({ getKanban, kanban, loading, updateJobSubmission }) => {
   useEffect(() => {
     getKanban();
   }, []);
@@ -43,8 +39,9 @@ const Kanban = ({ getKanban, kanban, loading }) => {
     const jobSubmissionId = prop("draggableId", result);
     const src = getColumnData(path(["source", "droppableId"], result));
     const dest = getColumnData(path(["destination", "droppableId"], result));
-    if (src.jobOrderId === dest.jobOrderId && src.status !== dest.status) {
-      console.log("onDnd", jobSubmissionId, src, dest);
+    if (isFromSameBoard(src, dest) && src.status !== dest.status) {
+      const srcStatus = prop("status", src);
+      updateJobSubmission(srcStatus, dest, jobSubmissionId);
     }
   };
 
@@ -108,7 +105,18 @@ const Kanban = ({ getKanban, kanban, loading }) => {
                             } `}
                           </Text>
                         </TD>
-                        <TD>{<Board jobOrder={jobOrder} />}</TD>
+                        <TD>
+                          {
+                            <Board
+                              bmId={prop("id", bm)}
+                              clientCorporationId={prop(
+                                "id",
+                                clientCorporation
+                              )}
+                              jobOrder={jobOrder}
+                            />
+                          }
+                        </TD>
                       </tr>
                     )
                   )
@@ -124,7 +132,8 @@ const Kanban = ({ getKanban, kanban, loading }) => {
 Kanban.propTypes = {
   getKanban: func,
   kanban: array,
-  loading: bool
+  loading: bool,
+  updateJobSubmission: func
 };
 
 export default connect(
@@ -132,5 +141,5 @@ export default connect(
     kanban: pathOr([], ["kanban", "kanban"], state),
     loading: pathOr([], ["kanban", "loading"], state)
   }),
-  { getKanban }
+  { getKanban, updateJobSubmission }
 )(Kanban);

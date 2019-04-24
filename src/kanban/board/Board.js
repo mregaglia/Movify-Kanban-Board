@@ -1,8 +1,8 @@
 import React from "react";
 import { pathOr, prop } from "ramda";
-import { object } from "prop-types";
+import { number, object } from "prop-types";
 import styled from "styled-components";
-import { AVAILABLE_STATUSES } from "../../utils/kanban";
+import { AVAILABLE_STATUSES, createColumnId } from "../../utils/kanban";
 import Column from "./Column";
 
 const Container = styled.div(({ theme }) => ({
@@ -16,7 +16,7 @@ const Container = styled.div(({ theme }) => ({
   padding: 8
 }));
 
-const Board = ({ jobOrder }) => {
+const Board = ({ bmId, clientCorporationId, jobOrder }) => {
   return (
     <Container>
       {AVAILABLE_STATUSES.map(status => (
@@ -24,7 +24,12 @@ const Board = ({ jobOrder }) => {
           key={status}
           status={status}
           jobSubmissions={pathOr([], ["jobSubmissions", status], jobOrder)}
-          jobOrderId={prop("id", jobOrder)}
+          columnId={createColumnId(
+            bmId,
+            clientCorporationId,
+            prop("id", jobOrder),
+            status
+          )}
         />
       ))}
     </Container>
@@ -32,6 +37,8 @@ const Board = ({ jobOrder }) => {
 };
 
 Board.propTypes = {
+  bmId: number,
+  clientCorporationId: number,
   jobOrder: object
 };
 

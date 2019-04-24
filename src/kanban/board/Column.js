@@ -1,6 +1,6 @@
 import React from "react";
-import { array, number, string } from "prop-types";
-import { propOr } from "ramda";
+import { array, string } from "prop-types";
+import { prop, propOr } from "ramda";
 import styled from "styled-components";
 import { Droppable } from "react-beautiful-dnd";
 import CandidateCard from "./CandidateCard";
@@ -22,11 +22,11 @@ const Title = styled.div(({ theme }) => ({
   fontSize: 16
 }));
 
-const Column = ({ jobOrderId, jobSubmissions, status }) => {
+const Column = ({ columnId, jobSubmissions, status }) => {
   return (
     <Container>
       <Title>{status}</Title>
-      <Droppable droppableId={`${jobOrderId}.${status}`}>
+      <Droppable droppableId={columnId}>
         {provided => (
           <div
             ref={provided.innerRef}
@@ -35,7 +35,8 @@ const Column = ({ jobOrderId, jobSubmissions, status }) => {
           >
             {jobSubmissions.map((jobSubmission, index) => (
               <CandidateCard
-                key={jobSubmission.id}
+                key={prop("id", jobSubmission)}
+                jobSubmissionId={prop("id", jobSubmission)}
                 candidate={propOr({}, "candidate", jobSubmission)}
                 index={index}
               />
@@ -47,7 +48,7 @@ const Column = ({ jobOrderId, jobSubmissions, status }) => {
   );
 };
 Column.propTypes = {
-  jobOrderId: number,
+  columnId: string,
   jobSubmissions: array,
   status: string
 };

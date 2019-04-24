@@ -21,8 +21,8 @@ const Text = styled.div(({ theme }) => ({
   fontSize: 14
 }));
 
-const CandidateCard = ({ candidate, index }) => (
-  <Draggable draggableId={candidate.id} index={index}>
+const CandidateCard = ({ candidate, index, jobSubmissionId }) => (
+  <Draggable draggableId={jobSubmissionId} index={index}>
     {provided => (
       <Container
         ref={provided.innerRef}
@@ -39,7 +39,8 @@ const CandidateCard = ({ candidate, index }) => (
 
 CandidateCard.propTypes = {
   candidate: object,
-  index: number
+  index: number,
+  jobSubmissionId: number
 };
 
 export default CandidateCard;
