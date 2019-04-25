@@ -60,22 +60,23 @@ function* getClientCorporations(bmId, jobOrders) {
 
   const clientCorporations = yield all(
     joClientCorporations.reduce((acc, jocc) => {
-      if (!bms[bmId].clientCorporations.find(cc => cc.id === jocc.id))
-        bms[bmId].clientCorporations.push(jocc.id);
+      const joccId = prop("id", jocc);
+      if (!bms[bmId].clientCorporations.find(ccId => ccId === joccId))
+        bms[bmId].clientCorporations.push(joccId);
 
-      const clientCorporation = prop(jocc.id, clientCorporations);
+      const clientCorporation = prop(joccId, clientCorporations);
       if (clientCorporation) {
         if (!clientCorporation.bmIds.bmId)
-          acc[jocc.id] = {
+          acc[joccId] = {
             ...jocc,
             bmIds: { ...clientCorporation.bmIds, [bmId]: [] }
           };
         else
-          acc[jocc.id] = {
+          acc[joccId] = {
             ...clientCorporation
           };
       } else {
-        acc[jocc.id] = { ...jocc, bmIds: { [bmId]: [] } };
+        acc[joccId] = { ...jocc, bmIds: { [bmId]: [] } };
       }
       return acc;
     }, {})
