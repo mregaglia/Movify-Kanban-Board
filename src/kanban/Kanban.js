@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { path, pathOr, prop, propOr } from "ramda";
-import { array, bool, func } from "prop-types";
+import { bool, func, object } from "prop-types";
 import styled from "styled-components";
 import { DragDropContext } from "react-beautiful-dnd";
 import { getColumnData, isFromSameBoard } from "../utils/kanban";
 import { getKanban, updateJobSubmission } from "./kanban.actions";
-import Board from "./board/Board";
+import Bm from "./Bm";
 
 const Container = styled.div({
   paddingLeft: 30,
@@ -15,7 +15,12 @@ const Container = styled.div({
   paddingBottom: 20
 });
 
-const Text = styled.div(({ theme }) => ({
+export const Row = styled.div({
+  display: "flex",
+  flexDirection: "row"
+});
+
+export const Text = styled.div(({ theme }) => ({
   display: "inline-block",
   fontFamily: theme.fonts.fontFamily,
   fontSize: 14
@@ -26,11 +31,11 @@ const Title = styled(Text)({
   marginBottom: 20
 });
 
-const TD = styled.td({
+export const TD = styled.td({
   textAlign: "center"
 });
 
-const Kanban = ({ getKanban, kanban, loading, updateJobSubmission }) => {
+const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
   useEffect(() => {
     getKanban();
   }, []);
@@ -54,91 +59,25 @@ const Kanban = ({ getKanban, kanban, loading, updateJobSubmission }) => {
 
   return (
     <Container>
-      <Title>Kanban Board</Title>
-
       <DragDropContext onDragEnd={onDnd}>
-        <table>
-          <thead>
-            <tr>
-              <th>
-                <Text>BM</Text>
-              </th>
-              <th>
-                <Text>Client</Text>
-              </th>
-              <th>
-                <Text>Position</Text>
-              </th>
-              <th>
-                <Text>Process</Text>
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {kanban.map(bm =>
-              propOr([], "clientCorporations", bm).map(
-                (clientCorporation, indexCC) =>
-                  propOr([], "jobOrders", clientCorporation).map(
-                    (jobOrder, indexJO) => (
-                      <tr key={jobOrder.id}>
-                        <TD>
-                          <Text>
-                            {indexCC === 0 &&
-                              indexJO === 0 &&
-                              `${pathOr("", ["firstName", "0"], bm)}${pathOr(
-                                "",
-                                ["lastName", "0"],
-                                bm
-                              )} `}
-                          </Text>
-                        </TD>
-                        <TD>
-                          <Text>{indexJO === 0 && clientCorporation.name}</Text>
-                        </TD>
-                        <TD>
-                          <Text>{jobOrder.title}</Text>
-                          <br />
-                          <Text>
-                            {`${jobOrder.clientContact.firstName} ${
-                              jobOrder.clientContact.lastName
-                            } `}
-                          </Text>
-                        </TD>
-                        <TD>
-                          {
-                            <Board
-                              bmId={prop("id", bm)}
-                              clientCorporationId={prop(
-                                "id",
-                                clientCorporation
-                              )}
-                              jobOrder={jobOrder}
-                            />
-                          }
-                        </TD>
-                      </tr>
-                    )
-                  )
-              )
-            )}
-          </tbody>
-        </table>
+        {Object.keys(bms).map(bmId => (
+          <Bm key={bmId} bm={propOr({}, bmId, bms)} />
+        ))}
       </DragDropContext>
     </Container>
   );
 };
 
 Kanban.propTypes = {
+  bms: object,
   getKanban: func,
-  kanban: array,
   loading: bool,
   updateJobSubmission: func
 };
 
 export default connect(
   state => ({
-    kanban: pathOr([], ["kanban", "kanban"], state),
+    bms: pathOr({}, ["kanban", "bms"], state),
     loading: pathOr([], ["kanban", "loading"], state)
   }),
   { getKanban, updateJobSubmission }
