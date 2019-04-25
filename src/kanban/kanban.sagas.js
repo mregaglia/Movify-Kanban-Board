@@ -29,6 +29,8 @@ export const getKanban = state => pathOr([], ["kanban", "kanban"], state);
 export const getStateBms = state => pathOr([], ["kanban", "bms"], state);
 export const getStateClientCorporations = state =>
   pathOr([], ["kanban", "clientCorporations"], state);
+export const getStateJobOrder = (state, joId) =>
+  pathOr({}, ["kanban", "jobOrders", joId], state);
 export const getStateJobOrders = state =>
   pathOr([], ["kanban", "jobOrders"], state);
 export const getStateJobSubmissions = state =>
@@ -147,7 +149,6 @@ export function* getJobOrders(action) {
     );
   } catch (e) {
     //
-    console.error(e);
   }
 }
 
@@ -201,7 +202,7 @@ export function* getJobSubmissions(action) {
 
 export function* updateJobSubmission(action) {
   const {
-    payload: { jobSubmissionId, status }
+    payload: { jobOrderId, prevStatus, jobSubmissionId, status }
   } = action;
 
   const stateJobSubmissions = yield select(getStateJobSubmissions);
@@ -215,6 +216,29 @@ export function* updateJobSubmission(action) {
   };
 
   yield put(setJobSubmissions(jobSubmissions));
+
+  const stateJobOrder = yield select(getStateJobOrder, jobOrderId);
+  const jojss = {
+    ...prop("jobSubmissions", stateJobOrder),
+    [prevStatus]: pathOr(
+      [],
+      ["jobSubmissions", prevStatus],
+      stateJobOrder
+    ).filter(jsId => jsId !== jobSubmissionId),
+    [status]: pathOr([], ["jobSubmissions", status], stateJobOrder).concat([
+      jobSubmissionId
+    ])
+  };
+  const jobOrder = {
+    [jobOrderId]: {
+      ...stateJobOrder,
+      jobSubmissions: jojss
+    }
+  };
+  // TODO: update in bullhorn also
+
+  const stateJobOrders = yield select(getStateJobOrders);
+  yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
 }
 
 export default function kanbanSagas() {

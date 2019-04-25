@@ -43,7 +43,9 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
     const dest = getColumnData(path(["destination", "droppableId"], result));
     if (isFromSameBoard(src, dest) && src.status !== dest.status) {
       const srcStatus = prop("status", src);
-      updateJobSubmission(srcStatus, dest, jobSubmissionId);
+      const destStatus = prop("status", dest);
+      const jobOrderId = prop("jobOrderId", src);
+      updateJobSubmission(jobOrderId, srcStatus, jobSubmissionId, destStatus);
     }
   };
 

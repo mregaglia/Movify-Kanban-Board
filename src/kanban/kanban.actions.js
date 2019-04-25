@@ -34,9 +34,16 @@ export const setJobSubmissions = jobSubmissions => ({
   payload: jobSubmissions
 });
 
-export const updateJobSubmission = (jobSubmissionId, status) => ({
+export const updateJobSubmission = (
+  jobOrderId,
+  prevStatus,
+  jobSubmissionId,
+  status
+) => ({
   type: UPDATE_JOB_SUBMISSION,
   payload: {
+    jobOrderId,
+    prevStatus,
     jobSubmissionId,
     status
   }
