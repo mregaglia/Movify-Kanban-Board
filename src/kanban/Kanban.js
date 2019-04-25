@@ -38,6 +38,7 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
   }, []);
 
   const onDnd = result => {
+    if (!prop("destination", result)) return;
     const jobSubmissionId = prop("draggableId", result);
     const src = getColumnData(path(["source", "droppableId"], result));
     const dest = getColumnData(path(["destination", "droppableId"], result));
