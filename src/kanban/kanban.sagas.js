@@ -6,7 +6,7 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import { path, pathOr, prop, propOr } from "ramda";
+import { concat, mergeDeepWith, path, pathOr, prop, propOr } from "ramda";
 import {
   GET_KANBAN,
   GET_JOB_ORDERS,
@@ -52,8 +52,7 @@ export function* getKanbanBoard() {
 }
 
 function* getClientCorporations(bmId, jobOrders) {
-  const stateBms = yield select(getStateBms);
-  const bms = { ...stateBms };
+  const bms = {};
   const joClientCorporations = yield all(
     jobOrders.map(jo => prop("clientCorporation", jo))
   );
@@ -61,21 +60,20 @@ function* getClientCorporations(bmId, jobOrders) {
   const clientCorporations = yield all(
     joClientCorporations.reduce((acc, jocc) => {
       const joccId = prop("id", jocc);
-      if (!bms[bmId].clientCorporations.find(ccId => ccId === joccId))
-        bms[bmId].clientCorporations.push(joccId);
 
-      const clientCorporation = prop(joccId, clientCorporations);
-      if (clientCorporation) {
-        if (!clientCorporation.bmIds.bmId)
-          acc[joccId] = {
-            ...jocc,
-            bmIds: { ...clientCorporation.bmIds, [bmId]: [] }
-          };
-        else
-          acc[joccId] = {
-            ...clientCorporation
-          };
-      } else {
+      if (
+        !pathOr([], [bmId, "clientCorporations"], bms).find(
+          ccId => ccId === joccId
+        )
+      ) {
+        const bmcc = pathOr([], [bmId, "clientCorporations"], bms).concat([
+          joccId
+        ]);
+        bms[bmId] = { clientCorporations: bmcc };
+      }
+
+      const clientCorporation = prop(joccId, acc);
+      if (!clientCorporation) {
         acc[joccId] = { ...jocc, bmIds: { [bmId]: [] } };
       }
       return acc;
@@ -84,9 +82,12 @@ function* getClientCorporations(bmId, jobOrders) {
 
   const stateClientCorporations = yield select(getStateClientCorporations);
   yield put(
-    setClientCorporations({ ...stateClientCorporations, ...clientCorporations })
+    setClientCorporations(
+      mergeDeepWith(concat, stateClientCorporations, clientCorporations)
+    )
   );
-  yield put(setBms(bms));
+  const stateBms = yield select(getStateBms);
+  yield put(setBms(mergeDeepWith(concat, stateBms, bms)));
 }
 
 export function* getJobOrders(action) {
@@ -97,28 +98,41 @@ export function* getJobOrders(action) {
 
     yield getClientCorporations(bmId, jobOrderList);
 
-    const stateClientCorporations = yield select(getStateClientCorporations);
-    const clientCorporations = { ...stateClientCorporations };
+    const clientCorporations = {};
 
     const jobOrders = yield all(
       jobOrderList.reduce((acc, jobOrder) => {
         const ccId = path(["clientCorporation", "id"], jobOrder);
 
-        clientCorporations[ccId].bmIds[bmId].push(jobOrder.id);
+        const ccjos = pathOr(
+          [],
+          [ccId, "bmIds", bmId],
+          clientCorporations
+        ).concat([jobOrder.id]);
+        clientCorporations[ccId] = {
+          bmIds: {
+            [bmId]: ccjos
+          }
+        };
 
         acc[jobOrder.id] = {
           ...jobOrder,
           bmId,
           clientCorporationId: ccId,
-          jobSubmissions: []
+          jobSubmissions: {}
         };
         return acc;
       }, {})
     );
 
     const stateJobOrders = yield select(getStateJobOrders);
-    yield put(setJobOrders({ ...stateJobOrders, ...jobOrders }));
-    yield put(setClientCorporations(clientCorporations));
+    yield put(setJobOrders(mergeDeepWith(concat, stateJobOrders, jobOrders)));
+    const stateClientCorporations = yield select(getStateClientCorporations);
+    yield put(
+      setClientCorporations(
+        mergeDeepWith(concat, stateClientCorporations, clientCorporations)
+      )
+    );
 
     yield all(
       jobOrderList.map(jobOrder =>
@@ -133,6 +147,7 @@ export function* getJobOrders(action) {
     );
   } catch (e) {
     //
+    console.error(e);
   }
 }
 
@@ -141,9 +156,7 @@ export function* getJobSubmissions(action) {
     payload: { bmId, clientCorporationId, jobOrderId }
   } = action;
   try {
-    const stateJobOrders = yield select(getStateJobOrders);
-    const jobOrders = { ...stateJobOrders };
-
+    const jobOrders = {};
     const jobSubmissionsResponse = yield call(
       getJobSubmissionsService,
       jobOrderId
@@ -151,7 +164,16 @@ export function* getJobSubmissions(action) {
 
     const jobSubmissions = yield all(
       propOr([], "data", jobSubmissionsResponse).reduce((acc, js) => {
-        jobOrders[jobOrderId].jobSubmissions.push(js.id);
+        const jojss = pathOr(
+          [],
+          [jobOrderId, "jobSubmissions", js.status],
+          jobOrders
+        ).concat([js.id]);
+        jobOrders[jobOrderId] = {
+          jobSubmissions: {
+            [js.status]: jojss
+          }
+        };
 
         acc[js.id] = {
           ...js,
@@ -159,13 +181,19 @@ export function* getJobSubmissions(action) {
           clientCorporationId,
           jobOrderId
         };
+
         return acc;
       }, {})
     );
 
     const stateJobSubmissions = yield select(getStateJobSubmissions);
-    yield put(setJobSubmissions({ ...stateJobSubmissions, ...jobSubmissions }));
-    yield put(setJobOrders(jobOrders));
+    yield put(
+      setJobSubmissions(
+        mergeDeepWith(concat, stateJobSubmissions, jobSubmissions)
+      )
+    );
+    const stateJobOrders = yield select(getStateJobOrders);
+    yield put(setJobOrders(mergeDeepWith(concat, stateJobOrders, jobOrders)));
   } catch (e) {
     //
   }

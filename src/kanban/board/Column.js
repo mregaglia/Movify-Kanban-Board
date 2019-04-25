@@ -1,6 +1,5 @@
 import React from "react";
 import { array, string } from "prop-types";
-import { prop, propOr } from "ramda";
 import styled from "styled-components";
 import { Droppable } from "react-beautiful-dnd";
 import CandidateCard from "./CandidateCard";
@@ -33,11 +32,10 @@ const Column = ({ columnId, jobSubmissions, status }) => {
             {...provided.droppableProps}
             style={{ minHeight: 150, height: "100%" }}
           >
-            {jobSubmissions.map((jobSubmission, index) => (
+            {jobSubmissions.map((jobSubmissionId, index) => (
               <CandidateCard
-                key={prop("id", jobSubmission)}
-                jobSubmissionId={prop("id", jobSubmission)}
-                candidate={propOr({}, "candidate", jobSubmission)}
+                key={jobSubmissionId}
+                jobSubmissionId={jobSubmissionId}
                 index={index}
               />
             ))}

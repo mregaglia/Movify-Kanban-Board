@@ -22,7 +22,6 @@ const kanban = {
   }),
   [SET_BMS]: (state, payload) => ({
     ...state,
-    loading: false,
     bms: payload
   }),
   [SET_CLIENT_CORPORATIONS]: (state, payload) => ({
@@ -35,6 +34,7 @@ const kanban = {
   }),
   [SET_JOB_SUBMISSIONS]: (state, payload) => ({
     ...state,
+    loading: false,
     jobSubmissions: payload
   })
 };

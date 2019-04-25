@@ -1,5 +1,6 @@
 import React from "react";
-import { prop } from "ramda";
+import { connect } from "react-redux";
+import { pathOr } from "ramda";
 import { number, object } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
@@ -21,7 +22,7 @@ const Text = styled.div(({ theme }) => ({
   fontSize: 14
 }));
 
-const CandidateCard = ({ candidate, index, jobSubmissionId }) => (
+const CandidateCard = ({ index, jobSubmissionId, jobSubmission }) => (
   <Draggable draggableId={jobSubmissionId} index={index}>
     {provided => (
       <Container
@@ -30,7 +31,8 @@ const CandidateCard = ({ candidate, index, jobSubmissionId }) => (
         {...provided.dragHandleProps}
       >
         <Text>
-          {prop("firstName", candidate)} {prop("lastName", candidate)}
+          {pathOr("", ["candidate", "firstName"], jobSubmission)}{" "}
+          {pathOr("", ["candidate", "lastName"], jobSubmission)}
         </Text>
       </Container>
     )}
@@ -40,7 +42,14 @@ const CandidateCard = ({ candidate, index, jobSubmissionId }) => (
 CandidateCard.propTypes = {
   candidate: object,
   index: number,
-  jobSubmissionId: number
+  jobSubmissionId: number,
+  jobSubmission: object
 };
 
-export default CandidateCard;
+export default connect((state, { jobSubmissionId }) => ({
+  jobSubmission: pathOr(
+    {},
+    ["kanban", "jobSubmissions", jobSubmissionId],
+    state
+  )
+}))(CandidateCard);

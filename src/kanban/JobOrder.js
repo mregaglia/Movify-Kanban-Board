@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { pathOr, propOr } from "ramda";
+import { pathOr, prop, propOr } from "ramda";
 import { number, object } from "prop-types";
 import styled from "styled-components";
 import { Row, Text } from "./Kanban";
+import Board from "./board/Board";
 
 const Column = styled.div({
   display: "flex",
@@ -23,7 +24,11 @@ const JobOrder = ({ jobOrder }) => (
         )} `}
       </Text>
     </Column>
-    <Text>process here</Text>
+    <Board
+      bmId={prop("bmId", jobOrder)}
+      clientCorporationId={prop("clientCorporationId", jobOrder)}
+      jobOrderId={prop("id", jobOrder)}
+    />
   </Row>
 );
 

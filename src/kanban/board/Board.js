@@ -1,5 +1,6 @@
 import React from "react";
-import { pathOr, prop } from "ramda";
+import { connect } from "react-redux";
+import { pathOr, propOr } from "ramda";
 import { number, object } from "prop-types";
 import styled from "styled-components";
 import { AVAILABLE_STATUSES, createColumnId } from "../../utils/kanban";
@@ -16,30 +17,30 @@ const Container = styled.div(({ theme }) => ({
   padding: 8
 }));
 
-const Board = ({ bmId, clientCorporationId, jobOrder }) => {
-  return (
-    <Container>
-      {AVAILABLE_STATUSES.map(status => (
-        <Column
-          key={status}
-          status={status}
-          jobSubmissions={pathOr([], ["jobSubmissions", status], jobOrder)}
-          columnId={createColumnId(
-            bmId,
-            clientCorporationId,
-            prop("id", jobOrder),
-            status
-          )}
-        />
-      ))}
-    </Container>
-  );
-};
+const Board = ({ bmId, clientCorporationId, jobOrderId, jobSubmissions }) => (
+  <Container>
+    {AVAILABLE_STATUSES.map(status => (
+      <Column
+        key={status}
+        status={status}
+        jobSubmissions={propOr([], status, jobSubmissions)}
+        columnId={createColumnId(bmId, clientCorporationId, jobOrderId, status)}
+      />
+    ))}
+  </Container>
+);
 
 Board.propTypes = {
   bmId: number,
   clientCorporationId: number,
-  jobOrder: object
+  jobOrderId: number,
+  jobSubmissions: object
 };
 
-export default Board;
+export default connect((state, { jobOrderId }) => ({
+  jobSubmissions: pathOr(
+    {},
+    ["kanban", "jobOrders", jobOrderId, "jobSubmissions"],
+    state
+  )
+}))(Board);

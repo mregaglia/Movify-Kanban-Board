@@ -23,16 +23,13 @@ export const Row = styled.div({
 export const Text = styled.div(({ theme }) => ({
   display: "inline-block",
   fontFamily: theme.fonts.fontFamily,
-  fontSize: 14
+  fontSize: 14,
+  padding: 4
 }));
 
 const Title = styled(Text)({
   fontSize: 32,
   marginBottom: 20
-});
-
-export const TD = styled.td({
-  textAlign: "center"
 });
 
 const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
@@ -59,6 +56,7 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
 
   return (
     <Container>
+      <Title>Kanban Board</Title>
       <DragDropContext onDragEnd={onDnd}>
         {Object.keys(bms).map(bmId => (
           <Bm key={bmId} bm={propOr({}, bmId, bms)} />
