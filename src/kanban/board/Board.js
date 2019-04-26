@@ -9,6 +9,7 @@ import Column from "./Column";
 const Container = styled.div(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
+  flex: 1,
   margin: 4,
   borderRadius: theme.dimensions.borderRadius,
   borderColor: theme.colors.lightGrey,

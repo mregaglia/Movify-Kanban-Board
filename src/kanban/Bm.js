@@ -1,18 +1,18 @@
 import React from "react";
 import { pathOr, prop, propOr } from "ramda";
 import { object } from "prop-types";
-import { Row, Text } from "./Kanban";
+import { Column, Row, Text } from "./Kanban";
 import ClientCorporation from "./ClientCorporation";
 
 const Bm = ({ bm }) => (
   <Row>
-    <Text>{`${pathOr("", ["firstName", "0"], bm)}${pathOr(
+    <Text style={{ width: "35px" }}>{`${pathOr(
       "",
-      ["lastName", "0"],
+      ["firstName", "0"],
       bm
-    )} `}</Text>
+    )}${pathOr("", ["lastName", "0"], bm)}`}</Text>
 
-    <div>
+    <Column>
       {propOr([], "clientCorporations", bm).map(ccId => (
         <ClientCorporation
           key={`${prop("id", bm)}.${ccId}`}
@@ -20,7 +20,7 @@ const Bm = ({ bm }) => (
           ccId={ccId}
         />
       ))}
-    </div>
+    </Column>
   </Row>
 );
 

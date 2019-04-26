@@ -9,8 +9,8 @@ import { getKanban, updateJobSubmission } from "./kanban.actions";
 import Bm from "./Bm";
 
 const Container = styled.div({
-  paddingLeft: 30,
-  paddingRight: 30,
+  paddingLeft: 20,
+  paddingRight: 20,
   paddingTop: 20,
   paddingBottom: 20
 });
@@ -20,11 +20,20 @@ export const Row = styled.div({
   flexDirection: "row"
 });
 
+export const Column = styled.div({
+  display: "flex",
+  flexDirection: "column",
+  flex: 1
+});
+
 export const Text = styled.div(({ theme }) => ({
   display: "inline-block",
   fontFamily: theme.fonts.fontFamily,
   fontSize: 14,
-  padding: 4
+  padding: 4,
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  whiteSpace: "no-wrap"
 }));
 
 const Title = styled(Text)({

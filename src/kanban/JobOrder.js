@@ -8,7 +8,8 @@ import Board from "./board/Board";
 
 const Column = styled.div({
   display: "flex",
-  flexDirection: "column"
+  flexDirection: "column",
+  width: "100px"
 });
 
 const JobOrder = ({ jobOrder }) => (
