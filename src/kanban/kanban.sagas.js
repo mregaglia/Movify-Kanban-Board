@@ -22,7 +22,8 @@ import {
 import {
   getBusinessManagers,
   getJobOrders as getJobOrdersService,
-  getJobSubmissions as getJobSubmissionsService
+  getJobSubmissions as getJobSubmissionsService,
+  updateJobSubmissionStatus as updateJobSubmissionStatusService
 } from "./kanban.service";
 
 export const getKanban = state => pathOr([], ["kanban", "kanban"], state);
@@ -202,6 +203,23 @@ export function* getJobSubmissions(action) {
 
 export function* updateJobSubmission(action) {
   const {
+    payload: { prevStatus, jobSubmissionId, status }
+  } = action;
+  try {
+    yield updateJobSubmissionStatus(action);
+    yield call(updateJobSubmissionStatusService, jobSubmissionId, status);
+    // notif success
+  } catch (e) {
+    yield updateJobSubmissionStatus({
+      ...action,
+      payload: { ...action.payload, status: prevStatus, prevStatus: status }
+    });
+    // notif error
+  }
+}
+
+function* updateJobSubmissionStatus(action) {
+  const {
     payload: { jobOrderId, prevStatus, jobSubmissionId, status }
   } = action;
 
@@ -235,7 +253,6 @@ export function* updateJobSubmission(action) {
       jobSubmissions: jojss
     }
   };
-  // TODO: update in bullhorn also
 
   const stateJobOrders = yield select(getStateJobOrders);
   yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
