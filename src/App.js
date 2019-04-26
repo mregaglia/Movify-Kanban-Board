@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { func } from "prop-types";
 import { ThemeProvider } from "styled-components";
 import { BrowserRouter as Router, Route } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 import { getToken, getBaseUrl } from "./utils/storage";
 import { setToken, setBaseUrl } from "./utils/api";
 import theme from "./style/theme";
@@ -31,6 +33,7 @@ class App extends Component {
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <AuthenticatedRoute exact path="/kanban" component={Kanban} />
+            <ToastContainer />
           </div>
         </ThemeProvider>
       </Router>

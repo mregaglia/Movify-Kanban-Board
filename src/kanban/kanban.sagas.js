@@ -7,6 +7,7 @@ import {
   takeLatest
 } from "redux-saga/effects";
 import { concat, mergeDeepWith, path, pathOr, prop, propOr } from "ramda";
+import { toast } from "react-toastify";
 import {
   GET_KANBAN,
   GET_JOB_ORDERS,
@@ -208,13 +209,15 @@ export function* updateJobSubmission(action) {
   try {
     yield updateJobSubmissionStatus(action);
     yield call(updateJobSubmissionStatusService, jobSubmissionId, status);
-    // notif success
+    toast.success("The job submission status was correctly updated.");
   } catch (e) {
     yield updateJobSubmissionStatus({
       ...action,
       payload: { ...action.payload, status: prevStatus, prevStatus: status }
     });
-    // notif error
+    toast.error(
+      "There was an issue with the update. Please retry again later."
+    );
   }
 }
 
