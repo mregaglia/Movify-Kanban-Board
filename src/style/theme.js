@@ -1,7 +1,9 @@
 export default {
   colors: {
     red: "#f34d3d",
-    lightGrey: "rgba(0, 0, 0, 0.1)"
+    grey: "#DCDCDC",
+    lightGrey: "#F2F2F2",
+    darkWhite: "#FDFDFD"
   },
   fonts: {
     fontFamily: "Open Sans, sans-serif"

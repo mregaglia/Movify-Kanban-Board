@@ -13,10 +13,8 @@ const Container = styled.div({
 const Content = styled.div(({ theme }) => ({
   padding: 8,
   margin: 4,
-  borderRadius: theme.dimensions.borderRadius,
-  borderColor: theme.colors.lightGrey,
-  borderStyle: "solid",
-  borderWidth: 1
+  backgroundColor: theme.colors.darkWhite,
+  borderRadius: theme.dimensions.borderRadius
 }));
 
 const Title = styled.div(({ theme }) => ({

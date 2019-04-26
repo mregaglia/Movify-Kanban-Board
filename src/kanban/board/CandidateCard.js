@@ -7,7 +7,7 @@ import { Draggable } from "react-beautiful-dnd";
 
 const Container = styled.div(({ theme }) => ({
   display: "inline-block",
-  backgroundColor: theme.colors.lightGrey,
+  backgroundColor: theme.colors.grey,
   borderRadius: theme.dimensions.borderRadius,
   paddingTop: 10,
   paddingBottom: 10,

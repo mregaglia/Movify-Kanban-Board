@@ -23,7 +23,9 @@ export const Row = styled.div({
 export const Column = styled.div({
   display: "flex",
   flexDirection: "column",
-  flex: 1
+  flex: 1,
+  paddingLeft: 8,
+  paddingRight: 8
 });
 
 export const Text = styled.div(({ theme }) => ({
