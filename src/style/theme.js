@@ -15,6 +15,7 @@ export default {
   bmColors: [
     "#FF5757",
     "#FFBF53",
+    "#60C659",
     "#F7E06B",
     "#6BD7DA",
     "#7758B3",
@@ -27,7 +28,6 @@ export default {
     "#f34d3d",
     "#84DCCF",
     "#FCAD56",
-    "#60C659",
     "#246EB9",
     "#FF7F1E",
     "#8754A1"
