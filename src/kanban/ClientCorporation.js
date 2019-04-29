@@ -6,16 +6,18 @@ import { Column, Row, Text } from "./Kanban";
 import JobOrder from "./JobOrder";
 
 const ClientCorporation = ({ bmId, clientCorporation }) => (
-  <Row>
-    <Text style={{ width: "80px" }}>
+  <div>
+    <Text style={{ width: 110, fontSize: 16, fontWeight: 600 }}>
       {propOr("", "name", clientCorporation)}
     </Text>
-    <Column>
-      {pathOr([], ["bmIds", bmId], clientCorporation).map(joId => (
-        <JobOrder key={joId} joId={joId} />
-      ))}
-    </Column>
-  </Row>
+    <Row style={{ paddingLeft: 10, paddingBottom: 10 }}>
+      <Column>
+        {pathOr([], ["bmIds", bmId], clientCorporation).map(joId => (
+          <JobOrder key={joId} joId={joId} />
+        ))}
+      </Column>
+    </Row>
+  </div>
 );
 
 ClientCorporation.propTypes = {

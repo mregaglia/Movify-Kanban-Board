@@ -5,12 +5,15 @@ import { Droppable } from "react-beautiful-dnd";
 import CandidateCard from "./CandidateCard";
 
 const Container = styled.div({
+  display: "flex",
+  flexGrow: 1,
   width: "16.6%",
   minWidth: "16.6%",
   maxWidth: "16.6%"
 });
 
 const Content = styled.div(({ theme }) => ({
+  flexGrow: 1,
   padding: 8,
   margin: 4,
   backgroundColor: theme.colors.darkWhite,

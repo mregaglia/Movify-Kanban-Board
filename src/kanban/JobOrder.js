@@ -16,7 +16,6 @@ const JobOrder = ({ jobOrder }) => (
   <Row>
     <Column>
       <Text>{propOr("", "title", jobOrder)}</Text>
-      <br />
       <Text>
         {`${pathOr("", ["clientContact", "firstName"], jobOrder)} ${pathOr(
           "",

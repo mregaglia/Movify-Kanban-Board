@@ -10,9 +10,11 @@ const Bm = ({ bm, color }) => (
       style={{
         borderTopLeftRadius: 4,
         borderBottomLeftRadius: 4,
-        width: "35px",
+        width: "50px",
         backgroundColor: color,
-        textAlign: "center"
+        textAlign: "center",
+        fontSize: 16,
+        paddingLeft: 4
       }}
     >
       {`${pathOr("", ["firstName", "0"], bm)}${pathOr(
