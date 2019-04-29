@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 
 const Container = styled.div(({ theme }) => ({
-  display: "inline-block",
+  display: "flex",
   backgroundColor: theme.colors.grey,
   borderRadius: theme.dimensions.borderRadius,
   paddingTop: 10,
@@ -15,7 +15,8 @@ const Container = styled.div(({ theme }) => ({
   paddingRight: 15,
   margin: 5,
   textOverflow: "ellipsis",
-  overflow: "hidden"
+  overflow: "hidden",
+  textAlign: "center"
 }));
 
 const Text = styled.div(({ theme }) => ({

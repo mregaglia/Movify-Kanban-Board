@@ -10,7 +10,8 @@ const Container = styled.div(({ theme }) => ({
   display: "flex",
   flexDirection: "row",
   flex: 1,
-  margin: 4,
+  marginTop: 4,
+  marginBottom: 4,
   backgroundColor: theme.colors.lightGrey,
   borderRadius: theme.dimensions.borderRadius,
   padding: 8

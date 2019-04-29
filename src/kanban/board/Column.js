@@ -13,6 +13,8 @@ const Container = styled.div({
 });
 
 const Content = styled.div(({ theme }) => ({
+  display: "flex",
+  flexDirection: "column",
   flexGrow: 1,
   padding: 8,
   margin: 4,
@@ -24,7 +26,8 @@ const Title = styled.div(({ theme }) => ({
   fontFamily: theme.fonts.fontFamily,
   fontSize: 16,
   textAlign: "center",
-  padding: 4
+  paddingTop: 4,
+  paddingBottom: 8
 }));
 
 const Column = ({ columnId, jobSubmissions, status }) => {
