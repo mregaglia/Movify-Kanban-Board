@@ -19,7 +19,9 @@ const Content = styled.div(({ theme }) => ({
 
 const Title = styled.div(({ theme }) => ({
   fontFamily: theme.fonts.fontFamily,
-  fontSize: 16
+  fontSize: 16,
+  textAlign: "center",
+  padding: 4
 }));
 
 const Column = ({ columnId, jobSubmissions, status }) => {

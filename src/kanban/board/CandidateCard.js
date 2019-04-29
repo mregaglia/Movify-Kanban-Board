@@ -13,13 +13,18 @@ const Container = styled.div(({ theme }) => ({
   paddingBottom: 10,
   paddingLeft: 15,
   paddingRight: 15,
-  margin: 5
+  margin: 5,
+  textOverflow: "ellipsis",
+  overflow: "hidden"
 }));
 
 const Text = styled.div(({ theme }) => ({
   display: "inline-block",
   fontFamily: theme.fonts.fontFamily,
-  fontSize: 14
+  fontSize: 14,
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  whiteSpace: "no-wrap"
 }));
 
 const CandidateCard = ({ index, jobSubmissionId, jobSubmission }) => (

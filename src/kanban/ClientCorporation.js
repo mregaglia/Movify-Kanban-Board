@@ -7,7 +7,7 @@ import JobOrder from "./JobOrder";
 
 const ClientCorporation = ({ bmId, clientCorporation }) => (
   <Row>
-    <Text style={{ width: "70px" }}>
+    <Text style={{ width: "80px" }}>
       {propOr("", "name", clientCorporation)}
     </Text>
     <Column>

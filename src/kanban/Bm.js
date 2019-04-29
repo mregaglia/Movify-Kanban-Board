@@ -1,16 +1,26 @@
 import React from "react";
 import { pathOr, prop, propOr } from "ramda";
-import { object } from "prop-types";
+import { object, string } from "prop-types";
 import { Column, Row, Text } from "./Kanban";
 import ClientCorporation from "./ClientCorporation";
 
-const Bm = ({ bm }) => (
-  <Row>
-    <Text style={{ width: "35px" }}>{`${pathOr(
-      "",
-      ["firstName", "0"],
-      bm
-    )}${pathOr("", ["lastName", "0"], bm)}`}</Text>
+const Bm = ({ bm, color }) => (
+  <Row style={{ marginBottom: 6 }}>
+    <Text
+      style={{
+        borderTopLeftRadius: 4,
+        borderBottomLeftRadius: 4,
+        width: "35px",
+        backgroundColor: color,
+        textAlign: "center"
+      }}
+    >
+      {`${pathOr("", ["firstName", "0"], bm)}${pathOr(
+        "",
+        ["lastName", "0"],
+        bm
+      )}${pathOr("", ["lastName", "1"], bm)}`.toUpperCase()}
+    </Text>
 
     <Column>
       {propOr([], "clientCorporations", bm).map(ccId => (
@@ -25,7 +35,8 @@ const Bm = ({ bm }) => (
 );
 
 Bm.propTypes = {
-  bm: object
+  bm: object,
+  color: string
 };
 
 export default Bm;

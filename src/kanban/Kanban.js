@@ -4,6 +4,7 @@ import { path, pathOr, prop, propOr } from "ramda";
 import { bool, func, object } from "prop-types";
 import styled from "styled-components";
 import { DragDropContext } from "react-beautiful-dnd";
+import theme from "../style/theme";
 import { getColumnData, isFromSameBoard } from "../utils/kanban";
 import { getKanban, updateJobSubmission } from "./kanban.actions";
 import Bm from "./Bm";
@@ -32,16 +33,17 @@ export const Text = styled.div(({ theme }) => ({
   display: "inline-block",
   fontFamily: theme.fonts.fontFamily,
   fontSize: 14,
-  padding: 4,
+  padding: 12,
   textOverflow: "ellipsis",
-  overflow: "hidden",
-  whiteSpace: "no-wrap"
+  overflow: "hidden"
 }));
 
 const Title = styled(Text)({
   fontSize: 32,
   marginBottom: 20
 });
+
+const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
 
 const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
   useEffect(() => {
@@ -72,8 +74,8 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
     <Container>
       <Title>Kanban Board</Title>
       <DragDropContext onDragEnd={onDnd}>
-        {Object.keys(bms).map(bmId => (
-          <Bm key={bmId} bm={propOr({}, bmId, bms)} />
+        {Object.keys(bms).map((bmId, index) => (
+          <Bm key={bmId} bm={propOr({}, bmId, bms)} color={getBmColor(index)} />
         ))}
       </DragDropContext>
     </Container>
