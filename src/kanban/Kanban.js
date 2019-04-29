@@ -10,10 +10,10 @@ import { getKanban, updateJobSubmission } from "./kanban.actions";
 import Bm from "./Bm";
 
 const Container = styled.div({
-  paddingLeft: 20,
-  paddingRight: 20,
-  paddingTop: 20,
-  paddingBottom: 20
+  paddingLeft: 25,
+  paddingRight: 25,
+  paddingTop: 25,
+  paddingBottom: 25
 });
 
 export const Row = styled.div({
@@ -24,9 +24,7 @@ export const Row = styled.div({
 export const Column = styled.div({
   display: "flex",
   flexDirection: "column",
-  flex: 1,
-  paddingLeft: 8,
-  paddingRight: 8
+  flex: 1
 });
 
 export const Text = styled.div(({ theme }) => ({

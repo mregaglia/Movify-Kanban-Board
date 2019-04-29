@@ -10,6 +10,7 @@ const Bm = ({ bm, color }) => (
       style={{
         borderTopLeftRadius: 4,
         borderBottomLeftRadius: 4,
+        borderBottomRightRadius: 4,
         width: "50px",
         backgroundColor: color,
         textAlign: "center",
@@ -30,6 +31,7 @@ const Bm = ({ bm, color }) => (
           key={`${prop("id", bm)}.${ccId}`}
           bmId={prop("id", bm)}
           ccId={ccId}
+          color={color}
         />
       ))}
     </Column>
