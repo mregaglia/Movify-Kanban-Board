@@ -3,8 +3,33 @@ import { connect } from "react-redux";
 import { pathOr } from "ramda";
 import { func, object } from "prop-types";
 import { Redirect } from "react-router-dom";
+import styled from "styled-components";
+import Loader from "../components/Loader";
 import { login } from "./auth.actions";
 import { getAuthorizeUrl, getCode } from "./auth.service";
+
+const Welcome = styled.div(({ theme }) => ({
+  marginTop: "10%",
+  marginBottom: 60,
+  marginLeft: "10%",
+  color: theme.colors.red,
+  fontFamily: theme.fonts.fontFamily,
+  fontSize: 36
+}));
+
+const Button = styled.button(({ disabled, theme }) => ({
+  display: "inline-block",
+  padding: 16,
+  marginLeft: "10%",
+  borderWidth: 0,
+  borderRadius: theme.dimensions.borderRadius,
+  backgroundColor: disabled ? theme.colors.lightRed : theme.colors.red,
+  color: theme.colors.darkWhite,
+  fontFamily: theme.fonts.fontFamily,
+  fontSize: 20,
+  textDecoration: "none",
+  cursor: disabled ? "default" : "pointer"
+}));
 
 const Login = ({ login, auth, location }) => {
   useEffect(() => {
@@ -17,13 +42,17 @@ const Login = ({ login, auth, location }) => {
       <Redirect to={pathOr("/", ["state", "from", "pathname"], location)} />
     );
 
+  const isLoading = auth.loading || auth.isCheckingAuth;
+
   return (
     <div>
-      {auth.loading && <p>loading...</p>}
-      {auth.isCheckingAuth && <p>checking auth</p>}
-      {!auth.loading && !auth.isCheckingAuth && (
-        <a href={getAuthorizeUrl()}>Login on BullHorn</a>
-      )}
+      <Welcome>Welcome to Movify Kanban Board !</Welcome>
+      <a href={getAuthorizeUrl()}>
+        <Button disabled={isLoading}>
+          Sign in with Bullhorn
+          {isLoading && <Loader style={{ marginLeft: 16 }} />}
+        </Button>
+      </a>
     </div>
   );
 };
