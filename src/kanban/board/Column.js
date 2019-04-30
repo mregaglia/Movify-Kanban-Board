@@ -21,6 +21,7 @@ const Container = styled.div({
 const Content = styled.div(({ snapshot, theme }) => ({
   display: "flex",
   flexDirection: "column",
+  width: "80%",
   flexGrow: 1,
   padding: 8,
   margin: 4,
@@ -33,7 +34,9 @@ const Title = styled.div(({ theme }) => ({
   fontSize: 16,
   textAlign: "center",
   paddingTop: 4,
-  paddingBottom: 8
+  paddingBottom: 8,
+  textOverflow: "ellipsis",
+  overflow: "hidden"
 }));
 
 const Column = ({ columnId, jobSubmissions, status }) => {

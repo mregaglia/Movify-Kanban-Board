@@ -24,8 +24,7 @@ const Text = styled.div(({ theme }) => ({
   fontFamily: theme.fonts.fontFamily,
   fontSize: 14,
   textOverflow: "ellipsis",
-  overflow: "hidden",
-  whiteSpace: "no-wrap"
+  overflow: "hidden"
 }));
 
 const CandidateCard = ({ index, jobSubmissionId, jobSubmission }) => (
