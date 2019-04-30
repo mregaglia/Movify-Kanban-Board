@@ -1,8 +1,10 @@
 export default {
   colors: {
+    transparentRed: "rgba(243, 77, 61, 0.2)",
     lightRed: "#f78f85",
     red: "#f34d3d",
     grey: "#DCDCDC",
+    transparentGrey: "rgba(255,255,255, 0.4)",
     lightGrey: "#F2F2F2",
     darkWhite: "#FDFDFD"
   },
