@@ -4,7 +4,8 @@ import { func } from "prop-types";
 import { ThemeProvider } from "styled-components";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
+import Modal from "react-modal";
 import { getToken, getBaseUrl } from "./utils/storage";
 import { setToken, setBaseUrl } from "./utils/api";
 import theme from "./style/theme";
@@ -16,6 +17,8 @@ import { checkAuth } from "./auth/auth.actions";
 
 class App extends Component {
   componentDidMount() {
+    Modal.setAppElement("body");
+
     const token = getToken();
     const baseUrl = getBaseUrl();
     if (token) setToken(token);
