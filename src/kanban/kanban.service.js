@@ -35,3 +35,8 @@ export const updateJobSubmissionStatus = (jobSubmissionId, status) =>
 
 export const createJobSubmission = jobSubmission =>
   put("entity/JobSubmission", jobSubmission);
+
+export const getJobSubmission = jobSubmissionId =>
+  get(`entity/JobSubmission/${jobSubmissionId}`, {
+    fields: "id,candidate,jobOrder,owners,sendingUser,status"
+  });
