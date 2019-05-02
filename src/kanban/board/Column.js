@@ -12,6 +12,7 @@ const getBackgroundColor = (snapshot, theme) => {
 
 const Container = styled.div({
   display: "flex",
+  flexDirection: "column",
   flexGrow: 1,
   width: "16.6%",
   minWidth: "16.6%",
@@ -34,7 +35,7 @@ const Title = styled.div(({ theme }) => ({
   fontSize: 16,
   textAlign: "center",
   paddingTop: 4,
-  paddingBottom: 8,
+  paddingBottom: 4,
   textOverflow: "ellipsis",
   overflow: "hidden"
 }));
@@ -42,6 +43,7 @@ const Title = styled.div(({ theme }) => ({
 const Column = ({ columnId, jobSubmissions, status }) => {
   return (
     <Container>
+      <Title>{status}</Title>
       <Droppable droppableId={columnId}>
         {(provided, snapshot) => (
           <Content snapshot={snapshot}>
@@ -50,7 +52,6 @@ const Column = ({ columnId, jobSubmissions, status }) => {
               {...provided.droppableProps}
               style={{ minHeight: 150, height: "100%" }}
             >
-              <Title>{status}</Title>
               <Candidates jobSubmissions={jobSubmissions} />
               {provided.placeholder}
             </div>

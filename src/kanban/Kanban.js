@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { path, pathOr, prop, propOr } from "ramda";
 import { bool, func, object } from "prop-types";
@@ -8,6 +8,7 @@ import theme from "../style/theme";
 import { getColumnData, isFromSameBoard } from "../utils/kanban";
 import { getKanban, updateJobSubmission } from "./kanban.actions";
 import Bm from "./Bm";
+import ConfirmationModal from "./board/ConfirmationModal";
 
 const Container = styled.div({
   paddingLeft: 25,
@@ -44,6 +45,9 @@ const Title = styled(Text)({
 const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
 
 const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(undefined);
+
   useEffect(() => {
     getKanban();
   }, []);
@@ -53,12 +57,19 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
     const jobSubmissionId = prop("draggableId", result);
     const src = getColumnData(path(["source", "droppableId"], result));
     const dest = getColumnData(path(["destination", "droppableId"], result));
+    const srcStatus = prop("status", src);
+    const destStatus = prop("status", dest);
+    const jobOrderId = prop("jobOrderId", src);
     if (isFromSameBoard(src, dest) && src.status !== dest.status) {
-      const srcStatus = prop("status", src);
-      const destStatus = prop("status", dest);
-      const jobOrderId = prop("jobOrderId", src);
       updateJobSubmission(jobOrderId, srcStatus, jobSubmissionId, destStatus);
+    } else if (!isFromSameBoard(src, dest)) {
+      setIsModalOpen(true);
+      setModalData({ jobOrderId, jobSubmissionId, src, dest });
     }
+  };
+
+  const onCloseModal = () => {
+    setIsModalOpen(false);
   };
 
   if (loading)
@@ -70,6 +81,11 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
 
   return (
     <Container>
+      <ConfirmationModal
+        data={modalData}
+        isOpen={isModalOpen}
+        onClose={onCloseModal}
+      />
       <Title>Kanban Board</Title>
       <DragDropContext onDragEnd={onDnd}>
         {Object.keys(bms).map((bmId, index) => (

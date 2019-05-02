@@ -3,9 +3,11 @@ export default {
     transparentRed: "rgba(243, 77, 61, 0.2)",
     lightRed: "#f78f85",
     red: "#f34d3d",
+    mediumGrey: "#B0B0B0",
     grey: "#DCDCDC",
     transparentGrey: "rgba(255,255,255, 0.4)",
     lightGrey: "#F2F2F2",
+    backgroundShadow: "rgba(0,0,0, 0.4)",
     darkWhite: "#FDFDFD"
   },
   fonts: {
