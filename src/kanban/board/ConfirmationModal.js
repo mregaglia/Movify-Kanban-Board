@@ -9,7 +9,7 @@ import { createJobSubmission } from "../kanban.actions";
 
 const Title = styled.div(({ theme }) => ({
   fontFamily: theme.fonts.fontFamily,
-  fontSize: 18,
+  fontSize: theme.textDimensions.large,
   textAlign: "justify",
   marginTop: 4,
   marginBottom: 16
@@ -17,7 +17,7 @@ const Title = styled.div(({ theme }) => ({
 
 const Text = styled.div(({ theme }) => ({
   fontFamily: theme.fonts.fontFamily,
-  fontSize: 14,
+  fontSize: theme.textDimensions.regular,
   textAlign: "justify",
   marginTop: 8,
   marginBottom: 24
@@ -31,7 +31,7 @@ const Row = styled.div({
 
 const Button = styled.div(({ positive, theme }) => ({
   fontFamily: theme.fonts.fontFamily,
-  fontSize: 16,
+  fontSize: theme.textDimension.medium,
   color: positive ? theme.colors.red : theme.colors.mediumGrey,
   cursor: "pointer",
   padding: 4,

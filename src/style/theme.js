@@ -16,6 +16,14 @@ export default {
   dimensions: {
     borderRadius: 6
   },
+  textDimensions: {
+    regular: 14,
+    medium: 16,
+    large: 18,
+    xlarge: 20,
+    bigTitle: 32,
+    big: 36
+  },
   bmColors: [
     "#FF5757",
     "#FFBF53",

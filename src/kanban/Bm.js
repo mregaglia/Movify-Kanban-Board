@@ -1,23 +1,29 @@
 import React from "react";
 import { pathOr, prop, propOr } from "ramda";
 import { object, string } from "prop-types";
-import { Column, Row, Text } from "./Kanban";
+import styled from "styled-components";
+import { Column, Row } from "./Kanban";
 import ClientCorporation from "./ClientCorporation";
+
+export const Text = styled.div(({ color, theme }) => ({
+  display: "inline-block",
+  width: "50px",
+  backgroundColor: color,
+  fontFamily: theme.fonts.fontFamily,
+  fontSize: theme.textDimensions.medium,
+  textAlign: "center",
+  padding: 12,
+  textOverflow: "ellipsis",
+  overflow: "hidden",
+  borderTopLeftRadius: 4,
+  borderBottomLeftRadius: 4,
+  borderBottomRightRadius: 4,
+  paddingLeft: 4
+}));
 
 const Bm = ({ bm, color }) => (
   <Row style={{ marginBottom: 6 }}>
-    <Text
-      style={{
-        borderTopLeftRadius: 4,
-        borderBottomLeftRadius: 4,
-        borderBottomRightRadius: 4,
-        width: "50px",
-        backgroundColor: color,
-        textAlign: "center",
-        fontSize: 16,
-        paddingLeft: 4
-      }}
-    >
+    <Text color={color}>
       {`${pathOr("", ["firstName", "0"], bm)}${pathOr(
         "",
         ["lastName", "0"],

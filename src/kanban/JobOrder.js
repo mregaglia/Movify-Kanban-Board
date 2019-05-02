@@ -15,7 +15,7 @@ const Column = styled.div({
 const JobOrder = ({ jobOrder }) => (
   <Row>
     <Column>
-      <Text>{propOr("", "title", jobOrder)}</Text>
+      <Text style={{ marginTop: 4 }}>{propOr("", "title", jobOrder)}</Text>
       <Text>
         {`${pathOr("", ["clientContact", "firstName"], jobOrder)} ${pathOr(
           "",

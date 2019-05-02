@@ -32,7 +32,7 @@ const Content = styled.div(({ snapshot, theme }) => ({
 
 const Title = styled.div(({ theme }) => ({
   fontFamily: theme.fonts.fontFamily,
-  fontSize: 16,
+  fontSize: theme.textDimensions.medium,
   textAlign: "center",
   paddingTop: 4,
   paddingBottom: 4,

@@ -31,16 +31,16 @@ export const Column = styled.div({
 export const Text = styled.div(({ theme }) => ({
   display: "inline-block",
   fontFamily: theme.fonts.fontFamily,
-  fontSize: 14,
+  fontSize: theme.textDimensions.regular,
   padding: 12,
   textOverflow: "ellipsis",
   overflow: "hidden"
 }));
 
-const Title = styled(Text)({
-  fontSize: 32,
+const Title = styled(Text)(({ theme }) => ({
+  fontSize: theme.textDimensions.bigTitle,
   marginBottom: 20
-});
+}));
 
 const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
 

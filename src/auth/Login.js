@@ -14,7 +14,7 @@ const Welcome = styled.div(({ theme }) => ({
   marginLeft: "10%",
   color: theme.colors.red,
   fontFamily: theme.fonts.fontFamily,
-  fontSize: 36
+  fontSize: theme.textDimensions.big
 }));
 
 const Button = styled.button(({ disabled, theme }) => ({
@@ -26,7 +26,7 @@ const Button = styled.button(({ disabled, theme }) => ({
   backgroundColor: disabled ? theme.colors.lightRed : theme.colors.red,
   color: theme.colors.darkWhite,
   fontFamily: theme.fonts.fontFamily,
-  fontSize: 20,
+  fontSize: theme.textDimensions.xlarge,
   textDecoration: "none",
   cursor: disabled ? "default" : "pointer"
 }));

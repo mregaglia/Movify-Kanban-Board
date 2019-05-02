@@ -22,7 +22,7 @@ const Container = styled.div(({ theme }) => ({
 const Text = styled.div(({ theme }) => ({
   display: "inline-block",
   fontFamily: theme.fonts.fontFamily,
-  fontSize: 14,
+  fontSize: theme.textDimensions.regular,
   textOverflow: "ellipsis",
   overflow: "hidden"
 }));
