@@ -1,4 +1,4 @@
-import { get, post } from "../utils/api";
+import { get, post, put } from "../utils/api";
 import { getFilterStatusRequest } from "../utils/kanban";
 
 export const getBusinessManagers = () =>
@@ -32,3 +32,6 @@ export const getJobSubmissions = jobOrderId =>
 
 export const updateJobSubmissionStatus = (jobSubmissionId, status) =>
   post(`entity/JobSubmission/${jobSubmissionId}`, { status });
+
+export const createJobSubmission = jobSubmission =>
+  put("entity/JobSubmission", jobSubmission);
