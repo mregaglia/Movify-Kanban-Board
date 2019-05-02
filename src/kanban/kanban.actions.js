@@ -6,6 +6,7 @@ export const SET_JOB_ORDERS = "SET_JOB_ORDERS";
 export const GET_JOB_SUBMISSIONS = "GET_JOB_SUBMISSIONS";
 export const SET_JOB_SUBMISSIONS = "SET_JOB_SUBMISSIONS";
 export const UPDATE_JOB_SUBMISSION = "UPDATE_JOB_SUBMISSION";
+export const CREATE_JOB_SUBMISSION = "CREATE_JOB_SUBMISSION";
 
 export const getKanban = () => ({ type: GET_KANBAN });
 
@@ -47,4 +48,9 @@ export const updateJobSubmission = (
     jobSubmissionId,
     status
   }
+});
+
+export const createJobSubmission = (jobOrder, jobSubmission, status) => ({
+  type: CREATE_JOB_SUBMISSION,
+  payload: { jobOrder, jobSubmission, status }
 });
