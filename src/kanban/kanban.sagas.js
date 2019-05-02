@@ -34,7 +34,8 @@ import {
   getJobOrders as getJobOrdersService,
   getJobSubmissions as getJobSubmissionsService,
   updateJobSubmissionStatus as updateJobSubmissionStatusService,
-  createJobSubmission as createJobSubmissionService
+  createJobSubmission as createJobSubmissionService,
+  getJobSubmission
 } from "./kanban.service";
 
 export const getKanban = state => pathOr([], ["kanban", "kanban"], state);
@@ -300,15 +301,17 @@ export function* createJobSubmission(action) {
       status
     };
 
-    // const jobSubmissionResponse = yield call(createJobSubmissionService, js);
-    // const jobSubmission = {
-    //   ...propOr({}, "data", jobSubmissionResponse),
-    //   bmId: prop("bmId", jobOrder),
-    //   clientCorporationId: prop("clientCorporationId", jobOrder),
-    //   jobOrderId: prop("id", jobOrder)
-    // };
-    // toast.success("The job submission was correctly created.");
-    // yield addJobSubmission(jobSubmission);
+    const putJobSubmissionResponse = yield call(createJobSubmissionService, js);
+    const createdId = prop("changedEntityId", putJobSubmissionResponse);
+    const jobSubmissionResponse = yield call(getJobSubmission, createdId);
+    const newJobSubmission = {
+      ...propOr({}, "data", jobSubmissionResponse),
+      bmId: prop("bmId", jobOrder),
+      clientCorporationId: prop("clientCorporationId", jobOrder),
+      jobOrderId: prop("id", jobOrder)
+    };
+    yield addJobSubmission(newJobSubmission);
+    toast.success("The job submission was correctly created.");
   } catch (e) {
     yield removeTempJobSubmission(prop("id", tempJs));
     toast.error(
@@ -326,7 +329,7 @@ function* addJobSubmission(jobSubmission) {
     [jobSubmissionId]: jobSubmission
   };
 
-  if (!jobSubmissionId.includes("temp"))
+  if (!jobSubmissionId.toString().includes("temp"))
     jobSubmissions = dissoc(tempId, jobSubmissions);
 
   yield put(setJobSubmissions(jobSubmissions));
