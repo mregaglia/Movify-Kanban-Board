@@ -60,11 +60,16 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
     const srcStatus = prop("status", src);
     const destStatus = prop("status", dest);
     const jobOrderId = prop("jobOrderId", src);
+    const destJobOrderId = prop("jobOrderId", dest);
     if (isFromSameBoard(src, dest) && src.status !== dest.status) {
       updateJobSubmission(jobOrderId, srcStatus, jobSubmissionId, destStatus);
     } else if (!isFromSameBoard(src, dest)) {
       setIsModalOpen(true);
-      setModalData({ jobOrderId, jobSubmissionId, src, dest });
+      setModalData({
+        jobOrderId: destJobOrderId,
+        jobSubmissionId,
+        status: destStatus
+      });
     }
   };
 

@@ -1,10 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
-import { path, pathOr, prop, propOr } from "ramda";
+import { pathOr, prop, propOr } from "ramda";
 import { bool, func, object } from "prop-types";
 import Modal from "react-modal";
 import styled from "styled-components";
 import theme from "../../style/theme";
+import { createJobSubmission } from "../kanban.actions";
 
 const Title = styled.div(({ theme }) => ({
   fontFamily: theme.fonts.fontFamily,
@@ -55,8 +56,16 @@ const customStyles = {
   }
 };
 
-const ConfirmationModal = ({ isOpen, jobOrder, jobSubmission, onClose }) => {
+const ConfirmationModal = ({
+  createJobSubmission,
+  data,
+  isOpen,
+  jobOrder,
+  jobSubmission,
+  onClose
+}) => {
   const onConfirm = () => {
+    createJobSubmission(jobOrder, jobSubmission, prop(["status"], data));
     onClose();
   };
 
@@ -89,6 +98,7 @@ const ConfirmationModal = ({ isOpen, jobOrder, jobSubmission, onClose }) => {
 };
 
 ConfirmationModal.propTypes = {
+  createJobSubmission: func,
   isOpen: bool,
   jobOrder: object,
   jobSubmission: object,
@@ -101,15 +111,18 @@ ConfirmationModal.defaultProps = {
   onClose: () => null
 };
 
-export default connect((state, { data }) => ({
-  jobOrder: pathOr(
-    {},
-    ["kanban", "jobOrders", path(["dest", "jobOrderId"], data)],
-    state
-  ),
-  jobSubmission: pathOr(
-    {},
-    ["kanban", "jobSubmissions", prop("jobSubmissionId", data)],
-    state
-  )
-}))(ConfirmationModal);
+export default connect(
+  (state, { data }) => ({
+    jobOrder: pathOr(
+      {},
+      ["kanban", "jobOrders", prop(["jobOrderId"], data)],
+      state
+    ),
+    jobSubmission: pathOr(
+      {},
+      ["kanban", "jobSubmissions", prop("jobSubmissionId", data)],
+      state
+    )
+  }),
+  { createJobSubmission }
+)(ConfirmationModal);
