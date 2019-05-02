@@ -70,5 +70,13 @@ export const post = (url, body = {}, queryParams: {}) => {
   });
 };
 
+export const put = (url, body = {}, queryParams: {}) => {
+  const params = formatQueryParams({ ...getToken(), ...queryParams });
+  return request(url + params, {
+    method: "PUT",
+    body: JSON.stringify(body)
+  });
+};
+
 const request = (url, requestParams = {}) =>
   fetch(getBaseUrl() + url, requestParams).then(handleError);
