@@ -6,15 +6,7 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import {
-  concat,
-  dissoc,
-  mergeDeepWith,
-  path,
-  pathOr,
-  prop,
-  propOr
-} from "ramda";
+import { dissoc, path, pathOr, prop, propOr } from "ramda";
 import { toast } from "react-toastify";
 import {
   GET_KANBAN,
@@ -23,11 +15,14 @@ import {
   UPDATE_JOB_SUBMISSION,
   CREATE_JOB_SUBMISSION,
   setBms,
-  setClientCorporations,
+  updateBms,
+  updateClientCorporations,
   getJobOrders as getJobOrdersAction,
   setJobOrders,
+  updateJobOrders,
   getJobSubmissions as getJobSubmissionsAction,
-  setJobSubmissions
+  setJobSubmissions,
+  updateJobSubmissions
 } from "./kanban.actions";
 import {
   getBusinessManagers,
@@ -95,14 +90,8 @@ function* getClientCorporations(bmId, jobOrders) {
     }, {})
   );
 
-  const stateClientCorporations = yield select(getStateClientCorporations);
-  yield put(
-    setClientCorporations(
-      mergeDeepWith(concat, stateClientCorporations, clientCorporations)
-    )
-  );
-  const stateBms = yield select(getStateBms);
-  yield put(setBms(mergeDeepWith(concat, stateBms, bms)));
+  yield put(updateClientCorporations(clientCorporations));
+  yield put(updateBms(bms));
 }
 
 export function* getJobOrders(action) {
@@ -140,14 +129,8 @@ export function* getJobOrders(action) {
       }, {})
     );
 
-    const stateJobOrders = yield select(getStateJobOrders);
-    yield put(setJobOrders(mergeDeepWith(concat, stateJobOrders, jobOrders)));
-    const stateClientCorporations = yield select(getStateClientCorporations);
-    yield put(
-      setClientCorporations(
-        mergeDeepWith(concat, stateClientCorporations, clientCorporations)
-      )
-    );
+    yield put(updateJobOrders(jobOrders));
+    yield put(updateClientCorporations(clientCorporations));
 
     yield all(
       jobOrderList.map(jobOrder =>
@@ -185,6 +168,7 @@ export function* getJobSubmissions(action) {
         ).concat([js.id]);
         jobOrders[jobOrderId] = {
           jobSubmissions: {
+            ...pathOr({}, [jobOrderId, "jobSubmissions"], jobOrders),
             [js.status]: jojss
           }
         };
@@ -200,14 +184,8 @@ export function* getJobSubmissions(action) {
       }, {})
     );
 
-    const stateJobSubmissions = yield select(getStateJobSubmissions);
-    yield put(
-      setJobSubmissions(
-        mergeDeepWith(concat, stateJobSubmissions, jobSubmissions)
-      )
-    );
-    const stateJobOrders = yield select(getStateJobOrders);
-    yield put(setJobOrders(mergeDeepWith(concat, stateJobOrders, jobOrders)));
+    yield put(updateJobSubmissions(jobSubmissions));
+    yield put(updateJobOrders(jobOrders));
   } catch (e) {
     //
   }

@@ -1,10 +1,14 @@
+import { concat, mergeDeepWith } from "ramda";
 import { bindReducer } from "../utils/reducer";
 import {
   GET_KANBAN,
   SET_BMS,
-  SET_CLIENT_CORPORATIONS,
+  UPDATE_BMS,
+  UPDATE_CLIENT_CORPORATIONS,
   SET_JOB_ORDERS,
-  SET_JOB_SUBMISSIONS
+  UPDATE_JOB_ORDERS,
+  SET_JOB_SUBMISSIONS,
+  UPDATE_JOB_SUBMISSIONS
 } from "./kanban.actions";
 
 export const initialState = {
@@ -24,18 +28,31 @@ const kanban = {
     ...state,
     bms: payload
   }),
-  [SET_CLIENT_CORPORATIONS]: (state, payload) => ({
+  [UPDATE_BMS]: (state, payload) => ({
     ...state,
-    clientCorporations: payload
+    bms: mergeDeepWith(concat, state.bms, payload)
+  }),
+  [UPDATE_CLIENT_CORPORATIONS]: (state, payload) => ({
+    ...state,
+    clientCorporations: mergeDeepWith(concat, state.clientCorporations, payload)
   }),
   [SET_JOB_ORDERS]: (state, payload) => ({
     ...state,
     jobOrders: payload
   }),
+  [UPDATE_JOB_ORDERS]: (state, payload) => ({
+    ...state,
+    jobOrders: mergeDeepWith(concat, state.jobOrders, payload)
+  }),
   [SET_JOB_SUBMISSIONS]: (state, payload) => ({
     ...state,
     loading: false,
     jobSubmissions: payload
+  }),
+  [UPDATE_JOB_SUBMISSIONS]: (state, payload) => ({
+    ...state,
+    loading: false,
+    jobSubmissions: mergeDeepWith(concat, state.jobSubmissions, payload)
   })
 };
 
