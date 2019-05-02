@@ -322,7 +322,7 @@ export function* createJobSubmission(action) {
 
 function* addJobSubmission(jobSubmission) {
   const jobSubmissionId = propOr("", "id", jobSubmission);
-  const tempId = createTempId(prop("jobOrder", jobSubmission, jobSubmission));
+  const tempId = createTempId(prop("jobOrder", jobSubmission), jobSubmission);
   const stateJobSubmissions = yield select(getStateJobSubmissions);
   var jobSubmissions = {
     ...stateJobSubmissions,
