@@ -6,13 +6,22 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import { concat, mergeDeepWith, path, pathOr, prop, propOr } from "ramda";
+import {
+  concat,
+  dissoc,
+  mergeDeepWith,
+  path,
+  pathOr,
+  prop,
+  propOr
+} from "ramda";
 import { toast } from "react-toastify";
 import {
   GET_KANBAN,
   GET_JOB_ORDERS,
   GET_JOB_SUBMISSIONS,
   UPDATE_JOB_SUBMISSION,
+  CREATE_JOB_SUBMISSION,
   setBms,
   setClientCorporations,
   getJobOrders as getJobOrdersAction,
@@ -24,7 +33,8 @@ import {
   getBusinessManagers,
   getJobOrders as getJobOrdersService,
   getJobSubmissions as getJobSubmissionsService,
-  updateJobSubmissionStatus as updateJobSubmissionStatusService
+  updateJobSubmissionStatus as updateJobSubmissionStatusService,
+  createJobSubmission as createJobSubmissionService
 } from "./kanban.service";
 
 export const getKanban = state => pathOr([], ["kanban", "kanban"], state);
@@ -261,11 +271,119 @@ function* updateJobSubmissionStatus(action) {
   yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
 }
 
+const createTempId = (jobOrder, jobSubmission) =>
+  `temp${prop("id", jobOrder)}${path(["candidate", "id"], jobSubmission)}`;
+
+export function* createJobSubmission(action) {
+  const {
+    payload: { jobOrder, jobSubmission, status }
+  } = action;
+
+  const tempJs = {
+    id: createTempId(jobOrder, jobSubmission),
+    candidate: prop("candidate", jobSubmission),
+    jobOrder,
+    sendingUser: { id: prop("bmId", jobOrder) },
+    status,
+    bmId: prop("bmId", jobOrder),
+    clientCorporationId: prop("clientCorporationId", jobOrder),
+    jobOrderId: prop("id", jobOrder)
+  };
+
+  try {
+    yield addJobSubmission(tempJs);
+
+    const js = {
+      candidate: { id: path(["candidate", "id"], jobSubmission) },
+      jobOrder: { id: prop("id", jobOrder) },
+      sendingUser: { id: prop("bmId", jobOrder) },
+      status
+    };
+
+    // const jobSubmissionResponse = yield call(createJobSubmissionService, js);
+    // const jobSubmission = {
+    //   ...propOr({}, "data", jobSubmissionResponse),
+    //   bmId: prop("bmId", jobOrder),
+    //   clientCorporationId: prop("clientCorporationId", jobOrder),
+    //   jobOrderId: prop("id", jobOrder)
+    // };
+    // toast.success("The job submission was correctly created.");
+    // yield addJobSubmission(jobSubmission);
+  } catch (e) {
+    yield removeTempJobSubmission(prop("id", tempJs));
+    toast.error(
+      "There was an issue with the creation. Please retry again later."
+    );
+  }
+}
+
+function* addJobSubmission(jobSubmission) {
+  const jobSubmissionId = propOr("", "id", jobSubmission);
+  const tempId = createTempId(prop("jobOrder", jobSubmission, jobSubmission));
+  const stateJobSubmissions = yield select(getStateJobSubmissions);
+  var jobSubmissions = {
+    ...stateJobSubmissions,
+    [jobSubmissionId]: jobSubmission
+  };
+
+  if (!jobSubmissionId.includes("temp"))
+    jobSubmissions = dissoc(tempId, jobSubmissions);
+
+  yield put(setJobSubmissions(jobSubmissions));
+
+  const jobOrderId = path(["jobOrder", "id"], jobSubmission);
+  const stateJobOrder = yield select(getStateJobOrder, jobOrderId);
+  const status = prop("status", jobSubmission);
+  const jojss = {
+    ...prop("jobSubmissions", stateJobOrder),
+    [status]: pathOr([], ["jobSubmissions", status], stateJobOrder)
+      .filter(joId => joId !== tempId)
+      .concat([jobSubmissionId])
+  };
+  const jobOrder = {
+    [jobOrderId]: {
+      ...stateJobOrder,
+      jobSubmissions: jojss
+    }
+  };
+
+  const stateJobOrders = yield select(getStateJobOrders);
+  yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
+}
+
+function* removeTempJobSubmission(jobSubmission) {
+  const jobSubmissionId = prop("id", jobSubmission);
+  const stateJobSubmissions = yield select(getStateJobSubmissions);
+  const jobSubmissions = dissoc(jobSubmissionId, stateJobSubmissions);
+
+  yield put(setJobSubmissions(jobSubmissions));
+
+  const jobOrderId = path(["jobOrder", "id"], jobSubmission);
+  const stateJobOrder = yield select(getStateJobOrder, jobOrderId);
+  const status = prop("status", jobSubmission);
+  const jojss = {
+    ...prop("jobSubmissions", stateJobOrder),
+    [status]: pathOr([], ["jobSubmissions", status], stateJobOrder).filter(
+      jsId => jsId !== jobSubmissionId
+    )
+  };
+  const jobOrder = {
+    [jobOrderId]: {
+      ...stateJobOrder,
+      jobSubmissions: jojss
+    }
+  };
+
+  const stateJobOrders = yield select(getStateJobOrders);
+  yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
+}
+
 export default function kanbanSagas() {
   return [
     takeLatest(GET_KANBAN, getKanbanBoard),
     takeEvery(GET_JOB_ORDERS, getJobOrders),
     takeEvery(GET_JOB_SUBMISSIONS, getJobSubmissions),
-    takeEvery(UPDATE_JOB_SUBMISSION, updateJobSubmission)
+    takeEvery(UPDATE_JOB_SUBMISSION, updateJobSubmission),
+    takeEvery(CREATE_JOB_SUBMISSION, createJobSubmission)
   ];
 }

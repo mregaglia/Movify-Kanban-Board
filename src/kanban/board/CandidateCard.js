@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
-import { number, object } from "prop-types";
+import { number, object, oneOfType, string } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 
@@ -47,7 +47,7 @@ const CandidateCard = ({ index, jobSubmissionId, jobSubmission }) => (
 CandidateCard.propTypes = {
   candidate: object,
   index: number,
-  jobSubmissionId: number,
+  jobSubmissionId: oneOfType([number, string]),
   jobSubmission: object
 };
 
