@@ -1,4 +1,4 @@
-import { concat, mergeDeepWith } from "ramda";
+import { is, mergeDeepWith, union } from "ramda";
 import { bindReducer } from "../utils/reducer";
 import {
   GET_KANBAN,
@@ -9,6 +9,8 @@ import {
   SET_JOB_SUBMISSIONS,
   UPDATE_JOB_SUBMISSIONS
 } from "./kanban.actions";
+
+const unionArrays = (l, r) => (is(Array, l) && is(Array, r) ? union(l, r) : r);
 
 export const initialState = {
   loading: false,
@@ -25,11 +27,15 @@ const kanban = {
   }),
   [UPDATE_BMS]: (state, payload) => ({
     ...state,
-    bms: mergeDeepWith(concat, state.bms, payload)
+    bms: mergeDeepWith(unionArrays, state.bms, payload)
   }),
   [UPDATE_CLIENT_CORPORATIONS]: (state, payload) => ({
     ...state,
-    clientCorporations: mergeDeepWith(concat, state.clientCorporations, payload)
+    clientCorporations: mergeDeepWith(
+      unionArrays,
+      state.clientCorporations,
+      payload
+    )
   }),
   [SET_JOB_ORDERS]: (state, payload) => ({
     ...state,
@@ -37,7 +43,7 @@ const kanban = {
   }),
   [UPDATE_JOB_ORDERS]: (state, payload) => ({
     ...state,
-    jobOrders: mergeDeepWith(concat, state.jobOrders, payload)
+    jobOrders: mergeDeepWith(unionArrays, state.jobOrders, payload)
   }),
   [SET_JOB_SUBMISSIONS]: (state, payload) => ({
     ...state,
@@ -47,7 +53,7 @@ const kanban = {
   [UPDATE_JOB_SUBMISSIONS]: (state, payload) => ({
     ...state,
     loading: false,
-    jobSubmissions: mergeDeepWith(concat, state.jobSubmissions, payload)
+    jobSubmissions: mergeDeepWith(unionArrays, state.jobSubmissions, payload)
   })
 };
 
