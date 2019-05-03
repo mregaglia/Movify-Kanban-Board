@@ -33,10 +33,6 @@ import {
   getJobSubmission
 } from "./kanban.service";
 
-export const getKanban = state => pathOr([], ["kanban", "kanban"], state);
-export const getStateBms = state => pathOr([], ["kanban", "bms"], state);
-export const getStateClientCorporations = state =>
-  pathOr([], ["kanban", "clientCorporations"], state);
 export const getStateJobOrder = (state, joId) =>
   pathOr({}, ["kanban", "jobOrders", joId], state);
 export const getStateJobOrders = state =>
