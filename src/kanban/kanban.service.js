@@ -1,17 +1,19 @@
 import { get, post, put } from "../utils/api";
 import { getFilterStatusRequest } from "../utils/kanban";
 
-export const getBusinessManagers = () =>
+export const getBusinessManagers = (start = 0) =>
   get("query/CorporateUser", {
     fields: "id,firstName,lastName,occupation",
-    where: "occupation='Business Manager'"
+    where: "occupation='Business Manager'",
+    start
   });
 
-export const getJobOrders = bmId =>
+export const getJobOrders = (bmId, start = 0) =>
   post(
     "search/JobOrder",
     {
-      query: `owner.id:${bmId} AND (status:Open OR status:"Accepting Candidates")`
+      query: `owner.id:${bmId} AND (status:Open OR status:"Accepting Candidates")`,
+      start
     },
     {
       fields: "id,clientContact,clientCorporation,isOpen,owner,status,title",
@@ -19,11 +21,12 @@ export const getJobOrders = bmId =>
     }
   );
 
-export const getJobSubmissions = jobOrderId =>
+export const getJobSubmissions = (jobOrderId, start = 0) =>
   post(
     "search/JobSubmission",
     {
-      query: `jobOrder.id:${jobOrderId} AND (${getFilterStatusRequest()})`
+      query: `jobOrder.id:${jobOrderId} AND (${getFilterStatusRequest()})`,
+      start
     },
     {
       fields: "id,candidate,jobOrder,owners,sendingUser,status"
