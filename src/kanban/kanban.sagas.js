@@ -158,7 +158,7 @@ export function* getJobOrders(action, start = 0) {
   }
 }
 
-export function* getJobSubmissions(action) {
+export function* getJobSubmissions(action, start = 0) {
   const {
     payload: { bmId, clientCorporationId, jobOrderId }
   } = action;
@@ -166,7 +166,8 @@ export function* getJobSubmissions(action) {
     const jobOrders = {};
     const jobSubmissionsResponse = yield call(
       getJobSubmissionsService,
-      jobOrderId
+      jobOrderId,
+      start
     );
 
     const jobSubmissions = yield all(
@@ -196,6 +197,12 @@ export function* getJobSubmissions(action) {
 
     yield put(updateJobSubmissions(jobSubmissions));
     yield put(updateJobOrders(jobOrders));
+
+    const newStart =
+      propOr(0, "start", jobSubmissionsResponse) +
+      propOr(0, "count", jobSubmissionsResponse);
+    if (newStart < propOr(0, "total", jobSubmissionsResponse))
+      yield getJobOrders(action, newStart);
   } catch (e) {
     //
   }
