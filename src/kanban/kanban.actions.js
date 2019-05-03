@@ -1,5 +1,4 @@
 export const GET_KANBAN = "GET_KANBAN";
-export const SET_BMS = "SET_BMS";
 export const UPDATE_BMS = "UPDATE_BMS";
 export const UPDATE_CLIENT_CORPORATIONS = "UPDATE_CLIENT_CORPORATIONS";
 export const GET_JOB_ORDERS = "GET_JOB_ORDERS";
@@ -13,10 +12,6 @@ export const CREATE_JOB_SUBMISSION = "CREATE_JOB_SUBMISSION";
 
 export const getKanban = () => ({ type: GET_KANBAN });
 
-export const setBms = bms => ({
-  type: SET_BMS,
-  payload: bms
-});
 export const updateBms = bms => ({
   type: UPDATE_BMS,
   payload: bms

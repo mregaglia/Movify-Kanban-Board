@@ -2,7 +2,6 @@ import { concat, mergeDeepWith } from "ramda";
 import { bindReducer } from "../utils/reducer";
 import {
   GET_KANBAN,
-  SET_BMS,
   UPDATE_BMS,
   UPDATE_CLIENT_CORPORATIONS,
   SET_JOB_ORDERS,
@@ -23,10 +22,6 @@ const kanban = {
   [GET_KANBAN]: () => ({
     ...initialState,
     loading: true
-  }),
-  [SET_BMS]: (state, payload) => ({
-    ...state,
-    bms: payload
   }),
   [UPDATE_BMS]: (state, payload) => ({
     ...state,

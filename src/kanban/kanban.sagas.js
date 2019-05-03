@@ -14,7 +14,6 @@ import {
   GET_JOB_SUBMISSIONS,
   UPDATE_JOB_SUBMISSION,
   CREATE_JOB_SUBMISSION,
-  setBms,
   updateBms,
   updateClientCorporations,
   getJobOrders as getJobOrdersAction,
@@ -41,8 +40,12 @@ export const getStateJobSubmissions = state =>
   pathOr([], ["kanban", "jobSubmissions"], state);
 
 export function* getKanbanBoard() {
+  yield getBms();
+}
+
+function* getBms(start = 0) {
   try {
-    const bmsResponse = yield call(getBusinessManagers);
+    const bmsResponse = yield call(getBusinessManagers, start);
     const bmList = yield call(propOr, [], "data", bmsResponse);
     const bms = yield all(
       bmList.reduce(
@@ -50,8 +53,13 @@ export function* getKanbanBoard() {
         {}
       )
     );
-    yield put(setBms(bms));
+    yield put(updateBms(bms));
     yield all(bmList.map(bm => put(getJobOrdersAction(prop("id", bm)))));
+
+    if (propOr(0, "count", bmsResponse) > 0)
+      yield getBms(
+        propOr(0, "start", bmsResponse) + propOr(0, "count", bmsResponse)
+      );
   } catch (e) {
     //
   }
