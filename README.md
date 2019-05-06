@@ -7,9 +7,9 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 The project is split in the front-end and the server part for the front end serving.
 
-You can find the server at the **source** and the app under the **app** folder.
+You can find the server (**server.js**) and the app under the **source**.
 
-> Don't forget to add the **.env** file at app folder and on the server when deploying.
+> Don't forget to add the **.env** file at the source and on the server when deploying.
 
 ### Main dependencies
 
@@ -21,7 +21,6 @@ You can find the server at the **source** and the app under the **app** folder.
 ### Start project locally without server
 
 ```
-cd app
 yarn
 yarn start
 ```
@@ -29,12 +28,9 @@ yarn start
 ### Start project locally with server
 
 ```
-cd app
 yarn
 yarn run build
-cd ..
-yarn
-yarn start
+yarn serve
 ```
 
 ### Deploy
@@ -43,7 +39,7 @@ Start SSH session on OVH server.
 
 Pull changes on git repository.
 
-Update or add **.env** if necessary in **app** folder.
+Update or add **.env** if necessary at the **source**.
 
 Start node scripts. 
 
@@ -51,10 +47,7 @@ Start node scripts.
 
 ```
 git pull
-cd app
 yarn
 yarn run build
-cd ..
-yarn
 forever start server.js
 ```
