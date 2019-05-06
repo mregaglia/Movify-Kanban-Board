@@ -47,7 +47,7 @@ Start node scripts.
 
 ```
 git pull
-yarn
-yarn run build
+npm
+npm run build
 forever start server.js
 ```
