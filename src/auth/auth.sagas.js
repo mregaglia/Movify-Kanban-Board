@@ -28,13 +28,13 @@ export function* login(action) {
   const code = prop("payload", action);
   try {
     const accessTokenResponse = yield call(getAccessToken, code);
-    yield loginWithToken(accessTokenResponse);
+    yield call(loginWithToken, accessTokenResponse);
   } catch (e) {
     yield put(loginFail());
   }
 }
 
-function* loginWithToken(tokenResponse) {
+export function* loginWithToken(tokenResponse) {
   if (prop("refresh_token", tokenResponse))
     yield call(setRefreshToken, prop("refresh_token", tokenResponse));
 
@@ -54,7 +54,7 @@ function* loginWithToken(tokenResponse) {
   }
 }
 
-const getAuthenticatedState = state =>
+export const getAuthenticatedState = state =>
   pathOr(false, ["auth", "authenticated"], state);
 
 export function* checkAuth() {
@@ -71,7 +71,7 @@ export function* refreshToken() {
     const refresh = yield call(getRefreshToken);
     if (refresh) {
       const refreshTokenResponse = yield call(refreshTokenService, refresh);
-      yield loginWithToken(refreshTokenResponse);
+      yield call(loginWithToken, refreshTokenResponse);
       const authenticated = yield select(getAuthenticatedState);
       yield put(authenticated ? authSuccess() : authFail());
     } else {
