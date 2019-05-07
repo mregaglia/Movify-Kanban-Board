@@ -40,10 +40,10 @@ export const getStateJobSubmissions = state =>
   pathOr([], ["kanban", "jobSubmissions"], state);
 
 export function* getKanbanBoard() {
-  yield getBms();
+  yield call(getBms);
 }
 
-function* getBms(start = 0) {
+export function* getBms(start = 0) {
   try {
     const bmsResponse = yield call(getBusinessManagers, start);
     const bmList = yield call(propOr, [], "data", bmsResponse);
@@ -57,7 +57,8 @@ function* getBms(start = 0) {
     yield all(bmList.map(bm => put(getJobOrdersAction(prop("id", bm)))));
 
     if (propOr(0, "count", bmsResponse) > 0)
-      yield getBms(
+      yield call(
+        getBms,
         propOr(0, "start", bmsResponse) + propOr(0, "count", bmsResponse)
       );
   } catch (e) {
@@ -65,7 +66,7 @@ function* getBms(start = 0) {
   }
 }
 
-function* getClientCorporations(bmId, jobOrders) {
+export function* getClientCorporations(bmId, jobOrders) {
   const bms = {};
   const joClientCorporations = yield all(
     jobOrders.map(jo => prop("clientCorporation", jo))
@@ -104,7 +105,7 @@ export function* getJobOrders(action, start = 0) {
     const jobOrdersResponse = yield call(getJobOrdersService, bmId, start);
     const jobOrderList = yield call(propOr, [], "data", jobOrdersResponse);
 
-    yield getClientCorporations(bmId, jobOrderList);
+    yield call(getClientCorporations, bmId, jobOrderList);
 
     const clientCorporations = {};
 
@@ -152,7 +153,7 @@ export function* getJobOrders(action, start = 0) {
       propOr(0, "start", jobOrdersResponse) +
       propOr(0, "count", jobOrdersResponse);
     if (newStart < propOr(0, "total", jobOrdersResponse))
-      yield getJobOrders(action, newStart);
+      yield call(getJobOrders, action, newStart);
   } catch (e) {
     //
   }
@@ -227,7 +228,7 @@ export function* updateJobSubmission(action) {
   }
 }
 
-function* updateJobSubmissionStatus(action) {
+export function* updateJobSubmissionStatus(action) {
   const {
     payload: { jobOrderId, prevStatus, jobSubmissionId, status }
   } = action;
@@ -267,7 +268,7 @@ function* updateJobSubmissionStatus(action) {
   yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
 }
 
-const createTempId = (jobOrder, jobSubmission) =>
+export const createTempId = (jobOrder, jobSubmission) =>
   `temp${prop("id", jobOrder)}${path(["candidate", "id"], jobSubmission)}`;
 
 export function* createJobSubmission(action) {
@@ -315,7 +316,7 @@ export function* createJobSubmission(action) {
   }
 }
 
-function* addJobSubmission(jobSubmission) {
+export function* addJobSubmission(jobSubmission) {
   const jobSubmissionId = propOr("", "id", jobSubmission);
   const tempId = createTempId(prop("jobOrder", jobSubmission), jobSubmission);
   const stateJobSubmissions = yield select(getStateJobSubmissions);
@@ -349,7 +350,7 @@ function* addJobSubmission(jobSubmission) {
   yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
 }
 
-function* removeTempJobSubmission(jobSubmission) {
+export function* removeTempJobSubmission(jobSubmission) {
   const jobSubmissionId = prop("id", jobSubmission);
   const stateJobSubmissions = yield select(getStateJobSubmissions);
   const jobSubmissions = dissoc(jobSubmissionId, stateJobSubmissions);
