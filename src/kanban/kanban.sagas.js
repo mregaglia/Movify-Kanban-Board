@@ -203,7 +203,7 @@ export function* getJobSubmissions(action, start = 0) {
       propOr(0, "start", jobSubmissionsResponse) +
       propOr(0, "count", jobSubmissionsResponse);
     if (newStart < propOr(0, "total", jobSubmissionsResponse))
-      yield getJobOrders(action, newStart);
+      yield call(getJobSubmissions, action, newStart);
   } catch (e) {
     //
   }
@@ -214,15 +214,19 @@ export function* updateJobSubmission(action) {
     payload: { prevStatus, jobSubmissionId, status }
   } = action;
   try {
-    yield updateJobSubmissionStatus(action);
+    yield call(updateJobSubmissionStatus, action);
     yield call(updateJobSubmissionStatusService, jobSubmissionId, status);
-    toast.success("The job submission status was correctly updated.");
+    yield call(
+      toast.success,
+      "The job submission status was correctly updated."
+    );
   } catch (e) {
-    yield updateJobSubmissionStatus({
+    yield call(updateJobSubmissionStatus, {
       ...action,
       payload: { ...action.payload, status: prevStatus, prevStatus: status }
     });
-    toast.error(
+    yield call(
+      toast.error,
       "There was an issue with the update. Please retry again later."
     );
   }
@@ -288,7 +292,7 @@ export function* createJobSubmission(action) {
   };
 
   try {
-    yield addJobSubmission(tempJs);
+    yield call(addJobSubmission, tempJs);
 
     const js = {
       candidate: { id: path(["candidate", "id"], jobSubmission) },
@@ -306,11 +310,12 @@ export function* createJobSubmission(action) {
       clientCorporationId: prop("clientCorporationId", jobOrder),
       jobOrderId: prop("id", jobOrder)
     };
-    yield addJobSubmission(newJobSubmission);
-    toast.success("The job submission was correctly created.");
+    yield call(addJobSubmission, newJobSubmission);
+    yield call(toast.success, "The job submission was correctly created.");
   } catch (e) {
-    yield removeTempJobSubmission(prop("id", tempJs));
-    toast.error(
+    yield call(removeTempJobSubmission, prop("id", tempJs));
+    yield call(
+      toast.error,
       "There was an issue with the creation. Please retry again later."
     );
   }
