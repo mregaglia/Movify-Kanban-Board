@@ -31,7 +31,7 @@ const Row = styled.div({
 
 const Button = styled.div(({ positive, theme }) => ({
   fontFamily: theme.fonts.fontFamily,
-  fontSize: theme.textDimension.medium,
+  fontSize: theme.textDimensions.medium,
   color: positive ? theme.colors.red : theme.colors.mediumGrey,
   cursor: "pointer",
   padding: 4,
