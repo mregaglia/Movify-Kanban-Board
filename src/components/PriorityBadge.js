@@ -12,6 +12,8 @@ const getColorFromPriority = priority => {
       return "yellow";
     case "P4":
       return "green";
+    default:
+      return;
   }
 };
 
