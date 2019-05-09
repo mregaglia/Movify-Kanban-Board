@@ -1,18 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
-import { pathOr } from "ramda";
+import { pathOr, prop } from "ramda";
 import { number, object, oneOfType, string } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
+import LinkedinBadge from "../../components/LinkedinBadge";
 
 const Container = styled.div(({ theme }) => ({
   display: "flex",
   backgroundColor: theme.colors.grey,
   borderRadius: theme.dimensions.borderRadius,
-  paddingTop: 10,
-  paddingBottom: 10,
-  paddingLeft: 15,
-  paddingRight: 15,
   margin: 5,
   textOverflow: "ellipsis",
   overflow: "hidden",
@@ -21,6 +18,10 @@ const Container = styled.div(({ theme }) => ({
 
 const Text = styled.div(({ theme }) => ({
   display: "inline-block",
+  marginTop: 10,
+  marginBottom: 10,
+  marginLeft: 15,
+  marginRight: 4,
   fontFamily: theme.fonts.fontFamily,
   fontSize: theme.textDimensions.regular,
   textOverflow: "ellipsis",
@@ -39,6 +40,7 @@ const CandidateCard = ({ index, jobSubmissionId, jobSubmission }) => (
           {pathOr("", ["candidate", "firstName"], jobSubmission)}{" "}
           {pathOr("", ["candidate", "lastName"], jobSubmission)}
         </Text>
+        <LinkedinBadge candidate={prop("candidate", jobSubmission)} />
       </Container>
     )}
   </Draggable>
