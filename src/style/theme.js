@@ -3,6 +3,9 @@ export default {
     transparentRed: "rgba(243, 77, 61, 0.2)",
     lightRed: "#f78f85",
     red: "#f34d3d",
+    orange: "#FF8A40",
+    yellow: "#FFBF53",
+    green: "#60C659",
     mediumGrey: "#B0B0B0",
     grey: "#DCDCDC",
     transparentGrey: "rgba(255,255,255, 0.4)",
@@ -17,6 +20,7 @@ export default {
     borderRadius: 6
   },
   textDimensions: {
+    small: 10,
     regular: 14,
     medium: 16,
     large: 18,
