@@ -13,15 +13,26 @@ const Column = styled.div({
   width: "16%"
 });
 
+const Title = styled.div(({ theme }) => ({
+  display: "flex",
+  flex: 1,
+  fontFamily: theme.fonts.fontFamily,
+  fontSize: theme.textDimensions.medium,
+  fontWeight: 600,
+  paddingTop: 12,
+  paddingRight: 4,
+  paddingLeft: 12,
+  paddingBottom: 12,
+  marginTop: 4,
+  textOverflow: "ellipsis",
+  overflow: "hidden"
+}));
+
 const JobOrder = ({ jobOrder }) => (
   <Row>
     <Column>
       <Row>
-        <Text
-          style={{ marginTop: 4, paddingRight: 4, display: "flex", flex: 1 }}
-        >
-          {propOr("", "title", jobOrder)}
-        </Text>
+        <Title>{propOr("", "title", jobOrder)}</Title>
         <PriorityBadge priority={prop("employmentType", jobOrder)} />
       </Row>
       <Text>
