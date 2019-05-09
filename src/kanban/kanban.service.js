@@ -16,7 +16,8 @@ export const getJobOrders = (bmId, start = 0) =>
       start
     },
     {
-      fields: "id,clientContact,clientCorporation,isOpen,owner,status,title",
+      fields:
+        "id,clientContact,clientCorporation,isOpen,owner,status,title,employmentType",
       sort: "clientCorporation.name"
     }
   );
