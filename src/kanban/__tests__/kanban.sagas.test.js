@@ -39,6 +39,7 @@ import {
   setJobOrders,
   CREATE_JOB_SUBMISSION
 } from "../kanban.actions";
+import en from "../../lang/en";
 
 describe("kanban board saga", () => {
   const generator = getKanbanBoard();
@@ -509,7 +510,7 @@ describe("updateJobSubmission saga", () => {
     });
     it("should call toast success", () => {
       expect(generator.next().value).toEqual(
-        call(toast.success, "The job submission status was correctly updated.")
+        call(toast.success, en.UPDATE_STATUS_SUCCESS)
       );
     });
     it("should be done", () => {
@@ -547,10 +548,7 @@ describe("updateJobSubmission saga", () => {
     });
     it("should call toast error", () => {
       expect(generator.next().value).toEqual(
-        call(
-          toast.error,
-          "There was an issue with the update. Please retry again later."
-        )
+        call(toast.error, en.UPDATE_STATUS_ERROR)
       );
     });
     it("should be done", () => {
@@ -700,7 +698,7 @@ describe("createJobSubmission saga", () => {
     });
     it("should call toast success", () => {
       expect(generator.next().value).toEqual(
-        call(toast.success, "The job submission was correctly created.")
+        call(toast.success, en.DUPLICATE_CANDIDATE_SUCCESS)
       );
     });
     it("should be done", () => {
@@ -749,10 +747,7 @@ describe("createJobSubmission saga", () => {
     });
     it("should call toast error", () => {
       expect(generator.next().value).toEqual(
-        call(
-          toast.error,
-          "There was an issue with the creation. Please retry again later."
-        )
+        call(toast.error, en.DUPLICATE_CANDIDATE_ERROR)
       );
     });
     it("should be done", () => {

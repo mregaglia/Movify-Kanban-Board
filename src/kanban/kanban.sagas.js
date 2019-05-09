@@ -31,6 +31,7 @@ import {
   createJobSubmission as createJobSubmissionService,
   getJobSubmission
 } from "./kanban.service";
+import en from "../lang/en";
 
 export const getStateJobOrder = (state, joId) =>
   pathOr({}, ["kanban", "jobOrders", joId], state);
@@ -216,19 +217,13 @@ export function* updateJobSubmission(action) {
   try {
     yield call(updateJobSubmissionStatus, action);
     yield call(updateJobSubmissionStatusService, jobSubmissionId, status);
-    yield call(
-      toast.success,
-      "The job submission status was correctly updated."
-    );
+    yield call(toast.success, en.UPDATE_STATUS_SUCCESS);
   } catch (e) {
     yield call(updateJobSubmissionStatus, {
       ...action,
       payload: { ...action.payload, status: prevStatus, prevStatus: status }
     });
-    yield call(
-      toast.error,
-      "There was an issue with the update. Please retry again later."
-    );
+    yield call(toast.error, en.UPDATE_STATUS_ERROR);
   }
 }
 
@@ -311,13 +306,10 @@ export function* createJobSubmission(action) {
       jobOrderId: prop("id", jobOrder)
     };
     yield call(addJobSubmission, newJobSubmission);
-    yield call(toast.success, "The job submission was correctly created.");
+    yield call(toast.success, en.DUPLICATE_CANDIDATE_SUCCESS);
   } catch (e) {
     yield call(removeTempJobSubmission, prop("id", tempJs));
-    yield call(
-      toast.error,
-      "There was an issue with the creation. Please retry again later."
-    );
+    yield call(toast.error, en.DUPLICATE_CANDIDATE_ERROR);
   }
 }
 
