@@ -77,7 +77,7 @@ const ConfirmationModal = ({
           ["candidate", "firstName"],
           jobSubmission
         )} ${pathOr("", ["candidate", "lastName"], jobSubmission)}`}</Title>
-        <Text>{`Do you want to create a new submission on the job order ${propOr(
+        <Text>{`Do you want to duplicate this candidate for the vacancy ${propOr(
           "",
           "title",
           jobOrder
