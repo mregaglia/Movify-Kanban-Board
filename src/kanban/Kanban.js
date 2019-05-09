@@ -91,7 +91,6 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
         isOpen={isModalOpen}
         onClose={onCloseModal}
       />
-      <Title>Kanban Board</Title>
       <DragDropContext onDragEnd={onDnd}>
         {Object.keys(bms).map((bmId, index) => (
           <Bm key={bmId} bm={propOr({}, bmId, bms)} color={getBmColor(index)} />
