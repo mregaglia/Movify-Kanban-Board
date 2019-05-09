@@ -12,7 +12,7 @@ export const getJobOrders = (bmId, start = 0) =>
   post(
     "search/JobOrder",
     {
-      query: `owner.id:${bmId} AND isOpen:true AND (status:Open OR status:"Accepting Candidates")`,
+      query: `owner.id:${bmId} AND isOpen:true`,
       start
     },
     {
