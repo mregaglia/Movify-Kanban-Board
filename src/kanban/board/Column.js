@@ -50,7 +50,7 @@ const Column = ({ columnId, jobSubmissions, status }) => {
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              style={{ minHeight: 150, height: "100%" }}
+              style={{ minHeight: 65, height: "100%" }}
             >
               <Candidates jobSubmissions={jobSubmissions} />
               {provided.placeholder}
