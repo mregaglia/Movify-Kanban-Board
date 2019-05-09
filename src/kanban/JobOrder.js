@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { pathOr, prop, propOr } from "ramda";
 import { number, object } from "prop-types";
 import styled from "styled-components";
+import PriorityBadge from "../components/PriorityBadge";
 import { Row, Text } from "./Kanban";
 import Board from "./board/Board";
 
@@ -15,7 +16,14 @@ const Column = styled.div({
 const JobOrder = ({ jobOrder }) => (
   <Row>
     <Column>
-      <Text style={{ marginTop: 4 }}>{propOr("", "title", jobOrder)}</Text>
+      <Row>
+        <Text
+          style={{ marginTop: 4, paddingRight: 4, display: "flex", flex: 1 }}
+        >
+          {propOr("", "title", jobOrder)}
+        </Text>
+        <PriorityBadge priority={prop("employmentType", jobOrder)} />
+      </Row>
       <Text>
         {`${pathOr("", ["clientContact", "firstName"], jobOrder)} ${pathOr(
           "",

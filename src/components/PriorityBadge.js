@@ -21,7 +21,9 @@ const Badge = styled.div(({ color, theme }) => ({
   backgroundColor: theme.colors[color],
   height: 20,
   width: 20,
-  borderRadius: 10
+  borderRadius: 10,
+  marginTop: 6,
+  marginRight: 12
 }));
 
 const Text = styled.div(({ theme }) => ({
