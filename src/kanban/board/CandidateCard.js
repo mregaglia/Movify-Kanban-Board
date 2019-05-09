@@ -17,7 +17,8 @@ const Container = styled.div(({ theme }) => ({
 }));
 
 const Text = styled.div(({ theme }) => ({
-  display: "inline-block",
+  display: "flex",
+  flex: 1,
   marginTop: 10,
   marginBottom: 10,
   marginLeft: 15,
