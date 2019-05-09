@@ -2,11 +2,13 @@ import React from "react";
 import { array, string } from "prop-types";
 import styled from "styled-components";
 import { Droppable } from "react-beautiful-dnd";
+import { STATUS_NO_GO } from "../../utils/kanban";
 import Candidates from "./Candidates";
 
-const getBackgroundColor = (snapshot, theme) => {
+const getBackgroundColor = (isNoGo, snapshot, theme) => {
   if (snapshot.isDraggingOver) return theme.colors.transparentRed;
   if (snapshot.draggingFromThisWith) return theme.colors.transparentGrey;
+  if (isNoGo) return theme.colors.lightGrey;
   return theme.colors.darkWhite;
 };
 
@@ -14,19 +16,19 @@ const Container = styled.div({
   display: "flex",
   flexDirection: "column",
   flexGrow: 1,
-  width: "16.6%",
-  minWidth: "16.6%",
-  maxWidth: "16.6%"
+  width: "14.3%",
+  minWidth: "14.3%",
+  maxWidth: "14.3%"
 });
 
-const Content = styled.div(({ snapshot, theme }) => ({
+const Content = styled.div(({ isNoGo, snapshot, theme }) => ({
   display: "flex",
   flexDirection: "column",
   width: "80%",
   flexGrow: 1,
   padding: 8,
   margin: 4,
-  backgroundColor: getBackgroundColor(snapshot, theme),
+  backgroundColor: getBackgroundColor(isNoGo, snapshot, theme),
   borderRadius: theme.dimensions.borderRadius
 }));
 
@@ -46,7 +48,7 @@ const Column = ({ columnId, jobSubmissions, status }) => {
       <Title>{status}</Title>
       <Droppable droppableId={columnId}>
         {(provided, snapshot) => (
-          <Content snapshot={snapshot}>
+          <Content snapshot={snapshot} isNoGo={status === STATUS_NO_GO}>
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}

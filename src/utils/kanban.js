@@ -6,6 +6,7 @@ export const STATUS_TO_SEND = "To Send";
 export const STATUS_WF_RESPONSE = "WF Response";
 export const STATUS_INTAKE = "Intake";
 export const STATUS_WF_FEEDBACK = "WFF";
+export const STATUS_NO_GO = "NO GO";
 
 export const AVAILABLE_STATUSES = [
   STATUS_ITV1,
@@ -13,7 +14,8 @@ export const AVAILABLE_STATUSES = [
   STATUS_TO_SEND,
   STATUS_WF_RESPONSE,
   STATUS_INTAKE,
-  STATUS_WF_FEEDBACK
+  STATUS_WF_FEEDBACK,
+  STATUS_NO_GO
 ];
 
 export const getFilterStatusRequest = () =>
