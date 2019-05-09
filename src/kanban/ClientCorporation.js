@@ -9,7 +9,7 @@ import JobOrder from "./JobOrder";
 export const Text = styled.div(({ color, theme }) => ({
   display: "inline-block",
   width: "100%",
-  backgroundColor: color,
+  backgroundColor: `${color}50`,
   fontFamily: theme.fonts.fontFamily,
   fontSize: theme.textDimensions.medium,
   fontWeight: 600,
