@@ -2,23 +2,8 @@ import React from "react";
 import { string } from "prop-types";
 import styled from "styled-components";
 
-const getColorFromPriority = priority => {
-  switch (priority) {
-    case "P1":
-      return "red";
-    case "P2":
-      return "orange";
-    case "P3":
-      return "yellow";
-    case "P4":
-      return "green";
-    default:
-      return;
-  }
-};
-
-const Badge = styled.div(({ color, theme }) => ({
-  backgroundColor: theme.colors[color],
+const Badge = styled.div(({ priority, theme }) => ({
+  backgroundColor: theme.priorityColors[priority],
   height: 20,
   width: 20,
   borderRadius: 10,
@@ -36,7 +21,7 @@ const Text = styled.div(({ theme }) => ({
 }));
 
 const PriorityBadge = ({ priority }) => (
-  <Badge color={getColorFromPriority(priority)}>
+  <Badge priority={priority}>
     <Text>{priority}</Text>
   </Badge>
 );

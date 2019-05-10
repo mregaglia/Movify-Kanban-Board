@@ -14,6 +14,12 @@ export default {
     backgroundShadow: "rgba(0,0,0, 0.4)",
     darkWhite: "#FDFDFD"
   },
+  priorityColors: {
+    P1: "#0f3443",
+    P2: "#1c7463",
+    P3: "#29b383",
+    P4: "#34e89e"
+  },
   fonts: {
     fontFamily: "Open Sans, sans-serif"
   },
