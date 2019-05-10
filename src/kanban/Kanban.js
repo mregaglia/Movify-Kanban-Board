@@ -9,6 +9,7 @@ import { getColumnData, isFromSameBoard } from "../utils/kanban";
 import { getKanban, updateJobSubmission } from "./kanban.actions";
 import Bm from "./Bm";
 import ConfirmationModal from "./board/ConfirmationModal";
+import DepartmentFilter from "./departmentFilter/DepartmentFilter";
 
 const Container = styled.div({
   paddingLeft: 25,
@@ -91,6 +92,7 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
         isOpen={isModalOpen}
         onClose={onCloseModal}
       />
+      <DepartmentFilter />
       <DragDropContext onDragEnd={onDnd}>
         {bms.map((bmId, index) => (
           <Bm key={bmId} bmId={bmId} color={getBmColor(index)} />
