@@ -31,7 +31,7 @@ export const getJobSubmissions = (jobOrderId, start = 0) =>
       start
     },
     {
-      fields: "id,candidate,jobOrder,owners,sendingUser,status"
+      fields: "id,candidate,jobOrder,owners,sendingUser,status,dateLastModified"
     }
   );
 
@@ -43,5 +43,5 @@ export const createJobSubmission = jobSubmission =>
 
 export const getJobSubmission = jobSubmissionId =>
   get(`entity/JobSubmission/${jobSubmissionId}`, {
-    fields: "id,candidate,jobOrder,owners,sendingUser,status"
+    fields: "id,candidate,jobOrder,owners,sendingUser,status,dateLastModified"
   });

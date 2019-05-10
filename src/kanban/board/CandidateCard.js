@@ -1,15 +1,19 @@
 import React from "react";
 import { connect } from "react-redux";
-import { pathOr, prop } from "ramda";
+import { path, pathOr, prop } from "ramda";
 import { number, object, oneOfType, string } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
+import { getCandidateBorderColor } from "../../utils/kanban";
 import LinkedinBadge from "../../components/LinkedinBadge";
 
-const Container = styled.div(({ theme }) => ({
+const Container = styled.div(({ borderColor, theme }) => ({
   display: "flex",
   backgroundColor: theme.colors.grey,
   borderRadius: theme.dimensions.borderRadius,
+  borderBottomColor: path(["colors", borderColor], theme),
+  borderBottomWidth: borderColor ? 4 : 0,
+  borderBottomStyle: borderColor ? "solid" : "none",
   margin: 5,
   textOverflow: "ellipsis",
   overflow: "hidden",
@@ -36,6 +40,9 @@ const CandidateCard = ({ index, jobSubmissionId, jobSubmission }) => (
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
+        borderColor={getCandidateBorderColor(
+          prop("dateLastModified", jobSubmission)
+        )}
       >
         <Text>
           {pathOr("", ["candidate", "firstName"], jobSubmission)}{" "}

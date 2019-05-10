@@ -1,4 +1,5 @@
 import { prop } from "ramda";
+import { isOverDiff, DIFF_5_DAYS, DIFF_10_DAYS } from "./date";
 
 export const STATUS_ITV1 = "ITV1";
 export const STATUS_ITV2 = "ITV2";
@@ -38,3 +39,10 @@ export const isFromSameBoard = (src, dest) =>
   prop("bmId", src) === prop("bmId", dest) &&
   prop("clientCorporationId", src) === prop("clientCorporationId", dest) &&
   prop("jobOrderId", src) === prop("jobOrderId", dest);
+
+export const getCandidateBorderColor = dateLastModified => {
+  if (!dateLastModified) return undefined;
+  if (isOverDiff(dateLastModified, DIFF_10_DAYS)) return "red";
+  if (isOverDiff(dateLastModified, DIFF_5_DAYS)) return "orange";
+  return undefined;
+};
