@@ -1,6 +1,8 @@
 import {
   GET_KANBAN,
   getKanban,
+  SET_BMS,
+  setBms,
   updateBms,
   UPDATE_BMS,
   updateClientCorporations,
@@ -26,6 +28,12 @@ import {
 describe("getKanban action", () => {
   it("should return GET_KANBAN action", () => {
     expect(getKanban()).toEqual({ type: GET_KANBAN });
+  });
+});
+describe("setBms action", () => {
+  it("should return SET_BMS action", () => {
+    const bms = [];
+    expect(setBms(bms)).toEqual({ type: SET_BMS, payload: bms });
   });
 });
 describe("updateBms action", () => {

@@ -1,5 +1,6 @@
 import {
   GET_KANBAN,
+  SET_BMS,
   UPDATE_BMS,
   UPDATE_CLIENT_CORPORATIONS,
   SET_JOB_ORDERS,
@@ -18,6 +19,14 @@ describe("kanban reducer", () => {
     expect(kanbanReducer(initialState, action)).toEqual({
       ...initialState,
       loading: true
+    });
+  });
+  it("should apply SET_BMS", () => {
+    const bms = [1, 2, 3];
+    const action = { type: SET_BMS, payload: bms };
+    expect(kanbanReducer(initialState, action)).toEqual({
+      ...initialState,
+      bmList: bms
     });
   });
   it("should apply UPDATE_BMS", () => {
@@ -118,7 +127,7 @@ describe("kanban reducer", () => {
       jobSubmissions: { 1: { id: "1" }, 2: { id: "2" } }
     };
     const jss = { 1: { id: "1" }, 2: { id: "2" } };
-    const action = { type: SET_JOB_SUBMISSIONS, payload: jss };
+    const action = { type: UPDATE_JOB_SUBMISSIONS, payload: jss };
     expect(kanbanReducer(state, action)).toEqual(expectedState);
   });
 });

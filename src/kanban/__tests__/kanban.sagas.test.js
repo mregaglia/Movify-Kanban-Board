@@ -13,7 +13,8 @@ import {
   removeTempJobSubmission,
   getStateJobSubmissions,
   getStateJobOrder,
-  getStateJobOrders
+  getStateJobOrders,
+  getStateBms
 } from "../kanban.sagas";
 import { call, all, put, select } from "redux-saga/effects";
 import { toast } from "react-toastify";
@@ -26,6 +27,7 @@ import {
   createJobSubmission as createJobSubmissionService
 } from "../kanban.service";
 import {
+  setBms,
   updateBms,
   getJobOrders as getJobOrdersAction,
   updateClientCorporations,
@@ -59,6 +61,8 @@ describe("getBms saga", () => {
       2: { id: 2, clientCorporations: [] },
       3: { id: 3, clientCorporations: [] }
     };
+    const bmIds = [1, 2, 3];
+    const stateBms = [];
     const bmsResponse = { start: 0, count: 3, data: bmList };
     const generator = getBms();
 
@@ -81,6 +85,15 @@ describe("getBms saga", () => {
         all(bmList.map(bm => put(getJobOrdersAction(prop("id", bm)))))
       );
     });
+    it("should create bmIdList", () => {
+      expect(generator.next().value).toEqual(all(bmIds));
+    });
+    it("should get state bmIdList", () => {
+      expect(generator.next(bmIds).value).toEqual(select(getStateBms));
+    });
+    it("should put setBms", () => {
+      expect(generator.next(stateBms).value).toEqual(put(setBms(bmIds)));
+    });
     it("should get next bms", () => {
       expect(generator.next().value).toEqual(call(getBms, 3));
     });
@@ -92,6 +105,8 @@ describe("getBms saga", () => {
   describe("getBms saga with success and no load more", () => {
     const bmList = [];
     const bms = {};
+    const bmIds = [];
+    const stateBms = [1, 2, 3];
     const bmsResponse = { start: 0, count: 0, data: bmList };
     const generator = getBms();
 
@@ -113,6 +128,15 @@ describe("getBms saga", () => {
       expect(generator.next().value).toEqual(
         all(bmList.map(bm => put(getJobOrdersAction(prop("id", bm)))))
       );
+    });
+    it("should create bmIdList", () => {
+      expect(generator.next().value).toEqual(all(bmIds));
+    });
+    it("should get state bmIdList", () => {
+      expect(generator.next(bmIds).value).toEqual(select(getStateBms));
+    });
+    it("should put setBms", () => {
+      expect(generator.next(stateBms).value).toEqual(put(setBms(stateBms)));
     });
     it("should be done", () => {
       expect(generator.next()).toEqual({ done: true, value: undefined });
