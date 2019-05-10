@@ -44,7 +44,7 @@ const Title = styled(Text)(({ theme }) => ({
 
 const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
 
-const Kanban = ({ bmList, getKanban, loading, updateJobSubmission }) => {
+const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(undefined);
 
@@ -92,7 +92,7 @@ const Kanban = ({ bmList, getKanban, loading, updateJobSubmission }) => {
         onClose={onCloseModal}
       />
       <DragDropContext onDragEnd={onDnd}>
-        {bmList.map((bmId, index) => (
+        {bms.map((bmId, index) => (
           <Bm key={bmId} bmId={bmId} color={getBmColor(index)} />
         ))}
       </DragDropContext>
@@ -101,7 +101,7 @@ const Kanban = ({ bmList, getKanban, loading, updateJobSubmission }) => {
 };
 
 Kanban.propTypes = {
-  bmList: array,
+  bms: array,
   getKanban: func,
   loading: bool,
   updateJobSubmission: func
@@ -109,7 +109,7 @@ Kanban.propTypes = {
 
 export default connect(
   state => ({
-    bmList: pathOr([], ["kanban", "bmList"], state),
+    bms: pathOr([], ["departmentFilter", "filteredBms"], state),
     loading: pathOr(true, ["kanban", "loading"], state)
   }),
   { getKanban, updateJobSubmission }
