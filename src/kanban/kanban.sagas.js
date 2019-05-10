@@ -21,7 +21,8 @@ import {
   updateJobOrders,
   getJobSubmissions as getJobSubmissionsAction,
   setJobSubmissions,
-  updateJobSubmissions
+  updateJobSubmissions,
+  setBms
 } from "./kanban.actions";
 import {
   getBusinessManagers,
@@ -33,6 +34,7 @@ import {
 } from "./kanban.service";
 import en from "../lang/en";
 
+export const getStateBms = state => pathOr([], ["kanban", "bmList"], state);
 export const getStateJobOrder = (state, joId) =>
   pathOr({}, ["kanban", "jobOrders", joId], state);
 export const getStateJobOrders = state =>
@@ -56,6 +58,10 @@ export function* getBms(start = 0) {
     );
     yield put(updateBms(bms));
     yield all(bmList.map(bm => put(getJobOrdersAction(prop("id", bm)))));
+
+    const bmIds = yield all(bmList.map(bm => prop("id", bm)));
+    const stateBms = yield select(getStateBms);
+    yield put(setBms(stateBms.concat(bmIds)));
 
     if (propOr(0, "count", bmsResponse) > 0)
       yield call(

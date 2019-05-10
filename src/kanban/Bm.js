@@ -1,6 +1,7 @@
 import React from "react";
+import { connect } from "react-redux";
 import { pathOr, prop, propOr } from "ramda";
-import { object, string } from "prop-types";
+import { number, object, string } from "prop-types";
 import styled from "styled-components";
 import { Column, Row } from "./Kanban";
 import ClientCorporation from "./ClientCorporation";
@@ -46,7 +47,10 @@ const Bm = ({ bm, color }) => (
 
 Bm.propTypes = {
   bm: object,
+  bmId: number,
   color: string
 };
 
-export default Bm;
+export default connect((state, { bmId }) => ({
+  bm: pathOr({}, ["kanban", "bms", bmId], state)
+}))(Bm);

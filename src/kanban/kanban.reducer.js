@@ -2,6 +2,7 @@ import { is, mergeDeepWith, union } from "ramda";
 import { bindReducer } from "../utils/reducer";
 import {
   GET_KANBAN,
+  SET_BMS,
   UPDATE_BMS,
   UPDATE_CLIENT_CORPORATIONS,
   SET_JOB_ORDERS,
@@ -14,6 +15,7 @@ const unionArrays = (l, r) => (is(Array, l) && is(Array, r) ? union(l, r) : r);
 
 export const initialState = {
   loading: false,
+  bmList: [],
   bms: {},
   clientCorporations: {},
   jobOrders: {},
@@ -24,6 +26,10 @@ const kanban = {
   [GET_KANBAN]: () => ({
     ...initialState,
     loading: true
+  }),
+  [SET_BMS]: (state, payload) => ({
+    ...state,
+    bmList: payload
   }),
   [UPDATE_BMS]: (state, payload) => ({
     ...state,

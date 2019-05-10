@@ -3,8 +3,9 @@ import { getFilterStatusRequest } from "../utils/kanban";
 
 export const getBusinessManagers = (start = 0) =>
   get("query/CorporateUser", {
-    fields: "id,firstName,lastName,occupation",
+    fields: "id,firstName,lastName,occupation,primaryDepartment",
     where: "occupation='Business Manager'",
+    orderBy: "firstName,primaryDepartment.name",
     start
   });
 

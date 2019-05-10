@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { path, pathOr, prop, propOr } from "ramda";
-import { bool, func, object } from "prop-types";
+import { path, pathOr, prop } from "ramda";
+import { array, bool, func } from "prop-types";
 import styled from "styled-components";
 import { DragDropContext } from "react-beautiful-dnd";
 import theme from "../style/theme";
@@ -44,7 +44,7 @@ const Title = styled(Text)(({ theme }) => ({
 
 const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
 
-const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
+const Kanban = ({ bmList, getKanban, loading, updateJobSubmission }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(undefined);
 
@@ -92,8 +92,8 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
         onClose={onCloseModal}
       />
       <DragDropContext onDragEnd={onDnd}>
-        {Object.keys(bms).map((bmId, index) => (
-          <Bm key={bmId} bm={propOr({}, bmId, bms)} color={getBmColor(index)} />
+        {bmList.map((bmId, index) => (
+          <Bm key={bmId} bmId={bmId} color={getBmColor(index)} />
         ))}
       </DragDropContext>
     </Container>
@@ -101,7 +101,7 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
 };
 
 Kanban.propTypes = {
-  bms: object,
+  bmList: array,
   getKanban: func,
   loading: bool,
   updateJobSubmission: func
@@ -109,8 +109,8 @@ Kanban.propTypes = {
 
 export default connect(
   state => ({
-    bms: pathOr({}, ["kanban", "bms"], state),
-    loading: pathOr([], ["kanban", "loading"], state)
+    bmList: pathOr([], ["kanban", "bmList"], state),
+    loading: pathOr(true, ["kanban", "loading"], state)
   }),
   { getKanban, updateJobSubmission }
 )(Kanban);
