@@ -1,9 +1,13 @@
 import styled from "styled-components";
 
-export const Action = styled.button(({ positive, theme }) => ({
+export const Action = styled.button(({ disabled, positive, theme }) => ({
   fontFamily: theme.fonts.fontFamily,
   fontSize: theme.textDimensions.medium,
-  color: positive ? theme.colors.red : theme.colors.mediumGrey,
+  color: positive
+    ? disabled
+      ? theme.colors.lightRed
+      : theme.colors.red
+    : theme.colors.mediumGrey,
   cursor: "pointer",
   padding: 4,
   marginLeft: 16,
