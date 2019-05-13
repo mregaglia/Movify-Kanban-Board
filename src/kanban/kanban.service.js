@@ -27,7 +27,7 @@ export const getJobSubmissions = (jobOrderId, start = 0) =>
   post(
     "search/JobSubmission",
     {
-      query: `jobOrder.id:${jobOrderId} AND (${getFilterStatusRequest()})`,
+      query: `jobOrder.id:${jobOrderId} AND isDeleted:false AND (${getFilterStatusRequest()})`,
       start
     },
     {
