@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { pathOr, prop, propOr } from "ramda";
 import { number, object, string } from "prop-types";
 import styled from "styled-components";
+import { formatBmName } from "../utils/kanban";
 import { Column, Row } from "./Kanban";
 import ClientCorporation from "./ClientCorporation";
 
@@ -24,14 +25,7 @@ export const Text = styled.div(({ color, theme }) => ({
 
 const Bm = ({ bm, color }) => (
   <Row style={{ marginBottom: 6 }}>
-    <Text color={color}>
-      {`${pathOr("", ["firstName", "0"], bm)}${pathOr(
-        "",
-        ["lastName", "0"],
-        bm
-      )}${pathOr("", ["lastName", "1"], bm)}`.toUpperCase()}
-    </Text>
-
+    <Text color={color}>{formatBmName(bm || {})}</Text>
     <Column>
       {propOr([], "clientCorporations", bm).map(ccId => (
         <ClientCorporation

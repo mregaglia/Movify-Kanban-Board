@@ -1,4 +1,4 @@
-import { prop } from "ramda";
+import { pathOr, prop, propOr } from "ramda";
 import { isOverDiff, DIFF_5_DAYS, DIFF_10_DAYS } from "./date";
 
 export const STATUS_ITV1 = "ITV1";
@@ -45,4 +45,13 @@ export const getCandidateBorderColor = dateLastModified => {
   if (isOverDiff(dateLastModified, DIFF_10_DAYS)) return "red";
   if (isOverDiff(dateLastModified, DIFF_5_DAYS)) return "orange";
   return undefined;
+};
+
+export const formatBmName = ({ firstName, lastName = "" }) => {
+  const secondLastName = lastName.split(" ");
+  return `${propOr("", "0", firstName)}${propOr("", "0", lastName)}${pathOr(
+    propOr("", "1", lastName),
+    ["1", "0"],
+    secondLastName
+  )}`.toUpperCase();
 };
