@@ -1,11 +1,11 @@
 import React from "react";
 import { connect } from "react-redux";
 import { pathOr, prop, propOr } from "ramda";
-import { number, object } from "prop-types";
+import { number, object, string } from "prop-types";
 import styled from "styled-components";
 import ReactTooltip from "react-tooltip";
 import PriorityBadge from "../components/PriorityBadge";
-import { Row, Text } from "./Kanban";
+import { Row } from "./Kanban";
 import Board from "./board/Board";
 
 const Column = styled.div({
@@ -29,6 +29,30 @@ const Title = styled.div(({ theme }) => ({
   overflow: "hidden"
 }));
 
+const Text = styled.div(({ theme }) => ({
+  display: "flex",
+  flex: 1,
+  fontFamily: theme.fonts.fontFamily,
+  fontSize: theme.textDimensions.regular,
+  padding: 12,
+  textOverflow: "ellipsis",
+  overflow: "hidden"
+}));
+
+const AddButton = styled.div(({ color, theme }) => ({
+  alignSelf: "center",
+  textAlign: "center",
+  cursor: "pointer",
+  backgroundColor: color,
+  color: theme.colors.darkWhite,
+  height: 30,
+  width: 30,
+  borderRadius: 15,
+  fontFamily: theme.fonts.fontFamily,
+  fontSize: 28,
+  marginRight: 8
+}));
+
 const Tooltip = styled(ReactTooltip)`
   font-family: ${({ theme }) => theme.fonts.fontFamily};
   font-size: ${({ theme }) => `${theme.textDimensions.regular}px !important`};
@@ -45,7 +69,7 @@ const Tooltip = styled(ReactTooltip)`
   }
 `;
 
-const JobOrder = ({ jobOrder }) => (
+const JobOrder = ({ color, jobOrder }) => (
   <Row>
     <Column>
       <Row>
@@ -55,13 +79,16 @@ const JobOrder = ({ jobOrder }) => (
         <PriorityBadge priority={prop("employmentType", jobOrder)} />
         <Tooltip className="jobDescription" place="right" html effect="solid" />
       </Row>
-      <Text>
-        {`${pathOr("", ["clientContact", "firstName"], jobOrder)} ${pathOr(
-          "",
-          ["clientContact", "lastName"],
-          jobOrder
-        )} `}
-      </Text>
+      <Row>
+        <Text>
+          {`${pathOr("", ["clientContact", "firstName"], jobOrder)} ${pathOr(
+            "",
+            ["clientContact", "lastName"],
+            jobOrder
+          )} `}
+        </Text>
+        <AddButton color={color}>+</AddButton>
+      </Row>
     </Column>
     <Board
       bmId={prop("bmId", jobOrder)}
@@ -72,6 +99,7 @@ const JobOrder = ({ jobOrder }) => (
 );
 
 JobOrder.propTypes = {
+  color: string,
   joId: number,
   jobOrder: object
 };
