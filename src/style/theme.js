@@ -11,6 +11,7 @@ export default {
     grey: "#DCDCDC",
     transparentGrey: "rgba(255,255,255, 0.4)",
     lightGrey: "#F2F2F2",
+    tooltipShadow: "#0f3443",
     backgroundShadow: "rgba(0,0,0, 0.4)",
     darkWhite: "#FDFDFD"
   },

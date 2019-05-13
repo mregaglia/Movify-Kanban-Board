@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { pathOr, prop, propOr } from "ramda";
 import { number, object } from "prop-types";
 import styled from "styled-components";
+import ReactTooltip from "react-tooltip";
 import PriorityBadge from "../components/PriorityBadge";
 import { Row, Text } from "./Kanban";
 import Board from "./board/Board";
@@ -28,12 +29,31 @@ const Title = styled.div(({ theme }) => ({
   overflow: "hidden"
 }));
 
+const Tooltip = styled(ReactTooltip)`
+  font-family: ${({ theme }) => theme.fonts.fontFamily};
+  font-size: ${({ theme }) => `${theme.textDimensions.regular}px !important`};
+  background-color: ${({ theme }) =>
+    `${theme.colors.tooltipShadow} !important`};
+
+  &.place-right {
+    &:after {
+      border-right-color: ${({ theme }) =>
+        `${theme.colors.tooltipShadow} !important`};
+      border-right-style: solid !important;
+      border-right-width: 6px !important;
+    }
+  }
+`;
+
 const JobOrder = ({ jobOrder }) => (
   <Row>
     <Column>
       <Row>
-        <Title>{propOr("", "title", jobOrder)}</Title>
+        <Title data-tip={prop("description", jobOrder)}>
+          {propOr("", "title", jobOrder)}
+        </Title>
         <PriorityBadge priority={prop("employmentType", jobOrder)} />
+        <Tooltip className="jobDescription" place="right" html effect="solid" />
       </Row>
       <Text>
         {`${pathOr("", ["clientContact", "firstName"], jobOrder)} ${pathOr(
