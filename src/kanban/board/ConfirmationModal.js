@@ -2,18 +2,9 @@ import React from "react";
 import { connect } from "react-redux";
 import { pathOr, prop, propOr } from "ramda";
 import { bool, func, object } from "prop-types";
-import Modal from "react-modal";
 import styled from "styled-components";
-import theme from "../../style/theme";
+import { Action, Modal, Row, Title } from "../../components/modal";
 import { createJobSubmission } from "../kanban.actions";
-
-const Title = styled.div(({ theme }) => ({
-  fontFamily: theme.fonts.fontFamily,
-  fontSize: theme.textDimensions.large,
-  textAlign: "justify",
-  marginTop: 4,
-  marginBottom: 16
-}));
 
 const Text = styled.div(({ theme }) => ({
   fontFamily: theme.fonts.fontFamily,
@@ -22,39 +13,6 @@ const Text = styled.div(({ theme }) => ({
   marginTop: 8,
   marginBottom: 24
 }));
-
-const Row = styled.div({
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "flex-end"
-});
-
-const Button = styled.div(({ positive, theme }) => ({
-  fontFamily: theme.fonts.fontFamily,
-  fontSize: theme.textDimensions.medium,
-  color: positive ? theme.colors.red : theme.colors.mediumGrey,
-  cursor: "pointer",
-  padding: 4,
-  marginLeft: 16
-}));
-
-const customStyles = {
-  overlay: {
-    backgroundColor: theme.colors.backgroundShadow
-  },
-  content: {
-    borderColor: "#0000002b",
-    borderRadius: theme.dimensions.borderRadius,
-    boxShadow: "2px 2px 2px #0000002b",
-    maxWidth: "60%",
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)"
-  }
-};
 
 const ConfirmationModal = ({
   createJobSubmission,
@@ -70,7 +28,7 @@ const ConfirmationModal = ({
   };
 
   return (
-    <Modal isOpen={isOpen} onRequestClose={onClose} style={customStyles}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <div>
         <Title>{`Candidate ${pathOr(
           "",
@@ -87,10 +45,10 @@ const ConfirmationModal = ({
           jobOrder
         )} ?`}</Text>
         <Row>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button positive onClick={onConfirm}>
+          <Action onClick={onClose}>Cancel</Action>
+          <Action positive onClick={onConfirm}>
             Confirm
-          </Button>
+          </Action>
         </Row>
       </div>
     </Modal>
