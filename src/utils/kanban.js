@@ -55,3 +55,6 @@ export const formatBmName = ({ firstName, lastName = "" }) => {
     secondLastName
   )}`.toUpperCase();
 };
+
+export const getCandidateName = candidate =>
+  `${propOr("", "firstName", candidate)} ${propOr("", "lastName", candidate)}`;
