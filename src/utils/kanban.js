@@ -1,4 +1,4 @@
-import { isEmpty, isNil, pathOr, prop, propOr } from "ramda";
+import { isEmpty, isNil, flatten, pathOr, prop, propOr } from "ramda";
 import { isOverDiff, DIFF_5_DAYS, DIFF_10_DAYS } from "./date";
 
 export const STATUS_ITV1 = "ITV1";
@@ -62,7 +62,7 @@ export const getCandidateName = candidate =>
 export const getCandidateNameQuery = query => {
   if (isNil(query) || isEmpty(query)) return undefined;
   const nameParts = query.split(" ");
-  const queryParts = nameParts.flatMap(part => createItemFilter(part));
+  const queryParts = flatten(nameParts.map(part => createItemFilter(part)));
   const namePart = `name:${query}*`;
   const queries = queryParts.concat(namePart);
   return queries.join(" OR ");
