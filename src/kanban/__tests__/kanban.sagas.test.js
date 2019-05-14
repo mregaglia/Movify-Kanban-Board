@@ -42,6 +42,7 @@ import {
   CREATE_JOB_SUBMISSION
 } from "../kanban.actions";
 import en from "../../lang/en";
+import { updateDepartmentFilter } from "../departmentFilter/departmentFilter.actions";
 
 describe("kanban board saga", () => {
   const generator = getKanbanBoard();
@@ -94,6 +95,9 @@ describe("getBms saga", () => {
     it("should put setBms", () => {
       expect(generator.next(stateBms).value).toEqual(put(setBms(bmIds)));
     });
+    it("should put updateDepartmentFilter", () => {
+      expect(generator.next().value).toEqual(put(updateDepartmentFilter()));
+    });
     it("should get next bms", () => {
       expect(generator.next().value).toEqual(call(getBms, 3));
     });
@@ -137,6 +141,9 @@ describe("getBms saga", () => {
     });
     it("should put setBms", () => {
       expect(generator.next(stateBms).value).toEqual(put(setBms(stateBms)));
+    });
+    it("should put updateDepartmentFilter", () => {
+      expect(generator.next().value).toEqual(put(updateDepartmentFilter()));
     });
     it("should be done", () => {
       expect(generator.next()).toEqual({ done: true, value: undefined });
