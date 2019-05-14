@@ -89,6 +89,11 @@ const JobOrder = ({ color, jobOrder }) => {
           />
         </Row>
         <Row>
+          <Title style={{ paddingTop: 0, marginTop: 0 }}>
+            {propOr("", "id", jobOrder)}
+          </Title>
+        </Row>
+        <Row>
           <Text>
             {`${pathOr("", ["clientContact", "firstName"], jobOrder)} ${pathOr(
               "",
