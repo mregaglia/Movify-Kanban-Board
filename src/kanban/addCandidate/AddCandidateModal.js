@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { propOr } from "ramda";
+import { prop, propOr } from "ramda";
 import { bool, func, object } from "prop-types";
 import styled from "styled-components";
 import { createJobSubmission } from "../kanban.actions";
@@ -22,7 +22,11 @@ const AddCandidateModal = ({
   onClose
 }) => {
   const onSubmit = values => {
-    // TODO: createJobSubmission
+    createJobSubmission(
+      jobOrder,
+      { candidate: prop("candidate", values) },
+      prop("status", values)
+    );
     onClose();
   };
 

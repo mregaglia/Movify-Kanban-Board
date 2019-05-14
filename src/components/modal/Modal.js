@@ -1,6 +1,6 @@
 import React from "react";
 import ReactModal from "react-modal";
-import { bool, func } from "prop-types";
+import { bool, func, object } from "prop-types";
 import theme from "../../style/theme";
 
 const customStyles = {
@@ -11,6 +11,7 @@ const customStyles = {
     borderColor: "#0000002b",
     borderRadius: theme.dimensions.borderRadius,
     boxShadow: "2px 2px 2px #0000002b",
+    minWidth: "30%",
     maxWidth: "60%",
     top: "50%",
     left: "50%",
@@ -28,6 +29,7 @@ export const Modal = ({ children, isOpen, onClose }) => (
 );
 
 Modal.propTypes = {
+  children: object,
   isOpen: bool,
   onClose: func
 };
