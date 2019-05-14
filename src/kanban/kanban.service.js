@@ -4,7 +4,7 @@ import { getCandidateNameQuery, getFilterStatusRequest } from "../utils/kanban";
 export const getBusinessManagers = (start = 0) =>
   get("query/CorporateUser", {
     fields: "id,firstName,lastName,occupation,primaryDepartment",
-    where: "occupation='Business Manager'",
+    where: "occupation='Business Manager' AND isDeleted=false",
     orderBy: "firstName,primaryDepartment.name",
     start
   });
@@ -13,7 +13,7 @@ export const getJobOrders = (bmId, start = 0) =>
   post(
     "search/JobOrder",
     {
-      query: `owner.id:${bmId} AND isOpen:true`,
+      query: `owner.id:${bmId} AND isOpen:true AND isDeleted:false`,
       start
     },
     {
@@ -49,5 +49,5 @@ export const getJobSubmission = jobSubmissionId =>
 export const searchCandidates = query =>
   post("search/Candidate", {
     fields: "id,firstName,lastName,occupation",
-    query: getCandidateNameQuery(query)
+    query: `${getCandidateNameQuery(query)} AND isDeleted:false`
   });
