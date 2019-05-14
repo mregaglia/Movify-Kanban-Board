@@ -314,10 +314,10 @@ export function* createJobSubmission(action) {
       jobOrderId: prop("id", jobOrder)
     };
     yield call(addJobSubmission, newJobSubmission);
-    yield call(toast.success, en.DUPLICATE_CANDIDATE_SUCCESS);
+    yield call(toast.success, en.CREATE_CANDIDATE_SUCCESS);
   } catch (e) {
     yield call(removeTempJobSubmission, prop("id", tempJs));
-    yield call(toast.error, en.DUPLICATE_CANDIDATE_ERROR);
+    yield call(toast.error, en.CREATE_CANDIDATE_ERROR);
   }
 }
 

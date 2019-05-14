@@ -722,7 +722,7 @@ describe("createJobSubmission saga", () => {
     });
     it("should call toast success", () => {
       expect(generator.next().value).toEqual(
-        call(toast.success, en.DUPLICATE_CANDIDATE_SUCCESS)
+        call(toast.success, en.CREATE_CANDIDATE_SUCCESS)
       );
     });
     it("should be done", () => {
@@ -771,7 +771,7 @@ describe("createJobSubmission saga", () => {
     });
     it("should call toast error", () => {
       expect(generator.next().value).toEqual(
-        call(toast.error, en.DUPLICATE_CANDIDATE_ERROR)
+        call(toast.error, en.CREATE_CANDIDATE_ERROR)
       );
     });
     it("should be done", () => {
