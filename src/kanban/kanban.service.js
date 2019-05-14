@@ -1,5 +1,5 @@
 import { get, post, put } from "../utils/api";
-import { getFilterStatusRequest } from "../utils/kanban";
+import { getCandidateNameQuery, getFilterStatusRequest } from "../utils/kanban";
 
 export const getBusinessManagers = (start = 0) =>
   get("query/CorporateUser", {
@@ -44,4 +44,10 @@ export const createJobSubmission = jobSubmission =>
 export const getJobSubmission = jobSubmissionId =>
   get(`entity/JobSubmission/${jobSubmissionId}`, {
     fields: "id,candidate,jobOrder,owners,sendingUser,status,dateLastModified"
+  });
+
+export const searchCandidates = query =>
+  post("search/Candidate", {
+    fields: "id,firstName,lastName,occupation",
+    query: getCandidateNameQuery(query)
   });

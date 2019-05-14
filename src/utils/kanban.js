@@ -1,4 +1,4 @@
-import { pathOr, prop, propOr } from "ramda";
+import { isEmpty, isNil, pathOr, prop, propOr } from "ramda";
 import { isOverDiff, DIFF_5_DAYS, DIFF_10_DAYS } from "./date";
 
 export const STATUS_ITV1 = "ITV1";
@@ -58,3 +58,18 @@ export const formatBmName = ({ firstName, lastName = "" }) => {
 
 export const getCandidateName = candidate =>
   `${propOr("", "firstName", candidate)} ${propOr("", "lastName", candidate)}`;
+
+export const getCandidateNameQuery = query => {
+  if (isNil(query) || isEmpty(query)) return undefined;
+  const nameParts = query.split(" ");
+  const queryParts = nameParts.flatMap(part => createItemFilter(part));
+  const namePart = `name:${query}*`;
+  const queries = queryParts.concat(namePart);
+  return queries.join(" OR ");
+};
+
+export const createItemFilter = item => [
+  `name:${item}*`,
+  `firstName:${item}*`,
+  `lastName:${item}*`
+];
