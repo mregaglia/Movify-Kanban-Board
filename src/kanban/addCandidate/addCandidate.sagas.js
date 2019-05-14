@@ -1,4 +1,4 @@
-import { all, call, put, takeEvery } from "redux-saga/effects";
+import { all, call, put, takeLatest } from "redux-saga/effects";
 import { isEmpty, isNil, propOr } from "ramda";
 import { searchCandidates } from "../kanban.service";
 import {
@@ -21,5 +21,5 @@ export function* getCandidateSuggestions(action) {
 }
 
 export default function addCandidateSagas() {
-  return [takeEvery(GET_CANDIDATE_SUGGESTIONS, getCandidateSuggestions)];
+  return [takeLatest(GET_CANDIDATE_SUGGESTIONS, getCandidateSuggestions)];
 }

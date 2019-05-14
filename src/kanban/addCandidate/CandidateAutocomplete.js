@@ -4,6 +4,7 @@ import { pathOr, prop, propOr } from "ramda";
 import { array, bool, func, object } from "prop-types";
 import styled from "styled-components";
 import { getCandidateName } from "../../utils/kanban";
+import debounce from "../../utils/debounce";
 import { getSuggestions } from "./addCandidate.actions";
 
 const Container = styled.div(({ displayAuto }) => ({
@@ -34,7 +35,9 @@ export const CandidateInput = ({
     getSuggestions();
   }, []);
 
-  const onEnterText = event => getSuggestions(event.target.value);
+  const getSuggestionsDebounced = debounce(getSuggestions, 350);
+
+  const onEnterText = event => getSuggestionsDebounced(event.target.value);
   const onSelectSuggestion = suggestion => {
     getSuggestions();
     onSelect(suggestion);
