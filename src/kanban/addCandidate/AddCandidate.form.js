@@ -24,7 +24,7 @@ const AddCandidateForm = ({ handleSubmit, onClose, valid }) => (
         ))
       }
     />
-    <Row>
+    <Row style={{ marginTop: 24 }}>
       <Action type="button" onClick={onClose}>
         Cancel
       </Action>
