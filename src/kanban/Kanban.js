@@ -50,7 +50,7 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
   const [modalData, setModalData] = useState(undefined);
 
   useEffect(() => {
-    getKanban();
+    if (!prop("length", bms)) getKanban();
   }, []);
 
   const onDnd = result => {
