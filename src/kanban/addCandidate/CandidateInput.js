@@ -11,7 +11,7 @@ export const CandidateInput = ({ input, meta: { error } }) => {
 
   const onEdit = () => {
     if (!isEditing) {
-      onChange({});
+      onChange(null);
       setIsEditing(true);
       autoInput.current.focus();
     }

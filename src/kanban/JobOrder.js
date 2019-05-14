@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { pathOr, prop, propOr } from "ramda";
 import { number, object, string } from "prop-types";
@@ -7,6 +7,7 @@ import ReactTooltip from "react-tooltip";
 import PriorityBadge from "../components/PriorityBadge";
 import { Row } from "./Kanban";
 import Board from "./board/Board";
+import AddCandidateModal from "./addCandidate/AddCandidateModal";
 
 const Column = styled.div({
   display: "flex",
@@ -69,34 +70,50 @@ const Tooltip = styled(ReactTooltip)`
   }
 `;
 
-const JobOrder = ({ color, jobOrder }) => (
-  <Row>
-    <Column>
-      <Row>
-        <Title data-tip={prop("description", jobOrder)}>
-          {propOr("", "title", jobOrder)}
-        </Title>
-        <PriorityBadge priority={prop("employmentType", jobOrder)} />
-        <Tooltip className="jobDescription" place="right" html effect="solid" />
-      </Row>
-      <Row>
-        <Text>
-          {`${pathOr("", ["clientContact", "firstName"], jobOrder)} ${pathOr(
-            "",
-            ["clientContact", "lastName"],
-            jobOrder
-          )} `}
-        </Text>
-        <AddButton color={color}>+</AddButton>
-      </Row>
-    </Column>
-    <Board
-      bmId={prop("bmId", jobOrder)}
-      clientCorporationId={prop("clientCorporationId", jobOrder)}
-      jobOrderId={prop("id", jobOrder)}
-    />
-  </Row>
-);
+const JobOrder = ({ color, jobOrder }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  return (
+    <Row>
+      <Column>
+        <Row>
+          <Title data-tip={prop("description", jobOrder)}>
+            {propOr("", "title", jobOrder)}
+          </Title>
+          <PriorityBadge priority={prop("employmentType", jobOrder)} />
+          <Tooltip
+            className="jobDescription"
+            place="right"
+            html
+            effect="solid"
+          />
+        </Row>
+        <Row>
+          <Text>
+            {`${pathOr("", ["clientContact", "firstName"], jobOrder)} ${pathOr(
+              "",
+              ["clientContact", "lastName"],
+              jobOrder
+            )} `}
+          </Text>
+          <AddButton color={color} onClick={() => setIsModalOpen(true)}>
+            +
+          </AddButton>
+          <AddCandidateModal
+            jobOrder={jobOrder}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </Row>
+      </Column>
+      <Board
+        bmId={prop("bmId", jobOrder)}
+        clientCorporationId={prop("clientCorporationId", jobOrder)}
+        jobOrderId={prop("id", jobOrder)}
+      />
+    </Row>
+  );
+};
 
 JobOrder.propTypes = {
   color: string,
