@@ -44,7 +44,6 @@ AddCandidateForm.propTypes = {
 export default reduxForm({
   form: "addCandidate",
   initialValues: {
-    candidate: { firstName: "elisa", lastName: "elloo" },
     status: prop(0, AVAILABLE_STATUSES)
   }
 })(AddCandidateForm);

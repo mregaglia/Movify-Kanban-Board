@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { pathOr, propOr } from "ramda";
 import { array, bool, func, object } from "prop-types";
@@ -18,7 +18,15 @@ export const CandidateInput = ({
   onSelect,
   suggestions
 }) => {
+  useEffect(() => {
+    getSuggestions();
+  }, []);
+
   const onEnterText = event => getSuggestions(event.target.value);
+  const onSelectSuggestion = suggestion => {
+    getSuggestions();
+    onSelect(suggestion);
+  };
 
   return (
     <Container displayAuto={displayAuto}>
@@ -27,7 +35,7 @@ export const CandidateInput = ({
         {suggestions.map((suggestion, index) => (
           <div
             key={propOr(index, "id", suggestion)}
-            onClick={() => onSelect(suggestion)}
+            onClick={() => onSelectSuggestion(suggestion)}
           >
             {getCandidateName(suggestion)}
           </div>

@@ -14,6 +14,7 @@ export const CandidateInput = ({ input, meta: { error } }) => {
       onChange(null);
       setIsEditing(true);
       autoInput.current.focus();
+      autoInput.current.value = "";
     }
   };
 
