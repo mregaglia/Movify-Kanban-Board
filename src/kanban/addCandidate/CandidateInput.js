@@ -1,9 +1,18 @@
 import React, { useRef, useState } from "react";
 import { prop } from "ramda";
 import { object, string } from "prop-types";
+import styled from "styled-components";
 import { Error, Label, Row } from "../../components/form";
 import { getCandidateName } from "../../utils/kanban";
 import CandidateAutocomplete from "./CandidateAutocomplete";
+
+export const Input = styled.input(({ theme }) => ({
+  padding: 4,
+  borderColor: theme.colors.mediumGrey,
+  borderWidth: 1,
+  borderStyle: "solid",
+  width: 200
+}));
 
 export const CandidateInput = ({ input, meta: { error } }) => {
   const autoInput = useRef(null);
@@ -32,9 +41,9 @@ export const CandidateInput = ({ input, meta: { error } }) => {
     <Row>
       <Label label="Candidate" />
       <div onClick={onEdit}>
-        <div style={{ height: 26 }}>
+        <div style={{ height: 27 }}>
           <div style={{ position: "absolute" }}>
-            <input value={getCandidateName(prop("value", input))} disabled />
+            <Input value={getCandidateName(prop("value", input))} disabled />
           </div>
           <CandidateAutocomplete
             displayAuto={isEditing}

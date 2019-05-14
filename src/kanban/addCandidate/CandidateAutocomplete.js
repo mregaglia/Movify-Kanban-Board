@@ -6,22 +6,34 @@ import styled from "styled-components";
 import { getCandidateName } from "../../utils/kanban";
 import debounce from "../../utils/debounce";
 import { getSuggestions } from "./addCandidate.actions";
+import { Input } from "./CandidateInput";
 
 const Container = styled.div(({ displayAuto }) => ({
   opacity: displayAuto ? 1 : 0,
   position: "absolute"
 }));
 
-const SuggestionsContainer = styled.div({
-  backgroundColor: "white",
-  border: "1px solid #999",
+const SuggestionsContainer = styled.div(({ theme }) => ({
+  width: "200px + 1rem",
+  backgroundColor: theme.colors.darkWhite,
+  borderColor: theme.colors.mediumGrey,
+  borderWidth: 1,
+  borderStyle: "solid",
   borderTopWidth: 0,
   listStyle: "none",
   maxHeight: 130,
   overflowY: "auto"
-});
+}));
 const Suggestion = styled.div(({ theme }) => ({
-  fontFamily: theme.fonts.fontFamily
+  fontFamily: theme.fonts.fontFamily,
+  fontSize: theme.textDimensions.regular,
+  paddingLeft: 8,
+  paddingRight: 8,
+  paddingTop: 10,
+  paddingBottom: 10,
+  borderBottomStyle: "solid",
+  borderBottomColor: theme.colors.grey,
+  borderBottomWidth: 1
 }));
 
 export const CandidateInput = ({
@@ -45,7 +57,7 @@ export const CandidateInput = ({
 
   return (
     <Container displayAuto={displayAuto}>
-      <input ref={autoInput} onChange={onEnterText} />
+      <Input ref={autoInput} onChange={onEnterText} />
       {!!prop("length", suggestions) && (
         <SuggestionsContainer>
           {suggestions.map((suggestion, index) => (
