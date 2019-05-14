@@ -14,6 +14,7 @@ import Home from "./auth/Home";
 import Login from "./auth/Login";
 import Kanban from "./kanban/Kanban";
 import { checkAuth } from "./auth/auth.actions";
+import Header from "./Header";
 
 class App extends Component {
   componentDidMount() {
@@ -33,6 +34,7 @@ class App extends Component {
       <Router>
         <ThemeProvider theme={theme}>
           <div>
+            <Header />
             <Route exact path="/" component={Home} />
             <Route exact path="/login" component={Login} />
             <AuthenticatedRoute exact path="/kanban" component={Kanban} />

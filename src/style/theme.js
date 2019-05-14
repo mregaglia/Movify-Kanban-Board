@@ -7,13 +7,15 @@ export default {
     yellow: "#FFBF53",
     green: "#60C659",
     linkedin: "#0077B5",
+    black: "#000",
     mediumGrey: "#B0B0B0",
     grey: "#DCDCDC",
     transparentGrey: "rgba(255,255,255, 0.4)",
     lightGrey: "#F2F2F2",
     tooltipShadow: "#0f3443",
     backgroundShadow: "rgba(0,0,0, 0.4)",
-    darkWhite: "#FDFDFD"
+    darkWhite: "#FDFDFD",
+    white: "#FFF"
   },
   priorityColors: {
     P1: "#0f3443",
