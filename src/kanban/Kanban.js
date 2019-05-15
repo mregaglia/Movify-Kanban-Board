@@ -2,46 +2,14 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { path, pathOr, prop } from "ramda";
 import { array, bool, func } from "prop-types";
-import styled from "styled-components";
 import { DragDropContext } from "react-beautiful-dnd";
 import theme from "../style/theme";
 import { getColumnData, isFromSameBoard } from "../utils/kanban";
+import { Title } from "../components";
 import { getKanban, updateJobSubmission } from "./kanban.actions";
 import Bm from "./Bm";
 import ConfirmationModal from "./board/ConfirmationModal";
 import DepartmentFilter from "./departmentFilter/DepartmentFilter";
-
-const Container = styled.div({
-  paddingLeft: 25,
-  paddingRight: 25,
-  paddingTop: 25,
-  paddingBottom: 25
-});
-
-export const Row = styled.div({
-  display: "flex",
-  flexDirection: "row"
-});
-
-export const Column = styled.div({
-  display: "flex",
-  flexDirection: "column",
-  flex: 1
-});
-
-export const Text = styled.div(({ theme }) => ({
-  display: "inline-block",
-  fontFamily: theme.fonts.fontFamily,
-  fontSize: theme.textDimensions.regular,
-  padding: 12,
-  textOverflow: "ellipsis",
-  overflow: "hidden"
-}));
-
-const Title = styled(Text)(({ theme }) => ({
-  fontSize: theme.textDimensions.bigTitle,
-  marginBottom: 20
-}));
 
 const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
 
@@ -80,13 +48,13 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
 
   if (loading)
     return (
-      <Container>
+      <div>
         <Title>Loading ...</Title>
-      </Container>
+      </div>
     );
 
   return (
-    <Container>
+    <div>
       <ConfirmationModal
         data={modalData}
         isOpen={isModalOpen}
@@ -98,7 +66,7 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
           <Bm key={bmId} bmId={bmId} color={getBmColor(index)} />
         ))}
       </DragDropContext>
-    </Container>
+    </div>
   );
 };
 

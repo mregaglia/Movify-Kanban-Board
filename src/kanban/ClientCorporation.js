@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { pathOr, propOr } from "ramda";
 import { number, object, string } from "prop-types";
 import styled from "styled-components";
-import { Column, Row } from "./Kanban";
+import { Column, Row } from "../components";
 import JobOrder from "./JobOrder";
 
 export const Text = styled.div(({ color, theme }) => ({

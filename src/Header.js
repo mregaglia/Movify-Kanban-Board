@@ -41,7 +41,7 @@ const HeaderLink = ({ label, to }) => (
     path={to}
     exact
     children={({ match }) => (
-      <StyledLink isactive={!!match} to={to}>
+      <StyledLink isactive={match ? match : undefined} to={to}>
         {label}
       </StyledLink>
     )}

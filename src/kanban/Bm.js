@@ -4,7 +4,7 @@ import { pathOr, prop, propOr } from "ramda";
 import { number, object, string } from "prop-types";
 import styled from "styled-components";
 import { formatBmName } from "../utils/kanban";
-import { Column, Row } from "./Kanban";
+import { Column, Row } from "../components";
 import ClientCorporation from "./ClientCorporation";
 
 export const Text = styled.div(({ color, theme }) => ({

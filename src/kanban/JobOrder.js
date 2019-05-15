@@ -5,7 +5,7 @@ import { number, object, string } from "prop-types";
 import styled from "styled-components";
 import ReactTooltip from "react-tooltip";
 import PriorityBadge from "../components/PriorityBadge";
-import { Row } from "./Kanban";
+import { Row } from "../components";
 import Board from "./board/Board";
 import AddCandidateModal from "./addCandidate/AddCandidateModal";
 
