@@ -6,9 +6,13 @@ import { DragDropContext } from "react-beautiful-dnd";
 import theme from "../style/theme";
 import { getColumnData, isFromSameBoard } from "../utils/kanban";
 import { Title } from "../components";
-import { getKanban, updateJobSubmission } from "./kanban.actions";
+import {
+  createJobSubmission,
+  getKanban,
+  updateJobSubmission
+} from "./kanban.actions";
 import Bm from "./Bm";
-import ConfirmationModal from "./ConfirmationModal";
+import DuplicateModal from "./DuplicateModal";
 import DepartmentFilter from "./departmentFilter/DepartmentFilter";
 
 const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
@@ -55,7 +59,7 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
 
   return (
     <div>
-      <ConfirmationModal
+      <DuplicateModal
         data={modalData}
         isOpen={isModalOpen}
         onClose={onCloseModal}
@@ -82,5 +86,5 @@ export default connect(
     bms: pathOr([], ["departmentFilter", "filteredBms"], state),
     loading: pathOr(true, ["kanban", "loading"], state)
   }),
-  { getKanban, updateJobSubmission }
+  { createJobSubmission, getKanban, updateJobSubmission }
 )(Kanban);
