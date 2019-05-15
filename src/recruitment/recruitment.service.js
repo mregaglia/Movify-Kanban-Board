@@ -1,4 +1,5 @@
-import { get } from "../utils/api";
+import { get, post } from "../utils/api";
+import { getFilterStatusRequest, RECRUITMENT_STATUSES } from "../utils/kanban";
 
 export const getTalentAcquisitionManagers = (start = 0) =>
   get("query/CorporateUser", {
@@ -7,3 +8,17 @@ export const getTalentAcquisitionManagers = (start = 0) =>
     orderBy: "firstName,primaryDepartment.name",
     start
   });
+
+export const getJobSubmissions = (jobOrderId, start = 0) =>
+  post(
+    "search/JobSubmission",
+    {
+      query: `jobOrder.id:${jobOrderId} AND isDeleted:false AND (${getFilterStatusRequest(
+        RECRUITMENT_STATUSES
+      )})`,
+      start
+    },
+    {
+      fields: "id,candidate,jobOrder,owners,sendingUser,status,dateLastModified"
+    }
+  );
