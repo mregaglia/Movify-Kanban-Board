@@ -5,7 +5,7 @@ import { number, object, oneOfType, string } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import { getCandidateBorderColor } from "../../utils/kanban";
-import LinkedinBadge from "../../components/LinkedinBadge";
+import LinkedinBadge from "../LinkedinBadge";
 
 const Container = styled.div(({ borderColor, theme }) => ({
   display: "flex",
@@ -55,16 +55,13 @@ const CandidateCard = ({ index, jobSubmissionId, jobSubmission }) => (
 );
 
 CandidateCard.propTypes = {
+  board: string,
   candidate: object,
   index: number,
   jobSubmissionId: oneOfType([number, string]),
   jobSubmission: object
 };
 
-export default connect((state, { jobSubmissionId }) => ({
-  jobSubmission: pathOr(
-    {},
-    ["kanban", "jobSubmissions", jobSubmissionId],
-    state
-  )
+export default connect((state, { board, jobSubmissionId }) => ({
+  jobSubmission: pathOr({}, [board, "jobSubmissions", jobSubmissionId], state)
 }))(CandidateCard);

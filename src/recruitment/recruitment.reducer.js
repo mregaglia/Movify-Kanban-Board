@@ -40,6 +40,7 @@ const recruitment = {
   }),
   [UPDATE_RECRUITMENT_JOB_SUBMISSIONS]: (state, payload) => ({
     ...state,
+    loading: false,
     jobSubmissions: mergeDeepWith(unionArrays, state.jobSubmissions, payload)
   })
 };

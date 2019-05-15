@@ -57,5 +57,6 @@ export default {
     "#FCAD56",
     "#FF7F1E",
     "#8754A1"
-  ]
+  ],
+  pipeColors: ["#17B79B", "#6BD7DA"]
 };

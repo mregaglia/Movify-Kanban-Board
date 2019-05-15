@@ -42,7 +42,7 @@ const Title = styled.div(({ theme }) => ({
   overflow: "hidden"
 }));
 
-const Column = ({ columnId, jobSubmissions, status }) => {
+const Column = ({ board, columnId, jobSubmissions, status }) => {
   return (
     <Container>
       <Title>{status}</Title>
@@ -54,7 +54,7 @@ const Column = ({ columnId, jobSubmissions, status }) => {
               {...provided.droppableProps}
               style={{ minHeight: 65, height: "100%" }}
             >
-              <Candidates jobSubmissions={jobSubmissions} />
+              <Candidates board={board} jobSubmissions={jobSubmissions} />
               {provided.placeholder}
             </div>
           </Content>
@@ -64,6 +64,7 @@ const Column = ({ columnId, jobSubmissions, status }) => {
   );
 };
 Column.propTypes = {
+  board: string,
   columnId: string,
   jobSubmissions: array,
   status: string

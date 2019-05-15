@@ -8,7 +8,7 @@ import { getColumnData, isFromSameBoard } from "../utils/kanban";
 import { Title } from "../components";
 import { getKanban, updateJobSubmission } from "./kanban.actions";
 import Bm from "./Bm";
-import ConfirmationModal from "./board/ConfirmationModal";
+import ConfirmationModal from "./ConfirmationModal";
 import DepartmentFilter from "./departmentFilter/DepartmentFilter";
 
 const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
