@@ -2,7 +2,7 @@ import React from "react";
 import { propOr } from "ramda";
 import { array, number, object, string } from "prop-types";
 import styled from "styled-components";
-import { createColumnId } from "../../utils/kanban";
+import { createColumnId, getColumnWidth } from "../../utils/kanban";
 import Column from "./Column";
 
 const Container = styled.div(({ theme }) => ({
@@ -30,6 +30,7 @@ const Board = ({
         board={board}
         key={status}
         status={status}
+        columnWidth={getColumnWidth(propOr(1, "length", statuses))}
         jobSubmissions={propOr([], status, jobSubmissions)}
         columnId={createColumnId(bmId, clientCorporationId, jobOrderId, status)}
       />

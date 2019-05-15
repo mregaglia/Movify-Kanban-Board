@@ -94,3 +94,5 @@ export const createItemFilter = item => [
 
 export const unionArrays = (l, r) =>
   is(Array, l) && is(Array, r) ? union(l, r) : r;
+
+export const getColumnWidth = numberColumns => `${100 / numberColumns}%`;

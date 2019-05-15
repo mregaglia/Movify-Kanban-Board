@@ -12,14 +12,14 @@ const getBackgroundColor = (isNoGo, snapshot, theme) => {
   return theme.colors.darkWhite;
 };
 
-const Container = styled.div({
+const Container = styled.div(({ columnWidth }) => ({
   display: "flex",
   flexDirection: "column",
   flexGrow: 1,
-  width: "14.3%",
-  minWidth: "14.3%",
-  maxWidth: "14.3%"
-});
+  width: columnWidth,
+  minWidth: columnWidth,
+  maxWidth: columnWidth
+}));
 
 const Content = styled.div(({ isNoGo, snapshot, theme }) => ({
   display: "flex",
@@ -42,9 +42,9 @@ const Title = styled.div(({ theme }) => ({
   overflow: "hidden"
 }));
 
-const Column = ({ board, columnId, jobSubmissions, status }) => {
+const Column = ({ board, columnId, columnWidth, jobSubmissions, status }) => {
   return (
-    <Container>
+    <Container columnWidth={columnWidth}>
       <Title>{status}</Title>
       <Droppable droppableId={columnId}>
         {(provided, snapshot) => (
@@ -66,6 +66,7 @@ const Column = ({ board, columnId, jobSubmissions, status }) => {
 Column.propTypes = {
   board: string,
   columnId: string,
+  columnWidth: string,
   jobSubmissions: array,
   status: string
 };
