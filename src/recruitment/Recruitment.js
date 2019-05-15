@@ -9,6 +9,7 @@ import { getRecruitment, updateJobSubmission } from "./recruitment.actions";
 import { Title } from "../components";
 import ClientCorporation from "./ClientCorporation";
 import HrLegend from "./HrLegend";
+import UpdateModal from "./UpdateModal";
 
 const getPipeColor = index => theme.pipeColors[index % theme.pipeColors.length];
 
@@ -46,6 +47,10 @@ const Recruitment = ({
     }
   };
 
+  const onCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   if (loading)
     return (
       <div>
@@ -65,6 +70,11 @@ const Recruitment = ({
           />
         ))}
       </DragDropContext>
+      <UpdateModal
+        data={modalData}
+        isOpen={isModalOpen}
+        onClose={onCloseModal}
+      />
     </div>
   );
 };

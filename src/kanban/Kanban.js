@@ -59,17 +59,17 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
 
   return (
     <div>
-      <DuplicateModal
-        data={modalData}
-        isOpen={isModalOpen}
-        onClose={onCloseModal}
-      />
       <DepartmentFilter />
       <DragDropContext onDragEnd={onDnd}>
         {bms.map((bmId, index) => (
           <Bm key={bmId} bmId={bmId} color={getBmColor(index)} />
         ))}
       </DragDropContext>
+      <DuplicateModal
+        data={modalData}
+        isOpen={isModalOpen}
+        onClose={onCloseModal}
+      />
     </div>
   );
 };
