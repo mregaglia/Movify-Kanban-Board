@@ -7,7 +7,7 @@ import JobOrder from "./JobOrder";
 
 const ClientCorporation = ({ clientCorporation, color }) => (
   <Row style={{ marginBottom: 6 }}>
-    <ColorColumnText color={color}>
+    <ColorColumnText style={{ width: "80px" }} color={color}>
       {prop("name", clientCorporation)}
     </ColorColumnText>
     <Column>

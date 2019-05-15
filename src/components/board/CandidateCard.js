@@ -1,11 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import { path, pathOr, prop } from "ramda";
-import { number, object, oneOfType, string } from "prop-types";
+import { array, number, object, oneOfType, string } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import { getCandidateBorderColor } from "../../utils/kanban";
 import LinkedinBadge from "../LinkedinBadge";
+import { getHrColor } from "../../recruitment/HrLegend";
 
 const Container = styled.div(({ borderColor, theme }) => ({
   display: "flex",
@@ -23,6 +24,7 @@ const Container = styled.div(({ borderColor, theme }) => ({
 const Text = styled.div(({ theme }) => ({
   display: "flex",
   flex: 1,
+  alignSelf: "center",
   marginTop: 10,
   marginBottom: 10,
   marginLeft: 15,
@@ -33,7 +35,34 @@ const Text = styled.div(({ theme }) => ({
   overflow: "hidden"
 }));
 
-const CandidateCard = ({ index, jobSubmissionId, jobSubmission }) => (
+const Column = styled.div({
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "space-between"
+});
+
+const Badge = styled.div(({ color }) => ({
+  backgroundColor: color,
+  height: 14,
+  width: 14,
+  borderRadius: 7,
+  marginTop: 4,
+  marginBottom: 4
+}));
+
+const getHrBadgeColor = (hrId, hrs) => {
+  const index = hrs.findIndex(hr => prop("id", hr) === hrId);
+  if (index >= 0) return getHrColor(index);
+};
+
+const CandidateCard = ({
+  board,
+  hrs,
+  index,
+  jobSubmissionId,
+  jobSubmission
+}) => (
   <Draggable draggableId={jobSubmissionId} index={index}>
     {provided => (
       <Container
@@ -48,7 +77,17 @@ const CandidateCard = ({ index, jobSubmissionId, jobSubmission }) => (
           {pathOr("", ["candidate", "firstName"], jobSubmission)}{" "}
           {pathOr("", ["candidate", "lastName"], jobSubmission)}
         </Text>
-        <LinkedinBadge candidate={prop("candidate", jobSubmission)} />
+        <Column>
+          <LinkedinBadge candidate={prop("candidate", jobSubmission)} />
+          {board === "recruitment" && (
+            <Badge
+              color={getHrBadgeColor(
+                path(["owners", "data", 0, "id"], jobSubmission),
+                hrs
+              )}
+            />
+          )}
+        </Column>
       </Container>
     )}
   </Draggable>
@@ -57,11 +96,13 @@ const CandidateCard = ({ index, jobSubmissionId, jobSubmission }) => (
 CandidateCard.propTypes = {
   board: string,
   candidate: object,
+  hrs: array,
   index: number,
   jobSubmissionId: oneOfType([number, string]),
   jobSubmission: object
 };
 
 export default connect((state, { board, jobSubmissionId }) => ({
-  jobSubmission: pathOr({}, [board, "jobSubmissions", jobSubmissionId], state)
+  jobSubmission: pathOr({}, [board, "jobSubmissions", jobSubmissionId], state),
+  hrs: pathOr({}, ["recruitment", "hrs"], state)
 }))(CandidateCard);

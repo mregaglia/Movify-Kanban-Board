@@ -9,7 +9,8 @@ import {
   getJobSubmissions as getJobSubmissionsAction,
   updateJobSubmissions,
   GET_RECRUITMENT_JOB_SUBMISSIONS,
-  GET_RECRUITMENT_JOB_ORDERS
+  GET_RECRUITMENT_JOB_ORDERS,
+  updateHrs
 } from "./recruitment.actions";
 import {
   getTalentAcquisitionManagers,
@@ -106,6 +107,7 @@ export function* getJobSubmissions(action, start = 0) {
     const jsList = propOr([], "data", jobSubmissionsResponse);
 
     const jobOrders = {};
+    const hrs = [];
     const jobSubmissions = yield all(
       jsList.reduce((acc, js) => {
         acc[prop("id", js)] = {
@@ -125,12 +127,16 @@ export function* getJobSubmissions(action, start = 0) {
           }
         };
 
+        const hr = path(["owners", "data", 0], js);
+        if (hr) hrs.push(hr);
+
         return acc;
       }, {})
     );
 
     yield put(updateJobSubmissions(jobSubmissions));
     yield put(updateJobOrders(jobOrders));
+    yield put(updateHrs(hrs));
   } catch (e) {
     //
   }

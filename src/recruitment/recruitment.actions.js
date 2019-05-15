@@ -9,6 +9,7 @@ export const GET_RECRUITMENT_JOB_SUBMISSIONS =
   "GET_RECRUITMENT_JOB_SUBMISSIONS";
 export const UPDATE_RECRUITMENT_JOB_SUBMISSIONS =
   "UPDATE_RECRUITMENT_JOB_SUBMISSIONS";
+export const UPDATE_HRS = "UPDATE_HRS";
 
 export const getRecruitment = () => ({ type: GET_RECRUITMENT });
 
@@ -39,3 +40,5 @@ export const updateJobSubmissions = jobSubmissions => ({
   type: UPDATE_RECRUITMENT_JOB_SUBMISSIONS,
   payload: jobSubmissions
 });
+
+export const updateHrs = hrs => ({ type: UPDATE_HRS, payload: hrs });

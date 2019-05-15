@@ -6,7 +6,8 @@ import {
   UPDATE_RECRUITMENT_CLIENT_CORPORATIONS,
   UPDATE_RECRUITMENT_JOB_ORDERS,
   UPDATE_RECRUITMENT_JOB_SUBMISSIONS,
-  UPDATE_RECRUITMENT_CLIENT_CORPORATIONS_IDS
+  UPDATE_RECRUITMENT_CLIENT_CORPORATIONS_IDS,
+  UPDATE_HRS
 } from "./recruitment.actions";
 
 export const initialState = {
@@ -14,7 +15,8 @@ export const initialState = {
   clientList: [],
   clientCorporations: {},
   jobOrders: {},
-  jobSubmissions: {}
+  jobSubmissions: {},
+  hrs: []
 };
 
 const recruitment = {
@@ -42,6 +44,10 @@ const recruitment = {
     ...state,
     loading: false,
     jobSubmissions: mergeDeepWith(unionArrays, state.jobSubmissions, payload)
+  }),
+  [UPDATE_HRS]: (state, payload) => ({
+    ...state,
+    hrs: union(state.hrs, payload)
   })
 };
 

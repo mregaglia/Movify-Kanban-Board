@@ -7,8 +7,9 @@ import theme from "../style/theme";
 import { getRecruitment } from "./recruitment.actions";
 import { Title } from "../components";
 import ClientCorporation from "./ClientCorporation";
+import HrLegend from "./HrLegend";
 
-const getPipeColor = index => theme.pipeColors[index % theme.bmColors.length];
+const getPipeColor = index => theme.pipeColors[index % theme.pipeColors.length];
 
 const Recruitment = ({ clientList, getRecruitment, loading }) => {
   useEffect(() => {
@@ -26,6 +27,7 @@ const Recruitment = ({ clientList, getRecruitment, loading }) => {
 
   return (
     <div>
+      <HrLegend />
       <DragDropContext onDragEnd={onDnd}>
         {clientList.map((client, index) => (
           <ClientCorporation
