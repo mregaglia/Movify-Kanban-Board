@@ -1,5 +1,14 @@
-import { all, call, put, takeLatest, takeEvery } from "redux-saga/effects";
+import {
+  all,
+  call,
+  put,
+  select,
+  takeLatest,
+  takeEvery
+} from "redux-saga/effects";
 import { path, pathOr, prop, propOr } from "ramda";
+import { toast } from "react-toastify";
+import en from "../lang/en";
 import {
   GET_RECRUITMENT,
   updateClientCorporationsIds,
@@ -10,13 +19,26 @@ import {
   updateJobSubmissions,
   GET_RECRUITMENT_JOB_SUBMISSIONS,
   GET_RECRUITMENT_JOB_ORDERS,
-  updateHrs
+  updateHrs,
+  UPDATE_RECRUITMENT_JOB_SUBMISSION,
+  setJobOrders,
+  setJobSubmissions
 } from "./recruitment.actions";
 import {
   getTalentAcquisitionManagers,
   getJobSubmissions as getJobSubmissionsService
 } from "./recruitment.service";
-import { getJobOrders as getJobOrdersService } from "../kanban/kanban.service";
+import {
+  getJobOrders as getJobOrdersService,
+  updateJobSubmissionStatus as updateJobSubmissionStatusService
+} from "../kanban/kanban.service";
+
+export const getStateJobSubmissions = state =>
+  pathOr({}, ["recruitment", "jobSubmissions"], state);
+export const getStateJobOrders = state =>
+  pathOr({}, ["recruitment", "jobOrders"], state);
+export const getStateJobOrder = (state, jobOrderId) =>
+  pathOr({}, ["recruitment", "jobOrders", jobOrderId], state);
 
 export function* getRecruitment() {
   yield call(getTams);
@@ -142,10 +164,68 @@ export function* getJobSubmissions(action, start = 0) {
   }
 }
 
+export function* updateJobSubmission(action) {
+  const {
+    payload: { prevStatus, jobSubmissionId, status }
+  } = action;
+  try {
+    yield call(updateJobSubmissionStatus, action);
+    yield call(updateJobSubmissionStatusService, jobSubmissionId, status);
+    yield call(toast.success, en.UPDATE_STATUS_SUCCESS);
+  } catch (e) {
+    yield call(updateJobSubmissionStatus, {
+      ...action,
+      payload: { ...action.payload, status: prevStatus, prevStatus: status }
+    });
+    yield call(toast.error, en.UPDATE_STATUS_ERROR);
+  }
+}
+
+export function* updateJobSubmissionStatus(action) {
+  const {
+    payload: { jobOrderId, prevStatus, jobSubmissionId, status }
+  } = action;
+
+  const stateJobSubmissions = yield select(getStateJobSubmissions);
+  const jobSubmission = stateJobSubmissions[jobSubmissionId];
+  const jobSubmissions = {
+    ...stateJobSubmissions,
+    [jobSubmissionId]: {
+      ...jobSubmission,
+      status
+    }
+  };
+
+  yield put(setJobSubmissions(jobSubmissions));
+
+  const stateJobOrder = yield select(getStateJobOrder, jobOrderId);
+  const jojss = {
+    ...prop("jobSubmissions", stateJobOrder),
+    [prevStatus]: pathOr(
+      [],
+      ["jobSubmissions", prevStatus],
+      stateJobOrder
+    ).filter(jsId => jsId !== jobSubmissionId),
+    [status]: pathOr([], ["jobSubmissions", status], stateJobOrder).concat([
+      jobSubmissionId
+    ])
+  };
+  const jobOrder = {
+    [jobOrderId]: {
+      ...stateJobOrder,
+      jobSubmissions: jojss
+    }
+  };
+
+  const stateJobOrders = yield select(getStateJobOrders);
+  yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
+}
+
 export default function kanbanSagas() {
   return [
     takeLatest(GET_RECRUITMENT, getRecruitment),
     takeEvery(GET_RECRUITMENT_JOB_ORDERS, getJobOrders),
-    takeEvery(GET_RECRUITMENT_JOB_SUBMISSIONS, getJobSubmissions)
+    takeEvery(GET_RECRUITMENT_JOB_SUBMISSIONS, getJobSubmissions),
+    takeEvery(UPDATE_RECRUITMENT_JOB_SUBMISSION, updateJobSubmission)
   ];
 }

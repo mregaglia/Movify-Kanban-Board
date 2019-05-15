@@ -1,22 +1,50 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { pathOr, prop } from "ramda";
+import { path, pathOr, prop } from "ramda";
 import { array, bool, func } from "prop-types";
 import { DragDropContext } from "react-beautiful-dnd";
 import theme from "../style/theme";
-import { getRecruitment } from "./recruitment.actions";
+import { getColumnData, isFromSameBoard } from "../utils/kanban";
+import { getRecruitment, updateJobSubmission } from "./recruitment.actions";
 import { Title } from "../components";
 import ClientCorporation from "./ClientCorporation";
 import HrLegend from "./HrLegend";
 
 const getPipeColor = index => theme.pipeColors[index % theme.pipeColors.length];
 
-const Recruitment = ({ clientList, getRecruitment, loading }) => {
+const Recruitment = ({
+  clientList,
+  getRecruitment,
+  loading,
+  updateJobSubmission
+}) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState(undefined);
+
   useEffect(() => {
     if (!prop("length", clientList)) getRecruitment();
   }, []);
 
-  const onDnd = () => {};
+  const onDnd = result => {
+    if (!prop("destination", result)) return;
+    const jobSubmissionId = prop("draggableId", result);
+    const src = getColumnData(path(["source", "droppableId"], result));
+    const dest = getColumnData(path(["destination", "droppableId"], result));
+    const srcStatus = prop("status", src);
+    const destStatus = prop("status", dest);
+    const jobOrderId = prop("jobOrderId", src);
+    const destJobOrderId = prop("jobOrderId", dest);
+    if (isFromSameBoard(src, dest) && src.status !== dest.status) {
+      updateJobSubmission(jobOrderId, srcStatus, jobSubmissionId, destStatus);
+    } else if (!isFromSameBoard(src, dest)) {
+      setIsModalOpen(true);
+      setModalData({
+        jobOrderId: destJobOrderId,
+        jobSubmissionId,
+        status: destStatus
+      });
+    }
+  };
 
   if (loading)
     return (
@@ -44,7 +72,8 @@ const Recruitment = ({ clientList, getRecruitment, loading }) => {
 Recruitment.propTypes = {
   clientList: array,
   getRecruitment: func,
-  loading: bool
+  loading: bool,
+  updateJobSubmission: func
 };
 
 export default connect(
@@ -52,5 +81,5 @@ export default connect(
     clientList: pathOr([], ["recruitment", "clientList"], state),
     loading: pathOr(true, ["recruitment", "loading"], state)
   }),
-  { getRecruitment }
+  { getRecruitment, updateJobSubmission }
 )(Recruitment);
