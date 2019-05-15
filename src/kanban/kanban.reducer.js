@@ -1,5 +1,6 @@
-import { is, mergeDeepWith, union } from "ramda";
+import { mergeDeepWith } from "ramda";
 import { bindReducer } from "../utils/reducer";
+import { unionArrays } from "../utils/kanban";
 import {
   GET_KANBAN,
   SET_BMS,
@@ -10,8 +11,6 @@ import {
   SET_JOB_SUBMISSIONS,
   UPDATE_JOB_SUBMISSIONS
 } from "./kanban.actions";
-
-const unionArrays = (l, r) => (is(Array, l) && is(Array, r) ? union(l, r) : r);
 
 export const initialState = {
   loading: false,
