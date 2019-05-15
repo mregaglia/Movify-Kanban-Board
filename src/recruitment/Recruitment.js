@@ -1,21 +1,54 @@
 import React, { useEffect } from "react";
 import { connect } from "react-redux";
-import { func } from "prop-types";
+import { pathOr, prop } from "ramda";
+import { array, bool, func } from "prop-types";
+import { DragDropContext } from "react-beautiful-dnd";
+import theme from "../style/theme";
 import { getRecruitment } from "./recruitment.actions";
+import { Title } from "../components";
+import ClientCorporation from "./ClientCorporation";
 
-const Recruitment = ({ getRecruitment }) => {
+const getPipeColor = index => theme.pipeColors[index % theme.bmColors.length];
+
+const Recruitment = ({ clientList, getRecruitment, loading }) => {
   useEffect(() => {
-    getRecruitment();
+    if (!prop("length", clientList)) getRecruitment();
   }, []);
 
-  return <div>hello</div>;
+  const onDnd = () => {};
+
+  if (loading)
+    return (
+      <div>
+        <Title>Loading ...</Title>
+      </div>
+    );
+
+  return (
+    <div>
+      <DragDropContext onDragEnd={onDnd}>
+        {clientList.map((client, index) => (
+          <ClientCorporation
+            key={client}
+            clientId={client}
+            color={getPipeColor(index)}
+          />
+        ))}
+      </DragDropContext>
+    </div>
+  );
 };
 
 Recruitment.propTypes = {
-  getRecruitment: func
+  clientList: array,
+  getRecruitment: func,
+  loading: bool
 };
 
 export default connect(
-  null,
+  state => ({
+    clientList: pathOr([], ["recruitment", "clientList"], state),
+    loading: pathOr(true, ["recruitment", "loading"], state)
+  }),
   { getRecruitment }
 )(Recruitment);
