@@ -7,6 +7,7 @@ import { Draggable } from "react-beautiful-dnd";
 import { getCandidateBorderColor } from "../../utils/kanban";
 import LinkedinBadge from "../LinkedinBadge";
 import { getHrColor } from "../../recruitment/HrLegend";
+import Function from "./Function";
 
 const Container = styled.div(({ borderColor, theme }) => ({
   display: "flex",
@@ -21,7 +22,7 @@ const Container = styled.div(({ borderColor, theme }) => ({
   textAlign: "center"
 }));
 
-const Text = styled.div(({ theme }) => ({
+export const Text = styled.div(({ theme }) => ({
   display: "flex",
   flex: 1,
   alignSelf: "center",
@@ -40,6 +41,14 @@ const Column = styled.div({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "space-between"
+});
+
+const TextColumn = styled.div({
+  display: "flex",
+  flexDirection: "column",
+  flex: 1,
+  textOverflow: "ellipsis",
+  overflow: "hidden"
 });
 
 const Badge = styled.div(({ color }) => ({
@@ -73,10 +82,22 @@ const CandidateCard = ({
           prop("dateLastModified", jobSubmission)
         )}
       >
-        <Text>
-          {pathOr("", ["candidate", "firstName"], jobSubmission)}{" "}
-          {pathOr("", ["candidate", "lastName"], jobSubmission)}
-        </Text>
+        <TextColumn>
+          <Text>
+            {pathOr("", ["candidate", "firstName"], jobSubmission)}{" "}
+            {pathOr("", ["candidate", "lastName"], jobSubmission)}
+          </Text>
+          {board === "recruitment" && (
+            <Function
+              board={board}
+              functionTitle={path(
+                ["candidate", "category", "name"],
+                jobSubmission
+              )}
+              ccId={prop("clientCorporationId", jobSubmission)}
+            />
+          )}
+        </TextColumn>
         <Column>
           <LinkedinBadge candidate={prop("candidate", jobSubmission)} />
           {board === "recruitment" && (

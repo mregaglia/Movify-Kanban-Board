@@ -41,9 +41,9 @@ export const updateJobOrders = jobOrders => ({
   payload: jobOrders
 });
 
-export const getJobSubmissions = joId => ({
+export const getJobSubmissions = (joId, ccId) => ({
   type: GET_RECRUITMENT_JOB_SUBMISSIONS,
-  payload: joId
+  payload: { joId, ccId }
 });
 export const setJobSubmissions = jobSubmissions => ({
   type: SET_RECRUITMENT_JOB_SUBMISSIONS,
