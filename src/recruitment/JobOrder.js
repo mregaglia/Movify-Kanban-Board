@@ -15,7 +15,10 @@ const Container = styled.div({
 
 const JobOrder = ({ jobOrder, color }) => (
   <div>
-    <ColorRowText color={color}>{prop("title", jobOrder)}</ColorRowText>
+    <ColorRowText color={color}>{`${prop("title", jobOrder)} – ${prop(
+      "id",
+      jobOrder
+    )}`}</ColorRowText>
     <Container>
       <Board
         board="recruitment"
