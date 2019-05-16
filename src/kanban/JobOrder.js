@@ -7,6 +7,7 @@ import ReactTooltip from "react-tooltip";
 import { AVAILABLE_STATUSES } from "../utils/kanban";
 import PriorityBadge from "../components/PriorityBadge";
 import { Row } from "../components";
+import { Add } from "../components/svgs";
 import Board from "../components/board/Board";
 import AddCandidateModal from "./addCandidate/AddCandidateModal";
 
@@ -50,8 +51,6 @@ const AddButton = styled.div(({ color, theme }) => ({
   height: 30,
   width: 30,
   borderRadius: 15,
-  fontFamily: theme.fonts.fontFamily,
-  fontSize: 28,
   marginRight: 8
 }));
 
@@ -103,7 +102,7 @@ const JobOrder = ({ color, jobOrder }) => {
             )} `}
           </Text>
           <AddButton color={color} onClick={() => setIsModalOpen(true)}>
-            +
+            <Add color="#FFF" style={{ paddingTop: 3, paddingLeft: 1 }} />
           </AddButton>
           <AddCandidateModal
             jobOrder={jobOrder}
