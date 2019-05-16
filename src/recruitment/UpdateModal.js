@@ -1,12 +1,26 @@
 import React from "react";
 import { connect } from "react-redux";
-import { pathOr, prop, propOr } from "ramda";
+import { path, pathOr, prop, propOr } from "ramda";
 import { bool, func, object } from "prop-types";
 import ConfirmationModal from "../components/ConfirmationModal";
+import { updateJobSubmission } from "./recruitment.actions";
 
-const UpdateModal = ({ isOpen, jobOrder, jobSubmission, onClose }) => {
+const UpdateModal = ({
+  data,
+  isOpen,
+  jobOrder,
+  jobSubmission,
+  onClose,
+  updateJobSubmission
+}) => {
   const onConfirm = () => {
-    // TODO : update job submission
+    updateJobSubmission(
+      path(["jobOrder", "id"], jobSubmission),
+      prop("status", jobSubmission),
+      prop("id", jobOrder),
+      prop("id", jobSubmission),
+      prop(["status"], data)
+    );
     onClose();
   };
 
@@ -30,11 +44,12 @@ const UpdateModal = ({ isOpen, jobOrder, jobSubmission, onClose }) => {
 };
 
 UpdateModal.propTypes = {
+  data: object,
   isOpen: bool,
   jobOrder: object,
   jobSubmission: object,
-  data: object,
-  onClose: func
+  onClose: func,
+  updateJobSubmission: func
 };
 
 UpdateModal.defaultProps = {
@@ -55,5 +70,5 @@ export default connect(
       state
     )
   }),
-  {}
+  { updateJobSubmission }
 )(UpdateModal);

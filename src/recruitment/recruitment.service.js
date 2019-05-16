@@ -22,3 +22,9 @@ export const getJobSubmissions = (jobOrderId, start = 0) =>
       fields: "id,candidate,jobOrder,owners,sendingUser,status,dateLastModified"
     }
   );
+
+export const updateJobSubmission = (jobSubmissionId, status, jobOrderId) =>
+  post(`entity/JobSubmission/${jobSubmissionId}`, {
+    status,
+    jobOrder: { id: jobOrderId }
+  });

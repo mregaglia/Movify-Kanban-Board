@@ -20,18 +20,16 @@ import {
   GET_RECRUITMENT_JOB_SUBMISSIONS,
   GET_RECRUITMENT_JOB_ORDERS,
   updateHrs,
-  UPDATE_RECRUITMENT_JOB_SUBMISSION_STATUS,
+  UPDATE_RECRUITMENT_JOB_SUBMISSION,
   setJobOrders,
   setJobSubmissions
 } from "./recruitment.actions";
 import {
   getTalentAcquisitionManagers,
-  getJobSubmissions as getJobSubmissionsService
+  getJobSubmissions as getJobSubmissionsService,
+  updateJobSubmission as updateJobSubmissionService
 } from "./recruitment.service";
-import {
-  getJobOrders as getJobOrdersService,
-  updateJobSubmissionStatus as updateJobSubmissionStatusService
-} from "../kanban/kanban.service";
+import { getJobOrders as getJobOrdersService } from "../kanban/kanban.service";
 
 export const getStateJobSubmissions = state =>
   pathOr({}, ["recruitment", "jobSubmissions"], state);
@@ -164,16 +162,16 @@ export function* getJobSubmissions(action, start = 0) {
   }
 }
 
-export function* updateJobSubmissionStatus(action) {
+export function* updateJobSubmission(action) {
   const {
-    payload: { prevStatus, jobSubmissionId, status }
+    payload: { prevStatus, jobSubmissionId, jobOrderId, status }
   } = action;
   try {
-    yield call(updateStateJobSubmissionStatus, action);
-    yield call(updateJobSubmissionStatusService, jobSubmissionId, status);
+    yield call(updateStateJobSubmission, action);
+    yield call(updateJobSubmissionService, jobSubmissionId, status, jobOrderId);
     yield call(toast.success, en.UPDATE_STATUS_SUCCESS);
   } catch (e) {
-    yield call(updateStateJobSubmissionStatus, {
+    yield call(updateStateJobSubmission, {
       ...action,
       payload: { ...action.payload, status: prevStatus, prevStatus: status }
     });
@@ -181,31 +179,50 @@ export function* updateJobSubmissionStatus(action) {
   }
 }
 
-export function* updateStateJobSubmissionStatus(action) {
+export function* updateStateJobSubmission(action) {
   const {
-    payload: { jobOrderId, prevStatus, jobSubmissionId, status }
+    payload: { prevJobOrderId, jobOrderId, prevStatus, jobSubmissionId, status }
   } = action;
 
+  const stateNewJobOrder = yield select(getStateJobOrder, jobOrderId);
   const stateJobSubmissions = yield select(getStateJobSubmissions);
   const jobSubmission = stateJobSubmissions[jobSubmissionId];
   const jobSubmissions = {
     ...stateJobSubmissions,
     [jobSubmissionId]: {
       ...jobSubmission,
-      status
+      status,
+      jobOrder: {
+        id: prop("id", stateNewJobOrder),
+        title: prop("title", stateNewJobOrder)
+      }
     }
   };
 
   yield put(setJobSubmissions(jobSubmissions));
 
-  const stateJobOrder = yield select(getStateJobOrder, jobOrderId);
-  const jojss = {
-    ...prop("jobSubmissions", stateJobOrder),
+  const statePrevJobOrder = yield select(getStateJobOrder, prevJobOrderId);
+  const prevJojss = {
+    ...prop("jobSubmissions", statePrevJobOrder),
     [prevStatus]: pathOr(
       [],
       ["jobSubmissions", prevStatus],
-      stateJobOrder
-    ).filter(jsId => jsId !== jobSubmissionId),
+      statePrevJobOrder
+    ).filter(jsId => jsId !== jobSubmissionId)
+  };
+  const prevJobOrder = {
+    [prevJobOrderId]: {
+      ...statePrevJobOrder,
+      jobSubmissions: prevJojss
+    }
+  };
+
+  const stateJobOrders1 = yield select(getStateJobOrders);
+  yield put(setJobOrders({ ...stateJobOrders1, ...prevJobOrder }));
+
+  const stateJobOrder = yield select(getStateJobOrder, jobOrderId);
+  const jojss = {
+    ...prop("jobSubmissions", stateJobOrder),
     [status]: pathOr([], ["jobSubmissions", status], stateJobOrder).concat([
       jobSubmissionId
     ])
@@ -217,8 +234,8 @@ export function* updateStateJobSubmissionStatus(action) {
     }
   };
 
-  const stateJobOrders = yield select(getStateJobOrders);
-  yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
+  const stateJobOrders2 = yield select(getStateJobOrders);
+  yield put(setJobOrders({ ...stateJobOrders2, ...jobOrder }));
 }
 
 export default function kanbanSagas() {
@@ -226,9 +243,6 @@ export default function kanbanSagas() {
     takeLatest(GET_RECRUITMENT, getRecruitment),
     takeEvery(GET_RECRUITMENT_JOB_ORDERS, getJobOrders),
     takeEvery(GET_RECRUITMENT_JOB_SUBMISSIONS, getJobSubmissions),
-    takeEvery(
-      UPDATE_RECRUITMENT_JOB_SUBMISSION_STATUS,
-      updateJobSubmissionStatus
-    )
+    takeEvery(UPDATE_RECRUITMENT_JOB_SUBMISSION, updateJobSubmission)
   ];
 }
