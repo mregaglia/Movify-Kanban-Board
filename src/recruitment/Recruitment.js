@@ -6,14 +6,17 @@ import { DragDropContext } from "react-beautiful-dnd";
 import theme from "../style/theme";
 import { getColumnData, isFromSameBoard } from "../utils/kanban";
 import { getRecruitment, updateJobSubmission } from "./recruitment.actions";
+import { addCandidate } from "../transition/transition.actions";
 import { Title } from "../components";
 import ClientCorporation from "./ClientCorporation";
 import HrLegend from "./HrLegend";
 import UpdateModal from "./UpdateModal";
+import Transition from "../transition/Transition";
 
 const getPipeColor = index => theme.pipeColors[index % theme.pipeColors.length];
 
 const Recruitment = ({
+  addCandidate,
   clientList,
   getRecruitment,
   loading,
@@ -35,7 +38,10 @@ const Recruitment = ({
     const destStatus = prop("status", dest);
     const jobOrderId = prop("jobOrderId", src);
     const destJobOrderId = prop("jobOrderId", dest);
-    if (isFromSameBoard(src, dest) && src.status !== dest.status) {
+
+    if (path(["destination", "droppableId"], result) === "transition") {
+      addCandidate("recruitment", jobSubmissionId);
+    } else if (isFromSameBoard(src, dest) && src.status !== dest.status) {
       updateJobSubmission(
         jobOrderId,
         srcStatus,
@@ -68,6 +74,7 @@ const Recruitment = ({
     <div>
       <HrLegend />
       <DragDropContext onDragEnd={onDnd}>
+        <Transition />
         {clientList.map((client, index) => (
           <ClientCorporation
             key={client}
@@ -86,6 +93,7 @@ const Recruitment = ({
 };
 
 Recruitment.propTypes = {
+  addCandidate: func,
   clientList: array,
   getRecruitment: func,
   loading: bool,
@@ -97,5 +105,5 @@ export default connect(
     clientList: pathOr([], ["recruitment", "clientList"], state),
     loading: pathOr(true, ["recruitment", "loading"], state)
   }),
-  { getRecruitment, updateJobSubmission }
+  { addCandidate, getRecruitment, updateJobSubmission }
 )(Recruitment);

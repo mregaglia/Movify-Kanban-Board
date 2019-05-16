@@ -5,6 +5,7 @@ import kanban from "../kanban/kanban.reducer";
 import departmentFilter from "../kanban/departmentFilter/departmentFilter.reducer";
 import addCandidate from "../kanban/addCandidate/addCandidate.reducer";
 import recruitment from "../recruitment/recruitment.reducer";
+import transition from "../transition/transition.reducer";
 
 export default combineReducers({
   form,
@@ -12,5 +13,6 @@ export default combineReducers({
   kanban,
   departmentFilter,
   addCandidate,
-  recruitment
+  recruitment,
+  transition
 });
