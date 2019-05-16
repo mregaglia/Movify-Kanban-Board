@@ -13,8 +13,8 @@ export const SET_RECRUITMENT_JOB_SUBMISSIONS =
 export const UPDATE_RECRUITMENT_JOB_SUBMISSIONS =
   "UPDATE_RECRUITMENT_JOB_SUBMISSIONS";
 export const UPDATE_HRS = "UPDATE_HRS";
-export const UPDATE_RECRUITMENT_JOB_SUBMISSION =
-  "UPDATE_RECRUITMENT_JOB_SUBMISSION";
+export const UPDATE_RECRUITMENT_JOB_SUBMISSION_STATUS =
+  "UPDATE_RECRUITMENT_JOB_SUBMISSION_STATUS";
 
 export const getRecruitment = () => ({ type: GET_RECRUITMENT });
 
@@ -56,13 +56,13 @@ export const updateJobSubmissions = jobSubmissions => ({
 
 export const updateHrs = hrs => ({ type: UPDATE_HRS, payload: hrs });
 
-export const updateJobSubmission = (
+export const updateJobSubmissionStatus = (
   jobOrderId,
   prevStatus,
   jobSubmissionId,
   status
 ) => ({
-  type: UPDATE_RECRUITMENT_JOB_SUBMISSION,
+  type: UPDATE_RECRUITMENT_JOB_SUBMISSION_STATUS,
   payload: {
     jobOrderId,
     prevStatus,

@@ -5,7 +5,7 @@ import { array, bool, func } from "prop-types";
 import { DragDropContext } from "react-beautiful-dnd";
 import theme from "../style/theme";
 import { getColumnData, isFromSameBoard } from "../utils/kanban";
-import { getRecruitment, updateJobSubmission } from "./recruitment.actions";
+import { getRecruitment, updateJobSubmissionStatus } from "./recruitment.actions";
 import { Title } from "../components";
 import ClientCorporation from "./ClientCorporation";
 import HrLegend from "./HrLegend";
@@ -17,7 +17,7 @@ const Recruitment = ({
   clientList,
   getRecruitment,
   loading,
-  updateJobSubmission
+  updateJobSubmissionStatus
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(undefined);
@@ -36,7 +36,7 @@ const Recruitment = ({
     const jobOrderId = prop("jobOrderId", src);
     const destJobOrderId = prop("jobOrderId", dest);
     if (isFromSameBoard(src, dest) && src.status !== dest.status) {
-      updateJobSubmission(jobOrderId, srcStatus, jobSubmissionId, destStatus);
+      updateJobSubmissionStatus(jobOrderId, srcStatus, jobSubmissionId, destStatus);
     } else if (!isFromSameBoard(src, dest)) {
       setIsModalOpen(true);
       setModalData({
@@ -83,7 +83,7 @@ Recruitment.propTypes = {
   clientList: array,
   getRecruitment: func,
   loading: bool,
-  updateJobSubmission: func
+  updateJobSubmissionStatus: func
 };
 
 export default connect(
@@ -91,5 +91,5 @@ export default connect(
     clientList: pathOr([], ["recruitment", "clientList"], state),
     loading: pathOr(true, ["recruitment", "loading"], state)
   }),
-  { getRecruitment, updateJobSubmission }
+  { getRecruitment, updateJobSubmissionStatus }
 )(Recruitment);

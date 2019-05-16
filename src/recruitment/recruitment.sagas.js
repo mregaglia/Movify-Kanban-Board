@@ -20,7 +20,7 @@ import {
   GET_RECRUITMENT_JOB_SUBMISSIONS,
   GET_RECRUITMENT_JOB_ORDERS,
   updateHrs,
-  UPDATE_RECRUITMENT_JOB_SUBMISSION,
+  UPDATE_RECRUITMENT_JOB_SUBMISSION_STATUS,
   setJobOrders,
   setJobSubmissions
 } from "./recruitment.actions";
@@ -164,16 +164,16 @@ export function* getJobSubmissions(action, start = 0) {
   }
 }
 
-export function* updateJobSubmission(action) {
+export function* updateJobSubmissionStatus(action) {
   const {
     payload: { prevStatus, jobSubmissionId, status }
   } = action;
   try {
-    yield call(updateJobSubmissionStatus, action);
+    yield call(updateStateJobSubmissionStatus, action);
     yield call(updateJobSubmissionStatusService, jobSubmissionId, status);
     yield call(toast.success, en.UPDATE_STATUS_SUCCESS);
   } catch (e) {
-    yield call(updateJobSubmissionStatus, {
+    yield call(updateStateJobSubmissionStatus, {
       ...action,
       payload: { ...action.payload, status: prevStatus, prevStatus: status }
     });
@@ -181,7 +181,7 @@ export function* updateJobSubmission(action) {
   }
 }
 
-export function* updateJobSubmissionStatus(action) {
+export function* updateStateJobSubmissionStatus(action) {
   const {
     payload: { jobOrderId, prevStatus, jobSubmissionId, status }
   } = action;
@@ -226,6 +226,9 @@ export default function kanbanSagas() {
     takeLatest(GET_RECRUITMENT, getRecruitment),
     takeEvery(GET_RECRUITMENT_JOB_ORDERS, getJobOrders),
     takeEvery(GET_RECRUITMENT_JOB_SUBMISSIONS, getJobSubmissions),
-    takeEvery(UPDATE_RECRUITMENT_JOB_SUBMISSION, updateJobSubmission)
+    takeEvery(
+      UPDATE_RECRUITMENT_JOB_SUBMISSION_STATUS,
+      updateJobSubmissionStatus
+    )
   ];
 }
