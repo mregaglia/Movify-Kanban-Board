@@ -2,30 +2,13 @@ import React from "react";
 import { connect } from "react-redux";
 import { pathOr, prop, propOr } from "ramda";
 import { number, object, string } from "prop-types";
-import styled from "styled-components";
 import { formatBmName } from "../utils/kanban";
-import { Column, Row } from "./Kanban";
+import { ColorColumnText, Column, Row } from "../components";
 import ClientCorporation from "./ClientCorporation";
-
-export const Text = styled.div(({ color, theme }) => ({
-  display: "inline-block",
-  width: "50px",
-  backgroundColor: color,
-  fontFamily: theme.fonts.fontFamily,
-  fontSize: theme.textDimensions.medium,
-  textAlign: "center",
-  padding: 12,
-  textOverflow: "ellipsis",
-  overflow: "hidden",
-  borderTopLeftRadius: 4,
-  borderBottomLeftRadius: 4,
-  borderBottomRightRadius: 4,
-  paddingLeft: 4
-}));
 
 const Bm = ({ bm, color }) => (
   <Row style={{ marginBottom: 6 }}>
-    <Text color={color}>{formatBmName(bm || {})}</Text>
+    <ColorColumnText color={color}>{formatBmName(bm || {})}</ColorColumnText>
     <Column>
       {propOr([], "clientCorporations", bm).map(ccId => (
         <ClientCorporation

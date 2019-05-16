@@ -1,5 +1,9 @@
 import { get, post, put } from "../utils/api";
-import { getCandidateNameQuery, getFilterStatusRequest } from "../utils/kanban";
+import {
+  getCandidateNameQuery,
+  AVAILABLE_STATUSES,
+  getFilterStatusRequest
+} from "../utils/kanban";
 
 export const getBusinessManagers = (start = 0) =>
   get("query/CorporateUser", {
@@ -18,7 +22,7 @@ export const getJobOrders = (bmId, start = 0) =>
     },
     {
       fields:
-        "id,clientContact,clientCorporation,isOpen,owner,status,title,employmentType, description",
+        "id,clientContact,clientCorporation,isOpen,owner,status,title,employmentType,description",
       sort: "clientCorporation.name"
     }
   );
@@ -27,7 +31,9 @@ export const getJobSubmissions = (jobOrderId, start = 0) =>
   post(
     "search/JobSubmission",
     {
-      query: `jobOrder.id:${jobOrderId} AND isDeleted:false AND (${getFilterStatusRequest()})`,
+      query: `jobOrder.id:${jobOrderId} AND isDeleted:false AND (${getFilterStatusRequest(
+        AVAILABLE_STATUSES
+      )})`,
       start
     },
     {

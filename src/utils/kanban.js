@@ -1,10 +1,20 @@
-import { isEmpty, isNil, flatten, pathOr, prop, propOr } from "ramda";
+import {
+  is,
+  isEmpty,
+  isNil,
+  flatten,
+  pathOr,
+  prop,
+  propOr,
+  union
+} from "ramda";
 import { isOverDiff, DIFF_5_DAYS, DIFF_10_DAYS } from "./date";
 
 export const STATUS_ITV1 = "ITV1";
 export const STATUS_ITV2 = "ITV2";
 export const STATUS_TO_SEND = "To Send";
 export const STATUS_WF_RESPONSE = "WF Response";
+export const STATUS_OFFER = "Offer";
 export const STATUS_INTAKE = "Intake";
 export const STATUS_WF_FEEDBACK = "WFF";
 export const STATUS_NO_GO = "NO GO";
@@ -19,8 +29,16 @@ export const AVAILABLE_STATUSES = [
   STATUS_NO_GO
 ];
 
-export const getFilterStatusRequest = () =>
-  AVAILABLE_STATUSES.map(status => `status:"${status}"`).join(" OR ");
+export const RECRUITMENT_STATUSES = [
+  STATUS_ITV1,
+  STATUS_ITV2,
+  STATUS_OFFER,
+  STATUS_WF_FEEDBACK,
+  STATUS_NO_GO
+];
+
+export const getFilterStatusRequest = statuses =>
+  statuses.map(status => `status:"${status}"`).join(" OR ");
 
 export const createColumnId = (bmId, clientCorporationId, jobOrderId, status) =>
   `${bmId}.${clientCorporationId}.${jobOrderId}.${status}`;
@@ -73,3 +91,8 @@ export const createItemFilter = item => [
   `firstName:${item}*`,
   `lastName:${item}*`
 ];
+
+export const unionArrays = (l, r) =>
+  is(Array, l) && is(Array, r) ? union(l, r) : r;
+
+export const getColumnWidth = numberColumns => `${100 / numberColumns}%`;

@@ -1,10 +1,11 @@
 import React, { memo } from "react";
-import { array } from "prop-types";
+import { array, string } from "prop-types";
 import CandidateCard from "./CandidateCard";
 
-const Candidates = ({ jobSubmissions }) =>
+const Candidates = ({ board, jobSubmissions }) =>
   jobSubmissions.map((jobSubmissionId, index) => (
     <CandidateCard
+      board={board}
       key={jobSubmissionId}
       jobSubmissionId={jobSubmissionId}
       index={index}
@@ -12,6 +13,7 @@ const Candidates = ({ jobSubmissions }) =>
   ));
 
 Candidates.propTypes = {
+  board: string,
   jobSubmissions: array
 };
 

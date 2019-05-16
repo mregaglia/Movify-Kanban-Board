@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { func } from "prop-types";
-import { ThemeProvider } from "styled-components";
+import styled, { ThemeProvider } from "styled-components";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,7 +13,16 @@ import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import Home from "./auth/Home";
 import Login from "./auth/Login";
 import Kanban from "./kanban/Kanban";
+import Recruitment from "./recruitment/Recruitment";
 import { checkAuth } from "./auth/auth.actions";
+import Header from "./Header";
+
+const Container = styled.div({
+  paddingLeft: 25,
+  paddingRight: 25,
+  paddingTop: 25,
+  paddingBottom: 25
+});
 
 class App extends Component {
   componentDidMount() {
@@ -33,10 +42,18 @@ class App extends Component {
       <Router>
         <ThemeProvider theme={theme}>
           <div>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/login" component={Login} />
-            <AuthenticatedRoute exact path="/kanban" component={Kanban} />
-            <ToastContainer />
+            <Header />
+            <Container>
+              <Route exact path="/" component={Home} />
+              <Route exact path="/login" component={Login} />
+              <AuthenticatedRoute exact path="/kanban" component={Kanban} />
+              <AuthenticatedRoute
+                exact
+                path="/recruitment"
+                component={Recruitment}
+              />
+              <ToastContainer />
+            </Container>
           </div>
         </ThemeProvider>
       </Router>

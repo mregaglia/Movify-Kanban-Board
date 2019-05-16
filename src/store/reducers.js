@@ -4,11 +4,13 @@ import auth from "../auth/auth.reducer";
 import kanban from "../kanban/kanban.reducer";
 import departmentFilter from "../kanban/departmentFilter/departmentFilter.reducer";
 import addCandidate from "../kanban/addCandidate/addCandidate.reducer";
+import recruitment from "../recruitment/recruitment.reducer";
 
 export default combineReducers({
   form,
   auth,
   kanban,
   departmentFilter,
-  addCandidate
+  addCandidate,
+  recruitment
 });

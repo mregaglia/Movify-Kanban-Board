@@ -5,24 +5,25 @@ import { array, bool, func } from "prop-types";
 import { DragDropContext } from "react-beautiful-dnd";
 import theme from "../style/theme";
 import { getColumnData, isFromSameBoard } from "../utils/kanban";
+import { getRecruitment, updateJobSubmission } from "./recruitment.actions";
 import { Title } from "../components";
-import {
-  createJobSubmission,
-  getKanban,
+import ClientCorporation from "./ClientCorporation";
+import HrLegend from "./HrLegend";
+import UpdateModal from "./UpdateModal";
+
+const getPipeColor = index => theme.pipeColors[index % theme.pipeColors.length];
+
+const Recruitment = ({
+  clientList,
+  getRecruitment,
+  loading,
   updateJobSubmission
-} from "./kanban.actions";
-import Bm from "./Bm";
-import DuplicateModal from "./DuplicateModal";
-import DepartmentFilter from "./departmentFilter/DepartmentFilter";
-
-const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
-
-const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState(undefined);
 
   useEffect(() => {
-    if (!prop("length", bms)) getKanban();
+    if (!prop("length", clientList)) getRecruitment();
   }, []);
 
   const onDnd = result => {
@@ -35,7 +36,13 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
     const jobOrderId = prop("jobOrderId", src);
     const destJobOrderId = prop("jobOrderId", dest);
     if (isFromSameBoard(src, dest) && src.status !== dest.status) {
-      updateJobSubmission(jobOrderId, srcStatus, jobSubmissionId, destStatus);
+      updateJobSubmission(
+        jobOrderId,
+        srcStatus,
+        jobOrderId,
+        jobSubmissionId,
+        destStatus
+      );
     } else if (!isFromSameBoard(src, dest)) {
       setIsModalOpen(true);
       setModalData({
@@ -59,13 +66,17 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
 
   return (
     <div>
-      <DepartmentFilter />
+      <HrLegend />
       <DragDropContext onDragEnd={onDnd}>
-        {bms.map((bmId, index) => (
-          <Bm key={bmId} bmId={bmId} color={getBmColor(index)} />
+        {clientList.map((client, index) => (
+          <ClientCorporation
+            key={client}
+            clientId={client}
+            color={getPipeColor(index)}
+          />
         ))}
       </DragDropContext>
-      <DuplicateModal
+      <UpdateModal
         data={modalData}
         isOpen={isModalOpen}
         onClose={onCloseModal}
@@ -74,17 +85,17 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
   );
 };
 
-Kanban.propTypes = {
-  bms: array,
-  getKanban: func,
+Recruitment.propTypes = {
+  clientList: array,
+  getRecruitment: func,
   loading: bool,
   updateJobSubmission: func
 };
 
 export default connect(
   state => ({
-    bms: pathOr([], ["departmentFilter", "filteredBms"], state),
-    loading: pathOr(true, ["kanban", "loading"], state)
+    clientList: pathOr([], ["recruitment", "clientList"], state),
+    loading: pathOr(true, ["recruitment", "loading"], state)
   }),
-  { createJobSubmission, getKanban, updateJobSubmission }
-)(Kanban);
+  { getRecruitment, updateJobSubmission }
+)(Recruitment);

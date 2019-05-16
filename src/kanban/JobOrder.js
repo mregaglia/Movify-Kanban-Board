@@ -4,9 +4,10 @@ import { pathOr, prop, propOr } from "ramda";
 import { number, object, string } from "prop-types";
 import styled from "styled-components";
 import ReactTooltip from "react-tooltip";
+import { AVAILABLE_STATUSES } from "../utils/kanban";
 import PriorityBadge from "../components/PriorityBadge";
-import { Row } from "./Kanban";
-import Board from "./board/Board";
+import { Row } from "../components";
+import Board from "../components/board/Board";
 import AddCandidateModal from "./addCandidate/AddCandidateModal";
 
 const Column = styled.div({
@@ -112,6 +113,9 @@ const JobOrder = ({ color, jobOrder }) => {
         </Row>
       </Column>
       <Board
+        board="kanban"
+        jobSubmissions={prop("jobSubmissions", jobOrder)}
+        statuses={AVAILABLE_STATUSES}
         bmId={prop("bmId", jobOrder)}
         clientCorporationId={prop("clientCorporationId", jobOrder)}
         jobOrderId={prop("id", jobOrder)}
