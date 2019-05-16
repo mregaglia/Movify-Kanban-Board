@@ -5,6 +5,7 @@ import { func, number, object } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import LinkedinBadge from "../components/LinkedinBadge";
+import { Clear } from "../components/svgs";
 import { removeCandidate } from "./transition.actions";
 
 const Container = styled.div(({ theme }) => ({
@@ -63,7 +64,9 @@ const CandidateCard = ({ candidate, index, removeCandidate }) => (
         </Text>
         <Column>
           <LinkedinBadge candidate={candidate} />
-          <Delete onClick={() => removeCandidate(candidate)}>X</Delete>
+          <Delete onClick={() => removeCandidate(candidate)}>
+            <Clear size={14} />
+          </Delete>
         </Column>
       </Container>
     )}
