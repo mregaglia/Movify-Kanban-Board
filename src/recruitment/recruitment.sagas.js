@@ -27,7 +27,8 @@ import {
 import {
   getTalentAcquisitionManagers,
   getJobSubmissions as getJobSubmissionsService,
-  updateJobSubmission as updateJobSubmissionService
+  updateJobSubmission as updateJobSubmissionService,
+  getCandidate
 } from "./recruitment.service";
 import { getJobOrders as getJobOrdersService } from "../kanban/kanban.service";
 
@@ -102,7 +103,12 @@ export function* getJobOrders(action, start = 0) {
 
     yield all(
       jobOrderList.map(jobOrder =>
-        put(getJobSubmissionsAction(prop("id", jobOrder)))
+        put(
+          getJobSubmissionsAction(
+            prop("id", jobOrder),
+            path(["clientCorporation", "id"], jobOrder)
+          )
+        )
       )
     );
 
@@ -117,7 +123,7 @@ export function* getJobOrders(action, start = 0) {
 }
 
 export function* getJobSubmissions(action, start = 0) {
-  const joId = prop("payload", action);
+  const { joId, ccId } = prop("payload", action);
   try {
     const jobSubmissionsResponse = yield call(
       getJobSubmissionsService,
@@ -131,7 +137,8 @@ export function* getJobSubmissions(action, start = 0) {
     const jobSubmissions = yield all(
       jsList.reduce((acc, js) => {
         acc[prop("id", js)] = {
-          ...js
+          ...js,
+          clientCorporationId: ccId
         };
 
         const joId = path(["jobOrder", "id"], js);
@@ -147,12 +154,21 @@ export function* getJobSubmissions(action, start = 0) {
           }
         };
 
-        const hr = path(["owners", "data", 0], js);
-        if (hr) hrs.push(hr);
-
         return acc;
       }, {})
     );
+
+    for (let js of jsList) {
+      const candidateResponse = yield call(
+        getCandidate,
+        path(["candidate", "id"], js)
+      );
+      const candidate = propOr({}, "data", candidateResponse);
+      jobSubmissions[prop("id", js)].candidate = candidate;
+
+      const hr = prop("owner", candidate);
+      if (hr) hrs.push(hr);
+    }
 
     yield put(updateJobSubmissions(jobSubmissions));
     yield put(updateJobOrders(jobOrders));
