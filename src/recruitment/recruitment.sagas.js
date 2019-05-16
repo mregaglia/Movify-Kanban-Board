@@ -27,7 +27,8 @@ import {
 import {
   getTalentAcquisitionManagers,
   getJobSubmissions as getJobSubmissionsService,
-  updateJobSubmission as updateJobSubmissionService
+  updateJobSubmission as updateJobSubmissionService,
+  getCandidate
 } from "./recruitment.service";
 import { getJobOrders as getJobOrdersService } from "../kanban/kanban.service";
 
@@ -147,12 +148,21 @@ export function* getJobSubmissions(action, start = 0) {
           }
         };
 
-        const hr = path(["owners", "data", 0], js);
-        if (hr) hrs.push(hr);
-
         return acc;
       }, {})
     );
+
+    for (let js of jsList) {
+      const candidateResponse = yield call(
+        getCandidate,
+        path(["candidate", "id"], js)
+      );
+      const candidate = propOr({}, "data", candidateResponse);
+      jobSubmissions[prop("id", js)].candidate = candidate;
+
+      const hr = prop("owner", candidate);
+      if (hr) hrs.push(hr);
+    }
 
     yield put(updateJobSubmissions(jobSubmissions));
     yield put(updateJobOrders(jobOrders));

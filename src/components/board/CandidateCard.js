@@ -44,9 +44,9 @@ const Column = styled.div({
 
 const Badge = styled.div(({ color }) => ({
   backgroundColor: color,
-  height: 14,
-  width: 14,
-  borderRadius: 7,
+  height: 12,
+  width: 12,
+  borderRadius: 6,
   marginTop: 4,
   marginBottom: 4
 }));
@@ -82,7 +82,7 @@ const CandidateCard = ({
           {board === "recruitment" && (
             <Badge
               color={getHrBadgeColor(
-                path(["owners", "data", 0, "id"], jobSubmission),
+                path(["candidate", "owner", "id"], jobSubmission),
                 hrs
               )}
             />
