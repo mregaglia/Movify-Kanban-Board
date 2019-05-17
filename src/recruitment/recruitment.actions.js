@@ -15,6 +15,8 @@ export const UPDATE_RECRUITMENT_JOB_SUBMISSIONS =
 export const UPDATE_HRS = "UPDATE_HRS";
 export const UPDATE_RECRUITMENT_JOB_SUBMISSION =
   "UPDATE_RECRUITMENT_JOB_SUBMISSION";
+export const CREATE_RECRUITMENT_JOB_SUBMISSION =
+  "CREATE_RECRUITMENT_JOB_SUBMISSION";
 
 export const getRecruitment = () => ({ type: GET_RECRUITMENT });
 
@@ -71,4 +73,9 @@ export const updateJobSubmission = (
     jobSubmissionId,
     status
   }
+});
+
+export const createJobSubmission = (jobOrder, jobSubmission, status) => ({
+  type: CREATE_RECRUITMENT_JOB_SUBMISSION,
+  payload: { jobOrder, jobSubmission, status }
 });

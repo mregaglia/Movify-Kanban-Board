@@ -27,7 +27,8 @@ import {
   updateHrs,
   UPDATE_RECRUITMENT_JOB_SUBMISSION,
   setJobOrders,
-  setJobSubmissions
+  setJobSubmissions,
+  CREATE_RECRUITMENT_JOB_SUBMISSION
 } from "./recruitment.actions";
 import {
   getTalentAcquisitionManagers,
@@ -37,7 +38,11 @@ import {
   updateCandidateDecision,
   getClientCorporation
 } from "./recruitment.service";
-import { getJobOrders as getJobOrdersService } from "../kanban/kanban.service";
+import {
+  getJobOrders as getJobOrdersService,
+  createJobSubmission as createJobSubmissionService,
+  getJobSubmission
+} from "../kanban/kanban.service";
 import { updateDepartmentFilter } from "../departmentFilter/departmentFilter.actions";
 
 export const getStateClientCorporation = (state, ccId) =>
@@ -316,11 +321,75 @@ export function* updateStateJobSubmission(action) {
   yield put(setJobOrders({ ...stateJobOrders2, ...jobOrder }));
 }
 
+export function* createJobSubmission(action) {
+  const {
+    payload: { jobOrder, jobSubmission, status }
+  } = action;
+
+  try {
+    const js = {
+      candidate: { id: path(["candidate", "id"], jobSubmission) },
+      jobOrder: { id: prop("id", jobOrder) },
+      status
+    };
+
+    const putJobSubmissionResponse = yield call(createJobSubmissionService, js);
+    const createdId = prop("changedEntityId", putJobSubmissionResponse);
+    const jobSubmissionResponse = yield call(getJobSubmission, createdId);
+    const candidateResponse = yield call(
+      getCandidate,
+      path(["candidate", "id"], jobSubmission)
+    );
+    const newJobSubmission = {
+      ...propOr({}, "data", jobSubmissionResponse),
+      bmId: prop("bmId", jobOrder),
+      clientCorporationId: path(["clientCorporation", "id"], jobOrder),
+      jobOrderId: prop("id", jobOrder),
+      candidate: prop("data", candidateResponse)
+    };
+    yield call(addJobSubmission, newJobSubmission);
+    yield call(toast.success, en.CREATE_CANDIDATE_SUCCESS);
+  } catch (e) {
+    yield call(toast.error, en.CREATE_CANDIDATE_ERROR);
+  }
+}
+
+export function* addJobSubmission(jobSubmission) {
+  const jobSubmissionId = propOr("", "id", jobSubmission);
+  const stateJobSubmissions = yield select(getStateJobSubmissions);
+  var jobSubmissions = {
+    ...stateJobSubmissions,
+    [jobSubmissionId]: jobSubmission
+  };
+
+  yield put(setJobSubmissions(jobSubmissions));
+
+  const jobOrderId = path(["jobOrder", "id"], jobSubmission);
+  const stateJobOrder = yield select(getStateJobOrder, jobOrderId);
+  const status = prop("status", jobSubmission);
+  const jojss = {
+    ...prop("jobSubmissions", stateJobOrder),
+    [status]: pathOr([], ["jobSubmissions", status], stateJobOrder).concat([
+      jobSubmissionId
+    ])
+  };
+  const jobOrder = {
+    [jobOrderId]: {
+      ...stateJobOrder,
+      jobSubmissions: jojss
+    }
+  };
+
+  const stateJobOrders = yield select(getStateJobOrders);
+  yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
+}
+
 export default function kanbanSagas() {
   return [
     takeLatest(GET_RECRUITMENT, getRecruitment),
     takeEvery(GET_RECRUITMENT_JOB_ORDERS, getJobOrders),
     takeEvery(GET_RECRUITMENT_JOB_SUBMISSIONS, getJobSubmissions),
-    takeEvery(UPDATE_RECRUITMENT_JOB_SUBMISSION, updateJobSubmission)
+    takeEvery(UPDATE_RECRUITMENT_JOB_SUBMISSION, updateJobSubmission),
+    takeEvery(CREATE_RECRUITMENT_JOB_SUBMISSION, createJobSubmission)
   ];
 }
