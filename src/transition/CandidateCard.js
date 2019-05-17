@@ -1,12 +1,13 @@
 import React from "react";
 import { connect } from "react-redux";
-import { prop, propOr } from "ramda";
+import { path, prop, propOr } from "ramda";
 import { func, number, object } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import LinkedinBadge from "../components/LinkedinBadge";
 import { Clear } from "../components/svgs";
 import { removeCandidate } from "./transition.actions";
+import Function from "../components/board/Function";
 
 const Container = styled.div(({ theme }) => ({
   display: "flex",
@@ -41,6 +42,14 @@ const Column = styled.div({
   justifyContent: "space-between"
 });
 
+const TextColumn = styled.div({
+  display: "flex",
+  flexDirection: "column",
+  flex: 1,
+  textOverflow: "ellipsis",
+  overflow: "hidden"
+});
+
 const Delete = styled.div(({ theme }) => ({
   cursor: "pointer",
   color: theme.colors.darkWhite,
@@ -58,10 +67,13 @@ const CandidateCard = ({ candidate, index, removeCandidate }) => (
         {...provided.draggableProps}
         {...provided.dragHandleProps}
       >
-        <Text>
-          {propOr("", "firstName", candidate)}{" "}
-          {propOr("", "lastName", candidate)}
-        </Text>
+        <TextColumn>
+          <Text>
+            {propOr("", "firstName", candidate)}{" "}
+            {propOr("", "lastName", candidate)}
+          </Text>
+          <Function functionTitle={path(["category", "name"], candidate)} />
+        </TextColumn>
         <Column>
           <LinkedinBadge candidate={candidate} />
           <Delete onClick={() => removeCandidate(candidate)}>
