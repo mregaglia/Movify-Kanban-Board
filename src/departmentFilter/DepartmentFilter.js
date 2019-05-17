@@ -4,13 +4,16 @@ import { pathOr, prop } from "ramda";
 import { func, object } from "prop-types";
 import styled from "styled-components";
 import { updateDepartmentFilter } from "./departmentFilter.actions";
-import Checkbox from "../../components/Checkbox";
+import Checkbox from "../components/Checkbox";
 
 const Row = styled.div({
   display: "flex",
+  flex: 1,
+  justifyContent: "flex-end",
   flexDirection: "row",
   paddingTop: 12,
-  paddingBottom: 12
+  paddingBottom: 12,
+  paddingRight: 24
 });
 
 const Column = styled.div({

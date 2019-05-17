@@ -24,7 +24,7 @@ import {
   updateJobSubmissions,
   setBms
 } from "./kanban.actions";
-import { updateDepartmentFilter } from "./departmentFilter/departmentFilter.actions";
+import { updateDepartmentFilter } from "../departmentFilter/departmentFilter.actions";
 import {
   getBusinessManagers,
   getJobOrders as getJobOrdersService,

@@ -10,7 +10,6 @@ import { getKanban, updateJobSubmission } from "./kanban.actions";
 import Bm from "./Bm";
 import DuplicateModal from "./DuplicateModal";
 import AddModal from "./AddModal";
-import DepartmentFilter from "./departmentFilter/DepartmentFilter";
 import Transition from "../transition/Transition";
 
 const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
@@ -70,7 +69,6 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
 
   return (
     <div>
-      <DepartmentFilter />
       <DragDropContext onDragEnd={onDnd}>
         <Transition board="kanban" />
         {bms.map((bmId, index) => (

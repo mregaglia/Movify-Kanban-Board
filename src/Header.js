@@ -4,6 +4,7 @@ import { path } from "ramda";
 import { Link, Route } from "react-router-dom";
 import { bool, object, string } from "prop-types";
 import styled from "styled-components";
+import DepartmentFilter from "./departmentFilter/DepartmentFilter"
 
 const Container = styled.div(({ theme }) => ({
   backgroundColor: theme.colors.lightGrey,
@@ -64,6 +65,7 @@ const Header = ({ authenticated }) => {
           <HeaderLink label="Business" to="/kanban" />
           <HeaderLink label="Recruitment" to="/recruitment" />
         </nav>
+        <DepartmentFilter/>
       </Container>
     );
 };
