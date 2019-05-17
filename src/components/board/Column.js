@@ -24,6 +24,8 @@ const Container = styled.div(({ columnWidth }) => ({
 const Content = styled.div(({ isNoGo, snapshot, theme }) => ({
   display: "flex",
   flexDirection: "column",
+  maxHeight: 250,
+  overflowY: "auto",
   flexGrow: 1,
   padding: 8,
   margin: 4,

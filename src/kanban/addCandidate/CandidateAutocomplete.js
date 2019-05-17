@@ -20,7 +20,6 @@ const SuggestionsContainer = styled.div(({ theme }) => ({
   borderWidth: 1,
   borderStyle: "solid",
   borderTopWidth: 0,
-  listStyle: "none",
   maxHeight: 130,
   overflowY: "auto"
 }));
