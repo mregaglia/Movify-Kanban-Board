@@ -102,7 +102,7 @@ const JobOrder = ({ color, jobOrder }) => {
             )} `}
           </Text>
           <AddButton color={color} onClick={() => setIsModalOpen(true)}>
-            <Add color="#FFF" style={{ paddingTop: 3, paddingLeft: 1 }} />
+            <Add color="#FFF" style={{ paddingTop: 3, paddingLeft: 0.5 }} />
           </AddButton>
           <AddCandidateModal
             jobOrder={jobOrder}

@@ -1,7 +1,10 @@
 import styled from "styled-components";
 
 export const ColorRowText = styled.div(({ color, theme }) => ({
-  display: "inline-block",
+  display: "flex",
+  flex: 1,
+  flexDirection: "row",
+  alignItems: "center",
   width: "100%",
   backgroundColor: `${color}50`,
   fontFamily: theme.fonts.fontFamily,
