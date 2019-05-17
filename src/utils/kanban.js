@@ -99,6 +99,12 @@ export const createItemFilter = item => [
 export const unionArrays = (l, r) =>
   is(Array, l) && is(Array, r) ? union(l, r) : r;
 
+export const getRecruitmentColumnWidth = (numberColumns, status) => {
+  const width = 100 / (numberColumns + 1);
+  if (status === STATUS_ITV1) return `${width * 2}%`;
+  else return `${width}%`;
+};
+
 export const getColumnWidth = numberColumns => `${100 / numberColumns}%`;
 
 export const getDecisionFromClient = (clientName = "") => {
