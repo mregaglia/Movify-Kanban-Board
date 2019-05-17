@@ -7,7 +7,7 @@ import {
 
 export const initialState = {
   filter: {
-    Antwerpen: true,
+    Antwerp: true,
     Brussels: true,
     Luxembourg: true
   },
