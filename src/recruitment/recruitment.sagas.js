@@ -340,6 +340,7 @@ export function* createJobSubmission(action) {
       getCandidate,
       path(["candidate", "id"], jobSubmission)
     );
+    const decision = yield call(getDecision, prop("id", jobOrder), status);
     const newJobSubmission = {
       ...propOr({}, "data", jobSubmissionResponse),
       bmId: prop("bmId", jobOrder),
@@ -349,6 +350,11 @@ export function* createJobSubmission(action) {
     };
     yield call(addJobSubmission, newJobSubmission);
     yield call(toast.success, en.CREATE_CANDIDATE_SUCCESS);
+    yield call(
+      updateCandidateDecision,
+      path(["candidate", "id"], jobSubmission),
+      decision
+    );
   } catch (e) {
     yield call(toast.error, en.CREATE_CANDIDATE_ERROR);
   }
