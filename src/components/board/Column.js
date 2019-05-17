@@ -24,7 +24,6 @@ const Container = styled.div(({ columnWidth }) => ({
 const Content = styled.div(({ isNoGo, snapshot, theme }) => ({
   display: "flex",
   flexDirection: "column",
-  width: "80%",
   flexGrow: 1,
   padding: 8,
   margin: 4,

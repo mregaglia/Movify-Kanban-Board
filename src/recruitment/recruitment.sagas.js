@@ -10,6 +10,11 @@ import { path, pathOr, prop, propOr } from "ramda";
 import { toast } from "react-toastify";
 import en from "../lang/en";
 import {
+  getDecisionFromClient,
+  STATUS_NO_GO,
+  DECISION_NO_GO
+} from "../utils/kanban";
+import {
   GET_RECRUITMENT,
   updateClientCorporationsIds,
   updateClientCorporations,
@@ -28,12 +33,17 @@ import {
   getTalentAcquisitionManagers,
   getJobSubmissions as getJobSubmissionsService,
   updateJobSubmission as updateJobSubmissionService,
-  getCandidate
+  getCandidate,
+  updateCandidateDecision
 } from "./recruitment.service";
 import { getJobOrders as getJobOrdersService } from "../kanban/kanban.service";
 
+export const getStateClientCorporation = (state, ccId) =>
+  pathOr({}, ["recruitment", "clientCorporations", ccId], state);
 export const getStateJobSubmissions = state =>
   pathOr({}, ["recruitment", "jobSubmissions"], state);
+export const getStateJobSubmission = (state, joId) =>
+  pathOr({}, ["recruitment", "jobSubmissions", joId], state);
 export const getStateJobOrders = state =>
   pathOr({}, ["recruitment", "jobOrders"], state);
 export const getStateJobOrder = (state, jobOrderId) =>
@@ -178,18 +188,47 @@ export function* getJobSubmissions(action, start = 0) {
   }
 }
 
+export function* getDecision(jobOrderId, status) {
+  const jo = yield select(getStateJobOrder, jobOrderId);
+  const cc = yield select(
+    getStateClientCorporation,
+    path(["clientCorporation", "id"], jo)
+  );
+
+  if (status === STATUS_NO_GO) return DECISION_NO_GO;
+  else return yield call(getDecisionFromClient, propOr("", "name", cc));
+}
+
 export function* updateJobSubmission(action) {
   const {
-    payload: { prevStatus, jobSubmissionId, jobOrderId, status }
+    payload: { prevStatus, jobSubmissionId, prevJobOrderId, jobOrderId, status }
   } = action;
   try {
-    yield call(updateStateJobSubmission, action);
-    yield call(updateJobSubmissionService, jobSubmissionId, status, jobOrderId);
-    yield call(toast.success, en.UPDATE_STATUS_SUCCESS);
-  } catch (e) {
+    const jobSubmission = yield select(getStateJobSubmission, jobSubmissionId);
+    const decision = yield call(getDecision, jobOrderId, status);
     yield call(updateStateJobSubmission, {
       ...action,
-      payload: { ...action.payload, status: prevStatus, prevStatus: status }
+      payload: { ...action.payload, decision }
+    });
+    yield call(updateJobSubmissionService, jobSubmissionId, status, jobOrderId);
+    yield call(
+      updateCandidateDecision,
+      path(["candidate", "id"], jobSubmission),
+      decision
+    );
+    yield call(toast.success, en.UPDATE_STATUS_SUCCESS);
+  } catch (e) {
+    const decision = yield call(getDecision, prevJobOrderId, prevStatus);
+    yield call(updateStateJobSubmission, {
+      ...action,
+      payload: {
+        ...action.payload,
+        status: prevStatus,
+        prevStatus: status,
+        jobOrderId: prevJobOrderId,
+        prevJobOrderId: jobOrderId,
+        decision
+      }
     });
     yield call(toast.error, en.UPDATE_STATUS_ERROR);
   }
@@ -197,12 +236,19 @@ export function* updateJobSubmission(action) {
 
 export function* updateStateJobSubmission(action) {
   const {
-    payload: { prevJobOrderId, jobOrderId, prevStatus, jobSubmissionId, status }
+    payload: {
+      prevJobOrderId,
+      jobOrderId,
+      prevStatus,
+      jobSubmissionId,
+      status,
+      decision
+    }
   } = action;
 
-  const stateNewJobOrder = yield select(getStateJobOrder, jobOrderId);
   const stateJobSubmissions = yield select(getStateJobSubmissions);
   const jobSubmission = stateJobSubmissions[jobSubmissionId];
+  const stateNewJobOrder = yield select(getStateJobOrder, jobOrderId);
   const jobSubmissions = {
     ...stateJobSubmissions,
     [jobSubmissionId]: {
@@ -211,6 +257,10 @@ export function* updateStateJobSubmission(action) {
       jobOrder: {
         id: prop("id", stateNewJobOrder),
         title: prop("title", stateNewJobOrder)
+      },
+      candidate: {
+        ...jobSubmission.candidate,
+        middleName: decision
       }
     }
   };

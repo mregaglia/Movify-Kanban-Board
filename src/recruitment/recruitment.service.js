@@ -25,11 +25,16 @@ export const getJobSubmissions = (jobOrderId, start = 0) =>
 
 export const getCandidate = candidateId =>
   get(`entity/Candidate/${candidateId}`, {
-    fields: "id,firstName,lastName,owner,category"
+    fields: "id,firstName,lastName,owner,category,middleName"
   });
 
 export const updateJobSubmission = (jobSubmissionId, status, jobOrderId) =>
   post(`entity/JobSubmission/${jobSubmissionId}`, {
     status,
     jobOrder: { id: jobOrderId }
+  });
+
+export const updateCandidateDecision = (candidateId, decision) =>
+  post(`entity/Candidate/${candidateId}`, {
+    middleName: decision
   });
