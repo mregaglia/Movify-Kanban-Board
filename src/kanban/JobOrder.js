@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { pathOr, prop, propOr } from "ramda";
-import { number, object, string } from "prop-types";
+import { func, number, object, string } from "prop-types";
 import styled from "styled-components";
 import ReactTooltip from "react-tooltip";
 import { AVAILABLE_STATUSES } from "../utils/kanban";
@@ -9,7 +9,8 @@ import PriorityBadge from "../components/PriorityBadge";
 import { Row } from "../components";
 import { Add } from "../components/svgs";
 import Board from "../components/board/Board";
-import AddCandidateModal from "./addCandidate/AddCandidateModal";
+import AddCandidateModal from "../addCandidate/AddCandidateModal";
+import { createJobSubmission } from "./kanban.actions";
 
 const Column = styled.div({
   display: "flex",
@@ -70,8 +71,15 @@ const Tooltip = styled(ReactTooltip)`
   }
 `;
 
-const JobOrder = ({ color, jobOrder }) => {
+const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const onAddCandidate = values =>
+    createJobSubmission(
+      jobOrder,
+      { candidate: prop("candidate", values) },
+      prop("status", values)
+    );
 
   return (
     <Row>
@@ -105,8 +113,10 @@ const JobOrder = ({ color, jobOrder }) => {
             <Add color="#FFF" style={{ paddingTop: 3, paddingLeft: 0.5 }} />
           </AddButton>
           <AddCandidateModal
+            statuses={AVAILABLE_STATUSES}
             jobOrder={jobOrder}
             isOpen={isModalOpen}
+            onAdd={onAddCandidate}
             onClose={() => setIsModalOpen(false)}
           />
         </Row>
@@ -125,10 +135,14 @@ const JobOrder = ({ color, jobOrder }) => {
 
 JobOrder.propTypes = {
   color: string,
+  createJobSubmission: func,
   joId: number,
   jobOrder: object
 };
 
-export default connect((state, { joId }) => ({
-  jobOrder: pathOr({}, ["kanban", "jobOrders", joId], state)
-}))(JobOrder);
+export default connect(
+  (state, { joId }) => ({
+    jobOrder: pathOr({}, ["kanban", "jobOrders", joId], state)
+  }),
+  { createJobSubmission }
+)(JobOrder);

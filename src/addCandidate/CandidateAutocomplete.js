@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { pathOr, prop, propOr } from "ramda";
 import { array, bool, func, object } from "prop-types";
 import styled from "styled-components";
-import { getCandidateName } from "../../utils/kanban";
-import debounce from "../../utils/debounce";
+import { getCandidateName } from "../utils/kanban";
+import debounce from "../utils/debounce";
 import { getSuggestions } from "./addCandidate.actions";
 import { Input } from "./CandidateInput";
 

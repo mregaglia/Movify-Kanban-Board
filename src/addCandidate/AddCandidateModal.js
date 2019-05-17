@@ -1,10 +1,8 @@
 import React from "react";
-import { connect } from "react-redux";
 import { prop, propOr } from "ramda";
-import { bool, func, object } from "prop-types";
+import { array, bool, func, object } from "prop-types";
 import styled from "styled-components";
-import { createJobSubmission } from "../kanban.actions";
-import { Modal, Title } from "../../components/modal";
+import { Modal, Title } from "../components/modal";
 import AddCandidateForm from "./AddCandidate.form";
 
 const Text = styled.div(({ theme }) => ({
@@ -15,18 +13,9 @@ const Text = styled.div(({ theme }) => ({
   marginBottom: 24
 }));
 
-const AddCandidateModal = ({
-  createJobSubmission,
-  isOpen,
-  jobOrder,
-  onClose
-}) => {
+const AddCandidateModal = ({ isOpen, jobOrder, onAdd, onClose, statuses }) => {
   const onSubmit = values => {
-    createJobSubmission(
-      jobOrder,
-      { candidate: prop("candidate", values) },
-      prop("status", values)
-    );
+    onAdd(values);
     onClose();
   };
 
@@ -35,25 +24,32 @@ const AddCandidateModal = ({
       <div>
         <Title>{`Add candidate to ${propOr("", "title", jobOrder)}`}</Title>
         <Text>Select a candidate and a shortlist status.</Text>
-        <AddCandidateForm onClose={onClose} onSubmit={onSubmit} />
+        <AddCandidateForm
+          statuses={statuses}
+          onClose={onClose}
+          onSubmit={onSubmit}
+          initialValues={{
+            status: prop(0, statuses)
+          }}
+        />
       </div>
     </Modal>
   );
 };
 
 AddCandidateModal.propTypes = {
-  createJobSubmission: func,
   isOpen: bool,
   jobOrder: object,
-  onClose: func
+  onAdd: func,
+  onClose: func,
+  statuses: array
 };
 
 AddCandidateModal.defaultProps = {
   isOpen: false,
-  onClose: () => null
+  onAdd: () => null,
+  onClose: () => null,
+  statuses: []
 };
 
-export default connect(
-  null,
-  { createJobSubmission }
-)(AddCandidateModal);
+export default AddCandidateModal;

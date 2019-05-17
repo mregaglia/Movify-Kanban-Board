@@ -2,8 +2,8 @@ import React, { useRef, useState } from "react";
 import { prop } from "ramda";
 import { object, string } from "prop-types";
 import styled from "styled-components";
-import { Error, Label, Row } from "../../components/form";
-import { getCandidateName } from "../../utils/kanban";
+import { Error, Label, Row } from "../components/form";
+import { getCandidateName } from "../utils/kanban";
 import CandidateAutocomplete from "./CandidateAutocomplete";
 
 export const Input = styled.input(({ theme }) => ({

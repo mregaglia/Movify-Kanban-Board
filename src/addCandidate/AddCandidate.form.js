@@ -1,14 +1,12 @@
 import React from "react";
 import { Field, reduxForm } from "redux-form";
-import { prop } from "ramda";
-import { bool, func } from "prop-types";
-import { AVAILABLE_STATUSES } from "../../utils/kanban";
-import { isRequired } from "../../utils/validate";
-import { Action, Row } from "../../components/modal";
-import { Select } from "../../components/form";
+import { array, bool, func } from "prop-types";
+import { isRequired } from "../utils/validate";
+import { Action, Row } from "../components/modal";
+import { Select } from "../components/form";
 import CandidateInput from "./CandidateInput";
 
-const AddCandidateForm = ({ handleSubmit, onClose, valid }) => (
+const AddCandidateForm = ({ handleSubmit, onClose, statuses, valid }) => (
   <form onSubmit={handleSubmit}>
     <Field name="candidate" component={CandidateInput} validate={isRequired} />
     <Field
@@ -17,7 +15,7 @@ const AddCandidateForm = ({ handleSubmit, onClose, valid }) => (
       component={Select}
       validate={isRequired}
       renderOptions={() =>
-        AVAILABLE_STATUSES.map(option => (
+        statuses.map(option => (
           <option key={option} value={option}>
             {option}
           </option>
@@ -38,12 +36,10 @@ const AddCandidateForm = ({ handleSubmit, onClose, valid }) => (
 AddCandidateForm.propTypes = {
   handleSubmit: func,
   onClose: func,
+  statuses: array,
   valid: bool
 };
 
 export default reduxForm({
-  form: "addCandidate",
-  initialValues: {
-    status: prop(0, AVAILABLE_STATUSES)
-  }
+  form: "addCandidate"
 })(AddCandidateForm);
