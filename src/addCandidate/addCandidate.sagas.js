@@ -1,6 +1,6 @@
 import { all, call, put, takeLatest } from "redux-saga/effects";
 import { isEmpty, isNil, propOr } from "ramda";
-import { searchCandidates } from "../kanban.service";
+import { searchCandidates } from "../kanban/kanban.service";
 import {
   GET_CANDIDATE_SUGGESTIONS,
   setSuggestions

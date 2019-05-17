@@ -1,4 +1,4 @@
-import { bindReducer } from "../../utils/reducer";
+import { bindReducer } from "../utils/reducer";
 import { SET_CANDIDATE_SUGGESTIONS } from "./addCandidate.actions";
 
 export const initialState = {
