@@ -72,7 +72,7 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
     <div>
       <DepartmentFilter />
       <DragDropContext onDragEnd={onDnd}>
-        <Transition />
+        <Transition board="kanban" />
         {bms.map((bmId, index) => (
           <Bm key={bmId} bmId={bmId} color={getBmColor(index)} />
         ))}
