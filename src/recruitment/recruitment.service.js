@@ -38,3 +38,8 @@ export const updateCandidateDecision = (candidateId, decision) =>
   post(`entity/Candidate/${candidateId}`, {
     middleName: decision
   });
+
+export const getClientCorporation = clientCorporationId =>
+  get(`entity/ClientCorporation/${clientCorporationId}`, {
+    fields: "id,name,department"
+  });

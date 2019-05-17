@@ -34,7 +34,8 @@ import {
   getJobSubmissions as getJobSubmissionsService,
   updateJobSubmission as updateJobSubmissionService,
   getCandidate,
-  updateCandidateDecision
+  updateCandidateDecision,
+  getClientCorporation
 } from "./recruitment.service";
 import { getJobOrders as getJobOrdersService } from "../kanban/kanban.service";
 
@@ -89,6 +90,15 @@ export function* getClientCorporations(tamId, jobOrders) {
       return acc;
     }, {})
   );
+
+  for (let ccId of ccList) {
+    const ccResponse = yield call(getClientCorporation, ccId);
+    const clientCorporation = propOr({}, "data", ccResponse);
+    clientCorporations[ccId] = {
+      ...clientCorporations[ccId],
+      ...clientCorporation
+    };
+  }
 
   yield put(updateClientCorporations(clientCorporations));
   yield put(updateClientCorporationsIds(ccList));
