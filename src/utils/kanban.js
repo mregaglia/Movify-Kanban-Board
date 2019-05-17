@@ -10,6 +10,10 @@ import {
 } from "ramda";
 import { isOverDiff, DIFF_5_DAYS, DIFF_10_DAYS } from "./date";
 
+export const DECISION_HIPO = "Hipo";
+export const DECISION_WFP = "WFP";
+export const DECISION_NO_GO = "NO GO";
+
 export const STATUS_ITV1 = "ITV1";
 export const STATUS_ITV2 = "ITV2";
 export const STATUS_TO_SEND = "To Send";
@@ -96,3 +100,9 @@ export const unionArrays = (l, r) =>
   is(Array, l) && is(Array, r) ? union(l, r) : r;
 
 export const getColumnWidth = numberColumns => `${100 / numberColumns}%`;
+
+export const getDecisionFromClient = (clientName = "") => {
+  if (clientName.toLowerCase().includes("hipo")) return DECISION_HIPO;
+  if (clientName.toLowerCase().includes("wfp")) return DECISION_WFP;
+  return null;
+};
