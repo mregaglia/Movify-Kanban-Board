@@ -6,20 +6,20 @@ import { DragDropContext } from "react-beautiful-dnd";
 import theme from "../style/theme";
 import { getColumnData, isFromSameBoard } from "../utils/kanban";
 import { Title } from "../components";
-import {
-  createJobSubmission,
-  getKanban,
-  updateJobSubmission
-} from "./kanban.actions";
+import { getKanban, updateJobSubmission } from "./kanban.actions";
 import Bm from "./Bm";
 import DuplicateModal from "./DuplicateModal";
+import AddModal from "./AddModal";
 import DepartmentFilter from "./departmentFilter/DepartmentFilter";
+import Transition from "../transition/Transition";
 
 const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
 
 const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalData, setModalData] = useState(undefined);
+  const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
+  const [duplicateModalData, setDuplicateModalData] = useState(undefined);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [addModalData, setAddModalData] = useState(undefined);
 
   useEffect(() => {
     if (!prop("length", bms)) getKanban();
@@ -34,11 +34,21 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
     const destStatus = prop("status", dest);
     const jobOrderId = prop("jobOrderId", src);
     const destJobOrderId = prop("jobOrderId", dest);
-    if (isFromSameBoard(src, dest) && src.status !== dest.status) {
+
+    if (path(["destination", "droppableId"], result) === "transition") {
+      return;
+    } else if (path(["source", "droppableId"], result) === "transition") {
+      setIsAddModalOpen(true);
+      setAddModalData({
+        jobOrderId: destJobOrderId,
+        candidateId: jobSubmissionId,
+        status: destStatus
+      });
+    } else if (isFromSameBoard(src, dest) && src.status !== dest.status) {
       updateJobSubmission(jobOrderId, srcStatus, jobSubmissionId, destStatus);
     } else if (!isFromSameBoard(src, dest)) {
-      setIsModalOpen(true);
-      setModalData({
+      setIsDuplicateModalOpen(true);
+      setDuplicateModalData({
         jobOrderId: destJobOrderId,
         jobSubmissionId,
         status: destStatus
@@ -47,7 +57,8 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
   };
 
   const onCloseModal = () => {
-    setIsModalOpen(false);
+    setIsDuplicateModalOpen(false);
+    setIsAddModalOpen(false);
   };
 
   if (loading)
@@ -61,13 +72,19 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
     <div>
       <DepartmentFilter />
       <DragDropContext onDragEnd={onDnd}>
+        <Transition />
         {bms.map((bmId, index) => (
           <Bm key={bmId} bmId={bmId} color={getBmColor(index)} />
         ))}
       </DragDropContext>
       <DuplicateModal
-        data={modalData}
-        isOpen={isModalOpen}
+        data={duplicateModalData}
+        isOpen={isDuplicateModalOpen}
+        onClose={onCloseModal}
+      />
+      <AddModal
+        data={addModalData}
+        isOpen={isAddModalOpen}
         onClose={onCloseModal}
       />
     </div>
@@ -86,5 +103,5 @@ export default connect(
     bms: pathOr([], ["departmentFilter", "filteredBms"], state),
     loading: pathOr(true, ["kanban", "loading"], state)
   }),
-  { createJobSubmission, getKanban, updateJobSubmission }
+  { getKanban, updateJobSubmission }
 )(Kanban);
