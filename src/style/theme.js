@@ -58,6 +58,16 @@ export default {
     "#FF7F1E",
     "#8754A1"
   ],
-  pipeColors: ["#17B79B", "#6BD7DA"],
-  hrColors: ["#C2ABE8", "#f34d3d", "#FCAD56"]
+  pipeColors: ["#17B79B", "#6BD7DA", "#F7E06B", "#C9B7E8", "#EDA765"],
+  hrColors: [
+    "#C2ABE8",
+    "#f34d3d",
+    "#FCAD56",
+    "#17B79B",
+    "#F7E06B",
+    "#246EB9",
+    "#84DCCF",
+    "#60C659",
+    "#7758B3"
+  ]
 };
