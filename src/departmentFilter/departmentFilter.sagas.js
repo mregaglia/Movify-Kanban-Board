@@ -19,7 +19,7 @@ export function* updateDepartmentFilter(action) {
   const stateBms = yield select(getStateBms);
   const stateBmIds = yield select(getStateBmIds);
 
-  const filteredBms = yield all(
+  const kanbanBms = yield all(
     stateBmIds.filter(bmId => {
       const departmentName = path(
         [bmId, "primaryDepartment", "name"],
@@ -28,7 +28,7 @@ export function* updateDepartmentFilter(action) {
       return propOr(false, departmentName, stateFilter);
     })
   );
-  yield put(setFilteredBms(filteredBms));
+  yield put(setFilteredBms(kanbanBms));
 }
 
 export default function departmentFilterSagas() {

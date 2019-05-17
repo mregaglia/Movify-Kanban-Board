@@ -24,7 +24,7 @@ describe("updateDepartmentFilter saga", () => {
     3: { id: 3, primaryDepartment: { name: "filter" } }
   };
   const stateBmIds = [1, 2, 3];
-  const filteredBms = [1, 3];
+  const kanbanBms = [1, 3];
   const generator = updateDepartmentFilter(action);
 
   it("should put setDepartmentFilter action", () => {
@@ -40,11 +40,11 @@ describe("updateDepartmentFilter saga", () => {
     expect(generator.next(stateBms).value).toEqual(select(getStateBmIds));
   });
   it("should filter bms according to filters", () => {
-    expect(generator.next(stateBmIds).value).toEqual(all(filteredBms));
+    expect(generator.next(stateBmIds).value).toEqual(all(kanbanBms));
   });
   it("should put put setFilteredBms", () => {
-    expect(generator.next(filteredBms).value).toEqual(
-      put(setFilteredBms(filteredBms))
+    expect(generator.next(kanbanBms).value).toEqual(
+      put(setFilteredBms(kanbanBms))
     );
   });
   it("should be done", () => {

@@ -1,15 +1,18 @@
 import { bindReducer } from "../utils/reducer";
 import {
   SET_DEPARTMENT_FILTER,
-  SET_FILTERED_BMS
+  SET_FILTERED_BMS,
+  SET_FILTERED_CCS
 } from "./departmentFilter.actions";
 
 export const initialState = {
   filter: {
+    Antwerpen: true,
     Brussels: true,
     Luxembourg: true
   },
-  filteredBms: []
+  kanbanBms: [],
+  recruitmentCcs: []
 };
 
 const departmentFilter = {
@@ -19,7 +22,11 @@ const departmentFilter = {
   }),
   [SET_FILTERED_BMS]: (state, payload) => ({
     ...state,
-    filteredBms: payload
+    kanbanBms: payload
+  }),
+  [SET_FILTERED_CCS]: (state, payload) => ({
+    ...state,
+    recruitmentCcs: payload
   })
 };
 

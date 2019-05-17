@@ -98,7 +98,7 @@ Kanban.propTypes = {
 
 export default connect(
   state => ({
-    bms: pathOr([], ["departmentFilter", "filteredBms"], state),
+    bms: pathOr([], ["departmentFilter", "kanbanBms"], state),
     loading: pathOr(true, ["kanban", "loading"], state)
   }),
   { getKanban, updateJobSubmission }

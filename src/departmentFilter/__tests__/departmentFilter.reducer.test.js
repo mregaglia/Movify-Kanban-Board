@@ -25,7 +25,7 @@ describe("departmentFilter reducer", () => {
     const action = { type: SET_FILTERED_BMS, payload: bms };
     const expectedState = {
       ...initialState,
-      filteredBms: bms
+      kanbanBms: bms
     };
     expect(reducer(initialState, action)).toEqual(expectedState);
   });
