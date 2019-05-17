@@ -39,7 +39,9 @@ const Recruitment = ({
     const jobOrderId = prop("jobOrderId", src);
     const destJobOrderId = prop("jobOrderId", dest);
 
-    if (path(["destination", "droppableId"], result) === "transition") {
+    if (path(["source", "droppableId"], result) === "transition") {
+      return;
+    } else if (path(["destination", "droppableId"], result) === "transition") {
       addCandidate("recruitment", jobSubmissionId);
     } else if (isFromSameBoard(src, dest) && src.status !== dest.status) {
       updateJobSubmission(
