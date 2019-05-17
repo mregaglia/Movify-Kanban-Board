@@ -42,6 +42,8 @@ export const getStateClientCorporation = (state, ccId) =>
   pathOr({}, ["recruitment", "clientCorporations", ccId], state);
 export const getStateJobSubmissions = state =>
   pathOr({}, ["recruitment", "jobSubmissions"], state);
+export const getStateJobSubmission = (state, joId) =>
+  pathOr({}, ["recruitment", "jobSubmissions", joId], state);
 export const getStateJobOrders = state =>
   pathOr({}, ["recruitment", "jobOrders"], state);
 export const getStateJobOrder = (state, jobOrderId) =>
@@ -202,12 +204,18 @@ export function* updateJobSubmission(action) {
     payload: { prevStatus, jobSubmissionId, prevJobOrderId, jobOrderId, status }
   } = action;
   try {
+    const jobSubmission = yield select(getStateJobSubmission, jobSubmissionId);
     const decision = yield call(getDecision, jobOrderId, status);
     yield call(updateStateJobSubmission, {
       ...action,
       payload: { ...action.payload, decision }
     });
     yield call(updateJobSubmissionService, jobSubmissionId, status, jobOrderId);
+    yield call(
+      updateCandidateDecision,
+      path(["candidate", "id"], jobSubmission),
+      decision
+    );
     yield call(toast.success, en.UPDATE_STATUS_SUCCESS);
   } catch (e) {
     const decision = yield call(getDecision, prevJobOrderId, prevStatus);
@@ -240,13 +248,6 @@ export function* updateStateJobSubmission(action) {
 
   const stateJobSubmissions = yield select(getStateJobSubmissions);
   const jobSubmission = stateJobSubmissions[jobSubmissionId];
-
-  yield call(
-    updateCandidateDecision,
-    path(["candidate", "id"], jobSubmission),
-    decision
-  );
-
   const stateNewJobOrder = yield select(getStateJobOrder, jobOrderId);
   const jobSubmissions = {
     ...stateJobSubmissions,
