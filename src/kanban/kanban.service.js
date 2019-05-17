@@ -55,5 +55,5 @@ export const getJobSubmission = jobSubmissionId =>
 export const searchCandidates = query =>
   post("search/Candidate", {
     fields: "id,firstName,lastName,occupation",
-    query: `${getCandidateNameQuery(query)} AND isDeleted:false`
+    query: `(${getCandidateNameQuery(query)}) AND isDeleted:false`
   });

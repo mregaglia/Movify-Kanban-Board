@@ -83,10 +83,11 @@ export const getCandidateName = candidate =>
 
 export const getCandidateNameQuery = query => {
   if (isNil(query) || isEmpty(query)) return undefined;
-  const nameParts = query.split(" ");
+  const nameParts = query.split(" ").filter(part => !isEmpty(part));
   const queryParts = flatten(nameParts.map(part => createItemFilter(part)));
   const namePart = `name:${query}*`;
-  const queries = queryParts.concat(namePart);
+  const queries =
+    prop("length", nameParts) > 1 ? queryParts.concat(namePart) : queryParts;
   return queries.join(" OR ");
 };
 
