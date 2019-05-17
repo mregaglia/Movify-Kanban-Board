@@ -104,7 +104,7 @@ Recruitment.propTypes = {
 
 export default connect(
   state => ({
-    clientList: pathOr([], ["recruitment", "clientList"], state),
+    clientList: pathOr([], ["departmentFilter", "recruitmentCcs"], state),
     loading: pathOr(true, ["recruitment", "loading"], state)
   }),
   { addCandidate, getRecruitment, updateJobSubmission }

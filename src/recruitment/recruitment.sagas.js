@@ -38,6 +38,7 @@ import {
   getClientCorporation
 } from "./recruitment.service";
 import { getJobOrders as getJobOrdersService } from "../kanban/kanban.service";
+import { updateDepartmentFilter } from "../departmentFilter/departmentFilter.actions";
 
 export const getStateClientCorporation = (state, ccId) =>
   pathOr({}, ["recruitment", "clientCorporations", ccId], state);
@@ -102,6 +103,7 @@ export function* getClientCorporations(tamId, jobOrders) {
 
   yield put(updateClientCorporations(clientCorporations));
   yield put(updateClientCorporationsIds(ccList));
+  yield put(updateDepartmentFilter());
 }
 
 export function* getJobOrders(action, start = 0) {
