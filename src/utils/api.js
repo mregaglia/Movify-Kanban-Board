@@ -78,6 +78,12 @@ export const put = (url, body = {}, queryParams = {}) =>
     body: JSON.stringify(body)
   });
 
+export const del = (url, body = {}, queryParams = {}) =>
+  request(url, queryParams, {
+    method: "DELETE",
+    body: JSON.stringify(body)
+  });
+
 const req = (url, queryParams = {}, requestParams = {}) => {
   const params = formatQueryParams({ ...getToken(), ...queryParams });
   const requestUrl = getBaseUrl() + url + params;
