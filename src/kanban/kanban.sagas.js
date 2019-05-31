@@ -14,6 +14,7 @@ import {
   GET_JOB_SUBMISSIONS,
   UPDATE_JOB_SUBMISSION,
   CREATE_JOB_SUBMISSION,
+  DELETE_JOB_SUBMISSION,
   updateBms,
   updateClientCorporations,
   getJobOrders as getJobOrdersAction,
@@ -22,7 +23,8 @@ import {
   getJobSubmissions as getJobSubmissionsAction,
   setJobSubmissions,
   updateJobSubmissions,
-  setBms
+  setBms,
+  removeJobSubmission
 } from "./kanban.actions";
 import { updateDepartmentFilter } from "../departmentFilter/departmentFilter.actions";
 import {
@@ -31,7 +33,8 @@ import {
   getJobSubmissions as getJobSubmissionsService,
   updateJobSubmissionStatus as updateJobSubmissionStatusService,
   createJobSubmission as createJobSubmissionService,
-  getJobSubmission
+  getJobSubmission,
+  deleteJobSubmission as deleteJobSubmissionService
 } from "./kanban.service";
 import en from "../lang/en";
 
@@ -383,12 +386,45 @@ export function* removeTempJobSubmission(jobSubmission) {
   yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
 }
 
+export function* deleteJobSubmission(action) {
+  const jobSubmission = prop("payload", action);
+  const jobSubmissionId = prop("id", jobSubmission);
+  const jobOrderId = path(["jobOrder", "id"], jobSubmission);
+  const status = prop("status", jobSubmission);
+  try {
+    yield call(deleteJobSubmissionService, jobSubmissionId);
+    yield put(removeJobSubmission(jobSubmissionId));
+
+    const stateJobOrder = yield select(getStateJobOrder, jobOrderId);
+    const jojss = {
+      ...prop("jobSubmissions", stateJobOrder),
+      [status]: pathOr([], ["jobSubmissions", status], stateJobOrder).filter(
+        jsId => jsId !== jobSubmissionId
+      )
+    };
+    const jobOrder = {
+      [jobOrderId]: {
+        ...stateJobOrder,
+        jobSubmissions: jojss
+      }
+    };
+
+    const stateJobOrders = yield select(getStateJobOrders);
+    yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
+
+    yield call(toast.success, en.DELETE_JS_SUCCESS);
+  } catch (e) {
+    yield call(toast.error, en.DELETE_JS_ERROR);
+  }
+}
+
 export default function kanbanSagas() {
   return [
     takeLatest(GET_KANBAN, getKanbanBoard),
     takeEvery(GET_JOB_ORDERS, getJobOrders),
     takeEvery(GET_JOB_SUBMISSIONS, getJobSubmissions),
     takeEvery(UPDATE_JOB_SUBMISSION, updateJobSubmission),
-    takeEvery(CREATE_JOB_SUBMISSION, createJobSubmission)
+    takeEvery(CREATE_JOB_SUBMISSION, createJobSubmission),
+    takeEvery(DELETE_JOB_SUBMISSION, deleteJobSubmission)
   ];
 }

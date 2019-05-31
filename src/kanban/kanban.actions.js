@@ -10,6 +10,8 @@ export const SET_JOB_SUBMISSIONS = "SET_JOB_SUBMISSIONS";
 export const UPDATE_JOB_SUBMISSIONS = "UPDATE_JOB_SUBMISSIONS";
 export const UPDATE_JOB_SUBMISSION = "UPDATE_JOB_SUBMISSION";
 export const CREATE_JOB_SUBMISSION = "CREATE_JOB_SUBMISSION";
+export const DELETE_JOB_SUBMISSION = "DELETE_JOB_SUBMISSION";
+export const REMOVE_JOB_SUBMISSION = "REMOVE_JOB_SUBMISSION";
 
 export const getKanban = () => ({ type: GET_KANBAN });
 
@@ -68,4 +70,13 @@ export const updateJobSubmission = (
 export const createJobSubmission = (jobOrder, jobSubmission, status) => ({
   type: CREATE_JOB_SUBMISSION,
   payload: { jobOrder, jobSubmission, status }
+});
+
+export const deleteJobSubmission = jobSubmission => ({
+  type: DELETE_JOB_SUBMISSION,
+  payload: jobSubmission
+});
+export const removeJobSubmission = jobSubmissionId => ({
+  type: REMOVE_JOB_SUBMISSION,
+  payload: jobSubmissionId
 });

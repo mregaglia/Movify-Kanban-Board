@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { func, number } from "prop-types";
+import { func, number, oneOfType, string } from "prop-types";
 import { ContextMenu, MenuItem } from "react-contextmenu";
 import { Trash } from "../svgs";
 
@@ -41,7 +41,7 @@ const CandidateMenu = ({ id, onDelete }) => {
 };
 
 CandidateMenu.propTypes = {
-  id: number,
+  id: oneOfType([number, string]),
   onDelete: func
 };
 

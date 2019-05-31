@@ -1,4 +1,4 @@
-import { get, post, put } from "../utils/api";
+import { get, post, put, del } from "../utils/api";
 import {
   getCandidateNameQuery,
   AVAILABLE_STATUSES,
@@ -57,3 +57,6 @@ export const searchCandidates = query =>
     fields: "id,firstName,lastName,occupation",
     query: `(${getCandidateNameQuery(query)}) AND isDeleted:false`
   });
+
+export const deleteJobSubmission = jobSubmissionId =>
+  del(`entity/JobSubmission/${jobSubmissionId}`);

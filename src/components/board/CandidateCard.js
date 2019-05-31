@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { path, pathOr, prop } from "ramda";
-import { array, number, object, oneOfType, string } from "prop-types";
+import { array, func, number, object, oneOfType, string } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import { ContextMenuTrigger } from "react-contextmenu";
+import { deleteJobSubmission } from "../../kanban/kanban.actions";
 import { getCandidateBorderColor } from "../../utils/kanban";
 import LinkedinBadge from "../LinkedinBadge";
 import { getHrColor } from "../../recruitment/HrLegend";
@@ -70,6 +71,7 @@ const getHrBadgeColor = (hrId, hrs) => {
 
 const CandidateCard = ({
   board,
+  deleteJobSubmission,
   hrs,
   index,
   jobSubmissionId,
@@ -80,7 +82,7 @@ const CandidateCard = ({
   const onClose = () => setDisplayDeleteModal(false);
 
   const onDelete = () => {
-    console.log("delete candidacy");
+    deleteJobSubmission(jobSubmission);
     setDisplayDeleteModal(false);
   };
 
@@ -155,13 +157,21 @@ const CandidateCard = ({
 CandidateCard.propTypes = {
   board: string,
   candidate: object,
+  deleteJobSubmission: func,
   hrs: array,
   index: number,
   jobSubmissionId: oneOfType([number, string]),
   jobSubmission: object
 };
 
-export default connect((state, { board, jobSubmissionId }) => ({
-  jobSubmission: pathOr({}, [board, "jobSubmissions", jobSubmissionId], state),
-  hrs: pathOr({}, ["recruitment", "hrs"], state)
-}))(CandidateCard);
+export default connect(
+  (state, { board, jobSubmissionId }) => ({
+    jobSubmission: pathOr(
+      {},
+      [board, "jobSubmissions", jobSubmissionId],
+      state
+    ),
+    hrs: pathOr({}, ["recruitment", "hrs"], state)
+  }),
+  { deleteJobSubmission }
+)(CandidateCard);

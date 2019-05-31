@@ -1,4 +1,4 @@
-import { mergeDeepWith } from "ramda";
+import { dissoc, mergeDeepWith } from "ramda";
 import { bindReducer } from "../utils/reducer";
 import { unionArrays } from "../utils/kanban";
 import {
@@ -9,7 +9,8 @@ import {
   SET_JOB_ORDERS,
   UPDATE_JOB_ORDERS,
   SET_JOB_SUBMISSIONS,
-  UPDATE_JOB_SUBMISSIONS
+  UPDATE_JOB_SUBMISSIONS,
+  REMOVE_JOB_SUBMISSION
 } from "./kanban.actions";
 
 export const initialState = {
@@ -59,6 +60,10 @@ const kanban = {
     ...state,
     loading: false,
     jobSubmissions: mergeDeepWith(unionArrays, state.jobSubmissions, payload)
+  }),
+  [REMOVE_JOB_SUBMISSION]: (state, payload) => ({
+    ...state,
+    jobSubmissions: dissoc(payload, state.jobSubmissions)
   })
 };
 
