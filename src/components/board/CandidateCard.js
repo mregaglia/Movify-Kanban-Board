@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { path, pathOr, prop } from "ramda";
 import { array, number, object, oneOfType, string } from "prop-types";
@@ -10,6 +10,7 @@ import LinkedinBadge from "../LinkedinBadge";
 import { getHrColor } from "../../recruitment/HrLegend";
 import Function from "./Function";
 import CandidateMenu from "./CandidateMenu";
+import ConfirmationModal from "../ConfirmationModal";
 
 const Container = styled.div(({ borderColor, theme }) => ({
   display: "flex",
@@ -73,57 +74,83 @@ const CandidateCard = ({
   index,
   jobSubmissionId,
   jobSubmission
-}) => (
-  <Draggable draggableId={jobSubmissionId} index={index}>
-    {provided => (
-      <div
-        ref={provided.innerRef}
-        {...provided.draggableProps}
-        {...provided.dragHandleProps}
-      >
-        <ContextMenuTrigger id={`${jobSubmissionId}`}>
-          <Container
-            borderColor={getCandidateBorderColor(
-              prop("dateLastModified", jobSubmission)
-            )}
-          >
-            <TextColumn>
-              <Text>
-                {pathOr("", ["candidate", "firstName"], jobSubmission)}{" "}
-                {pathOr("", ["candidate", "lastName"], jobSubmission)}
-              </Text>
-              {board === "recruitment" && (
-                <Function
-                  board={board}
-                  functionTitle={path(
-                    ["candidate", "category", "name"],
-                    jobSubmission
-                  )}
-                  ccId={prop("clientCorporationId", jobSubmission)}
-                />
+}) => {
+  const [displayDeleteModal, setDisplayDeleteModal] = useState(false);
+
+  const onClose = () => setDisplayDeleteModal(false);
+
+  const onDelete = () => {
+    console.log("delete candidacy");
+    setDisplayDeleteModal(false);
+  };
+
+  return (
+    <Draggable draggableId={jobSubmissionId} index={index}>
+      {provided => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+        >
+          <ContextMenuTrigger id={`${jobSubmissionId}`}>
+            <Container
+              borderColor={getCandidateBorderColor(
+                prop("dateLastModified", jobSubmission)
               )}
-            </TextColumn>
-            <Column>
-              <LinkedinBadge candidate={prop("candidate", jobSubmission)} />
-              {board === "recruitment" && (
-                <Badge
-                  color={getHrBadgeColor(
-                    path(["candidate", "owner", "id"], jobSubmission),
-                    hrs
-                  )}
-                />
-              )}
-            </Column>
-          </Container>
-        </ContextMenuTrigger>
-        <CandidateMenu
-          id={jobSubmissionId}
-          onDelete={() => console.log("onDelete")}
-        />
-      </div>
-    )}
-  </Draggable>
-);
+            >
+              <TextColumn>
+                <Text>
+                  {pathOr("", ["candidate", "firstName"], jobSubmission)}{" "}
+                  {pathOr("", ["candidate", "lastName"], jobSubmission)}
+                </Text>
+                {board === "recruitment" && (
+                  <Function
+                    board={board}
+                    functionTitle={path(
+                      ["candidate", "category", "name"],
+                      jobSubmission
+                    )}
+                    ccId={prop("clientCorporationId", jobSubmission)}
+                  />
+                )}
+              </TextColumn>
+              <Column>
+                <LinkedinBadge candidate={prop("candidate", jobSubmission)} />
+                {board === "recruitment" && (
+                  <Badge
+                    color={getHrBadgeColor(
+                      path(["candidate", "owner", "id"], jobSubmission),
+                      hrs
+                    )}
+                  />
+                )}
+              </Column>
+            </Container>
+          </ContextMenuTrigger>
+          <CandidateMenu
+            id={jobSubmissionId}
+            onDelete={() => setDisplayDeleteModal(true)}
+          />
+          <ConfirmationModal
+            isOpen={displayDeleteModal}
+            onClose={onClose}
+            onConfirm={onDelete}
+            title={`Candidate ${pathOr(
+              "",
+              ["candidate", "firstName"],
+              jobSubmission
+            )} ${pathOr("", ["candidate", "lastName"], jobSubmission)}`}
+            text={`Do you want to delete this candidate for the vacancy ${pathOr(
+              "",
+              ["jobOrder", "title"],
+              jobSubmission
+            )}?`}
+          />
+        </div>
+      )}
+    </Draggable>
+  );
+};
 
 CandidateCard.propTypes = {
   board: string,

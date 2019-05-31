@@ -5,6 +5,7 @@ import { ContextMenu, MenuItem } from "react-contextmenu";
 import { Trash } from "../svgs";
 
 const Container = styled.div(({ theme }) => ({
+  cursor: "pointer",
   backgroundColor: theme.colors.darkWhite,
   padding: 8,
   borderRadius: theme.dimensions.borderRadius,
