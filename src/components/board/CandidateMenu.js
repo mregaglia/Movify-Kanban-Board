@@ -1,0 +1,47 @@
+import React from "react";
+import styled from "styled-components";
+import { func, number } from "prop-types";
+import { ContextMenu, MenuItem } from "react-contextmenu";
+import { Trash } from "../svgs";
+
+const Container = styled.div(({ theme }) => ({
+  backgroundColor: theme.colors.darkWhite,
+  padding: 8,
+  borderRadius: theme.dimensions.borderRadius,
+  boxShadow: "0 4px 8px 0 rgba(0,0,0,0.2)"
+}));
+
+const StyledMenuItem = styled.div({
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center"
+});
+
+const Text = styled.div(({ theme }) => ({
+  fontFamily: theme.fonts.fontFamily,
+  fontSize: theme.textDimensions.regular,
+  textAlign: "justify",
+  margin: 8
+}));
+
+const CandidateMenu = ({ id, onDelete }) => {
+  return (
+    <ContextMenu id={`${id}`}>
+      <Container>
+        <MenuItem onClick={onDelete}>
+          <StyledMenuItem>
+            <Trash />
+            <Text>Delete submission</Text>
+          </StyledMenuItem>
+        </MenuItem>
+      </Container>
+    </ContextMenu>
+  );
+};
+
+CandidateMenu.propTypes = {
+  id: number,
+  onDelete: func
+};
+
+export default CandidateMenu;

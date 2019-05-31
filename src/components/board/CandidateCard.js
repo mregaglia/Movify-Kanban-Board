@@ -4,10 +4,12 @@ import { path, pathOr, prop } from "ramda";
 import { array, number, object, oneOfType, string } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
+import { ContextMenuTrigger } from "react-contextmenu";
 import { getCandidateBorderColor } from "../../utils/kanban";
 import LinkedinBadge from "../LinkedinBadge";
 import { getHrColor } from "../../recruitment/HrLegend";
 import Function from "./Function";
+import CandidateMenu from "./CandidateMenu";
 
 const Container = styled.div(({ borderColor, theme }) => ({
   display: "flex",
@@ -74,42 +76,51 @@ const CandidateCard = ({
 }) => (
   <Draggable draggableId={jobSubmissionId} index={index}>
     {provided => (
-      <Container
+      <div
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
-        borderColor={getCandidateBorderColor(
-          prop("dateLastModified", jobSubmission)
-        )}
       >
-        <TextColumn>
-          <Text>
-            {pathOr("", ["candidate", "firstName"], jobSubmission)}{" "}
-            {pathOr("", ["candidate", "lastName"], jobSubmission)}
-          </Text>
-          {board === "recruitment" && (
-            <Function
-              board={board}
-              functionTitle={path(
-                ["candidate", "category", "name"],
-                jobSubmission
+        <ContextMenuTrigger id={`${jobSubmissionId}`}>
+          <Container
+            borderColor={getCandidateBorderColor(
+              prop("dateLastModified", jobSubmission)
+            )}
+          >
+            <TextColumn>
+              <Text>
+                {pathOr("", ["candidate", "firstName"], jobSubmission)}{" "}
+                {pathOr("", ["candidate", "lastName"], jobSubmission)}
+              </Text>
+              {board === "recruitment" && (
+                <Function
+                  board={board}
+                  functionTitle={path(
+                    ["candidate", "category", "name"],
+                    jobSubmission
+                  )}
+                  ccId={prop("clientCorporationId", jobSubmission)}
+                />
               )}
-              ccId={prop("clientCorporationId", jobSubmission)}
-            />
-          )}
-        </TextColumn>
-        <Column>
-          <LinkedinBadge candidate={prop("candidate", jobSubmission)} />
-          {board === "recruitment" && (
-            <Badge
-              color={getHrBadgeColor(
-                path(["candidate", "owner", "id"], jobSubmission),
-                hrs
+            </TextColumn>
+            <Column>
+              <LinkedinBadge candidate={prop("candidate", jobSubmission)} />
+              {board === "recruitment" && (
+                <Badge
+                  color={getHrBadgeColor(
+                    path(["candidate", "owner", "id"], jobSubmission),
+                    hrs
+                  )}
+                />
               )}
-            />
-          )}
-        </Column>
-      </Container>
+            </Column>
+          </Container>
+        </ContextMenuTrigger>
+        <CandidateMenu
+          id={jobSubmissionId}
+          onDelete={() => console.log("onDelete")}
+        />
+      </div>
     )}
   </Draggable>
 );

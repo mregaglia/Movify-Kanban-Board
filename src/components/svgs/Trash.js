@@ -24,7 +24,7 @@ Trash.propTypes = {
 };
 
 Trash.defaultProps = {
-  color: "#FFF",
+  color: "#000",
   size: 24
 };
 
