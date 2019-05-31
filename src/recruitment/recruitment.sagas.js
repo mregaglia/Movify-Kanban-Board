@@ -220,12 +220,16 @@ export function* updateJobSubmission(action) {
   const {
     payload: { prevStatus, jobSubmissionId, prevJobOrderId, jobOrderId, status }
   } = action;
+  const jobSubmission = yield select(getStateJobSubmission, jobSubmissionId);
   try {
-    const jobSubmission = yield select(getStateJobSubmission, jobSubmissionId);
     const decision = yield call(getDecision, jobOrderId, status);
     yield call(updateStateJobSubmission, {
       ...action,
-      payload: { ...action.payload, decision }
+      payload: { 
+        ...action.payload, 
+        decision, 
+        dateLastModified: new Date().getTime() 
+      }
     });
     yield call(updateJobSubmissionService, jobSubmissionId, status, jobOrderId);
     yield call(
@@ -244,7 +248,8 @@ export function* updateJobSubmission(action) {
         prevStatus: status,
         jobOrderId: prevJobOrderId,
         prevJobOrderId: jobOrderId,
-        decision
+        decision,
+        dateLastModified: prop("dateLastModified", jobSubmission)
       }
     });
     yield call(toast.error, en.UPDATE_STATUS_ERROR);
@@ -259,7 +264,8 @@ export function* updateStateJobSubmission(action) {
       prevStatus,
       jobSubmissionId,
       status,
-      decision
+      decision,
+      dateLastModified
     }
   } = action;
 
@@ -278,7 +284,8 @@ export function* updateStateJobSubmission(action) {
       candidate: {
         ...jobSubmission.candidate,
         middleName: decision
-      }
+      },
+      dateLastModified
     }
   };
 

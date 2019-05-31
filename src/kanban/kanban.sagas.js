@@ -246,7 +246,8 @@ export function* updateJobSubmissionStatus(action) {
     ...stateJobSubmissions,
     [jobSubmissionId]: {
       ...jobSubmission,
-      status
+      status,
+      dateLastModified: new Date().getTime()
     }
   };
 
