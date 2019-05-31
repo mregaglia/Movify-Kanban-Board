@@ -47,6 +47,10 @@ import {
   deleteJobSubmission as deleteJobSubmissionService
 } from "../kanban/kanban.service";
 import { updateDepartmentFilter } from "../departmentFilter/departmentFilter.actions";
+import {
+  getStateJobSubmissions as getStateJobSubmissionsKanban,
+  deleteJobSubmission as deleteJobSubmissionKanban
+} from "../kanban/kanban.sagas";
 
 export const getStateClientCorporation = (state, ccId) =>
   pathOr({}, ["recruitment", "clientCorporations", ccId], state);
@@ -400,6 +404,38 @@ export function* addJobSubmission(jobSubmission) {
   yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
 }
 
+export function* deleteJobSubmissions(action) {
+  const jobSubmission = prop("payload", action);
+
+  const stateJobSubmissions = yield select(getStateJobSubmissions);
+  const jobSubmissionsToDelete = Object.keys(stateJobSubmissions).filter(
+    jsId =>
+      path([jsId, "candidate", "id"], stateJobSubmissions) ===
+      path(["candidate", "id"], jobSubmission)
+  );
+
+  for (let jsId of jobSubmissionsToDelete) {
+    yield call(deleteJobSubmission, {
+      payload: prop(jsId, stateJobSubmissions)
+    });
+  }
+
+  const stateKanbanJobSubmissions = yield select(getStateJobSubmissionsKanban);
+  const jobSubmissionsToDeleteInKanban = Object.keys(
+    stateKanbanJobSubmissions
+  ).filter(
+    jsId =>
+      path([jsId, "candidate", "id"], stateKanbanJobSubmissions) ===
+      path(["candidate", "id"], jobSubmission)
+  );
+
+  for (let jsId of jobSubmissionsToDeleteInKanban) {
+    yield call(deleteJobSubmissionKanban, {
+      payload: prop(jsId, stateKanbanJobSubmissions)
+    });
+  }
+}
+
 export function* deleteJobSubmission(action) {
   const jobSubmission = prop("payload", action);
   const jobSubmissionId = prop("id", jobSubmission);
@@ -439,6 +475,6 @@ export default function kanbanSagas() {
     takeEvery(GET_RECRUITMENT_JOB_SUBMISSIONS, getJobSubmissions),
     takeEvery(UPDATE_RECRUITMENT_JOB_SUBMISSION, updateJobSubmission),
     takeEvery(CREATE_RECRUITMENT_JOB_SUBMISSION, createJobSubmission),
-    takeEvery(DELETE_RECRUITMENT_JOB_SUBMISSION, deleteJobSubmission)
+    takeEvery(DELETE_RECRUITMENT_JOB_SUBMISSION, deleteJobSubmissions)
   ];
 }

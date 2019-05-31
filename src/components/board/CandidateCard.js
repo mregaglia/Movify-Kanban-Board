@@ -81,6 +81,22 @@ const CandidateCard = ({
 }) => {
   const [displayDeleteModal, setDisplayDeleteModal] = useState(false);
 
+  const getDeleteText = () => {
+    if (board === "kanban")
+      return `Do you want to delete this candidate for the vacancy ${pathOr(
+        "",
+        ["jobOrder", "title"],
+        jobSubmission
+      )}?`;
+
+    if (board === "recruitment")
+      return `Do you want to delete this candidate for the vacancy ${pathOr(
+        "",
+        ["jobOrder", "title"],
+        jobSubmission
+      )}? Beware that it will also delete this candidate in all the other pipelines.`;
+  };
+
   const onClose = () => setDisplayDeleteModal(false);
 
   const onDelete = () => {
@@ -145,11 +161,7 @@ const CandidateCard = ({
               ["candidate", "firstName"],
               jobSubmission
             )} ${pathOr("", ["candidate", "lastName"], jobSubmission)}`}
-            text={`Do you want to delete this candidate for the vacancy ${pathOr(
-              "",
-              ["jobOrder", "title"],
-              jobSubmission
-            )}?`}
+            text={getDeleteText()}
           />
         </div>
       )}
