@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import { ContextMenuTrigger } from "react-contextmenu";
 import { deleteJobSubmission } from "../../kanban/kanban.actions";
+import { deleteJobSubmission as deleteRecJobSubmission } from "../../recruitment/recruitment.actions";
 import { getCandidateBorderColor } from "../../utils/kanban";
 import LinkedinBadge from "../LinkedinBadge";
 import { getHrColor } from "../../recruitment/HrLegend";
@@ -72,6 +73,7 @@ const getHrBadgeColor = (hrId, hrs) => {
 const CandidateCard = ({
   board,
   deleteJobSubmission,
+  deleteRecJobSubmission,
   hrs,
   index,
   jobSubmissionId,
@@ -82,7 +84,8 @@ const CandidateCard = ({
   const onClose = () => setDisplayDeleteModal(false);
 
   const onDelete = () => {
-    deleteJobSubmission(jobSubmission);
+    if (board === "kanban") deleteJobSubmission(jobSubmission);
+    if (board === "recruitment") deleteRecJobSubmission(jobSubmission);
     setDisplayDeleteModal(false);
   };
 
@@ -158,6 +161,7 @@ CandidateCard.propTypes = {
   board: string,
   candidate: object,
   deleteJobSubmission: func,
+  deleteRecJobSubmission: func,
   hrs: array,
   index: number,
   jobSubmissionId: oneOfType([number, string]),
@@ -173,5 +177,5 @@ export default connect(
     ),
     hrs: pathOr({}, ["recruitment", "hrs"], state)
   }),
-  { deleteJobSubmission }
+  { deleteJobSubmission, deleteRecJobSubmission }
 )(CandidateCard);

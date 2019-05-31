@@ -28,7 +28,9 @@ import {
   UPDATE_RECRUITMENT_JOB_SUBMISSION,
   setJobOrders,
   setJobSubmissions,
-  CREATE_RECRUITMENT_JOB_SUBMISSION
+  CREATE_RECRUITMENT_JOB_SUBMISSION,
+  DELETE_RECRUITMENT_JOB_SUBMISSION,
+  removeJobSubmission
 } from "./recruitment.actions";
 import {
   getTalentAcquisitionManagers,
@@ -41,7 +43,8 @@ import {
 import {
   getJobOrders as getJobOrdersService,
   createJobSubmission as createJobSubmissionService,
-  getJobSubmission
+  getJobSubmission,
+  deleteJobSubmission as deleteJobSubmissionService
 } from "../kanban/kanban.service";
 import { updateDepartmentFilter } from "../departmentFilter/departmentFilter.actions";
 
@@ -225,10 +228,10 @@ export function* updateJobSubmission(action) {
     const decision = yield call(getDecision, jobOrderId, status);
     yield call(updateStateJobSubmission, {
       ...action,
-      payload: { 
-        ...action.payload, 
-        decision, 
-        dateLastModified: new Date().getTime() 
+      payload: {
+        ...action.payload,
+        decision,
+        dateLastModified: new Date().getTime()
       }
     });
     yield call(updateJobSubmissionService, jobSubmissionId, status, jobOrderId);
@@ -397,12 +400,45 @@ export function* addJobSubmission(jobSubmission) {
   yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
 }
 
+export function* deleteJobSubmission(action) {
+  const jobSubmission = prop("payload", action);
+  const jobSubmissionId = prop("id", jobSubmission);
+  const jobOrderId = path(["jobOrder", "id"], jobSubmission);
+  const status = prop("status", jobSubmission);
+  try {
+    yield call(deleteJobSubmissionService, jobSubmissionId);
+    yield put(removeJobSubmission(jobSubmissionId));
+
+    const stateJobOrder = yield select(getStateJobOrder, jobOrderId);
+    const jojss = {
+      ...prop("jobSubmissions", stateJobOrder),
+      [status]: pathOr([], ["jobSubmissions", status], stateJobOrder).filter(
+        jsId => jsId !== jobSubmissionId
+      )
+    };
+    const jobOrder = {
+      [jobOrderId]: {
+        ...stateJobOrder,
+        jobSubmissions: jojss
+      }
+    };
+
+    const stateJobOrders = yield select(getStateJobOrders);
+    yield put(setJobOrders({ ...stateJobOrders, ...jobOrder }));
+
+    yield call(toast.success, en.DELETE_JS_SUCCESS);
+  } catch (e) {
+    yield call(toast.error, en.DELETE_JS_ERROR);
+  }
+}
+
 export default function kanbanSagas() {
   return [
     takeLatest(GET_RECRUITMENT, getRecruitment),
     takeEvery(GET_RECRUITMENT_JOB_ORDERS, getJobOrders),
     takeEvery(GET_RECRUITMENT_JOB_SUBMISSIONS, getJobSubmissions),
     takeEvery(UPDATE_RECRUITMENT_JOB_SUBMISSION, updateJobSubmission),
-    takeEvery(CREATE_RECRUITMENT_JOB_SUBMISSION, createJobSubmission)
+    takeEvery(CREATE_RECRUITMENT_JOB_SUBMISSION, createJobSubmission),
+    takeEvery(DELETE_RECRUITMENT_JOB_SUBMISSION, deleteJobSubmission)
   ];
 }

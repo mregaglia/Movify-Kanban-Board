@@ -17,6 +17,10 @@ export const UPDATE_RECRUITMENT_JOB_SUBMISSION =
   "UPDATE_RECRUITMENT_JOB_SUBMISSION";
 export const CREATE_RECRUITMENT_JOB_SUBMISSION =
   "CREATE_RECRUITMENT_JOB_SUBMISSION";
+export const DELETE_RECRUITMENT_JOB_SUBMISSION =
+  "DELETE_RECRUITMENT_JOB_SUBMISSION";
+export const REMOVE_RECRUITMENT_JOB_SUBMISSION =
+  "REMOVE_RECRUITMENT_JOB_SUBMISSION";
 
 export const getRecruitment = () => ({ type: GET_RECRUITMENT });
 
@@ -78,4 +82,13 @@ export const updateJobSubmission = (
 export const createJobSubmission = (jobOrder, jobSubmission, status) => ({
   type: CREATE_RECRUITMENT_JOB_SUBMISSION,
   payload: { jobOrder, jobSubmission, status }
+});
+
+export const deleteJobSubmission = jobSubmission => ({
+  type: DELETE_RECRUITMENT_JOB_SUBMISSION,
+  payload: jobSubmission
+});
+export const removeJobSubmission = jobSubmissionId => ({
+  type: REMOVE_RECRUITMENT_JOB_SUBMISSION,
+  payload: jobSubmissionId
 });

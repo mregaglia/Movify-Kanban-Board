@@ -1,4 +1,4 @@
-import { mergeDeepWith, union } from "ramda";
+import { dissoc, mergeDeepWith, union } from "ramda";
 import { bindReducer } from "../utils/reducer";
 import { unionArrays } from "../utils/kanban";
 import {
@@ -9,7 +9,8 @@ import {
   SET_RECRUITMENT_JOB_SUBMISSIONS,
   UPDATE_RECRUITMENT_JOB_SUBMISSIONS,
   UPDATE_RECRUITMENT_CLIENT_CORPORATIONS_IDS,
-  UPDATE_HRS
+  UPDATE_HRS,
+  REMOVE_RECRUITMENT_JOB_SUBMISSION
 } from "./recruitment.actions";
 
 export const initialState = {
@@ -58,6 +59,10 @@ const recruitment = {
   [UPDATE_HRS]: (state, payload) => ({
     ...state,
     hrs: union(state.hrs, payload)
+  }),
+  [REMOVE_RECRUITMENT_JOB_SUBMISSION]: (state, payload) => ({
+    ...state,
+    jobSubmissions: dissoc(payload, state.jobSubmissions)
   })
 };
 
