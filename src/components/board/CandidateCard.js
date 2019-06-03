@@ -106,14 +106,14 @@ const CandidateCard = ({
   };
 
   return (
-    <Draggable draggableId={jobSubmissionId} index={index}>
-      {provided => (
-        <div
-          ref={provided.innerRef}
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-        >
-          <ContextMenuTrigger id={`${jobSubmissionId}`}>
+    <ContextMenuTrigger id={`${jobSubmissionId}`}>
+      <Draggable draggableId={jobSubmissionId} index={index}>
+        {provided => (
+          <div
+            ref={provided.innerRef}
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+          >
             <Container
               borderColor={getCandidateBorderColor(
                 prop("dateLastModified", jobSubmission)
@@ -147,25 +147,26 @@ const CandidateCard = ({
                 )}
               </Column>
             </Container>
-          </ContextMenuTrigger>
-          <CandidateMenu
-            id={jobSubmissionId}
-            onDelete={() => setDisplayDeleteModal(true)}
-          />
-          <ConfirmationModal
-            isOpen={displayDeleteModal}
-            onClose={onClose}
-            onConfirm={onDelete}
-            title={`Candidate ${pathOr(
-              "",
-              ["candidate", "firstName"],
-              jobSubmission
-            )} ${pathOr("", ["candidate", "lastName"], jobSubmission)}`}
-            text={getDeleteText()}
-          />
-        </div>
-      )}
-    </Draggable>
+
+            <ConfirmationModal
+              isOpen={displayDeleteModal}
+              onClose={onClose}
+              onConfirm={onDelete}
+              title={`Candidate ${pathOr(
+                "",
+                ["candidate", "firstName"],
+                jobSubmission
+              )} ${pathOr("", ["candidate", "lastName"], jobSubmission)}`}
+              text={getDeleteText()}
+            />
+          </div>
+        )}
+      </Draggable>
+      <CandidateMenu
+        id={jobSubmissionId}
+        onDelete={() => setDisplayDeleteModal(true)}
+      />
+    </ContextMenuTrigger>
   );
 };
 
