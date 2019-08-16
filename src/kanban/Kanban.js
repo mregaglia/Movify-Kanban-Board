@@ -22,7 +22,7 @@ const Kanban = ({ bms, getKanban, loading, updateJobSubmission }) => {
 
   useEffect(() => {
     if (!prop("length", bms)) getKanban();
-  }, []);
+  }, [bms, getKanban]);
 
   const onDnd = result => {
     if (!prop("destination", result)) return;

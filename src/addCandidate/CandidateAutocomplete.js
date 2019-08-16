@@ -44,7 +44,7 @@ export const CandidateInput = ({
 }) => {
   useEffect(() => {
     getSuggestions();
-  }, []);
+  }, [getSuggestions]);
 
   const getSuggestionsDebounced = debounce(getSuggestions, 350);
 

@@ -27,7 +27,7 @@ const Recruitment = ({
 
   useEffect(() => {
     if (!prop("length", clientList)) getRecruitment();
-  }, []);
+  }, [clientList, getRecruitment]);
 
   const onDnd = result => {
     if (!prop("destination", result)) return;

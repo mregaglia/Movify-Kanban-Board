@@ -35,7 +35,7 @@ const Login = ({ login, auth, location }) => {
   useEffect(() => {
     const code = getCode(window.location.href);
     if (code.length > 0) login(code);
-  }, []);
+  }, [login]);
 
   if (auth.authenticated)
     return (
