@@ -36,6 +36,7 @@ import {
   getJobSubmission,
   deleteJobSubmission as deleteJobSubmissionService
 } from "./kanban.service";
+import { getCandidate } from "../recruitment/recruitment.service";
 import en from "../lang/en";
 
 export const getStateBms = state => pathOr([], ["kanban", "bmList"], state);
@@ -183,8 +184,9 @@ export function* getJobSubmissions(action, start = 0) {
       start
     );
 
+    const jsList = propOr([], "data", jobSubmissionsResponse);
     const jobSubmissions = yield all(
-      propOr([], "data", jobSubmissionsResponse).reduce((acc, js) => {
+      jsList.reduce((acc, js) => {
         const jojss = pathOr(
           [],
           [jobOrderId, "jobSubmissions", js.status],
@@ -207,6 +209,15 @@ export function* getJobSubmissions(action, start = 0) {
         return acc;
       }, {})
     );
+
+    for (let js of jsList) {
+      const candidateResponse = yield call(
+        getCandidate,
+        path(["candidate", "id"], js)
+      );
+      const candidate = propOr({}, "data", candidateResponse);
+      jobSubmissions[prop("id", js)].candidate = candidate;
+    }
 
     yield put(updateJobSubmissions(jobSubmissions));
     yield put(updateJobOrders(jobOrders));

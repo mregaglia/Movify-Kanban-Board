@@ -25,7 +25,7 @@ export const getJobSubmissions = (jobOrderId, start = 0) =>
 
 export const getCandidate = candidateId =>
   get(`entity/Candidate/${candidateId}`, {
-    fields: "id,firstName,lastName,owner,category,middleName"
+    fields: "id,firstName,lastName,owner,category,middleName,employmentPreference"
   });
 
 export const updateJobSubmission = (jobSubmissionId, status, jobOrderId) =>
