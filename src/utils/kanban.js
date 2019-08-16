@@ -1,3 +1,4 @@
+import React from "react";
 import {
   is,
   isEmpty,
@@ -10,6 +11,7 @@ import {
   union
 } from "ramda";
 import { isOverDiff, DIFF_5_DAYS, DIFF_10_DAYS } from "./date";
+import { Hourglass, HourglassFull } from "../components/svgs";
 
 export const DECISION_HIPO = "Hipo";
 export const DECISION_WFP = "WFP";
@@ -63,10 +65,10 @@ export const isFromSameBoard = (src, dest) =>
   prop("clientCorporationId", src) === prop("clientCorporationId", dest) &&
   prop("jobOrderId", src) === prop("jobOrderId", dest);
 
-export const getCandidateBorderColor = dateLastModified => {
+export const getCandidateUpdatedComponent = dateLastModified => {
   if (!dateLastModified) return undefined;
-  if (isOverDiff(dateLastModified, DIFF_10_DAYS)) return "red";
-  if (isOverDiff(dateLastModified, DIFF_5_DAYS)) return "orange";
+  if (isOverDiff(dateLastModified, DIFF_10_DAYS)) return <HourglassFull size={20} />;
+  if (isOverDiff(dateLastModified, DIFF_5_DAYS)) return <Hourglass size={20} />;
   return undefined;
 };
 
