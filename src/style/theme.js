@@ -20,10 +20,16 @@ export default {
     white: "#FFF"
   },
   priorityColors: {
-    P1: "#0f3443",
-    P2: "#1c7463",
-    P3: "#29b383",
-    P4: "#34e89e"
+    P1: "#f34d3d",
+    P2: "#FF8A40",
+    P3: "#FFBF53",
+    P4: "#60C659"
+  },
+  prioritySizes: {
+    P1: 30,
+    P2: 24,
+    P3: 24,
+    P4: 24
   },
   fonts: {
     fontFamily: "Open Sans, sans-serif"

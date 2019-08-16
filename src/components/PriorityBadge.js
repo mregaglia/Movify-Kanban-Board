@@ -3,18 +3,21 @@ import { string } from "prop-types";
 import styled from "styled-components";
 
 const Badge = styled.div(({ priority, theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   backgroundColor: theme.priorityColors[priority],
-  height: 20,
-  width: 20,
-  borderRadius: 10,
+  height: theme.prioritySizes[priority],
+  width: theme.prioritySizes[priority],
+  borderRadius: theme.prioritySizes[priority] / 2,
   marginTop: 6,
   marginRight: 12
 }));
 
-const Text = styled.div(({ theme }) => ({
+const Text = styled.div(({ priority, theme }) => ({
   display: "inline-block",
   fontFamily: theme.fonts.fontFamily,
-  fontSize: theme.textDimensions.small,
+  fontSize: theme.prioritySizes[priority] * 0.45,
   fontWeight: 600,
   color: theme.colors.darkWhite,
   padding: 4
@@ -22,7 +25,7 @@ const Text = styled.div(({ theme }) => ({
 
 const PriorityBadge = ({ priority }) => (
   <Badge priority={priority}>
-    <Text>{priority}</Text>
+    <Text priority={priority}>{priority}</Text>
   </Badge>
 );
 
