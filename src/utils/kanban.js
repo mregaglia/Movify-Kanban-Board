@@ -3,6 +3,7 @@ import {
   isEmpty,
   isNil,
   flatten,
+  path,
   pathOr,
   prop,
   propOr,
@@ -107,3 +108,8 @@ export const getDecisionFromClient = (clientName = "") => {
   if (clientName.toLowerCase().includes("wfp")) return DECISION_WFP;
   return null;
 };
+
+export const isFreelance = (candidate = {}) => {
+  const employmentPreference = path(["employmentPreference", 0], candidate);
+  return employmentPreference === "Freelance";
+}

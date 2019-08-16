@@ -8,12 +8,16 @@ import LinkedinBadge from "../components/LinkedinBadge";
 import { Clear } from "../components/svgs";
 import { removeCandidate } from "./transition.actions";
 import Function from "../components/board/Function";
+import { isFreelance } from "../utils/kanban";
 
-const Container = styled.div(({ theme }) => ({
+const Container = styled.div(({ borderColor, theme }) => ({
   display: "flex",
   flexDirection: "row",
   width: "10%",
   borderRadius: theme.dimensions.borderRadius,
+  borderBottomColor: path(["colors", borderColor], theme),
+  borderBottomWidth: borderColor ? 4 : 0,
+  borderBottomStyle: borderColor ? "solid" : "none",
   backgroundColor: theme.colors.grey,
   margin: 5,
   textOverflow: "ellipsis",
@@ -66,6 +70,7 @@ const CandidateCard = ({ candidate, index, removeCandidate }) => (
         ref={provided.innerRef}
         {...provided.draggableProps}
         {...provided.dragHandleProps}
+        borderColor={isFreelance(candidate) ? "darkGrey" : undefined}
       >
         <TextColumn>
           <Text>

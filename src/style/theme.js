@@ -8,6 +8,7 @@ export default {
     green: "#60C659",
     linkedin: "#0077B5",
     black: "#000",
+    darkGrey: "#696969",
     mediumGrey: "#B0B0B0",
     grey: "#DCDCDC",
     transparentGrey: "rgba(255,255,255, 0.4)",

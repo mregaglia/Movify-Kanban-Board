@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { path, pathOr, prop } from "ramda";
+import { path, pathOr, prop, propOr } from "ramda";
 import { func, number, object, oneOfType, string } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import { ContextMenuTrigger } from "react-contextmenu";
 import { deleteJobSubmission } from "../../kanban/kanban.actions";
 import { deleteJobSubmission as deleteRecJobSubmission } from "../../recruitment/recruitment.actions";
-import { getCandidateBorderColor } from "../../utils/kanban";
+import { isFreelance } from "../../utils/kanban";
 import LinkedinBadge from "../LinkedinBadge";
 import Function from "./Function";
 import CandidateMenu from "./CandidateMenu";
@@ -99,9 +99,7 @@ const CandidateCard = ({
             {...provided.dragHandleProps}
           >
             <Container
-              borderColor={getCandidateBorderColor(
-                prop("dateLastModified", jobSubmission)
-              )}
+              borderColor={isFreelance(propOr({}, "candidate", jobSubmission)) ? "darkGrey" : undefined}
             >
               <TextColumn>
                 <Text>
