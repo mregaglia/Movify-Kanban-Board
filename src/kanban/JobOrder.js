@@ -64,7 +64,7 @@ const Tooltip = styled(ReactTooltip)`
   &.place-right {
     &:after {
       border-right-color: ${({ theme }) =>
-        `${theme.colors.tooltipShadow} !important`};
+    `${theme.colors.tooltipShadow} !important`};
       border-right-style: solid !important;
       border-right-width: 6px !important;
     }
@@ -109,7 +109,7 @@ const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
               jobOrder
             )} `}
           </Text>
-          <AddButton color={color} onClick={() => setIsModalOpen(true)}>
+          <AddButton color={`${color}70`} onClick={() => setIsModalOpen(true)}>
             <Add color="#FFF" style={{ paddingTop: 3, paddingLeft: 0.5 }} />
           </AddButton>
           <AddCandidateModal
