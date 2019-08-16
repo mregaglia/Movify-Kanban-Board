@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { path, pathOr, prop } from "ramda";
-import { array, func, number, object, oneOfType, string } from "prop-types";
+import { func, number, object, oneOfType, string } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
 import { ContextMenuTrigger } from "react-contextmenu";
@@ -9,7 +9,6 @@ import { deleteJobSubmission } from "../../kanban/kanban.actions";
 import { deleteJobSubmission as deleteRecJobSubmission } from "../../recruitment/recruitment.actions";
 import { getCandidateBorderColor } from "../../utils/kanban";
 import LinkedinBadge from "../LinkedinBadge";
-import { getHrColor } from "../../recruitment/HrLegend";
 import Function from "./Function";
 import CandidateMenu from "./CandidateMenu";
 import ConfirmationModal from "../ConfirmationModal";
@@ -56,25 +55,10 @@ const TextColumn = styled.div({
   overflow: "hidden"
 });
 
-const Badge = styled.div(({ color }) => ({
-  backgroundColor: color,
-  height: 12,
-  width: 12,
-  borderRadius: 6,
-  marginTop: 4,
-  marginBottom: 4
-}));
-
-const getHrBadgeColor = (hrId, hrs) => {
-  const index = hrs.findIndex(hr => prop("id", hr) === hrId);
-  if (index >= 0) return getHrColor(index);
-};
-
 const CandidateCard = ({
   board,
   deleteJobSubmission,
   deleteRecJobSubmission,
-  hrs,
   index,
   jobSubmissionId,
   jobSubmission
@@ -137,14 +121,6 @@ const CandidateCard = ({
               </TextColumn>
               <Column>
                 <LinkedinBadge candidate={prop("candidate", jobSubmission)} />
-                {board === "recruitment" && (
-                  <Badge
-                    color={getHrBadgeColor(
-                      path(["candidate", "owner", "id"], jobSubmission),
-                      hrs
-                    )}
-                  />
-                )}
               </Column>
             </Container>
 
@@ -175,7 +151,6 @@ CandidateCard.propTypes = {
   candidate: object,
   deleteJobSubmission: func,
   deleteRecJobSubmission: func,
-  hrs: array,
   index: number,
   jobSubmissionId: oneOfType([number, string]),
   jobSubmission: object
@@ -187,8 +162,7 @@ export default connect(
       {},
       [board, "jobSubmissions", jobSubmissionId],
       state
-    ),
-    hrs: pathOr({}, ["recruitment", "hrs"], state)
+    )
   }),
   { deleteJobSubmission, deleteRecJobSubmission }
 )(CandidateCard);
