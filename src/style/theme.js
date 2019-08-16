@@ -3,6 +3,7 @@ export default {
     transparentRed: "rgba(243, 77, 61, 0.2)",
     lightRed: "#f78f85",
     red: "#f34d3d",
+    bullhorn: "#F16A22",
     orange: "#FF8A40",
     yellow: "#FFBF53",
     green: "#60C659",
