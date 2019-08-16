@@ -4,6 +4,7 @@ import { path, prop, propOr } from "ramda";
 import { func, number, object } from "prop-types";
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
+import BullhornBadge from "../components/BullhornBadge";
 import LinkedinBadge from "../components/LinkedinBadge";
 import { Clear } from "../components/svgs";
 import { removeCandidate } from "./transition.actions";
@@ -72,6 +73,9 @@ const CandidateCard = ({ candidate, index, removeCandidate }) => (
         {...provided.dragHandleProps}
         borderColor={isFreelance(candidate) ? "darkGrey" : undefined}
       >
+        <Column>
+          <BullhornBadge candidate={candidate} />
+        </Column>
         <TextColumn>
           <Text>
             {propOr("", "firstName", candidate)}{" "}

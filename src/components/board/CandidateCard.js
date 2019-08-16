@@ -8,6 +8,7 @@ import { ContextMenuTrigger } from "react-contextmenu";
 import { deleteJobSubmission } from "../../kanban/kanban.actions";
 import { deleteJobSubmission as deleteRecJobSubmission } from "../../recruitment/recruitment.actions";
 import { getCandidateUpdatedComponent, isFreelance } from "../../utils/kanban";
+import BullhornBadge from "../BullhornBadge";
 import LinkedinBadge from "../LinkedinBadge";
 import Function from "./Function";
 import CandidateMenu from "./CandidateMenu";
@@ -102,6 +103,7 @@ const CandidateCard = ({
               borderColor={isFreelance(propOr({}, "candidate", jobSubmission)) ? "darkGrey" : undefined}
             >
               <Column>
+                <BullhornBadge candidate={prop("candidate", jobSubmission)} />
                 {getCandidateUpdatedComponent(prop("dateLastModified", jobSubmission))}
               </Column>
               <TextColumn>

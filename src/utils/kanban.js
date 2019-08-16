@@ -67,8 +67,8 @@ export const isFromSameBoard = (src, dest) =>
 
 export const getCandidateUpdatedComponent = dateLastModified => {
   if (!dateLastModified) return undefined;
-  if (isOverDiff(dateLastModified, DIFF_10_DAYS)) return <HourglassFull size={20} />;
-  if (isOverDiff(dateLastModified, DIFF_5_DAYS)) return <Hourglass size={20} />;
+  if (isOverDiff(dateLastModified, DIFF_10_DAYS)) return <HourglassFull size={14} style={{ padding: 4 }} />;
+  if (isOverDiff(dateLastModified, DIFF_5_DAYS)) return <Hourglass size={14} style={{ padding: 4 }} />;
   return undefined;
 };
 
