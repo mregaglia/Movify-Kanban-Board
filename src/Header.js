@@ -5,13 +5,19 @@ import { Link, Route } from "react-router-dom";
 import { bool, object, string } from "prop-types";
 import styled from "styled-components";
 import DepartmentFilter from "./departmentFilter/DepartmentFilter"
+import Transition from "./transition/Transition";
 
 const Container = styled.div(({ theme }) => ({
   backgroundColor: theme.colors.lightGrey,
   display: "flex",
+  flexDirection: "column"
+}));
+
+const Row = styled.div({
+  display: "flex",
   flexDirection: "row",
   alignItems: "center"
-}));
+});
 
 const Img = styled.img({
   height: 90,
@@ -55,23 +61,28 @@ HeaderLink.propTypes = {
   to: string
 };
 
-const Header = ({ authenticated }) => {
+const Header = ({ authenticated, board }) => {
+
   if (!authenticated) return null;
   else
     return (
       <Container>
-        <Img alt="movify" src={require("./assets/movify.png")} />
-        <nav>
-          <HeaderLink label="Business" to="/kanban" />
-          <HeaderLink label="Recruitment" to="/recruitment" />
-        </nav>
-        <DepartmentFilter/>
-      </Container>
+        <Row>
+          <Img alt="movify" src={require("./assets/movify.png")} />
+          <nav>
+            <HeaderLink label="Business" to="/kanban" />
+            <HeaderLink label="Recruitment" to="/recruitment" />
+          </nav>
+          <DepartmentFilter />
+        </Row>
+        <Transition board={board} />
+      </Container >
     );
 };
 
 Header.propTypes = {
-  authenticated: bool
+  authenticated: bool,
+  board: string
 };
 
 export default connect(state => ({

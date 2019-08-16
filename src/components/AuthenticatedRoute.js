@@ -7,25 +7,26 @@ import { Redirect, Route } from "react-router-dom";
 const AuthenticatedRoute = ({
   authenticated,
   component: Component,
-  ...props
+  ...routeProps
 }) => (
-  <Route
-    {...props}
-    render={props => {
-      return authenticated ? (
-        <Component {...props} />
-      ) : (
-        <Redirect
-          to={{ pathname: "/login", state: { from: props.location } }}
-        />
-      );
-    }}
-  />
-);
+    <Route
+      {...routeProps}
+      render={props => {
+        return authenticated ? (
+          <Component {...props} {...routeProps} />
+        ) : (
+            <Redirect
+              to={{ pathname: "/login", state: { from: props.location } }}
+            />
+          );
+      }}
+    />
+  );
 
 AuthenticatedRoute.propTypes = {
   authenticated: bool,
-  component: oneOfType([func, object])
+  component: oneOfType([func, object]),
+  location: object
 };
 
 export default connect(state => ({

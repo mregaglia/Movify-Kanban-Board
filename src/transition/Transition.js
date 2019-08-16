@@ -59,6 +59,7 @@ const Transition = ({ board, candidates }) => {
                   candidate={candidate}
                 />
               ))}
+              {provided.placeholder}
             </div>
           </Content>
         )}
