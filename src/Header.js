@@ -10,7 +10,10 @@ import Transition from "./transition/Transition";
 const Container = styled.div(({ theme }) => ({
   backgroundColor: theme.colors.lightGrey,
   display: "flex",
-  flexDirection: "column"
+  flexDirection: "column",
+  position: "sticky",
+  top: 0,
+  boxShadow: "0 0 8px 0 rgba(0,0,0,0.2)"
 }));
 
 const Row = styled.div({

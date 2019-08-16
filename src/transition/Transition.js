@@ -14,7 +14,6 @@ const getBackgroundColor = (isNoGo, snapshot, theme) => {
 
 const Container = styled.div(({ theme }) => ({
   padding: 8,
-  marginTop: 4,
   marginBottom: 16,
   backgroundColor: theme.colors.lightGrey,
   borderRadius: theme.dimensions.borderRadius
