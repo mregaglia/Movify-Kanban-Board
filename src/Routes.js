@@ -93,6 +93,15 @@ const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecru
         }
     }
 
+    const onCloseKanbanModals = () => {
+        setIsDuplicateModalOpen(false);
+        setIsAddModalOpen(false);
+    };
+
+    const onCloseRecruitmentModal = () => {
+        setIsUpdateModalOpen(false);
+    };
+
     const onDndRecruitment = (result, jobSubmissionId, src, dest, srcStatus, destStatus, jobOrderId, destJobOrderId) => {
         if (path(["source", "droppableId"], result) === "transition") {
             return;
@@ -128,8 +137,9 @@ const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecru
                     component={Kanban}
                     duplicateModalData={duplicateModalData}
                     addModalData={addModalData}
-                    duplicateModalOpen={isDuplicateModalOpen}
-                    addModalOpen={isAddModalOpen}
+                    isDuplicateModalOpen={isDuplicateModalOpen}
+                    isAddModalOpen={isAddModalOpen}
+                    onCloseModals={onCloseKanbanModals}
                 />
                 <AuthenticatedRoute
                     exact
@@ -137,6 +147,7 @@ const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecru
                     component={Recruitment}
                     updateModalData={updateModalData}
                     isUpdateModalOpen={isUpdateModalOpen}
+                    onCloseModal={onCloseRecruitmentModal}
                 />
                 <ToastContainer />
             </Container>

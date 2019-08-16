@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { pathOr, prop } from "ramda";
 import { array, bool, func, object } from "prop-types";
@@ -15,21 +15,13 @@ const Recruitment = ({
   getRecruitment,
   isUpdateModalOpen,
   loading,
+  onCloseModal,
   updateModalData
 }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (!prop("length", clientList)) getRecruitment();
   }, [clientList, getRecruitment]);
-
-  useEffect(() => {
-    setIsModalOpen(isUpdateModalOpen)
-  }, [isUpdateModalOpen]);
-
-  const onCloseModal = () => {
-    setIsModalOpen(false);
-  };
 
   if (loading)
     return (
@@ -49,7 +41,7 @@ const Recruitment = ({
       ))}
       <UpdateModal
         data={updateModalData}
-        isOpen={isModalOpen}
+        isOpen={isUpdateModalOpen}
         onClose={onCloseModal}
       />
     </div>
@@ -61,6 +53,7 @@ Recruitment.propTypes = {
   getRecruitment: func,
   isUpdateModalOpen: bool,
   loading: bool,
+  onCloseModal: func,
   updateModalData: object
 };
 

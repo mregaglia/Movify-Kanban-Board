@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { pathOr, prop } from "ramda";
 import { array, bool, func, object } from "prop-types";
@@ -11,26 +11,11 @@ import AddModal from "./AddModal";
 
 const getBmColor = index => theme.bmColors[index % theme.bmColors.length];
 
-const Kanban = ({ addModalData, addModalOpen, bms, duplicateModalData, duplicateModalOpen, getKanban, loading }) => {
-  const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+const Kanban = ({ addModalData, isAddModalOpen, bms, duplicateModalData, isDuplicateModalOpen, getKanban, loading, onCloseModals }) => {
 
   useEffect(() => {
     if (!prop("length", bms)) getKanban();
   }, [bms, getKanban]);
-
-  useEffect(() => {
-    setIsAddModalOpen(addModalOpen);
-  }, [addModalOpen]);
-
-  useEffect(() => {
-    setIsDuplicateModalOpen(duplicateModalOpen);
-  }, [duplicateModalOpen]);
-
-  const onCloseModal = () => {
-    setIsDuplicateModalOpen(false);
-    setIsAddModalOpen(false);
-  };
 
   if (loading)
     return (
@@ -47,12 +32,12 @@ const Kanban = ({ addModalData, addModalOpen, bms, duplicateModalData, duplicate
       <DuplicateModal
         data={duplicateModalData}
         isOpen={isDuplicateModalOpen}
-        onClose={onCloseModal}
+        onClose={onCloseModals}
       />
       <AddModal
         data={addModalData}
         isOpen={isAddModalOpen}
-        onClose={onCloseModal}
+        onClose={onCloseModals}
       />
     </div>
   );
@@ -60,12 +45,13 @@ const Kanban = ({ addModalData, addModalOpen, bms, duplicateModalData, duplicate
 
 Kanban.propTypes = {
   addModalData: object,
-  addModalOpen: bool,
+  isAddModalOpen: bool,
   bms: array,
   duplicateModalData: object,
-  duplicateModalOpen: bool,
+  isDuplicateModalOpen: bool,
   getKanban: func,
-  loading: bool
+  loading: bool,
+  onCloseModals: func
 };
 
 export default connect(
