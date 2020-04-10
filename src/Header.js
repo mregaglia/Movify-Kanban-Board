@@ -35,11 +35,11 @@ const StyledLink = styled(Link)`
     text-transform: uppercase;
     margin-left: 20px;
     margin-right: 20px;
-    border-bottom-color: ${({ theme }) => theme.colors.red}
-    border-bottom-width: 3px
-    border-bottom-style: ${({ isactive }) => (isactive ? "solid" : "none")}
+    border-bottom-color: ${({ theme }) => theme.colors.red};
+    border-bottom-width: 3px;
+    border-bottom-style: ${({ isactive }) => (isactive ? "solid" : "none")};
     text-decoration: none;
-    color: ${({ theme }) => theme.colors.black}
+    color: ${({ theme }) => theme.colors.black};
 
     &:hover {
         border-bottom-style: solid;
