@@ -10,6 +10,7 @@
     "serve": "node server.js"
   },
   "dependencies": {
+    "cors": "2.8.5",
     "ramda": "0.27.0",
     "react": "16.13.1",
     "react-beautiful-dnd": "11.0.5",

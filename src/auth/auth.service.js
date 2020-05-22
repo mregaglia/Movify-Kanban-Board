@@ -11,8 +11,26 @@ export const getAuthorizeUrl = () =>
   formatQueryParams({
     client_id: process.env.REACT_APP_BH_CLIENT_ID,
     response_type: "code",
+    state: "do-redirect",
     redirect_uri: getCurrentLocation()
   });
+
+export const authorize = (username, password) =>
+  fetch(
+    AUTH_URL +
+    "authorize" +
+    formatQueryParams({
+      client_id: process.env.REACT_APP_BH_CLIENT_ID,
+      response_type: "code",
+      action: "Login",
+      username: username,
+      password: password,
+      redirect_uri: getCurrentLocation()
+    }),
+    {
+      method: "POST"
+    }
+  ).then(res => getCode(prop("url", res)));
 
 const hasCode = url => (url || "").split("code=").length > 1;
 
@@ -22,14 +40,14 @@ export const getCode = url =>
 export const getAccessToken = code =>
   fetch(
     AUTH_URL +
-      "token" +
-      formatQueryParams({
-        grant_type: "authorization_code",
-        code,
-        client_id: process.env.REACT_APP_BH_CLIENT_ID,
-        client_secret: process.env.REACT_APP_BH_CLIENT_SECRET,
-        redirect_uri: getCurrentLocation()
-      }),
+    "token" +
+    formatQueryParams({
+      grant_type: "authorization_code",
+      code,
+      client_id: process.env.REACT_APP_BH_CLIENT_ID,
+      client_secret: process.env.REACT_APP_BH_CLIENT_SECRET,
+      redirect_uri: getCurrentLocation()
+    }),
     {
       method: "POST"
     }
@@ -38,11 +56,11 @@ export const getAccessToken = code =>
 export const login = accessToken =>
   fetch(
     process.env.REACT_APP_BASE_URL +
-      "login" +
-      formatQueryParams({
-        version: "*",
-        access_token: accessToken
-      }),
+    "login" +
+    formatQueryParams({
+      version: "*",
+      access_token: accessToken
+    }),
     {
       method: "GET"
     }
@@ -53,12 +71,12 @@ export const ping = () => get("ping");
 export const refreshToken = refreshToken =>
   fetch(
     AUTH_URL +
-      "token" +
-      formatQueryParams({
-        grant_type: "refresh_token",
-        refresh_token: refreshToken,
-        client_id: process.env.REACT_APP_BH_CLIENT_ID,
-        client_secret: process.env.REACT_APP_BH_CLIENT_SECRET
-      }),
+    "token" +
+    formatQueryParams({
+      grant_type: "refresh_token",
+      refresh_token: refreshToken,
+      client_id: process.env.REACT_APP_BH_CLIENT_ID,
+      client_secret: process.env.REACT_APP_BH_CLIENT_SECRET
+    }),
     { method: "POST" }
   ).then(res => res.json());
