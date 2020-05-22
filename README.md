@@ -47,7 +47,7 @@ Start node scripts.
 
 ```
 git pull
-npm
+npm i
 npm run build
-forever start server.js
+forever start server.js (or restart if one instance is already started)
 ```
