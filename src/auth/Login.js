@@ -4,7 +4,7 @@ import { pathOr } from "ramda";
 import { func, object } from "prop-types";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
-import Loader from "../components/Loader";
+import LoginForm from "./Login.form";
 import { authorize, login } from "./auth.actions";
 import { getCode } from "./auth.service";
 
@@ -15,20 +15,6 @@ const Welcome = styled.div(({ theme }) => ({
   color: theme.colors.red,
   fontFamily: theme.fonts.fontFamily,
   fontSize: theme.textDimensions.big
-}));
-
-const Button = styled.button(({ disabled, theme }) => ({
-  display: "inline-block",
-  padding: 16,
-  marginLeft: "10%",
-  borderWidth: 0,
-  borderRadius: theme.dimensions.borderRadius,
-  backgroundColor: disabled ? theme.colors.lightRed : theme.colors.red,
-  color: theme.colors.darkWhite,
-  fontFamily: theme.fonts.fontFamily,
-  fontSize: theme.textDimensions.xlarge,
-  textDecoration: "none",
-  cursor: disabled ? "default" : "pointer"
 }));
 
 const Login = ({ authorize, login, auth, location }) => {
@@ -47,10 +33,7 @@ const Login = ({ authorize, login, auth, location }) => {
   return (
     <div>
       <Welcome>Welcome to Movify Kanban Board !</Welcome>
-      <Button disabled={isLoading} onClick={() => authorize()}>
-        Sign in with Bullhorn
-          {isLoading && <Loader style={{ marginLeft: 16 }} />}
-      </Button>
+      <LoginForm isLoading={isLoading} onSubmit={authorize} />
     </div>
   );
 };
