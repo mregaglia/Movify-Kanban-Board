@@ -5,6 +5,16 @@ const AUTH_URL = process.env.REACT_APP_AUTH_URL;
 
 const getCurrentLocation = () => prop(0, window.location.href.split("?"));
 
+export const getAuthorizeUrl = () =>
+  AUTH_URL +
+  "authorize" +
+  formatQueryParams({
+    client_id: process.env.REACT_APP_BH_CLIENT_ID,
+    response_type: "code",
+    state: "do-redirect",
+    redirect_uri: getCurrentLocation()
+  });
+
 export const authorize = (username, password) =>
   fetch(
     AUTH_URL +

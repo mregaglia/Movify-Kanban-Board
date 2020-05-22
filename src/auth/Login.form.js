@@ -54,7 +54,7 @@ const LoginForm = ({ handleSubmit, isLoading, valid }) => (
                 validate={isRequired} />
         </Cell>
         <Button disabled={isLoading || !valid} type="submit">
-            Sign in with Bullhorn
+            Log in with Bullhorn
                 {isLoading && <Loader style={{ marginLeft: 16 }} />}
         </Button>
     </form>
