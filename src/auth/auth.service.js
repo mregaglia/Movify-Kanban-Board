@@ -18,7 +18,8 @@ export const authorize = () =>
       redirect_uri: getCurrentLocation()
       }),
     {
-      method: "POST"
+      method: "POST",
+      redirect: "follow"
     }
   ).then(res => res.json());
 
