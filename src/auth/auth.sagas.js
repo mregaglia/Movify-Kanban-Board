@@ -1,6 +1,7 @@
 import { call, put, select, takeLatest } from "redux-saga/effects";
 import { pathOr, prop } from "ramda";
 import {
+  AUTHORIZE,
   LOGIN,
   CHECK_AUTH,
   REFRESH_TOKEN,
@@ -18,11 +19,20 @@ import {
   getRefreshToken
 } from "../utils/storage";
 import {
+  authorize as authorizeService,
   getAccessToken,
   login as loginService,
   refreshToken as refreshTokenService,
   ping
 } from "./auth.service";
+
+export function* authorize(action) {
+  try {
+    yield call(authorizeService);
+  } catch (e) {
+    yield put(loginFail());
+  }
+}
 
 export function* login(action) {
   const code = prop("payload", action);
@@ -84,6 +94,7 @@ export function* refreshToken() {
 
 export default function authSagas() {
   return [
+    takeLatest(AUTHORIZE, authorize),
     takeLatest(LOGIN, login),
     takeLatest(CHECK_AUTH, checkAuth),
     takeLatest(REFRESH_TOKEN, refreshToken)

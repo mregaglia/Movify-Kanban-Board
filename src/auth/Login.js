@@ -5,8 +5,8 @@ import { func, object } from "prop-types";
 import { Redirect } from "react-router-dom";
 import styled from "styled-components";
 import Loader from "../components/Loader";
-import { login } from "./auth.actions";
-import { getAuthorizeUrl, getCode } from "./auth.service";
+import { authorize, login } from "./auth.actions";
+import { getCode } from "./auth.service";
 
 const Welcome = styled.div(({ theme }) => ({
   marginTop: "10%",
@@ -31,7 +31,7 @@ const Button = styled.button(({ disabled, theme }) => ({
   cursor: disabled ? "default" : "pointer"
 }));
 
-const Login = ({ login, auth, location }) => {
+const Login = ({ authorize, login, auth, location }) => {
   useEffect(() => {
     const code = getCode(window.location.href);
     if (code.length > 0) login(code);
@@ -47,18 +47,17 @@ const Login = ({ login, auth, location }) => {
   return (
     <div>
       <Welcome>Welcome to Movify Kanban Board !</Welcome>
-      <a href={getAuthorizeUrl()}>
-        <Button disabled={isLoading}>
-          Sign in with Bullhorn
+      <Button disabled={isLoading} onClick={() => authorize()}>
+        Sign in with Bullhorn
           {isLoading && <Loader style={{ marginLeft: 16 }} />}
-        </Button>
-      </a>
+      </Button>
     </div>
   );
 };
 
 Login.propTypes = {
   auth: object,
+  authorize: func,
   checkAuth: func,
   login: func,
   location: object
@@ -66,5 +65,5 @@ Login.propTypes = {
 
 export default connect(
   state => ({ auth: state.auth }),
-  { login }
+  { authorize, login }
 )(Login);
