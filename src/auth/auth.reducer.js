@@ -1,6 +1,6 @@
 import { bindReducer } from "../utils/reducer";
 import {
-  LOGIN,
+  AUTHORIZE,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   AUTH_SUCCESS,
@@ -14,7 +14,7 @@ export const initialState = {
 };
 
 const auth = {
-  [LOGIN]: state => ({
+  [AUTHORIZE]: state => ({
     ...state,
     loading: true
   }),
