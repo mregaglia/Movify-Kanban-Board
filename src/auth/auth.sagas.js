@@ -5,6 +5,7 @@ import {
   LOGIN,
   CHECK_AUTH,
   REFRESH_TOKEN,
+  login as loginAction,
   loginSuccess,
   loginFail,
   authSuccess,
@@ -27,8 +28,14 @@ import {
 } from "./auth.service";
 
 export function* authorize(action) {
+  const { username, password } = prop("payload", action);
   try {
-    yield call(authorizeService);
+    const authCode = yield call(authorizeService, username, password);
+    if (authCode !== undefined) {
+      yield login(loginAction(authCode))
+    } else {
+      yield put(loginFail());
+    }
   } catch (e) {
     yield put(loginFail());
   }
