@@ -12,6 +12,10 @@ const Container = styled.div({
   marginTop: "20%"
 });
 
+const Img = styled.img({
+  maxWidth: 500
+});
+
 const Home = ({ authenticated, isCheckingAuth }) => {
   if (!isCheckingAuth && authenticated) return <Redirect to="/kanban" />;
   else if (!isCheckingAuth && authenticated === false)
@@ -19,7 +23,7 @@ const Home = ({ authenticated, isCheckingAuth }) => {
   else
     return (
       <Container>
-        <img alt="movify" src={require("../assets/movify.png")} />
+        <Img alt="movify" src={require("../assets/movify.png")} />
       </Container>
     );
 };

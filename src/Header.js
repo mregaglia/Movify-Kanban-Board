@@ -23,10 +23,11 @@ const Row = styled.div({
 });
 
 const Img = styled.img({
-  height: 90,
-  width: 90,
-  marginLeft: 20,
-  marginRight: "5%"
+  maxHeight: 55,
+  marginTop: 20,
+  marginBottom: 20,
+  marginLeft: 35,
+  marginRight: "2%"
 });
 
 const StyledLink = styled(Link)`
