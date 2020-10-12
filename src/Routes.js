@@ -18,6 +18,7 @@ import { updateJobSubmission as updateKanbanJobSubmission } from "./kanban/kanba
 import { updateJobSubmission as updateRecruitmentJobSubmission } from "./recruitment/recruitment.actions";
 import { addCandidate } from "./transition/transition.actions";
 import Header from "./Header";
+import Reporting from './reporting/Reporting'
 
 const Container = styled.div({
     paddingLeft: 25,
@@ -149,6 +150,13 @@ const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecru
                     isUpdateModalOpen={isUpdateModalOpen}
                     onCloseModal={onCloseRecruitmentModal}
                 />
+
+                <AuthenticatedRoute
+                    exact
+                    path="/reporting"
+                    component={Reporting}
+                />
+
                 <ToastContainer />
             </Container>
         </DragDropContext>
