@@ -84,6 +84,7 @@ export const getAuthenticatedState = state =>
 export function* checkAuth() {
   try {
     yield call(ping);
+    yield call(getReportingAccess);
     yield put(authSuccess());
   } catch (e) {
     yield put(refreshTokenAction());
