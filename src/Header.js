@@ -65,7 +65,7 @@ HeaderLink.propTypes = {
   to: string
 };
 
-const Header = ({ authenticated, board }) => {
+const Header = ({ authenticated, board, hasReportingAccess }) => {
 
   if (!authenticated) return null;
   else
@@ -76,7 +76,11 @@ const Header = ({ authenticated, board }) => {
           <nav>
             <HeaderLink label="Business" to="/kanban" />
             <HeaderLink label="Recruitment" to="/recruitment" />
-            <HeaderLink label="Reporting" to="/reporting" />
+
+            {
+              hasReportingAccess && <HeaderLink label="Reporting" to="/reporting" />
+            }
+
           </nav>
           <DepartmentFilter />
         </Row>
@@ -87,9 +91,11 @@ const Header = ({ authenticated, board }) => {
 
 Header.propTypes = {
   authenticated: bool,
-  board: string
+  board: string,
+  hasReportingAccess: bool
 };
 
 export default connect(state => ({
-  authenticated: path(["auth", "authenticated"], state)
+  authenticated: path(["auth", "authenticated"], state),
+  hasReportingAccess: path(["user", "hasReportingAccess"], state)
 }))(Header);

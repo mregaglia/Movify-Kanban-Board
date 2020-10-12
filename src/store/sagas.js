@@ -5,6 +5,7 @@ import departmentFilterSagas from "../departmentFilter/departmentFilter.sagas";
 import addCandidateSagas from "../addCandidate/addCandidate.sagas";
 import recruitmentSagas from "../recruitment/recruitment.sagas";
 import transitionSagas from "../transition/transition.sagas";
+import userSaga from "../auth/user.sagas"
 
 export default function* rootSaga() {
   yield all([
@@ -13,6 +14,7 @@ export default function* rootSaga() {
     ...departmentFilterSagas(),
     ...addCandidateSagas(),
     ...recruitmentSagas(),
-    ...transitionSagas()
+    ...transitionSagas(),
+    ...userSaga()
   ]);
 }

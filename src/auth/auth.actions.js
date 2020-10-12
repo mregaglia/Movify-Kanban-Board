@@ -15,3 +15,4 @@ export const checkAuth = () => ({ type: CHECK_AUTH });
 export const authSuccess = () => ({ type: AUTH_SUCCESS });
 export const authFail = () => ({ type: AUTH_FAIL });
 export const refreshToken = () => ({ type: REFRESH_TOKEN });
+
