@@ -6,6 +6,8 @@ import addCandidateSagas from "../addCandidate/addCandidate.sagas";
 import recruitmentSagas from "../recruitment/recruitment.sagas";
 import transitionSagas from "../transition/transition.sagas";
 import userSaga from "../auth/user.sagas"
+import employeeSagas from "../reporting/employees.sagas"
+
 
 export default function* rootSaga() {
   yield all([
@@ -15,6 +17,7 @@ export default function* rootSaga() {
     ...addCandidateSagas(),
     ...recruitmentSagas(),
     ...transitionSagas(),
-    ...userSaga()
+    ...userSaga(),
+    ...employeeSagas()
   ]);
 }

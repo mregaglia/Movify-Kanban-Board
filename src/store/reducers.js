@@ -6,7 +6,8 @@ import departmentFilter from "../departmentFilter/departmentFilter.reducer";
 import addCandidate from "../addCandidate/addCandidate.reducer";
 import recruitment from "../recruitment/recruitment.reducer";
 import transition from "../transition/transition.reducer";
-import user from '../auth/user.reducer'
+import user from '../auth/user.reducer';
+import employees from '../reporting/employees.reducer';
 
 export default combineReducers({
   form,
@@ -16,5 +17,6 @@ export default combineReducers({
   addCandidate,
   recruitment,
   transition,
-  user
+  user,
+  employees
 });

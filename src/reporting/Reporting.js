@@ -1,6 +1,12 @@
-import React from 'react'
+import React, { useEffect } from "react";
+import { getEmployees } from "./employees.actions"
+import { connect } from "react-redux";
 
-const Reporting = () => {
+const Reporting = ({getEmployees}) => {
+    useEffect(() => {
+        getEmployees()
+    }, [])
+
     return (
         <select name="employee" id="employee">
 
@@ -8,5 +14,13 @@ const Reporting = () => {
     )
 }
 
+Reporting.propTypes = {
 
-export default Reporting;
+};
+
+export default connect(
+    state => ({
+
+    }),
+    { getEmployees }
+)(Reporting);
