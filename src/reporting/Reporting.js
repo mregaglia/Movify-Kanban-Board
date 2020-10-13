@@ -1,21 +1,25 @@
 import React, { useEffect } from "react";
 import { getEmployees } from "./employees.actions"
 import { connect } from "react-redux";
+import { array } from "prop-types";
+import SelectEmployees from "./SelectEmployees"
 
-const Reporting = ({getEmployees}) => {
+
+const Reporting = ({ getEmployees, employees }) => {
     useEffect(() => {
         getEmployees()
     }, [])
 
     return (
-        <select name="employee" id="employee">
+        <div>
+            <SelectEmployees />
+        </div>
 
-        </select>
     )
 }
 
 Reporting.propTypes = {
-
+    employees: array
 };
 
 export default connect(
