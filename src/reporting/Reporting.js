@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { getEmployees } from "./employees.actions"
 import { connect } from "react-redux";
-import  { array, object } from "prop-types";
+import { array, object } from "prop-types";
 import SelectEmployees from "./SelectEmployees"
 import { pathOr } from "ramda";
+import BusinessManager from './BusinessManager'
+import TalentAcquisition from './TalentAcquisition'
+import WeeklySpeed from './WeeklySpeed'
+import { isEmpty, isNil } from "ramda";
 
+const BUSINESS_MANAGER = "Business Manager"
+const SOURCING_OFFICER = "Sourcing Officer"
 
 const Reporting = ({ getEmployees, employeeSelected }) => {
     const [employeeOccupation, setEmployeeOccupation] = useState("");
@@ -16,15 +22,25 @@ const Reporting = ({ getEmployees, employeeSelected }) => {
 
     return (
         <div>
+            {
+                console.log(employeeOccupation)
+            }
             <SelectEmployees />
             {
-                employeeOccupation === "Business Manager" && 
-                <p>Business Manager</p>
+                employeeOccupation === BUSINESS_MANAGER &&
+                <BusinessManager />
+
             }
 
             {
-                employeeOccupation  === "Sourcing Officer" && 
-                <p>Sourcing Officer</p>
+                (employeeOccupation === BUSINESS_MANAGER || employeeOccupation === SOURCING_OFFICER) &&
+                <TalentAcquisition />
+            }
+
+            {
+                (employeeOccupation !== "" &&
+                    <WeeklySpeed />
+                )
             }
         </div>
 

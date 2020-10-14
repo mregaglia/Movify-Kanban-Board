@@ -3,7 +3,7 @@ import Select from 'react-select'
 import { setEmployeeSelected } from "./employees.actions"
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
-import { array } from "prop-types";
+import { array, object } from "prop-types";
 import styled from "styled-components";
 
 const Container = styled.div({
@@ -32,10 +32,6 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
                 onChange={onChangeInput}
             />
         </Container>
-
-
-
-
     )
 }
 
@@ -52,7 +48,6 @@ SelectEmployees.propTypes = {
 export default connect(
     state => ({
         employees: pathOr([], ["employees", "employeesToSet", 'data'], state),
-        length: pathOr([], ["employees", "employeesToSet", 'count'], state),
 
     }),
     { setEmployeeSelected }
