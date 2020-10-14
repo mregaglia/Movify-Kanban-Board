@@ -1,11 +1,13 @@
 import { bindReducer } from "../utils/reducer";
 
 import {
-  SET_EMPLOYEES
+  SET_EMPLOYEES,
+  SET_EMPLOYEE_SELECTED
 } from "./employees.actions"
 
 export const initialState = {
-  employeesToSet: []
+  employeesToSet: [],
+  employeeSelected: ""
 }
 
 const employees = {
@@ -13,7 +15,11 @@ const employees = {
     {
       ...state,
       employeesToSet: payload
-    })
+    }),
+  [SET_EMPLOYEE_SELECTED]: (state, payload) => ({
+    ...state,
+    employeeSelected: payload
+  })
 }
 
 export default (state, action) =>

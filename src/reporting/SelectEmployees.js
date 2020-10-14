@@ -1,31 +1,42 @@
 import React from "react";
 import Select from 'react-select'
-import { getEmployees } from "./employees.actions"
+import { setEmployeeSelected } from "./employees.actions"
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
 import { array } from "prop-types";
+import styled from "styled-components";
 
-const styles = {
-    select: {
-        width: "100%",
-        maxWidth: 300
-    }
-}
+const Container = styled.div({
+    width: "30%",
+    margin: "0 auto"
 
-const SelectEmployees = ({ employees, length }) => {
+})
+
+const SelectEmployees = ({ employees, setEmployeeSelected }) => {
+
     const options = getValuesFromEmployees(employees)
+
+    const onChangeInput = (employeeSelected) => {
+        for (let i = 0; i < employees.length; i++) {
+            if (parseInt(employeeSelected.value) === employees[i].id) {
+                setEmployeeSelected(employees[i])
+                break;
+            }
+        }
+    }
+
     return (
-        <div style={styles.select}>
+        <Container>
             <Select
                 options={options}
                 onChange={onChangeInput}
             />
-        </div>
-    )
-}
+        </Container>
 
-function onChangeInput(value) {
-    console.log(value)
+
+
+
+    )
 }
 
 function getValuesFromEmployees(employees) {
@@ -42,6 +53,7 @@ export default connect(
     state => ({
         employees: pathOr([], ["employees", "employeesToSet", 'data'], state),
         length: pathOr([], ["employees", "employeesToSet", 'count'], state),
+
     }),
-    { getEmployees }
+    { setEmployeeSelected }
 )(SelectEmployees);
