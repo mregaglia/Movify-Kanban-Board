@@ -4,7 +4,8 @@ import { setEmployeeSelected } from "./employees.actions"
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
 import { array, object } from "prop-types";
-import styled from "styled-components";
+import styled from "styled-components"
+import { BUSINESS_MANAGER, SOURCING_OFFICER } from "./Reporting"
 
 const Container = styled.div({
     width: "30%",
@@ -37,7 +38,16 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
 
 function getValuesFromEmployees(employees) {
     return employees.map((employee) => {
-        return ({ value: `${employee.id}`, label: employee.firstName + " " + employee.lastName })
+        let occupationLabel = "";
+        switch (employee.occupation) {
+            case BUSINESS_MANAGER:
+                occupationLabel = "BM";
+                break;
+            case SOURCING_OFFICER:
+                occupationLabel = "TA";
+                break;
+        }
+        return ({ value: `${employee.id}`, label: occupationLabel + " - " +  employee.firstName + " " + employee.lastName })
     })
 }
 

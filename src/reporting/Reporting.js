@@ -7,10 +7,31 @@ import { pathOr } from "ramda";
 import BusinessManager from './BusinessManager'
 import TalentAcquisition from './TalentAcquisition'
 import WeeklySpeed from './WeeklySpeed'
-import { isEmpty, isNil } from "ramda";
+import styled from 'styled-components'
 
-const BUSINESS_MANAGER = "Business Manager"
-const SOURCING_OFFICER = "Sourcing Officer"
+export const BUSINESS_MANAGER = "Business Manager"
+export const SOURCING_OFFICER = "Sourcing Officer"
+
+const Container = styled.div({
+    display: "flex",
+    flexWrap: "wrap",
+    padding: "15px",
+    justifyContent: "center",
+    div : {
+        padding: "10px",
+    }
+
+})
+
+const BoxTable = styled.div({
+    flex: "2",
+    order: "2"
+})
+
+const BoxGauge = styled.div({
+    flex: "1",
+    order: "1"
+})
 
 const Reporting = ({ getEmployees, employeeSelected }) => {
     const [employeeOccupation, setEmployeeOccupation] = useState("");
@@ -22,27 +43,44 @@ const Reporting = ({ getEmployees, employeeSelected }) => {
 
     return (
         <div>
-            {
-                console.log(employeeOccupation)
-            }
             <SelectEmployees />
-            {
-                employeeOccupation === BUSINESS_MANAGER &&
-                <BusinessManager />
+            <Container>
+                <div>
+                    <BoxGauge>
+                        <div>
+                            <p>C'est ici que sera la jauge</p>
+                        </div>
 
-            }
+                    </BoxGauge>
+                </div>
+                <div>
+                    <BoxTable>
 
-            {
-                (employeeOccupation === BUSINESS_MANAGER || employeeOccupation === SOURCING_OFFICER) &&
-                <TalentAcquisition />
-            }
+                        {
+                            employeeOccupation === BUSINESS_MANAGER &&
+                            <BusinessManager />
 
-            {
-                (employeeOccupation !== "" &&
-                    <WeeklySpeed />
-                )
-            }
-        </div>
+                        }
+
+                        {
+                            (employeeOccupation === BUSINESS_MANAGER || employeeOccupation === SOURCING_OFFICER) &&
+                            <TalentAcquisition />
+                        }
+
+                        {
+                            (employeeOccupation !== "" &&
+                                <WeeklySpeed />
+                            )
+                        }
+
+
+                    </BoxTable>
+                </div>
+                    
+
+            </Container>
+
+        </div >
 
     )
 }

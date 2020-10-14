@@ -12,7 +12,6 @@ import {
 export function* getEmployees() {
     try {
         const employees = yield call(getBusinessManagerAndSourcingOfficer);
-        console.log(employees)
         yield put(setEmployees(employees))
     } catch (e) {
         //
