@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
+import WeeklySpeed from './WeeklySpeed'
 import { getEmployees } from "./employees.actions"
+import { getDataEmployee } from "./dataemployee.actions"
+import { getDate } from './reporting.action'
 import { connect } from "react-redux";
-import { array, object } from "prop-types";
+import { string, object } from "prop-types";
 import SelectEmployees from "./SelectEmployees"
 import { pathOr } from "ramda";
-import BusinessManager from './BusinessManager'
-import TalentAcquisition from './TalentAcquisition'
-import WeeklySpeed from './WeeklySpeed'
 import styled from 'styled-components'
+import { getLast4weeksDate } from '../utils/date'
+import Table from "./Table"
 
 export const BUSINESS_MANAGER = "Business Manager"
 export const SOURCING_OFFICER = "Sourcing Officer"
@@ -17,10 +19,9 @@ const Container = styled.div({
     flexWrap: "wrap",
     padding: "15px",
     justifyContent: "center",
-    div : {
+    div: {
         padding: "10px",
     }
-
 })
 
 const BoxTable = styled.div({
@@ -33,11 +34,15 @@ const BoxGauge = styled.div({
     order: "1"
 })
 
-const Reporting = ({ getEmployees, employeeSelected }) => {
+const Reporting = ({ getEmployees, employeeSelected, getDate, occupation }) => {
     const [employeeOccupation, setEmployeeOccupation] = useState("");
 
     useEffect(() => {
         getEmployees();
+        getDate(getLast4weeksDate())
+    }, [])
+
+    useEffect(() => {
         setEmployeeOccupation(employeeSelected.occupation)
     }, [employeeSelected]);
 
@@ -47,52 +52,37 @@ const Reporting = ({ getEmployees, employeeSelected }) => {
             <Container>
                 <div>
                     <BoxGauge>
-                        <div>
+                        {
+                            (employeeOccupation === BUSINESS_MANAGER || employeeOccupation === SOURCING_OFFICER) &&
                             <p>C'est ici que sera la jauge</p>
-                        </div>
-
+                        }
                     </BoxGauge>
                 </div>
                 <div>
                     <BoxTable>
-
-                        {
-                            employeeOccupation === BUSINESS_MANAGER &&
-                            <BusinessManager />
-
-                        }
-
                         {
                             (employeeOccupation === BUSINESS_MANAGER || employeeOccupation === SOURCING_OFFICER) &&
-                            <TalentAcquisition />
+                            <Table />
                         }
-
-                        {
-                            (employeeOccupation !== "" &&
-                                <WeeklySpeed />
-                            )
-                        }
-
-
                     </BoxTable>
+                    {
+                        (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER) && <WeeklySpeed />
+                    }
                 </div>
-                    
-
             </Container>
-
         </div >
-
     )
 }
 
 Reporting.propTypes = {
-    employees: array,
-    employeeSelected: object
+    employeeSelected: object,
+    occupation: string
 };
 
 export default connect(
     state => ({
-        employeeSelected: pathOr([], ["employees", "employeeSelected"], state)
+        employeeSelected: pathOr([], ["employees", "employeeSelected"], state),
+        occupation: pathOr([], ["employees", "employeeSelected", "occupation"], state)
     }),
-    { getEmployees }
+    { getEmployees, getDataEmployee, getDate }
 )(Reporting);

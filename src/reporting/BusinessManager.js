@@ -1,10 +1,9 @@
-import { nth } from "ramda";
-import React from "react"
+import React from "react";
 import { connect } from "react-redux";
-import styled, { css } from "styled-components";
-import { Table, TableTheadTr, TableContentTh, TableContentTd, TableContentTbodyTr } from "../style/table_style"
+import { TableContentTd, TableContentTdTitle, TableContentTbodyTr } from "../style/table_style"
+import TalentAcquisition from './TalentAcquisition'
 
-const tableText = [
+const tableTextBusinessManager = [
     "Business Development ",
     "Call",
     "Prospection meeting scheduled",
@@ -14,40 +13,27 @@ const tableText = [
     "Intake",
     "Project start"
 ]
-const tableWeek = [
-    "",
-    "S1",
-    "S2",
-    "S3",
-    "S4"
-]
 
 const BusinessManager = () => {
+
     return (
-        <div>
-            <Table>
-                <thead>
-                    <TableTheadTr>
-                        {
-                            tableWeek.map((week) =>
-                                <TableContentTh key={week}>{week}</TableContentTh>
-                            )
-                        }
-                    </TableTheadTr>
-                </thead>
-                <tbody>
+        <>
+            <TableContentTbodyTr>
+                <TableContentTdTitle>Business Development</TableContentTdTitle>
+            </TableContentTbodyTr>
+            {
+                tableTextBusinessManager.map((text) =>
+                    <TableContentTbodyTr>
+                        <TableContentTd key={text}>{text}</TableContentTd>
+                    </TableContentTbodyTr>
 
-                    {
-                        tableText.map((text) =>
-                            <TableContentTbodyTr>
-                                <TableContentTd key={text}>{text}</TableContentTd>
-                            </TableContentTbodyTr>
-                        )
-                    }
-
-                </tbody>
-            </Table>
-        </div >
+                )
+            }
+            <tr>
+                <td></td>
+            </tr>
+            <TalentAcquisition />
+        </>
     )
 }
 
@@ -56,5 +42,8 @@ BusinessManager.propTypes = {
 };
 
 export default connect(
+    state => ({
 
+    }),
+    {}
 )(BusinessManager);

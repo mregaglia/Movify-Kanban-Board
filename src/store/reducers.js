@@ -8,6 +8,7 @@ import recruitment from "../recruitment/recruitment.reducer";
 import transition from "../transition/transition.reducer";
 import user from '../auth/user.reducer';
 import employees from '../reporting/employees.reducer';
+import reporting from '../reporting/reporting.reducer';
 
 export default combineReducers({
   form,
@@ -18,5 +19,6 @@ export default combineReducers({
   recruitment,
   transition,
   user,
-  employees
+  employees,
+  reporting
 });

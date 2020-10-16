@@ -3,7 +3,7 @@ import Select from 'react-select'
 import { setEmployeeSelected } from "./employees.actions"
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
-import { array, object } from "prop-types";
+import { array } from "prop-types";
 import styled from "styled-components"
 import { BUSINESS_MANAGER, SOURCING_OFFICER } from "./Reporting"
 
@@ -20,6 +20,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
     const onChangeInput = (employeeSelected) => {
         for (let i = 0; i < employees.length; i++) {
             if (parseInt(employeeSelected.value) === employees[i].id) {
+                console.log(employeeSelected)
                 setEmployeeSelected(employees[i])
                 break;
             }
@@ -27,12 +28,15 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
     }
 
     return (
-        <Container>
-            <Select
-                options={options}
-                onChange={onChangeInput}
-            />
-        </Container>
+        <>
+            <Container>
+                <Select
+                    options={options}
+                    onChange={onChangeInput}
+                />
+            </Container>
+        </>
+
     )
 }
 
@@ -46,8 +50,11 @@ function getValuesFromEmployees(employees) {
             case SOURCING_OFFICER:
                 occupationLabel = "TA";
                 break;
+            default:
+                occupationLabel = "";
+                break;
         }
-        return ({ value: `${employee.id}`, label: occupationLabel + " - " +  employee.firstName + " " + employee.lastName })
+        return ({ value: `${employee.id}`, label: occupationLabel + " - " + employee.firstName + " " + employee.lastName })
     })
 }
 

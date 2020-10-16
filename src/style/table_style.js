@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 export const Table = styled.table({
     borderCollapse: "collapse",
@@ -23,6 +23,12 @@ export const TableContentTh = styled.th(({ theme }) => ({
 
 export const TableContentTd = styled.td(({ theme }) => ({
     padding: "12px 15px"
+}))
+
+export const TableContentTdTitle = styled.td(({ theme }) => ({
+    padding: "6px 7px",
+    fontWeight: "bold",
+    fontSize: "1.2em",
 }))
 
 export const TableContentTbodyTr = styled.tr(({ theme }) => ({

@@ -1,9 +1,8 @@
 import React from 'react'
-
 import { connect } from "react-redux";
-import {Table, TableTheadTr, TableContentTh, TableContentTd, TableContentTbodyTr} from "../style/table_style"
+import { TableContentTd, TableContentTdTitle, TableContentTbodyTr } from "../style/table_style"
 
-const tableText = [
+const tableTextAcquisition = [
     "Recruitment",
     "Contacted by InMail",
     "Contacted by phone",
@@ -14,42 +13,20 @@ const tableText = [
     "Hired"
 ]
 
-const tableWeek = [
-    "",
-    "S1",
-    "S2",
-    "S3",
-    "S4"
-]
-
 const TalentAcquisition = () => {
     return (
-        <div>
-            <Table>
-                <thead>
-                    <TableTheadTr>
-                        {
-                            tableWeek.map((week) =>
-                                <TableContentTh key={week}>{week}</TableContentTh>
-                            )
-                        }
-                    </TableTheadTr>
-                </thead>
-                <tbody>
-
-                    {
-                        tableText.map((text) =>
-                            <TableContentTbodyTr key={text}>
-                                <TableContentTd key={text}>{text}</TableContentTd>
-                            </TableContentTbodyTr>
-                        )
-                    }
-
-                </tbody>
-            </Table>
-            
-        </div >
-        
+        <>
+            <TableContentTbodyTr>
+                <TableContentTdTitle>Recruitment</TableContentTdTitle>
+            </TableContentTbodyTr>
+            {
+                tableTextAcquisition.map((text) =>
+                    <TableContentTbodyTr key={text}>
+                        <TableContentTd key={text}>{text}</TableContentTd>
+                    </TableContentTbodyTr>
+                )
+            }
+        </>
     )
 }
 
@@ -61,5 +38,5 @@ export default connect(
     state => ({
 
     }),
-    {  }
+    {}
 )(TalentAcquisition);
