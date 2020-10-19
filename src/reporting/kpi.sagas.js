@@ -1,18 +1,21 @@
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, takeEvery } from "redux-saga/effects";
 import {
     getNoteFromEmployee
 } from "./kpi.service"
 
 import {
-    KPI_DATA_EMPLOYEE_ACTION
+    KPI_DATA_EMPLOYEE_ACTION,
+    setKpiDataEmployee
 } from './kpi.actions'
 
 export function* getKpiDataEmployeeSaga(action) {
     try {
         let id = action.payload.id;
-        const kpiData = yield call(getNoteFromEmployee,id, action.payload.dateStart, action.payload.dateEnd)
-        console.log(kpiData)
-        //yield put(setEmployees(employees))
+        let startDate = action.payload.dateStart
+        let dateEnd = action.payload.dateEnd
+        const kpiData = yield call(getNoteFromEmployee, id, startDate, dateEnd)
+        
+        yield put(setKpiDataEmployee(startDate, kpiData))
     } catch (e) {
         //
     }
@@ -20,6 +23,6 @@ export function* getKpiDataEmployeeSaga(action) {
 
 export default function kpiSagas() {
     return [
-        takeLatest(KPI_DATA_EMPLOYEE_ACTION, getKpiDataEmployeeSaga),
+        takeEvery(KPI_DATA_EMPLOYEE_ACTION, getKpiDataEmployeeSaga),
     ];
 }

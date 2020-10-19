@@ -1,20 +1,26 @@
 import { bindReducer } from "../utils/reducer";
 
 import {
-  KPI_DATA_EMPLOYEE_ACTION
+  KPI_DATA_EMPLOYEE_ACTION,
+  KPI_SET_DATA_EMPLOYEE_ACTION
 } from "./kpi.actions"
 
 export const initialState = {
-  noteEmployee: []
+  notesEmployee: [],
+  noteToSelectEmployee: {}
 }
 
-const kip = {
+const kpi = {
   [KPI_DATA_EMPLOYEE_ACTION]: (state, payload) => (
     {
       ...state,
-      noteEmployee: payload
-    })
+      noteToSelectEmployee: payload
+    }),
+  [KPI_SET_DATA_EMPLOYEE_ACTION]: (state, payload) => ({
+    ...state,
+    notesEmployee: [...state.notesEmployee, payload]
+  })
 }
 
 export default (state, action) =>
-  bindReducer(state, action, kip, initialState);
+  bindReducer(state, action, kpi, initialState);

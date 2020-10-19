@@ -44,9 +44,10 @@ const Reporting = ({ getEmployees, employeeSelected, getKpiDataEmployee, getDate
 
     useEffect(() => {
         setEmployeeOccupation(occupation);
-        dates.map((date) => 
+        dates.map((date) => {
+            console.log("boucle")
             getKpiDataEmployee(employeeId, date.start, date.end)
-        )
+        })
     }, [employeeSelected]);
 
     return (
