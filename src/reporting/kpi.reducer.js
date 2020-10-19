@@ -1,15 +1,15 @@
 import { bindReducer } from "../utils/reducer";
 
 import {
-  GET_DATA_EMPLOYEE
-} from "./dataemployee.actions"
+  KPI_DATA_EMPLOYEE_ACTION
+} from "./kpi.actions"
 
 export const initialState = {
   noteEmployee: []
 }
 
-const dateemployee = {
-  [GET_DATA_EMPLOYEE]: (state, payload) => (
+const kip = {
+  [KPI_DATA_EMPLOYEE_ACTION]: (state, payload) => (
     {
       ...state,
       noteEmployee: payload
@@ -17,4 +17,4 @@ const dateemployee = {
 }
 
 export default (state, action) =>
-  bindReducer(state, action, dateemployee, initialState);
+  bindReducer(state, action, kip, initialState);
