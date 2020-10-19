@@ -12,3 +12,10 @@ export const getNoteFromEmployee = (idEmployee, dateStart, dateEnd) =>
             sort: "-dateAdded"
         }
     );
+
+    export const getJobOfferFromEmployee = (idEmployee, dateStart, dateEnd) =>
+    get("query/JobOrder", {
+        fields: "*",
+        where: `owner.id=${idEmployee} AND isDeleted=false AND dateAdded>${dateStart} AND dateAdded<=${dateEnd}`,
+        count: "50"
+    });

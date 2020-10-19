@@ -10,33 +10,42 @@ export const isOverDiff = (timestamp, diff) => {
 };
 
 export const getLast4weeksDate = () => {
-  let startLastWeek = parseInt(moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYYMMDD'))
-  let endLastWeek = parseInt(moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYYMMDD'))
+  let startLastWeek = moment().subtract(1, 'weeks').startOf('isoWeek')
+  let endLastWeek = moment().subtract(1, 'weeks').endOf('isoWeek')
 
-  let startLastSecondWeek = parseInt(moment().subtract(2, 'weeks').startOf('isoWeek').format('YYYYMMDD'))
-  let endLastSecondWeek = parseInt(moment().subtract(2, 'weeks').endOf('isoWeek').format('YYYYMMDD'))
+  let startLastSecondWeek = moment().subtract(2, 'weeks').startOf('isoWeek')
+  let endLastSecondWeek = moment().subtract(2, 'weeks').endOf('isoWeek')
 
-  let startLastThirdWeek = parseInt(moment().subtract(3, 'weeks').startOf('isoWeek').format('YYYYMMDD'))
-  let endLastThirdWeek = parseInt(moment().subtract(3, 'weeks').endOf('isoWeek').format('YYYYMMDD'))
+  let startLastThirdWeek = moment().subtract(3, 'weeks').startOf('isoWeek')
+  let endLastThirdWeek = moment().subtract(3, 'weeks').endOf('isoWeek')
 
-  let startLastFourthWeek = parseInt(moment().subtract(4, 'weeks').startOf('isoWeek').format('YYYYMMDD'))
-  let endLastFourthWeek = parseInt(moment().subtract(4, 'weeks').endOf('isoWeek').format('YYYYMMDD'))
+  let startLastFourthWeek = moment().subtract(4, 'weeks').startOf('isoWeek')
+  let endLastFourthWeek = moment().subtract(4, 'weeks').endOf('isoWeek')
 
   let dates = [
     {
-      start: startLastWeek,
-      end: endLastWeek
+      start: parseInt(startLastWeek.format('YYYYMMDD')),
+      end: parseInt(endLastWeek.format('YYYYMMDD')),
+      startTimestamp: startLastWeek.valueOf(),
+      endTimestamp : endLastWeek.valueOf()
     },
     {
-      start: startLastSecondWeek,
-      end: endLastSecondWeek
+      start: parseInt(startLastSecondWeek.format('YYYYMMDD')),
+      end: parseInt(endLastSecondWeek.format('YYYYMMDD')),
+      startTimestamp: startLastSecondWeek.valueOf(),
+      endTimestamp : endLastSecondWeek.valueOf()
     },
     {
-      start: startLastThirdWeek,
-      end: endLastThirdWeek
-    }, {
-      start: startLastFourthWeek,
-      end: endLastFourthWeek
+      start: parseInt(startLastThirdWeek.format('YYYYMMDD')),
+      end: parseInt(endLastThirdWeek.format('YYYYMMDD')),
+      startTimestamp: startLastThirdWeek.valueOf(),
+      endTimestamp : endLastThirdWeek.valueOf()
+    }, 
+    {
+      start: parseInt(startLastFourthWeek.format('YYYYMMDD')),
+      end: parseInt(endLastFourthWeek.format('YYYYMMDD')),
+      startTimestamp: startLastFourthWeek.valueOf(),
+      endTimestamp : endLastFourthWeek.valueOf()
     }
   ]
   return dates;

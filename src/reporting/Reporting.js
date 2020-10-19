@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import WeeklySpeed from './WeeklySpeed'
 import SelectEmployees from "./SelectEmployees"
 import { getEmployees } from "./employees.actions"
-import { getKpiDataEmployee, kpiResetData } from "./kpi.actions"
+import { getKpiNoteEmployee, kpiResetData, getKpiJobOfferEmployee } from "./kpi.actions"
 import { getDate } from './reporting.action'
 import { connect } from "react-redux";
 import { string, object, number, array } from "prop-types";
@@ -34,7 +34,7 @@ const BoxGauge = styled.div({
     order: "1"
 })
 
-const Reporting = ({ kpiResetData, getEmployees, employeeSelected, getKpiDataEmployee, getDate, occupation, employeeId, dates}) => {
+const Reporting = ({ getKpiJobOfferEmployee, kpiResetData, getEmployees, employeeSelected, getKpiNoteEmployee, getDate, occupation, employeeId, dates}) => {
     const [employeeOccupation, setEmployeeOccupation] = useState("");
 
     useEffect(() => {
@@ -46,7 +46,8 @@ const Reporting = ({ kpiResetData, getEmployees, employeeSelected, getKpiDataEmp
         kpiResetData()
         setEmployeeOccupation(occupation);
         dates.map((date) => {
-            getKpiDataEmployee(employeeId, date.start, date.end)
+            getKpiNoteEmployee(employeeId, date.start, date.end)
+            getKpiJobOfferEmployee(employeeId, date.startTimestamp, date.endTimestamp)
         })
     }, [employeeSelected]);
 
@@ -92,5 +93,5 @@ export default connect(
         employeeId: pathOr([], ["employees", "employeeSelected", "id"], state),
         dates: pathOr([], ["reporting", "dates"], state)
     }),
-    { getEmployees, getDate, getKpiDataEmployee, kpiResetData }
+    { getEmployees, getDate, getKpiNoteEmployee, kpiResetData, getKpiJobOfferEmployee }
 )(Reporting);
