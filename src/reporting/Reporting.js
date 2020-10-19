@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
+import Table from "./Table"
+import styled from 'styled-components'
 import WeeklySpeed from './WeeklySpeed'
+import SelectEmployees from "./SelectEmployees"
 import { getEmployees } from "./employees.actions"
-import { getDataEmployee } from "./dataemployee.actions"
+import { getKpiDataEmployee } from "./kpi.actions"
 import { getDate } from './reporting.action'
 import { connect } from "react-redux";
-import { string, object } from "prop-types";
-import SelectEmployees from "./SelectEmployees"
+import { string, object, number, array } from "prop-types";
 import { pathOr } from "ramda";
-import styled from 'styled-components'
 import { getLast4weeksDate } from '../utils/date'
-import Table from "./Table"
 
 export const BUSINESS_MANAGER = "Business Manager"
 export const SOURCING_OFFICER = "Sourcing Officer"
@@ -34,7 +34,7 @@ const BoxGauge = styled.div({
     order: "1"
 })
 
-const Reporting = ({ getEmployees, employeeSelected, getDate, occupation }) => {
+const Reporting = ({ getEmployees, employeeSelected, getKpiDataEmployee, getDate, occupation, employeeId, dates}) => {
     const [employeeOccupation, setEmployeeOccupation] = useState("");
 
     useEffect(() => {
@@ -43,7 +43,10 @@ const Reporting = ({ getEmployees, employeeSelected, getDate, occupation }) => {
     }, [])
 
     useEffect(() => {
-        setEmployeeOccupation(employeeSelected.occupation)
+        setEmployeeOccupation(occupation);
+        dates.map((date) => 
+            getKpiDataEmployee(employeeId, date.start, date.end)
+        )
     }, [employeeSelected]);
 
     return (
@@ -76,13 +79,17 @@ const Reporting = ({ getEmployees, employeeSelected, getDate, occupation }) => {
 
 Reporting.propTypes = {
     employeeSelected: object,
-    occupation: string
+    occupation: string,
+    employeeId: number,
+    dates: array
 };
 
 export default connect(
     state => ({
         employeeSelected: pathOr([], ["employees", "employeeSelected"], state),
-        occupation: pathOr([], ["employees", "employeeSelected", "occupation"], state)
+        occupation: pathOr([], ["employees", "employeeSelected", "occupation"], state),
+        employeeId: pathOr([], ["employees", "employeeSelected", "id"], state),
+        dates: pathOr([], ["reporting", "dates"], state)
     }),
-    { getEmployees, getDataEmployee, getDate }
+    { getEmployees, getDate, getKpiDataEmployee }
 )(Reporting);

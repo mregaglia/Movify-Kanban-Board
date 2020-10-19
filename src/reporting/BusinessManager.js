@@ -29,9 +29,9 @@ const BusinessManager = () => {
 
                 )
             }
-            <tr>
-                <td></td>
-            </tr>
+            <TableContentTbodyTr>
+                <TableContentTdTitle>Recruitment</TableContentTdTitle>
+            </TableContentTbodyTr>
             <TalentAcquisition />
         </>
     )

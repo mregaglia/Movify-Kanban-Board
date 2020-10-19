@@ -20,7 +20,6 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
     const onChangeInput = (employeeSelected) => {
         for (let i = 0; i < employees.length; i++) {
             if (parseInt(employeeSelected.value) === employees[i].id) {
-                console.log(employeeSelected)
                 setEmployeeSelected(employees[i])
                 break;
             }

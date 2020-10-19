@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { TableContentTd, TableContentTdTitle, TableContentTbodyTr } from "../style/table_style"
 
 const tableTextAcquisition = [
-    "Recruitment",
     "Contacted by InMail",
     "Contacted by phone",
     "Interview scheduled",
@@ -16,9 +15,6 @@ const tableTextAcquisition = [
 const TalentAcquisition = () => {
     return (
         <>
-            <TableContentTbodyTr>
-                <TableContentTdTitle>Recruitment</TableContentTdTitle>
-            </TableContentTbodyTr>
             {
                 tableTextAcquisition.map((text) =>
                     <TableContentTbodyTr key={text}>

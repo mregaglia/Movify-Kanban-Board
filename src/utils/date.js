@@ -10,17 +10,17 @@ export const isOverDiff = (timestamp, diff) => {
 };
 
 export const getLast4weeksDate = () => {
-  let startLastWeek = moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYYMMDD')
-  let endLastWeek = moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYYMMDD')
+  let startLastWeek = parseInt(moment().subtract(1, 'weeks').startOf('isoWeek').format('YYYYMMDD'))
+  let endLastWeek = parseInt(moment().subtract(1, 'weeks').endOf('isoWeek').format('YYYYMMDD'))
 
-  let startLastSecondWeek = moment().subtract(2, 'weeks').startOf('isoWeek').format('YYYYMMDD')
-  let endLastSecondWeek = moment().subtract(2, 'weeks').endOf('isoWeek').format('YYYYMMDD')
+  let startLastSecondWeek = parseInt(moment().subtract(2, 'weeks').startOf('isoWeek').format('YYYYMMDD'))
+  let endLastSecondWeek = parseInt(moment().subtract(2, 'weeks').endOf('isoWeek').format('YYYYMMDD'))
 
-  let startLastThirdWeek = moment().subtract(3, 'weeks').startOf('isoWeek').format('YYYYMMDD')
-  let endLastThirdWeek = moment().subtract(3, 'weeks').endOf('isoWeek').format('YYYYMMDD')
+  let startLastThirdWeek = parseInt(moment().subtract(3, 'weeks').startOf('isoWeek').format('YYYYMMDD'))
+  let endLastThirdWeek = parseInt(moment().subtract(3, 'weeks').endOf('isoWeek').format('YYYYMMDD'))
 
-  let startLastFourthWeek = moment().subtract(4, 'weeks').startOf('isoWeek').format('YYYYMMDD')
-  let endLastFourthWeek = moment().subtract(4, 'weeks').endOf('isoWeek').format('YYYYMMDD')
+  let startLastFourthWeek = parseInt(moment().subtract(4, 'weeks').startOf('isoWeek').format('YYYYMMDD'))
+  let endLastFourthWeek = parseInt(moment().subtract(4, 'weeks').endOf('isoWeek').format('YYYYMMDD'))
 
   let dates = [
     {
@@ -43,8 +43,10 @@ export const getLast4weeksDate = () => {
 }
 
 export const getDateLabel = (date) => {
-  let day = date.substring(6, 8).replace('0', '')
-  let month = date.substring(4,6);
+
+  let day = date.toString().substring(6, 8).replace('0', '')
+  let month = date.toString().substring(4,6);
+  
   switch (month) {
     case "01":
       return day + " january"
