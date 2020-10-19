@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import WeeklySpeed from './WeeklySpeed'
 import SelectEmployees from "./SelectEmployees"
 import { getEmployees } from "./employees.actions"
-import { getKpiDataEmployee } from "./kpi.actions"
+import { getKpiDataEmployee, kpiResetData } from "./kpi.actions"
 import { getDate } from './reporting.action'
 import { connect } from "react-redux";
 import { string, object, number, array } from "prop-types";
@@ -34,7 +34,7 @@ const BoxGauge = styled.div({
     order: "1"
 })
 
-const Reporting = ({ getEmployees, employeeSelected, getKpiDataEmployee, getDate, occupation, employeeId, dates}) => {
+const Reporting = ({ kpiResetData, getEmployees, employeeSelected, getKpiDataEmployee, getDate, occupation, employeeId, dates}) => {
     const [employeeOccupation, setEmployeeOccupation] = useState("");
 
     useEffect(() => {
@@ -43,9 +43,9 @@ const Reporting = ({ getEmployees, employeeSelected, getKpiDataEmployee, getDate
     }, [])
 
     useEffect(() => {
+        kpiResetData()
         setEmployeeOccupation(occupation);
         dates.map((date) => {
-            console.log("boucle")
             getKpiDataEmployee(employeeId, date.start, date.end)
         })
     }, [employeeSelected]);
@@ -92,5 +92,5 @@ export default connect(
         employeeId: pathOr([], ["employees", "employeeSelected", "id"], state),
         dates: pathOr([], ["reporting", "dates"], state)
     }),
-    { getEmployees, getDate, getKpiDataEmployee }
+    { getEmployees, getDate, getKpiDataEmployee, kpiResetData }
 )(Reporting);

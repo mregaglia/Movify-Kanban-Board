@@ -1,4 +1,5 @@
 import { call, put, takeEvery } from "redux-saga/effects";
+import {countActions} from '../utils/reporting'
 import {
     getNoteFromEmployee
 } from "./kpi.service"
@@ -14,8 +15,9 @@ export function* getKpiDataEmployeeSaga(action) {
         let startDate = action.payload.dateStart
         let dateEnd = action.payload.dateEnd
         const kpiData = yield call(getNoteFromEmployee, id, startDate, dateEnd)
-        
-        yield put(setKpiDataEmployee(startDate, kpiData))
+        console.log(kpiData)
+        const notesCounted = countActions(kpiData)
+        yield put(setKpiDataEmployee(startDate, notesCounted))
     } catch (e) {
         //
     }

@@ -2,11 +2,12 @@ import { bindReducer } from "../utils/reducer";
 
 import {
   KPI_DATA_EMPLOYEE_ACTION,
-  KPI_SET_DATA_EMPLOYEE_ACTION
+  KPI_SET_DATA_EMPLOYEE_ACTION,
+  KPI_RESET_DATA
 } from "./kpi.actions"
 
 export const initialState = {
-  notesEmployee: [],
+  actionsCounted: [],
   noteToSelectEmployee: {}
 }
 
@@ -16,9 +17,13 @@ const kpi = {
       ...state,
       noteToSelectEmployee: payload
     }),
+  [KPI_RESET_DATA]: (state, payload) => ({
+    ...state,
+    actionsCounted: payload
+  }),
   [KPI_SET_DATA_EMPLOYEE_ACTION]: (state, payload) => ({
     ...state,
-    notesEmployee: [...state.notesEmployee, payload]
+    actionsCounted: [...state.actionsCounted, payload]
   })
 }
 
