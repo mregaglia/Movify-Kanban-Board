@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Table from "./Table"
+import TableData from "./TableData"
 import styled from 'styled-components'
-import WeeklySpeed from './WeeklySpeed'
 import SelectEmployees from "./SelectEmployees"
+import TablePercentage from "./TablePercentage"
 import { getEmployees } from "./employees.actions"
 import { getKpiNoteEmployee, kpiResetData, getKpiJobOfferEmployee } from "./kpi.actions"
 import { getDate } from './reporting.action'
@@ -34,7 +34,7 @@ const BoxGauge = styled.div({
     order: "1"
 })
 
-const Reporting = ({ getKpiJobOfferEmployee, kpiResetData, getEmployees, employeeSelected, getKpiNoteEmployee, getDate, occupation, employeeId, dates}) => {
+const Reporting = ({ getKpiJobOfferEmployee, kpiResetData, getEmployees, employeeSelected, getKpiNoteEmployee, getDate, occupation, employeeId, dates }) => {
     const [employeeOccupation, setEmployeeOccupation] = useState("");
 
     useEffect(() => {
@@ -67,12 +67,17 @@ const Reporting = ({ getKpiJobOfferEmployee, kpiResetData, getEmployees, employe
                     <BoxTable>
                         {
                             (employeeOccupation === BUSINESS_MANAGER || employeeOccupation === SOURCING_OFFICER) &&
-                            <Table />
+                            <TableData />
                         }
                     </BoxTable>
-                    {
-                        (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER) && <WeeklySpeed />
-                    }
+                </div>
+                <div>
+                    <BoxTable>
+                        {
+                            (employeeOccupation === BUSINESS_MANAGER || employeeOccupation === SOURCING_OFFICER) &&
+                            <TablePercentage />
+                        }
+                    </BoxTable>
                 </div>
             </Container>
         </div >

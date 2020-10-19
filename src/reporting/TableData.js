@@ -7,8 +7,9 @@ import { pathOr } from "ramda";
 import { Table, TableTheadTr, TableContentTh } from "../style/table_style"
 import { BUSINESS_MANAGER, SOURCING_OFFICER } from './Reporting'
 import { getDateLabel } from '../utils/date'
+import WeeklySpeed from './WeeklySpeed'
 
-const Reporting = ({ occupation, dates }) => {
+const TableData = ({ occupation, dates }) => {
 
     return (
         <div>
@@ -32,11 +33,12 @@ const Reporting = ({ occupation, dates }) => {
 
                 </tbody>
             </Table>
+            <WeeklySpeed />
         </div>
     )
 }
 
-Reporting.propTypes = {
+TableData.propTypes = {
     occupation: string,
     dates: array
 };
@@ -47,4 +49,4 @@ export default connect(
         dates: pathOr([], ["reporting", "dates"], state)
     }),
     {}
-)(Reporting);
+)(TableData);
