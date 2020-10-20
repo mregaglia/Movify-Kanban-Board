@@ -1,4 +1,4 @@
-import { get, post, put, del } from "../utils/api";
+import { get, post} from "../utils/api";
 
 export const getNoteFromEmployee = (idEmployee, dateStart, dateEnd) =>
     post(

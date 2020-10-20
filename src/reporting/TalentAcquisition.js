@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { TableContentTd, TableContentTdTitle, TableContentTbodyTr } from "../style/table_style"
+import { TableContentTd, TableContentTbodyTr } from "../style/table_style"
 
 const tableTextAcquisition = [
     "Contacted by InMail",

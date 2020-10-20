@@ -10,7 +10,6 @@ import { BUSINESS_MANAGER, SOURCING_OFFICER } from "./Reporting"
 const Container = styled.div({
     width: "30%",
     margin: "0 auto"
-
 })
 
 const SelectEmployees = ({ employees, setEmployeeSelected }) => {
@@ -32,6 +31,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
                 <Select
                     options={options}
                     onChange={onChangeInput}
+
                 />
             </Container>
         </>

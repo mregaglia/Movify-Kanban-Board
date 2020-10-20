@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Table = styled.table({
     borderCollapse: "collapse",
     margin: "25px 0",
-    fontSize: "0.9em",
+    fontSize: "1.2em",
     minWidth: "400px",
     borderRadius: "5px 5px 5px 5px",
     overflow: "hidden"
@@ -28,7 +28,7 @@ export const TableContentTd = styled.td(({ theme }) => ({
 export const TableContentTdTitle = styled.td(({ theme }) => ({
     padding: "6px 7px",
     fontWeight: "bold",
-    fontSize: "1.2em",
+    fontSize: "1.3em",
 }))
 
 export const TableContentTbodyTr = styled.tr(({ theme }) => ({

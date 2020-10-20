@@ -32,7 +32,6 @@ const kpi = {
     ...state,
     jobOfferCounted: [...state.jobOfferCounted, payload]
   }),
-
 }
 
 export default (state, action) =>

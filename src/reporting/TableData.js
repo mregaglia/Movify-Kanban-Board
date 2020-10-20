@@ -18,7 +18,7 @@ const TableData = ({ occupation, dates }) => {
                     <TableTheadTr>
                         <TableContentTh></TableContentTh>
                         {dates.map((date) => (
-                            <TableContentTh>{getDateLabel(date.start)}</TableContentTh>
+                            <TableContentTh key={date.start}>{getDateLabel(date.start)}</TableContentTh>
                         ))}
                     </TableTheadTr>
                 </thead>

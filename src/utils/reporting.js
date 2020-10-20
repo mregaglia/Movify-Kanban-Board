@@ -1,6 +1,3 @@
-import { call } from "ramda"
-import { actions } from "react-table"
-
 const PROSPECTION = "Prospection"
 
 const CALL = "Call"
@@ -26,8 +23,10 @@ export const countActions = (notes) => {
                 countedActions.PROSPECTION++;
                 break;
             case CALL:
-                if(data[i].candidates.total === 1) countedActions.CALL_RECRUITMENT++;
-                else if(data[i].clientContacts.total) countedActions.CALL_BUSINESS++;
+                if (data[i].candidates.total === 1) countedActions.CALL_RECRUITMENT++;
+                else if (data[i].clientContacts.total) countedActions.CALL_BUSINESS++;
+                break;
+            default:
                 break;
         }
     }
