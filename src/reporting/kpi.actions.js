@@ -13,4 +13,4 @@ export const setKpiNoteEmployee = (date, noteWeekEmployee) => ({ type: KPI_SET_N
 export const kpiResetData = () => ({ type: KPI_RESET_DATA, payload: [] })
 
 export const getKpiJobOfferEmployee = (idEmployeeSelected, dateStart, dateEnd) => ({ type: KPI_JOBOFFER_ACTION, payload: { id: idEmployeeSelected, dateStart: dateStart, dateEnd: dateEnd } });
-export const setKpiJobOfferEmployee = (date, jobOfferWeekEmployee) => ({ type: KPI_SET_JOBOFFER_EMPLOYEE_ACTION, payload: { date: date, notesEmployee: jobOfferWeekEmployee } })
+export const setKpiJobOfferEmployee = (date, jobOfferWeekEmployee) => ({ type: KPI_SET_JOBOFFER_EMPLOYEE_ACTION, payload: { date: date, jobOfferWeekEmployee: jobOfferWeekEmployee } })
