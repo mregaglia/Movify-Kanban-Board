@@ -4,14 +4,13 @@ import { TableContentTd, TableContentTdTitle, TableContentTbodyTr } from "../sty
 import TalentAcquisition from './TalentAcquisition'
 
 const tableTextBusinessManager = [
-    "Business Development ",
-    "Call",
-    "Prospection meeting scheduled",
-    "Prospection meeting done",
-    "New vacancy",
-    "CV sent",
-    "Intake",
-    "Project start"
+    { key: 2, label: "Call" },
+    { key: 3, label: "Prospection meeting scheduled" },
+    { key: 4, label: "Prospection meeting done" },
+    { key: 5, label: "New vacancy" },
+    { key: 6, label: "CV sent" },
+    { key: 7, label: "Intake" },
+    { key: 8, label: "Project start" }
 ]
 
 const BusinessManager = () => {
@@ -23,8 +22,8 @@ const BusinessManager = () => {
             </TableContentTbodyTr>
             {
                 tableTextBusinessManager.map((text) =>
-                    <TableContentTbodyTr>
-                        <TableContentTd key={text}>{text}</TableContentTd>
+                    <TableContentTbodyTr key={text.key}>
+                        <TableContentTd >{text.label}</TableContentTd>
                     </TableContentTbodyTr>
 
                 )
