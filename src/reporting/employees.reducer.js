@@ -7,7 +7,7 @@ import {
 
 export const initialState = {
   employeesToSet: [],
-  employeeSelected: ""
+  employeeSelected: {}
 }
 
 const employees = {

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { isNil } from "ramda";
 import TableData from "./TableData"
 import styled from 'styled-components'
 import SelectEmployees from "./SelectEmployees"
@@ -35,22 +34,12 @@ const BoxGauge = styled.div({
     order: "1"
 })
 
-const Reporting = ({ getKpiJobOfferEmployee, kpiResetData, getEmployees, getKpiNoteEmployee, getDate, occupation, employeeId, dates }) => {
+const Reporting = ({ getEmployees, getDate, occupation }) => {
 
     useEffect(() => {
         getEmployees();
         getDate(getLast4weeksDate())
     }, [getEmployees, getDate])
-
-    useEffect(() => {
-        if(!isNil(employeeId)){
-            kpiResetData();
-            for(const date in dates) {
-                getKpiNoteEmployee(employeeId, date.start, date.end)
-                getKpiJobOfferEmployee(employeeId, date.startTimestamp, date.endTimestamp)
-            }
-        }
-    }, [kpiResetData, employeeId, dates, getKpiNoteEmployee, getKpiJobOfferEmployee]);
 
     return (
         <div>

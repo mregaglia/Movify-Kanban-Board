@@ -19,7 +19,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
     const onChangeInput = (employeeSelected) => {
         for (let i = 0; i < employees.length; i++) {
             if (parseInt(employeeSelected.value) === employees[i].id) {
-                setEmployeeSelected(employees[i])
+                setEmployeeSelected(employees[i]);
                 break;
             }
         }
@@ -31,7 +31,6 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
                 <Select
                     options={options}
                     onChange={onChangeInput}
-
                 />
             </Container>
         </>

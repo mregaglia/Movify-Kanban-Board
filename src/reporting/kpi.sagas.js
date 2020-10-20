@@ -1,5 +1,6 @@
-import { call, put, takeEvery } from "redux-saga/effects";
-import {countActions} from '../utils/reporting'
+import { call, put, takeEvery, select, all, takeLatest } from "redux-saga/effects";
+import { countActions } from '../utils/reporting'
+import { path, pathOr } from 'ramda'
 import {
     getNoteFromEmployee,
     getJobOfferFromEmployee
@@ -9,7 +10,11 @@ import {
     KPI_NOTE_ACTION,
     setKpiNoteEmployee,
     KPI_JOBOFFER_ACTION,
-    setKpiJobOfferEmployee
+    setKpiJobOfferEmployee,
+    GET_EMPLOYEE_KPI,
+    kpiResetData,
+    getKpiNoteEmployee,
+    getKpiJobOfferEmployee
 } from './kpi.actions'
 
 export function* getKpiNoteEmployeeSaga(action) {
@@ -38,9 +43,25 @@ export function* getKpiJobOfferEmployeeSaga(action) {
     }
 }
 
+export function* getEmployeeKpi(action) {
+    yield put(kpiResetData());
+
+    let dates = yield select(getDates)
+    let employeeId = path(["payload", "id"], action)
+
+    yield all(dates.reduce((acc, date) => {
+        return acc.concat(put(getKpiNoteEmployee(employeeId, date.start, date.end)))
+            .concat(put(getKpiJobOfferEmployee(employeeId, date.startTimestamp, date.endTimestamp)))
+    }, []))
+}
+
 export default function kpiSagas() {
     return [
         takeEvery(KPI_NOTE_ACTION, getKpiNoteEmployeeSaga),
-        takeEvery(KPI_JOBOFFER_ACTION, getKpiJobOfferEmployeeSaga)
+        takeEvery(KPI_JOBOFFER_ACTION, getKpiJobOfferEmployeeSaga),
+        takeLatest(GET_EMPLOYEE_KPI, getEmployeeKpi)
     ];
 }
+
+export const getDates = state =>
+    pathOr([], ["reporting", "dates"], state);

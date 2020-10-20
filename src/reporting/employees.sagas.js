@@ -1,12 +1,18 @@
 
 import { call, put, takeLatest } from "redux-saga/effects";
+import { prop } from 'ramda'
 import {
     getBusinessManagerAndSourcingOfficer
 } from "./employees.service"
 
 import {
+    getEmployeeKpi
+} from './kpi.actions'
+
+import {
     GET_EMPLOYEES,
-    setEmployees
+    setEmployees,
+    SET_EMPLOYEE_SELECTED
 } from './employees.actions'
 
 export function* getEmployees() {
@@ -18,8 +24,13 @@ export function* getEmployees() {
     }
 }
 
+export function* onEmployeeSelected(action) {
+    yield put(getEmployeeKpi(prop("payload", action)))
+}
+
 export default function employeeSagas() {
     return [
         takeLatest(GET_EMPLOYEES, getEmployees),
+        takeLatest(SET_EMPLOYEE_SELECTED, onEmployeeSelected)
     ];
 }
