@@ -1,6 +1,7 @@
-import { call, put, takeEvery, select, all, takeLatest } from "redux-saga/effects";
+import { call, put, takeEvery, all, takeLatest } from "redux-saga/effects";
 import { countActions } from '../utils/reporting'
-import { path, pathOr } from 'ramda'
+import { path } from 'ramda'
+import { getLast4weeksDate } from '../utils/date'
 import {
     getNoteFromEmployee,
     getJobOfferFromEmployee
@@ -46,7 +47,8 @@ export function* getKpiJobOfferEmployeeSaga(action) {
 export function* getEmployeeKpi(action) {
     yield put(kpiResetData());
 
-    let dates = yield select(getDates)
+    let dates = getLast4weeksDate();
+
     let employeeId = path(["payload", "id"], action)
 
     yield all(dates.reduce((acc, date) => {
@@ -62,6 +64,3 @@ export default function kpiSagas() {
         takeLatest(GET_EMPLOYEE_KPI, getEmployeeKpi)
     ];
 }
-
-export const getDates = state =>
-    pathOr([], ["reporting", "dates"], state);

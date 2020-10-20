@@ -5,11 +5,9 @@ import SelectEmployees from "./SelectEmployees"
 import TablePercentage from "./TablePercentage"
 import { getEmployees } from "./employees.actions"
 import { getKpiNoteEmployee, kpiResetData, getKpiJobOfferEmployee } from "./kpi.actions"
-import { getDate } from './reporting.action'
 import { connect } from "react-redux";
-import { string, number, array } from "prop-types";
-import { pathOr, path } from "ramda";
-import { getLast4weeksDate } from '../utils/date'
+import { string, number } from "prop-types";
+import { path } from "ramda";
 
 export const BUSINESS_MANAGER = "Business Manager"
 export const SOURCING_OFFICER = "Sourcing Officer"
@@ -34,12 +32,11 @@ const BoxGauge = styled.div({
     order: "1"
 })
 
-const Reporting = ({ getEmployees, getDate, occupation }) => {
+const Reporting = ({ getEmployees, occupation }) => {
 
     useEffect(() => {
         getEmployees();
-        getDate(getLast4weeksDate())
-    }, [getEmployees, getDate])
+    }, [getEmployees])
 
     return (
         <div>
@@ -76,15 +73,13 @@ const Reporting = ({ getEmployees, getDate, occupation }) => {
 
 Reporting.propTypes = {
     occupation: string,
-    employeeId: number,
-    dates: array
+    employeeId: number
 };
 
 export default connect(
     state => ({
         occupation: path(["employees", "employeeSelected", "occupation"], state),
-        employeeId: path(["employees", "employeeSelected", "id"], state),
-        dates: pathOr([], ["reporting", "dates"], state)
+        employeeId: path(["employees", "employeeSelected", "id"], state)
     }),
-    { getEmployees, getDate, getKpiNoteEmployee, kpiResetData, getKpiJobOfferEmployee }
+    { getEmployees, getKpiNoteEmployee, kpiResetData, getKpiJobOfferEmployee }
 )(Reporting);

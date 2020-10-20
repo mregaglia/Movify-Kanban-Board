@@ -10,45 +10,24 @@ export const isOverDiff = (timestamp, diff) => {
 };
 
 export const getLast4weeksDate = () => {
-  let startLastWeek = moment().subtract(1, 'weeks').startOf('isoWeek')
-  let endLastWeek = moment().subtract(1, 'weeks').endOf('isoWeek')
 
-  let startLastSecondWeek = moment().subtract(2, 'weeks').startOf('isoWeek')
-  let endLastSecondWeek = moment().subtract(2, 'weeks').endOf('isoWeek')
+  let tableWeek = [1, 2, 3, 4]
 
-  let startLastThirdWeek = moment().subtract(3, 'weeks').startOf('isoWeek')
-  let endLastThirdWeek = moment().subtract(3, 'weeks').endOf('isoWeek')
-
-  let startLastFourthWeek = moment().subtract(4, 'weeks').startOf('isoWeek')
-  let endLastFourthWeek = moment().subtract(4, 'weeks').endOf('isoWeek')
-
-  let dates = [
-    {
-      start: parseInt(startLastWeek.format('YYYYMMDD')),
-      end: parseInt(endLastWeek.format('YYYYMMDD')),
-      startTimestamp: startLastWeek.valueOf(),
-      endTimestamp : endLastWeek.valueOf()
-    },
-    {
-      start: parseInt(startLastSecondWeek.format('YYYYMMDD')),
-      end: parseInt(endLastSecondWeek.format('YYYYMMDD')),
-      startTimestamp: startLastSecondWeek.valueOf(),
-      endTimestamp : endLastSecondWeek.valueOf()
-    },
-    {
-      start: parseInt(startLastThirdWeek.format('YYYYMMDD')),
-      end: parseInt(endLastThirdWeek.format('YYYYMMDD')),
-      startTimestamp: startLastThirdWeek.valueOf(),
-      endTimestamp : endLastThirdWeek.valueOf()
-    }, 
-    {
-      start: parseInt(startLastFourthWeek.format('YYYYMMDD')),
-      end: parseInt(endLastFourthWeek.format('YYYYMMDD')),
-      startTimestamp: startLastFourthWeek.valueOf(),
-      endTimestamp : endLastFourthWeek.valueOf()
-    }
-  ]
+  let dates = tableWeek.map(getWeekDateAndTimestamp)
+  
   return dates;
+}
+
+const getWeekDateAndTimestamp = (week) => {
+  let startWeek =   moment().subtract(week, 'weeks').startOf('isoWeek');
+  let endWeek = moment().subtract(week, 'weeks').endOf('isoWeek')
+
+  return {
+    start: parseInt(startWeek.format('YYYYMMDD')),
+    end: parseInt(endWeek.format('YYYYMMDD')),
+    startTimestamp: startWeek.valueOf(),
+    endTimestamp : endWeek.valueOf()
+  }
 }
 
 export const getDateLabel = (date) => {
