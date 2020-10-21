@@ -1,37 +1,23 @@
 import { bindReducer } from "../../utils/reducer";
 
 import {
-  KPI_NOTE_ACTION,
-  KPI_SET_NOTE_EMPLOYEE_ACTION,
   KPI_RESET_DATA,
-  KPI_SET_JOBOFFER_EMPLOYEE_ACTION
+  SET_EMPLOYEE_KPI
 } from "./kpi.actions"
 
 export const initialState = {
-  actionsCounted: [],
-  jobOfferCounted: [],
-  noteToSelectEmployee: {}
+  dataEmployee: [],
 }
 
 const kpi = {
-  [KPI_NOTE_ACTION]: (state, payload) => (
-    {
-      ...state,
-      noteToSelectEmployee: payload
-    }),
   [KPI_RESET_DATA]: (state, payload) => ({
     ...state,
-    actionsCounted: payload,
-    jobOfferCounted: payload
+    dataEmployee: payload
   }),
-  [KPI_SET_NOTE_EMPLOYEE_ACTION]: (state, payload) => ({
+  [SET_EMPLOYEE_KPI]: (state, payload) => ({
     ...state,
-    actionsCounted: [...state.actionsCounted, payload]
-  }),
-  [KPI_SET_JOBOFFER_EMPLOYEE_ACTION]: (state, payload) => ({
-    ...state,
-    jobOfferCounted: [...state.jobOfferCounted, payload]
-  }),
+    dataEmployee: [...state.dataEmployee, payload]
+  })
 }
 
 export default (state, action) =>

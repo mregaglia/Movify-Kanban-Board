@@ -4,7 +4,7 @@ const CALL = "Call"
 export const CALL_BUSINESS = "Call Business"
 export const CALL_RECRUITMENT = "Call Recruitment"
 
-export const countActions = (notes) => {
+export const countData = (notes, jobOrders) => {
     const countedActions = {
         PROSPECTION: 0,
         CALL_BUSINESS: 0,

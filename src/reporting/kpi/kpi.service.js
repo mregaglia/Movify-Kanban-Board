@@ -1,4 +1,4 @@
-import { get, post} from "../../utils/api";
+import { get, post } from "../../utils/api";
 
 export const getNoteFromEmployee = (idEmployee, dateStart, dateEnd) =>
     post(
@@ -7,15 +7,14 @@ export const getNoteFromEmployee = (idEmployee, dateStart, dateEnd) =>
             query: `commentingPerson:${idEmployee} AND dateAdded:[${dateStart} TO ${dateEnd}]`
         },
         {
-            fields:
-                "*",
+            fields:"action, candidates, clientContacts",
             sort: "-dateAdded"
         }
     );
 
-    export const getJobOfferFromEmployee = (idEmployee, dateStart, dateEnd) =>
+export const getJobOrderFromEmployee = (idEmployee, dateStart, dateEnd) =>
     get("query/JobOrder", {
-        fields: "*",
+        fields: "id",
         where: `owner.id=${idEmployee} AND isDeleted=false AND dateAdded>${dateStart} AND dateAdded<=${dateEnd}`,
         count: "50"
     });

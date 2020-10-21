@@ -63,7 +63,6 @@ SelectEmployees.propTypes = {
 export default connect(
     state => ({
         employees: pathOr([], ["employees", "employeesToSet", 'data'], state),
-
     }),
     { setEmployeeSelected }
 )(SelectEmployees);

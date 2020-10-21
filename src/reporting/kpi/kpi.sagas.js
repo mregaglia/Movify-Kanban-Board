@@ -1,66 +1,47 @@
-import { call, put, takeEvery, all, takeLatest } from "redux-saga/effects";
-import { countActions } from '../../utils/reporting'
+import { call, put, takeLatest } from "redux-saga/effects";
 import { path } from 'ramda'
 import { getLast4weeksDate } from '../../utils/date'
-import {
-    getNoteFromEmployee,
-    getJobOfferFromEmployee
-} from "./kpi.service"
+import { countData } from '../../utils/reporting'
 
 import {
-    KPI_NOTE_ACTION,
-    setKpiNoteEmployee,
-    KPI_JOBOFFER_ACTION,
-    setKpiJobOfferEmployee,
     GET_EMPLOYEE_KPI,
     kpiResetData,
-    getKpiNoteEmployee,
-    getKpiJobOfferEmployee
+    setEmployeeKpi
 } from './kpi.actions'
 
-export function* getKpiNoteEmployeeSaga(action) {
+import {
+    getNoteFromEmployee,
+    getJobOrderFromEmployee
+} from './kpi.service'
+
+export function* getKpiNoteEmployeeSaga(employeeId, date) {
     try {
-        let id = action.payload.id;
-        let startDate = action.payload.dateStart
-        let dateEnd = action.payload.dateEnd
-        const kpiNote = yield call(getNoteFromEmployee, id, startDate, dateEnd)
-        const notesCounted = countActions(kpiNote)
-        yield put(setKpiNoteEmployee(startDate, notesCounted))
+        const kpiNote = yield call(getNoteFromEmployee, employeeId, date.start, date.end)
+        const kpiJobOrder = yield call(getJobOrderFromEmployee, employeeId, date.startTimestamp, date.endTimestamp)
+        let dataCounted = countData(kpiNote, kpiJobOrder)
+        console.log(dataCounted)
+        yield put(setEmployeeKpi(dataCounted))
     } catch (e) {
         //
     }
 }
 
-export function* getKpiJobOfferEmployeeSaga(action) {
-    try {
-        let id = action.payload.id;
-        let startDate = action.payload.dateStart
-        let dateEnd = action.payload.dateEnd
-        const kpiJobOffer = yield call(getJobOfferFromEmployee, id, startDate, dateEnd)
-        //const jobOfferCounted = countActions(kpiJobOffer)
-        yield put(setKpiJobOfferEmployee(startDate, kpiJobOffer))
-    } catch (e) {
-        //
-    }
-}
-
-export function* getEmployeeKpi(action) {
+export function* getKpiDataEmployee(action) {
     yield put(kpiResetData());
-
     let dates = getLast4weeksDate();
+    let employeeId = path(["payload", "id"], action);
 
-    let employeeId = path(["payload", "id"], action)
-
-    yield all(dates.reduce((acc, date) => {
-        return acc.concat(put(getKpiNoteEmployee(employeeId, date.start, date.end)))
-            .concat(put(getKpiJobOfferEmployee(employeeId, date.startTimestamp, date.endTimestamp)))
-    }, []))
+    try {
+        for (let i = 0; i < dates.length; i++) {
+            yield call(getKpiNoteEmployeeSaga, employeeId, dates[i]);
+        }
+    } catch (e) {
+        //
+    }
 }
 
 export default function kpiSagas() {
     return [
-        takeEvery(KPI_NOTE_ACTION, getKpiNoteEmployeeSaga),
-        takeEvery(KPI_JOBOFFER_ACTION, getKpiJobOfferEmployeeSaga),
-        takeLatest(GET_EMPLOYEE_KPI, getEmployeeKpi)
+        takeLatest(GET_EMPLOYEE_KPI, getKpiDataEmployee)
     ];
 }

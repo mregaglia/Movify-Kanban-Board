@@ -8,7 +8,6 @@ import recruitment from "../recruitment/recruitment.reducer";
 import transition from "../transition/transition.reducer";
 import user from '../auth/user.reducer';
 import employees from '../reporting/employees/employees.reducer';
-import reporting from '../reporting/reporting.reducer';
 import kpi from '../reporting/kpi/kpi.reducer'
 
 export default combineReducers({
@@ -21,6 +20,5 @@ export default combineReducers({
   transition,
   user,
   employees,
-  reporting,
   kpi
 });
