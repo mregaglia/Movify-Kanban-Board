@@ -4,9 +4,9 @@ import TalentAcquisition from './TalentAcquisition'
 import { connect } from "react-redux";
 import { string, array } from "prop-types";
 import { pathOr } from "ramda";
-import { Table, TableTheadTr, TableContentTh } from "../style/table_style"
+import { Table, TableTheadTr, TableContentTh } from "../../style/table_style"
 import { BUSINESS_MANAGER, SOURCING_OFFICER } from './Reporting'
-import { getDateLabel } from '../utils/date'
+import { getDateLabel } from '../../utils/date'
 import WeeklySpeed from './WeeklySpeed'
 
 const TableData = ({ occupation, dates }) => {

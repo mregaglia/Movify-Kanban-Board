@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { Table, TableTheadTr, TableContentTh } from "../style/table_style"
+import { Table, TableTheadTr, TableContentTh } from "../../style/table_style"
 
 const TablePercentage = () => {
 

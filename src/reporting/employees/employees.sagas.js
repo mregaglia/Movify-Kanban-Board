@@ -7,7 +7,7 @@ import {
 
 import {
     getEmployeeKpi
-} from './kpi.actions'
+} from '../kpi/kpi.actions'
 
 import {
     GET_EMPLOYEES,

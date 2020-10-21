@@ -1,4 +1,4 @@
-import { bindReducer } from "../utils/reducer";
+import { bindReducer } from "../../utils/reducer";
 
 import {
   KPI_NOTE_ACTION,

@@ -1,4 +1,4 @@
-import { get } from "../utils/api";
+import { get } from "../../utils/api";
 
 export const getBusinessManagerAndSourcingOfficer = (start = 0) =>
     get("query/CorporateUser", {

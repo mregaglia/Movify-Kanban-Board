@@ -1,7 +1,7 @@
 import { call, put, takeEvery, all, takeLatest } from "redux-saga/effects";
-import { countActions } from '../utils/reporting'
+import { countActions } from '../../utils/reporting'
 import { path } from 'ramda'
-import { getLast4weeksDate } from '../utils/date'
+import { getLast4weeksDate } from '../../utils/date'
 import {
     getNoteFromEmployee,
     getJobOfferFromEmployee

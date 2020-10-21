@@ -18,7 +18,7 @@ import { updateJobSubmission as updateKanbanJobSubmission } from "./kanban/kanba
 import { updateJobSubmission as updateRecruitmentJobSubmission } from "./recruitment/recruitment.actions";
 import { addCandidate } from "./transition/transition.actions";
 import Header from "./Header";
-import Reporting from './reporting/Reporting'
+import Reporting from './reporting/components/Reporting'
 
 const Container = styled.div({
     paddingLeft: 25,

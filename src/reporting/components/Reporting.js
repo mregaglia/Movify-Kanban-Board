@@ -3,8 +3,8 @@ import TableData from "./TableData"
 import styled from 'styled-components'
 import SelectEmployees from "./SelectEmployees"
 import TablePercentage from "./TablePercentage"
-import { getEmployees } from "./employees.actions"
-import { getKpiNoteEmployee, kpiResetData, getKpiJobOfferEmployee } from "./kpi.actions"
+import { getEmployees } from "../employees/employees.actions"
+import { getKpiNoteEmployee, kpiResetData, getKpiJobOfferEmployee } from "../kpi/kpi.actions"
 import { connect } from "react-redux";
 import { string, number } from "prop-types";
 import { path } from "ramda";

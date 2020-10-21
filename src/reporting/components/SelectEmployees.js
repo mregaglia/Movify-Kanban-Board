@@ -1,6 +1,6 @@
 import React from "react";
 import Select from 'react-select'
-import { setEmployeeSelected } from "./employees.actions"
+import { setEmployeeSelected } from "../employees/employees.actions"
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
 import { array } from "prop-types";

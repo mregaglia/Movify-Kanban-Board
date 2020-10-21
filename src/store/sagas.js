@@ -6,8 +6,8 @@ import addCandidateSagas from "../addCandidate/addCandidate.sagas";
 import recruitmentSagas from "../recruitment/recruitment.sagas";
 import transitionSagas from "../transition/transition.sagas";
 import userSaga from "../auth/user.sagas"
-import employeeSagas from "../reporting/employees.sagas"
-import kpiSagas from "../reporting/kpi.sagas"
+import employeeSagas from "../reporting/employees/employees.sagas"
+import kpiSagas from "../reporting/kpi/kpi.sagas"
 
 
 export default function* rootSaga() {
