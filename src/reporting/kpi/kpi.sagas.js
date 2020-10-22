@@ -11,16 +11,19 @@ import {
 
 import {
     getNoteFromEmployee,
-    getJobOrderFromEmployee
+    getSubmissionStatusChangedCvSent,
+    getSubmissionStatusChangedProjectStart
 } from './kpi.service'
 
 export function* getKpiNoteEmployeeSaga(employeeId, date) {
     try {
         const kpiNote = yield call(getNoteFromEmployee, employeeId, date.start, date.end)
-        const kpiJobOrder = yield call(getJobOrderFromEmployee, employeeId, date.startTimestamp, date.endTimestamp)
-        let dataCounted = countData(kpiNote, kpiJobOrder)
+        //const kpiJobOrder = yield call(getJobOrderFromEmployee, employeeId, date.startTimestamp, date.endTimestamp)
+        const cvSent = yield call(getSubmissionStatusChangedCvSent, employeeId, date.startTimestamp, date.endTimestamp);
+        const projectStart = yield call(getSubmissionStatusChangedCvSent, employeeId, date.startTimestamp, date.endTimestamp);
+        let dataCounted = countData(date.start, kpiNote, cvSent.count, projectStart.count)
         console.log(dataCounted)
-        yield put(setEmployeeKpi(dataCounted))
+        //yield put(setEmployeeKpi(dataCounted))
     } catch (e) {
         //
     }

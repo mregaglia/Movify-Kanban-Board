@@ -4,11 +4,14 @@ const CALL = "Call"
 export const CALL_BUSINESS = "Call Business"
 export const CALL_RECRUITMENT = "Call Recruitment"
 
-export const countData = (notes, jobOrders) => {
+export const countData = (date, notes, cvSent, projectStart) => {
     const countedActions = {
+        START_WEEK_DATE: date,
         PROSPECTION: 0,
         CALL_BUSINESS: 0,
         CALL_RECRUITMENT: 0,
+        CV_SENT: cvSent,
+        PROJECT_START: projectStart
     }
 
     let data = notes.data;
