@@ -3,6 +3,7 @@ const PROSPECTION = "Prospection"
 const CALL = "Call"
 export const CALL_BUSINESS = "Call Business"
 export const CALL_RECRUITMENT = "Call Recruitment"
+export const INTAKE = "Intake"
 
 export const countData = (date, notes, cvSent, projectStart) => {
     const countedActions = {
@@ -10,6 +11,7 @@ export const countData = (date, notes, cvSent, projectStart) => {
         PROSPECTION: 0,
         CALL_BUSINESS: 0,
         CALL_RECRUITMENT: 0,
+        INTAKE: 0,
         CV_SENT: cvSent,
         PROJECT_START: projectStart
     }
@@ -28,6 +30,9 @@ export const countData = (date, notes, cvSent, projectStart) => {
             case CALL:
                 if (data[i].candidates.total === 1) countedActions.CALL_RECRUITMENT++;
                 else if (data[i].clientContacts.total) countedActions.CALL_BUSINESS++;
+                break;
+            case INTAKE:
+                countedActions.INTAKE++;
                 break;
             default:
                 break;
