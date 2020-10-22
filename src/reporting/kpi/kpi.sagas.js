@@ -29,7 +29,7 @@ export function* getKpiNoteEmployeeSaga(employeeId, date) {
 
         let dataCounted = countData(date.start, kpiNote, cvSent.count, projectStart.count, 
             kpiJobOrder.count, prospectionMeetingSchedule.count, appointments.count)
-            
+
         yield put(setEmployeeKpi(dataCounted))
     } catch (e) {
         //

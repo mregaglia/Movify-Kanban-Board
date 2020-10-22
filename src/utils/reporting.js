@@ -14,7 +14,6 @@ export const CONTRACT_PROPOSED = "Offer"
 
 
 export const countData = (date, notes, cvSent, projectStart, newVacancy, prospectionMeetingSchedule, appointments) => {
-  console.log(date)
   const countedActions = {
     START_WEEK_DATE: [date, getDateLabel(date)],
     PROSPECTION: 0,
@@ -39,7 +38,6 @@ export const countData = (date, notes, cvSent, projectStart, newVacancy, prospec
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
-    console.log(data[i])
     switch (action) {
       case PROSPECTION:
         countedActions.PROSPECTION++;
