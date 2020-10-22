@@ -38,3 +38,11 @@ export const getProspectionMeetingSchedule = (idEmployee, dateStartTimestamp, da
         where: `modifyingPerson.id=${idEmployee} AND fieldChanges.columnName='status' AND fieldChanges.newValue='Prospection schedule' AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`
     });
 
+
+export const getAppointment = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
+    get("query/Appointment", {
+        fields: "id",
+        where: `owner.id=${idEmployee} AND isDeleted=false AND dateBegin>${dateStartTimestamp} AND dateBegin<=${dateEndTimestamp}`,
+        sort: "-dateBegin",
+        count: "50"
+    });

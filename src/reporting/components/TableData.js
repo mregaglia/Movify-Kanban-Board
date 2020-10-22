@@ -3,11 +3,11 @@ import BusinessManager from './BusinessManager'
 import TalentAcquisition from './TalentAcquisition'
 import { connect } from "react-redux";
 import { string, array } from "prop-types";
-import { pathOr } from "ramda";
+import { pathOr, paths, isNil } from "ramda";
 import { Table, TableTheadTr, TableContentTh } from "../../style/table_style"
 import { BUSINESS_MANAGER, SOURCING_OFFICER } from './Reporting'
-import { getDateLabel } from '../../utils/date'
 import WeeklySpeed from './WeeklySpeed'
+import { START_WEEK_DATE } from "../../utils/reporting"
 
 const TableData = ({ occupation, dates }) => {
 
@@ -17,9 +17,12 @@ const TableData = ({ occupation, dates }) => {
                 <thead>
                     <TableTheadTr>
                         <TableContentTh></TableContentTh>
-                        {dates.map((date) => (
-                            <TableContentTh key={date.start}>{getDateLabel(date.start)}</TableContentTh>
-                        ))}
+                        {
+                            dates.map((date) => {
+                                if(!isNil(date))
+                                    return <TableContentTh key={date[0]}>{date[1]}</TableContentTh>
+                            })
+                        }
                     </TableTheadTr>
                 </thead>
                 <tbody>
@@ -46,7 +49,8 @@ TableData.propTypes = {
 export default connect(
     state => ({
         occupation: pathOr([], ["employees", "employeeSelected", "occupation"], state),
-        dates: pathOr([], ["reporting", "dates"], state)
+        dates: paths([["kpi", "dataEmployee", "0", START_WEEK_DATE], ["kpi", "dataEmployee", "1", START_WEEK_DATE], ["kpi", "dataEmployee", "2", START_WEEK_DATE], ["kpi", "dataEmployee", "3", START_WEEK_DATE]], state)
+
     }),
     {}
 )(TableData);
