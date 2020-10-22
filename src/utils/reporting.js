@@ -1,11 +1,14 @@
 const PROSPECTION = "Prospection"
 
-const CALL = "Call"
+export const CALL = "Call"
 export const CALL_BUSINESS = "Call Business"
 export const CALL_RECRUITMENT = "Call Recruitment"
 export const INTAKE = "Intake"
+export const NEW_VACANCY = "NEW VACANCY"
+export const PROSPECTION_MEETING_SCHEDULE = "PROSPECTION_MEETING_SCHEDULE"
 
-export const countData = (date, notes, cvSent, projectStart) => {
+
+export const countData = (date, notes, cvSent, projectStart, newVacancy, prospectionMeetingSchedule) => {
     const countedActions = {
         START_WEEK_DATE: date,
         PROSPECTION: 0,
@@ -13,7 +16,9 @@ export const countData = (date, notes, cvSent, projectStart) => {
         CALL_RECRUITMENT: 0,
         INTAKE: 0,
         CV_SENT: cvSent,
-        PROJECT_START: projectStart
+        PROJECT_START: projectStart,
+        NEW_VACANCY: newVacancy,
+        PROSPECTION_MEETING_SCHEDULE: prospectionMeetingSchedule
     }
 
     let data = notes.data;

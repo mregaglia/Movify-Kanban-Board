@@ -24,4 +24,17 @@ export const getSubmissionStatusChangedProjectStart = (idEmployee, dateStartTime
         where: `modifyingPerson.id=${idEmployee} AND fieldChanges.columnName='status' AND fieldChanges.newValue='Project' AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`
     });
 
+export const getJobOrders = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
+    get("query/JobOrder", {
+        fields: "id",
+        where: `owner.id=${idEmployee} AND isDeleted=false AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`,
+        count: "50"
+    });
+
+
+export const getProspectionMeetingSchedule = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
+    get("query/UserEditHistory", {
+        fields: "targetEntity",
+        where: `modifyingPerson.id=${idEmployee} AND fieldChanges.columnName='status' AND fieldChanges.newValue='Prospection schedule' AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`
+    });
 
