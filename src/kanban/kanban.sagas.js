@@ -38,7 +38,7 @@ import {
 } from "./kanban.service";
 import { getCandidate } from "../recruitment/recruitment.service";
 import en from "../lang/en";
-import { getStateFilter } from "../priorityFilter/priorityFilter.sagas";
+import { filterJobOrdersPerPriority, getStateFilter } from "../priorityFilter/priorityFilter.sagas";
 
 export const getStateBms = state => pathOr([], ["kanban", "bmList"], state);
 export const getStateJobOrder = (state, joId) =>
@@ -139,9 +139,7 @@ export function* getJobOrders(action, start = 0) {
           bmIds: {
             [bmId]: {
               jobOrders: sortedCcjos,
-              filteredJobOrders: sortedCcjos.filter(jobOrder =>
-                propOr(false, prop("employmentType", jobOrder), stateFilter)
-              )
+              filteredJobOrders: filterJobOrdersPerPriority(sortedCcjos, stateFilter)
             }
           }
         };

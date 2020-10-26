@@ -10,13 +10,14 @@ export const getStateFilter = state =>
   pathOr({}, ["priorityFilter", "filter"], state);
 
 const getClientCorporations = state =>
-  pathOr({}, ["kanban", "clientCorporations"], state)
+  pathOr({}, ["kanban", "clientCorporations"], state);
+
+export const filterJobOrdersPerPriority = (jobOrders, priorityFilters) =>
+  jobOrders.filter(jobOrder => propOr(false, prop("employmentType", jobOrder), priorityFilters));
 
 export function* updatePriorityFilter(action) {
   const filter = prop("payload", action);
   yield put(setPriorityFilter(filter));
-
-  // TODO: filter list dans clientCorporations: clientCorporations.[id].bmIds.[id]
 
   const stateFilter = yield select(getStateFilter);
   const ccs = yield select(getClientCorporations);
@@ -31,9 +32,7 @@ export function* updatePriorityFilter(action) {
         const jobOrders = pathOr([], [ccId, "bmIds", bmId, "jobOrders"], ccs);
 
         bmAcc[bmId] = {
-          filteredJobOrders: jobOrders.filter(jobOrder =>
-            propOr(false, prop("employmentType", jobOrder), stateFilter)
-          )
+          filteredJobOrders: filterJobOrdersPerPriority(jobOrders, stateFilter)
         }
         return bmAcc;
       }, {})
