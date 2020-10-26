@@ -6,7 +6,7 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import { dissoc, path, pathOr, prop, propOr } from "ramda";
+import { ascend, dissoc, path, pathOr, prop, propOr, sortWith } from "ramda";
 import { toast } from "react-toastify";
 import {
   GET_KANBAN,
@@ -26,7 +26,6 @@ import {
   setBms,
   removeJobSubmission
 } from "./kanban.actions";
-import { updateDepartmentFilter } from "../departmentFilter/departmentFilter.actions";
 import {
   getBusinessManagers,
   getJobOrders as getJobOrdersService,
@@ -38,6 +37,7 @@ import {
 } from "./kanban.service";
 import { getCandidate } from "../recruitment/recruitment.service";
 import en from "../lang/en";
+import { filterJobOrdersPerPriority, getStateFilter } from "../priorityFilter/priorityFilter.sagas";
 
 export const getStateBms = state => pathOr([], ["kanban", "bmList"], state);
 export const getStateJobOrder = (state, joId) =>
@@ -67,7 +67,6 @@ export function* getBms(start = 0) {
     const bmIds = yield all(bmList.map(bm => prop("id", bm)));
     const stateBms = yield select(getStateBms);
     yield put(setBms(stateBms.concat(bmIds)));
-    yield put(updateDepartmentFilter());
 
     if (propOr(0, "count", bmsResponse) > 0)
       yield call(
@@ -102,7 +101,7 @@ export function* getClientCorporations(bmId, jobOrders) {
 
       const clientCorporation = prop(joccId, acc);
       if (!clientCorporation) {
-        acc[joccId] = { ...jocc, bmIds: { [bmId]: [] } };
+        acc[joccId] = { ...jocc, bmIds: { [bmId]: { jobOrders: [] } } };
       }
       return acc;
     }, {})
@@ -121,6 +120,7 @@ export function* getJobOrders(action, start = 0) {
     yield call(getClientCorporations, bmId, jobOrderList);
 
     const clientCorporations = {};
+    const stateFilter = yield select(getStateFilter);
 
     const jobOrders = yield all(
       jobOrderList.reduce((acc, jobOrder) => {
@@ -128,12 +128,17 @@ export function* getJobOrders(action, start = 0) {
 
         const ccjos = pathOr(
           [],
-          [ccId, "bmIds", bmId],
+          [ccId, "bmIds", bmId, "jobOrders"],
           clientCorporations
-        ).concat([jobOrder.id]);
+        ).concat([{ id: jobOrder.id, employmentType: jobOrder.employmentType }]);
+        const sortedCcjos = sortWith([ascend(prop("employmentType"))], ccjos);
+
         clientCorporations[ccId] = {
           bmIds: {
-            [bmId]: ccjos
+            [bmId]: {
+              jobOrders: sortedCcjos,
+              filteredJobOrders: filterJobOrdersPerPriority(sortedCcjos, stateFilter)
+            }
           }
         };
 

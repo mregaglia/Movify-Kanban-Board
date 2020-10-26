@@ -4,7 +4,7 @@ import { path } from "ramda";
 import { Link, Route } from "react-router-dom";
 import { bool, object, string } from "prop-types";
 import styled from "styled-components";
-import DepartmentFilter from "./departmentFilter/DepartmentFilter"
+import PriorityFilter from "./priorityFilter/PriorityFilter"
 import Transition from "./transition/Transition";
 
 const Container = styled.div(({ theme }) => ({
@@ -77,7 +77,7 @@ const Header = ({ authenticated, board }) => {
             <HeaderLink label="Business" to="/kanban" />
             <HeaderLink label="Recruitment" to="/recruitment" />
           </nav>
-          <DepartmentFilter />
+          <PriorityFilter board={board} />
         </Row>
         <Transition board={board} />
       </Container >

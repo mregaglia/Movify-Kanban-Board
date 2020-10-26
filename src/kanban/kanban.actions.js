@@ -2,6 +2,7 @@ export const GET_KANBAN = "GET_KANBAN";
 export const SET_BMS = "SET_BMS";
 export const UPDATE_BMS = "UPDATE_BMS";
 export const UPDATE_CLIENT_CORPORATIONS = "UPDATE_CLIENT_CORPORATIONS";
+export const UPDATE_FILTERED_JOB_ORDERS = "UPDATE_FILTERED_JOB_ORDERS";
 export const GET_JOB_ORDERS = "GET_JOB_ORDERS";
 export const SET_JOB_ORDERS = "SET_JOB_ORDERS";
 export const UPDATE_JOB_ORDERS = "UPDATE_JOB_ORDERS";
@@ -26,6 +27,11 @@ export const updateBms = bms => ({
 
 export const updateClientCorporations = clientCorporations => ({
   type: UPDATE_CLIENT_CORPORATIONS,
+  payload: clientCorporations
+});
+
+export const updateFilteredJobOrdersInCCS = clientCorporations => ({
+  type: UPDATE_FILTERED_JOB_ORDERS,
   payload: clientCorporations
 });
 

@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { pathOr, propOr } from "ramda";
+import { pathOr, prop, propOr } from "ramda";
 import { number, object, string } from "prop-types";
 import { ColorRowText, Column, Row } from "../components";
 import JobOrder from "./JobOrder";
@@ -12,8 +12,8 @@ const ClientCorporation = ({ bmId, clientCorporation, color }) => (
     </ColorRowText>
     <Row style={{ paddingLeft: 4, paddingTop: 10, paddingBottom: 10 }}>
       <Column>
-        {pathOr([], ["bmIds", bmId], clientCorporation).map(joId => (
-          <JobOrder key={joId} joId={joId} color={color} />
+        {pathOr([], ["bmIds", bmId, "filteredJobOrders"], clientCorporation).map(jobOrder => (
+          <JobOrder key={prop("id", jobOrder)} joId={prop("id", jobOrder)} color={color} />
         ))}
       </Column>
     </Row>
