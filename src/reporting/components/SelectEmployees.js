@@ -1,11 +1,11 @@
 import React from "react";
 import Select from 'react-select'
-import { setEmployeeSelected } from "../employees/employees.actions"
+import { setEmployeeSelected, setDownloadingData } from "../employees/employees.actions"
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
 import { array } from "prop-types";
 import styled from "styled-components"
-import { BUSINESS_MANAGER, SOURCING_OFFICER } from "./Reporting"
+import { BUSINESS_MANAGER, SOURCING_OFFICER } from "./EmployeeData"
 
 const Container = styled.div({
     width: "30%",
@@ -20,6 +20,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
         for (let i = 0; i < employees.length; i++) {
             if (parseInt(employeeSelected.value) === employees[i].id) {
                 setEmployeeSelected(employees[i]);
+                setDownloadingData(true)
                 break;
             }
         }

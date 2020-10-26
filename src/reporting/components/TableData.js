@@ -2,12 +2,11 @@ import React from "react";
 import BusinessManager from './BusinessManager'
 import TalentAcquisition from './TalentAcquisition'
 import { connect } from "react-redux";
-import { string, array } from "prop-types";
-import { pathOr, paths, isNil } from "ramda";
+import { string, object } from "prop-types";
+import { pathOr } from "ramda";
 import { Table, TableTheadTr, TableContentTh } from "../../style/table_style"
-import { BUSINESS_MANAGER, SOURCING_OFFICER } from './Reporting'
+import { BUSINESS_MANAGER, SOURCING_OFFICER } from './EmployeeData'
 import WeeklySpeed from './WeeklySpeed'
-import { START_WEEK_DATE } from "../../utils/reporting"
 
 const TableData = ({ occupation, dates }) => {
 
@@ -16,13 +15,11 @@ const TableData = ({ occupation, dates }) => {
             <Table>
                 <thead>
                     <TableTheadTr>
-                        <TableContentTh></TableContentTh>
-                        {
-                            dates.map((date) => {
-                                if(!isNil(date))
-                                    return <TableContentTh key={date[0]}>{date[1]}</TableContentTh>
-                            })
-                        }
+                        <TableContentTh key="NO_WEEK" />
+                        <TableContentTh>{dates.FIRST_WEEK}</TableContentTh>
+                        <TableContentTh>{dates.SECOND_WEEK}</TableContentTh>
+                        <TableContentTh>{dates.THIRD_WEEK}</TableContentTh>
+                        <TableContentTh>{dates.FOURTH_WEEK}</TableContentTh>
                     </TableTheadTr>
                 </thead>
                 <tbody>
@@ -31,7 +28,7 @@ const TableData = ({ occupation, dates }) => {
                     }
 
                     {
-                        occupation === SOURCING_OFFICER && <TalentAcquisition />
+                        (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER) && <TalentAcquisition />
                     }
 
                 </tbody>
@@ -43,14 +40,13 @@ const TableData = ({ occupation, dates }) => {
 
 TableData.propTypes = {
     occupation: string,
-    dates: array
+    dates: object
 };
 
 export default connect(
     state => ({
-        occupation: pathOr([], ["employees", "employeeSelected", "occupation"], state),
-        dates: paths([["kpi", "dataEmployee", "0", START_WEEK_DATE], ["kpi", "dataEmployee", "1", START_WEEK_DATE], ["kpi", "dataEmployee", "2", START_WEEK_DATE], ["kpi", "dataEmployee", "3", START_WEEK_DATE]], state)
-
+        occupation: pathOr("", ["employees", "employeeSelected", "occupation"], state),
+        dates: pathOr({}, ["kpi", "dataEmployee", "dates", "DATES"], state),
     }),
     {}
 )(TableData);

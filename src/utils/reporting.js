@@ -1,106 +1,124 @@
+import { BUSINESS_MANAGER, SOURCING_OFFICER } from '../reporting/components/EmployeeData'
+
 export const PROSPECTION = "Prospection"
 export const CALL = "Call"
-export const CALL_BUSINESS = "Call Business"
-export const CALL_RECRUITMENT = "Call Recruitment"
+export const CALL_RECRUITMENT = "Contacted by phone"
 export const INTAKE = "Intake"
-export const NEW_VACANCY = "NEW VACANCY"
-export const PROSPECTION_MEETING_SCHEDULE = "PROSPECTION_MEETING_SCHEDULE"
-export const START_WEEK_DATE = "START_WEEK_DATE"
 export const LINKED_INMAIL = "LinkedIn InMail"
-export const INTERVIEW_SCHEDULE = "INTERVIEW_SCHEDULE"
 export const NO_SHOW = "No show"
 export const INTERVIEW_DONE = "Interview 1"
 export const CONTRACT_PROPOSED = "Offer"
 
+export const LABEL_DATES = "DATES"
+export const LABEL_CALL = "Call"
+export const LABEL_PROSPECTION_MEETING_SCHEDULE = "Prospection meeting scheduled"
+export const LABEL_MEETING_DONE = "Prospection meeting done"
+export const LABEL_NEW_VACANCY = "New vacancy"
+export const LABEL_CV_SENT = "CV sent"
+export const LABEL_INTAKE = "intake"
+export const LABEL_PROJECT_START = "Project Start"
 
-export const countData = (date, notes, cvSent, projectStart, newVacancy, prospectionMeetingSchedule, appointments) => {
-  const countedActions = {
-    START_WEEK_DATE: [date, getDateLabel(date)],
-    PROSPECTION: 0,
-    CALL_BUSINESS: 0,
-    CALL_RECRUITMENT: 0,
-    INTAKE: 0,
-    CV_SENT: cvSent,
-    PROJECT_START: projectStart,
-    NEW_VACANCY: newVacancy,
-    PROSPECTION_MEETING_SCHEDULE: prospectionMeetingSchedule,
-    LINKED_INMAIL: 0,
-    INTERVIEW_SCHEDULE: appointments,
-    NO_SHOW: 0,
-    INTERVIEW_DONE: 0,
+export const LABEL_CONTACTED_BY_INMAIL = "Contacted by InMail"
+export const LABEL_CONTACTED_BY_PHONE = "Contacted by phone"
+export const LABEL_INTERVIEW_SCHEDULE = "Interview Schedule"
+export const LABEL_NO_SHOW = "No Show"
+export const LABEL_INTERVIEW_DONE = "Interview done"
+export const LABEL_CONTRACT_PROPOSED = "Contract proposed"
+export const LABEL_HIRED = "Hired"
 
+
+export const initalizeTableBusinessManager = (occupation) => {
+  if(occupation === BUSINESS_MANAGER) {
+    return {
+      CALL: { TITLE: LABEL_CALL,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+      PROSPECTION_MEETING_SCHEDULE: { TITLE: LABEL_PROSPECTION_MEETING_SCHEDULE,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+      PROSPECTION_MEETING_DONE: { TITLE: LABEL_MEETING_DONE,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+      NEW_VACANCY: { TITLE: LABEL_NEW_VACANCY,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+      CV_SENT: { TITLE: LABEL_CV_SENT,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+      INTAKE: { TITLE: LABEL_INTAKE,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+      PROJECT_START: { TITLE: LABEL_PROJECT_START,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+    }
+  } else {
+    return {}
   }
+}
 
+export const initalizeTableRecruitment = () => {
+  return {
+    CONTACTED_BY_INMAIL: { TITLE: LABEL_CONTACTED_BY_INMAIL,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+    CONTACTED_BY_PHONE: { TITLE: LABEL_CONTACTED_BY_PHONE,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+    INTERVIEW_SCHEDULE: { TITLE: LABEL_INTERVIEW_SCHEDULE,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+    NO_SHOW: {TITLE: LABEL_NO_SHOW, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+    INTERVIEW_DONE: {TITLE: LABEL_INTERVIEW_DONE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+    CONTRACT_PROPOSED: {TITLE: LABEL_CONTRACT_PROPOSED, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+    HIRED: { TITLE: LABEL_HIRED,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 }
+  }
+}
+
+export const initializeTableDate = () => {
+  return {
+    DATES: { FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+  }
+}
+
+export const countDataBusinessManager = (tableDataBusinessManager, labelWeek, notes) => {
+  countNoteForBusinessManager(labelWeek, notes, tableDataBusinessManager)
+  return tableDataBusinessManager;
+}
+
+export const countDataSourcingOfficer = (tableDataRecruitment, labelWeek, notes) => {
+  countNoteForRecruitment(labelWeek, notes, tableDataRecruitment)
+  return tableDataRecruitment;
+}
+
+export const countNoteForRecruitment = (labelWeek, notes, tableDataEmployee) => {
   let data = notes.data;
-
-  if (data.length === 0) return countedActions
+  if (data.length === 0) return tableDataEmployee
 
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
+
     switch (action) {
-      case PROSPECTION:
-        countedActions.PROSPECTION++;
-        break;
       case CALL:
-        if (data[i].candidates.total === 1) countedActions.CALL_RECRUITMENT++;
-        else if (data[i].clientContacts.total) countedActions.CALL_BUSINESS++;
-        break;
-      case INTAKE:
-        countedActions.INTAKE++;
+        if (data[i].candidates.total === 1) tableDataEmployee.CONTACTED_BY_PHONE[labelWeek]++;
         break;
       case LINKED_INMAIL:
-        countedActions.LINKED_INMAIL++
+        tableDataEmployee.CONTACTED_BY_INMAIL[labelWeek]++
         break;
       case NO_SHOW:
-        countedActions.NO_SHOW++
+        tableDataEmployee.NO_SHOW[labelWeek]++
         break;
       case INTERVIEW_DONE:
-        countedActions.INTERVIEW_DONE++
+        tableDataEmployee.INTERVIEW_DONE[labelWeek]++
         break;
       case CONTRACT_PROPOSED:
-        countedActions.CONTRACT_PROPOSED++;
+        tableDataEmployee.CONTRACT_PROPOSED[labelWeek]++;
+        break;
+      default:
+        break;
+    }
+  }
+}
+
+export const countNoteForBusinessManager = (labelWeek, notes, tableDataEmployee) => {
+  let data = notes.data;
+  if (data.length === 0) return tableDataEmployee
+
+  for (let i = 0; i < data.length; i++) {
+
+    let action = data[i].action
+    
+    switch (action) {
+      case PROSPECTION:
+        tableDataEmployee.PROSPECTION_MEETING_DONE[labelWeek]++;
+        break;
+      case CALL:
+        if (data[i].clientContacts.total) tableDataEmployee.CALL[labelWeek]++;
         break;
       default:
         break;
     }
   }
 
-  return countedActions;
-}
-
-
-export const getDateLabel = (date) => {
-
-  let day = date.toString().substring(6, 8).replace('0', '')
-  let month = date.toString().substring(4, 6);
-
-  switch (month) {
-    case "01":
-      return day + " january"
-    case "02":
-      return day + " february"
-    case "03":
-      return day + " march"
-    case "04":
-      return day + " april"
-    case "05":
-      return day + " may"
-    case "06":
-      return day + " june"
-    case "07":
-      return day + " july"
-    case "08":
-      return day + " august"
-    case "09":
-      return day + " september"
-    case "10":
-      return day + " october"
-    case "11":
-      return day + " november"
-    case "12":
-      return day + " december"
-    default:
-      return ""
-  }
 }

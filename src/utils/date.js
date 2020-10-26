@@ -30,7 +30,7 @@ const getWeekDateAndTimestamp = (week) => {
   }
 }
 
-export const getDateLabel = (date) => {
+export const getDateString = (date) => {
 
   let day = date.toString().substring(6, 8).replace('0', '')
   let month = date.toString().substring(4,6);

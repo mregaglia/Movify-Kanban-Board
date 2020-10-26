@@ -6,7 +6,7 @@ import {
 } from "./kpi.actions"
 
 export const initialState = {
-  dataEmployee: [],
+  dataEmployee: {},
 }
 
 const kpi = {
@@ -16,7 +16,7 @@ const kpi = {
   }),
   [SET_EMPLOYEE_KPI]: (state, payload) => ({
     ...state,
-    dataEmployee: [...state.dataEmployee, payload]
+    dataEmployee: payload
   })
 }
 

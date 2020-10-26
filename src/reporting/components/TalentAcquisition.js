@@ -1,48 +1,40 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { TableContentTd, TableContentTbodyTr } from "../../style/table_style"
-import { paths, isNil } from 'ramda'
-import {
-    CALL_RECRUITMENT,
-    LINKED_INMAIL,
-    INTERVIEW_SCHEDULE,
-    NO_SHOW,
-    INTERVIEW_DONE,
-    CONTRACT_PROPOSED
-} from "../../utils/reporting"
+import { TableContentTd, TableContentTbodyTr,  TableContentTdTitle } from "../../style/table_style"
+import { pathOr } from 'ramda'
+import { object } from "prop-types"
 
-
-const tableTextAcquisition = [
-    "Contacted by InMail",
-    "Contacted by phone",
-    "Interview scheduled",
-    "No show",
-    "Interview done",
-    "Contract proposed",
-    "Hired"
-]
-
-const TalentAcquisition = ({ data }) => {
+const TalentAcquisition = ({ datas }) => {
     return (
         <>
+
+            <TableContentTbodyTr>
+                <TableContentTdTitle>Recruitment</TableContentTdTitle>
+            </TableContentTbodyTr>
             {
-                tableTextAcquisition.map((text) =>
-                    <TableContentTbodyTr key={text}>
-                        <TableContentTd key={text}>{text}</TableContentTd>
-                    </TableContentTbodyTr>
-                )
-            }  
+                Object.keys(datas).map((key, i) => {
+                    return (
+                        <TableContentTbodyTr key={i}>
+                            <TableContentTd>{datas[key].TITLE}</TableContentTd>
+                            <TableContentTd>{datas[key].FIRST_WEEK}</TableContentTd>
+                            <TableContentTd>{datas[key].SECOND_WEEK}</TableContentTd>
+                            <TableContentTd>{datas[key].THIRD_WEEK}</TableContentTd>
+                            <TableContentTd>{datas[key].FOURTH_WEEK}</TableContentTd>
+                        </TableContentTbodyTr>
+                    )
+                })
+            }
         </>
     )
 }
 
 TalentAcquisition.propTypes = {
-
+    datas: object
 };
 
 export default connect(
     state => ({
-        data: paths([["kpi", "dataEmployee", "0"], ["kpi", "dataEmployee", "1"], ["kpi", "dataEmployee", "2"], ["kpi", "dataEmployee", "3"]], state),
+        datas: pathOr({}, ["kpi", "dataEmployee", "datasRecruitment"], state)
     }),
     {}
 )(TalentAcquisition);

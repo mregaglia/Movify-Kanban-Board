@@ -1,15 +1,12 @@
 import React, { useEffect } from "react";
-import TableData from "./TableData"
 import styled from 'styled-components'
 import SelectEmployees from "./SelectEmployees"
-import TablePercentage from "./TablePercentage"
 import { getEmployees } from "../employees/employees.actions"
 import { connect } from "react-redux";
-import { string, number } from "prop-types";
-import { path } from "ramda";
-
-export const BUSINESS_MANAGER = "Business Manager"
-export const SOURCING_OFFICER = "Sourcing Officer"
+import { bool, object } from "prop-types";
+import { path, pathOr, isEmpty } from "ramda";
+import TableData from "./TableData";
+import TablePercentage from './TablePercentage'
 
 const Container = styled.div({
     display: "flex",
@@ -31,54 +28,39 @@ const BoxGauge = styled.div({
     order: "1"
 })
 
-const Reporting = ({ getEmployees, occupation }) => {
+const Reporting = ({ getEmployees, employeeSelected, downloadingData }) => {
 
     useEffect(() => {
         getEmployees();
     }, [getEmployees])
 
     return (
+
         <div>
             <SelectEmployees />
-            <Container>
-                <div>
-                    <BoxGauge>
-                        {
-                            (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER) &&
-                            <p>C'est ici que sera la jauge</p>
-                        }
-                    </BoxGauge>
-                </div>
-                <div>
-                    <BoxTable>
-                        {
-                            (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER) &&
-                            <TableData />
-                        }
-                    </BoxTable>
-                </div>
-                <div>
-                    <BoxTable>
-                        {
-                            (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER) &&
-                            <TablePercentage />
-                        }
-                    </BoxTable>
-                </div>
-            </Container>
+            {
+                (!isEmpty(employeeSelected)) && (
+                    <>
+                        <TableData />
+                        <TablePercentage />
+                    </>
+                )
+            }
+
         </div >
     )
 }
 
 Reporting.propTypes = {
-    occupation: string,
-    employeeId: number
+    downloadingData: bool,
+    employeeSelected: object,
+    data: object
 };
 
 export default connect(
     state => ({
-        occupation: path(["employees", "employeeSelected", "occupation"], state),
-        employeeId: path(["employees", "employeeSelected", "id"], state)
+        downloadingData: pathOr(false, ["employees", "downloadingData"], state),
+        employeeSelected: path(["employees", "employeeSelected"], state)
     }),
     { getEmployees }
 )(Reporting);

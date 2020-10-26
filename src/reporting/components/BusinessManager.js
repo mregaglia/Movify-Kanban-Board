@@ -1,19 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
 import { TableContentTd, TableContentTdTitle, TableContentTbodyTr } from "../../style/table_style"
-import TalentAcquisition from './TalentAcquisition'
+import { pathOr } from 'ramda'
+import { object } from "prop-types"
 
-const tableTextBusinessManager = [
-    { key: 2, label: "Call" },
-    { key: 3, label: "Prospection meeting scheduled" },
-    { key: 4, label: "Prospection meeting done" },
-    { key: 5, label: "New vacancy" },
-    { key: 6, label: "CV sent" },
-    { key: 7, label: "Intake" },
-    { key: 8, label: "Project start" }
-]
 
-const BusinessManager = () => {
+
+const BusinessManager = ({ datas }) => {
 
     return (
         <>
@@ -21,28 +14,29 @@ const BusinessManager = () => {
                 <TableContentTdTitle>Business Development</TableContentTdTitle>
             </TableContentTbodyTr>
             {
-                tableTextBusinessManager.map((text) =>
-                    <TableContentTbodyTr key={text.key}>
-                        <TableContentTd >{text.label}</TableContentTd>
-                    </TableContentTbodyTr>
-
-                )
+                Object.keys(datas).map((key, i) => {
+                    return (
+                        <TableContentTbodyTr key={i}>
+                            <TableContentTd>{datas[key].TITLE}</TableContentTd>
+                            <TableContentTd>{datas[key].FIRST_WEEK}</TableContentTd>
+                            <TableContentTd>{datas[key].SECOND_WEEK}</TableContentTd>
+                            <TableContentTd>{datas[key].THIRD_WEEK}</TableContentTd>
+                            <TableContentTd>{datas[key].FOURTH_WEEK}</TableContentTd>
+                        </TableContentTbodyTr>
+                    )
+                  })
             }
-            <TableContentTbodyTr>
-                <TableContentTdTitle>Recruitment</TableContentTdTitle>
-            </TableContentTbodyTr>
-            <TalentAcquisition />
         </>
     )
 }
 
 BusinessManager.propTypes = {
-
+    datas: object
 };
 
 export default connect(
     state => ({
-
+        datas: pathOr({}, ["kpi", "dataEmployee", "datasBusinessManager"], state)
     }),
     {}
 )(BusinessManager);
