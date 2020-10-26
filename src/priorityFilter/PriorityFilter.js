@@ -13,7 +13,7 @@ const Row = styled.div({
   flexDirection: "row",
   paddingTop: 12,
   paddingBottom: 12,
-  paddingRight: 24
+  paddingRight: 40
 });
 
 const Column = styled.div({
