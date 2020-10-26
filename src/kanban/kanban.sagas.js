@@ -102,7 +102,7 @@ export function* getClientCorporations(bmId, jobOrders) {
 
       const clientCorporation = prop(joccId, acc);
       if (!clientCorporation) {
-        acc[joccId] = { ...jocc, bmIds: { [bmId]: [] } };
+        acc[joccId] = { ...jocc, bmIds: { [bmId]: { jobOrders: [] } } };
       }
       return acc;
     }, {})
@@ -128,14 +128,16 @@ export function* getJobOrders(action, start = 0) {
 
         const ccjos = pathOr(
           [],
-          [ccId, "bmIds", bmId],
+          [ccId, "bmIds", bmId, "jobOrders"],
           clientCorporations
         ).concat([{ id: jobOrder.id, employmentType: jobOrder.employmentType }]);
         const sortedCcjos = sortWith([ascend(prop("employmentType"))], ccjos);
 
         clientCorporations[ccId] = {
           bmIds: {
-            [bmId]: sortedCcjos
+            [bmId]: {
+              jobOrders: sortedCcjos
+            }
           }
         };
 

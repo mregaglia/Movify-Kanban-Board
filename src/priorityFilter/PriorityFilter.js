@@ -30,7 +30,7 @@ const Title = styled.div(({ theme }) => ({
 
 const PriorityFilter = ({ filter, updatePriorityFilter }) => (
   <Row>
-    <Title>Departments</Title>
+    <Title>Priorities</Title>
     <Column>
       {Object.keys(filter).map(key => (
         <Checkbox

@@ -5,9 +5,10 @@ import {
 
 export const initialState = {
   filter: {
-    Antwerp: true,
-    Brussels: true,
-    Luxembourg: true
+    P1: true,
+    P2: true,
+    P3: true,
+    P4: true
   }
 };
 
