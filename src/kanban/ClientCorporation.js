@@ -12,7 +12,7 @@ const ClientCorporation = ({ bmId, clientCorporation, color }) => (
     </ColorRowText>
     <Row style={{ paddingLeft: 4, paddingTop: 10, paddingBottom: 10 }}>
       <Column>
-        {pathOr([], ["bmIds", bmId, "jobOrders"], clientCorporation).map(jobOrder => (
+        {pathOr([], ["bmIds", bmId, "filteredJobOrders"], clientCorporation).map(jobOrder => (
           <JobOrder key={prop("id", jobOrder)} joId={prop("id", jobOrder)} color={color} />
         ))}
       </Column>

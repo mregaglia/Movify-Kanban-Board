@@ -38,6 +38,7 @@ import {
 } from "./kanban.service";
 import { getCandidate } from "../recruitment/recruitment.service";
 import en from "../lang/en";
+import { getStateFilter } from "../priorityFilter/priorityFilter.sagas";
 
 export const getStateBms = state => pathOr([], ["kanban", "bmList"], state);
 export const getStateJobOrder = (state, joId) =>
@@ -121,6 +122,7 @@ export function* getJobOrders(action, start = 0) {
     yield call(getClientCorporations, bmId, jobOrderList);
 
     const clientCorporations = {};
+    const stateFilter = yield select(getStateFilter);
 
     const jobOrders = yield all(
       jobOrderList.reduce((acc, jobOrder) => {
@@ -136,7 +138,10 @@ export function* getJobOrders(action, start = 0) {
         clientCorporations[ccId] = {
           bmIds: {
             [bmId]: {
-              jobOrders: sortedCcjos
+              jobOrders: sortedCcjos,
+              filteredJobOrders: sortedCcjos.filter(jobOrder =>
+                propOr(false, prop("employmentType", jobOrder), stateFilter)
+              )
             }
           }
         };
