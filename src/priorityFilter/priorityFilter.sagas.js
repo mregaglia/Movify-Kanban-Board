@@ -24,20 +24,20 @@ export function* updatePriorityFilter(action) {
 
   yield put(setPriorityFilter(filter));
 
-  const clientCorporations = Object.keys(ccs).reduce((acc, ccId) => {
+  const clientCorporations = Object.keys(ccs).reduce((ccsAcc, ccId) => {
     const bmIds = pathOr([], [ccId, "bmIds"], ccs);
 
-    acc[ccId] = {
-      bmIds: Object.keys(bmIds).reduce((bmAcc, bmId) => {
+    ccsAcc[ccId] = {
+      bmIds: Object.keys(bmIds).reduce((bmIdsAcc, bmId) => {
         const jobOrders = pathOr([], [ccId, "bmIds", bmId, "jobOrders"], ccs);
 
-        bmAcc[bmId] = {
+        bmIdsAcc[bmId] = {
           filteredJobOrders: filterJobOrdersPerPriority(jobOrders, stateFilter)
         }
-        return bmAcc;
+        return bmIdsAcc;
       }, {})
     }
-    return acc;
+    return ccsAcc;
   }, {});
 
   yield put(updateFilteredJobOrdersInCCS(clientCorporations))
