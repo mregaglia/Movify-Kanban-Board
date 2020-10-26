@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { pathOr, prop } from "ramda";
 import { func, object } from "prop-types";
 import styled from "styled-components";
-import { updateDepartmentFilter } from "./departmentFilter.actions";
+import { updatePriorityFilter } from "./priorityFilter.actions";
 import Checkbox from "../components/Checkbox";
 
 const Row = styled.div({
@@ -28,7 +28,7 @@ const Title = styled.div(({ theme }) => ({
   paddingRight: 12
 }));
 
-const DepartmentFilter = ({ filter, updateDepartmentFilter }) => (
+const PriorityFilter = ({ filter, updatePriorityFilter }) => (
   <Row>
     <Title>Departments</Title>
     <Column>
@@ -37,21 +37,21 @@ const DepartmentFilter = ({ filter, updateDepartmentFilter }) => (
           key={key}
           checked={prop(key, filter)}
           label={key}
-          onChange={value => updateDepartmentFilter({ [key]: value })}
+          onChange={value => updatePriorityFilter({ [key]: value })}
         />
       ))}
     </Column>
   </Row>
 );
 
-DepartmentFilter.propTypes = {
+PriorityFilter.propTypes = {
   filter: object,
-  updateDepartmentFilter: func
+  updatePriorityFilter: func
 };
 
 export default connect(
   state => ({
-    filter: pathOr({}, ["departmentFilter", "filter"], state)
+    filter: pathOr({}, ["priorityFilter", "filter"], state)
   }),
-  { updateDepartmentFilter }
-)(DepartmentFilter);
+  { updatePriorityFilter }
+)(PriorityFilter);

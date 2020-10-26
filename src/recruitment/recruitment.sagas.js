@@ -46,7 +46,7 @@ import {
   getJobSubmission,
   deleteJobSubmission as deleteJobSubmissionService
 } from "../kanban/kanban.service";
-import { updateDepartmentFilter } from "../departmentFilter/departmentFilter.actions";
+import { updatePriorityFilter } from "../priorityFilter/priorityFilter.actions";
 import {
   getStateJobSubmissions as getStateJobSubmissionsKanban,
   deleteJobSubmission as deleteJobSubmissionKanban
@@ -115,7 +115,7 @@ export function* getClientCorporations(tamId, jobOrders) {
 
   yield put(updateClientCorporations(clientCorporations));
   yield put(updateClientCorporationsIds(ccList));
-  yield put(updateDepartmentFilter());
+  yield put(updatePriorityFilter());
 }
 
 export function* getJobOrders(action, start = 0) {

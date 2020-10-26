@@ -1,14 +1,14 @@
-export const SET_DEPARTMENT_FILTER = "SET_DEPARTMENT_FILTER";
-export const UPDATE_DEPARTMENT_FILTER = "UPDATE_DEPARTMENT_FILTER";
+export const SET_PRIORITY_FILTER = "SET_PRIORITY_FILTER";
+export const UPDATE_PRIORITY_FILTER = "UPDATE_PRIORITY_FILTER";
 export const SET_FILTERED_BMS = "SET_FILTERED_BMS";
 export const SET_FILTERED_CCS = "SET_FILTERED_CCS";
 
-export const updateDepartmentFilter = filter => ({
-  type: UPDATE_DEPARTMENT_FILTER,
+export const updatePriorityFilter = filter => ({
+  type: UPDATE_PRIORITY_FILTER,
   payload: filter
 });
-export const setDepartmentFilter = filter => ({
-  type: SET_DEPARTMENT_FILTER,
+export const setPriorityFilter = filter => ({
+  type: SET_PRIORITY_FILTER,
   payload: filter
 });
 

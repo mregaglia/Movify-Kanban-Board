@@ -1,14 +1,14 @@
 import { all, put, select, takeEvery } from "redux-saga/effects";
 import { path, pathOr, prop, propOr } from "ramda";
 import {
-  UPDATE_DEPARTMENT_FILTER,
-  setDepartmentFilter,
+  UPDATE_PRIORITY_FILTER,
+  setPriorityFilter,
   setFilteredBms,
   setFilteredCcs
-} from "./departmentFilter.actions";
+} from "./priorityFilter.actions";
 
 export const getStateFilter = state =>
-  pathOr({}, ["departmentFilter", "filter"], state);
+  pathOr({}, ["priorityFilter", "filter"], state);
 export const getStateKanbanBms = state => pathOr({}, ["kanban", "bms"], state);
 export const getStateKanbanBmIds = state =>
   pathOr([], ["kanban", "bmList"], state);
@@ -17,9 +17,9 @@ export const getStateClientCorporations = state =>
 export const getStateClientCorporationIds = state =>
   pathOr([], ["recruitment", "clientList"], state);
 
-export function* updateDepartmentFilter(action) {
+export function* updatePriorityFilter(action) {
   const filter = prop("payload", action);
-  yield put(setDepartmentFilter(filter));
+  yield put(setPriorityFilter(filter));
 
   const stateFilter = yield select(getStateFilter);
   const stateBms = yield select(getStateKanbanBms);
@@ -48,6 +48,6 @@ export function* updateDepartmentFilter(action) {
   yield put(setFilteredCcs(recruitmentCcs));
 }
 
-export default function departmentFilterSagas() {
-  return [takeEvery(UPDATE_DEPARTMENT_FILTER, updateDepartmentFilter)];
+export default function priorityFilterSagas() {
+  return [takeEvery(UPDATE_PRIORITY_FILTER, updatePriorityFilter)];
 }

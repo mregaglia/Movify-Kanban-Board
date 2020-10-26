@@ -1,9 +1,9 @@
 import { bindReducer } from "../utils/reducer";
 import {
-  SET_DEPARTMENT_FILTER,
+  SET_PRIORITY_FILTER,
   SET_FILTERED_BMS,
   SET_FILTERED_CCS
-} from "./departmentFilter.actions";
+} from "./priorityFilter.actions";
 
 export const initialState = {
   filter: {
@@ -15,8 +15,8 @@ export const initialState = {
   recruitmentCcs: []
 };
 
-const departmentFilter = {
-  [SET_DEPARTMENT_FILTER]: (state, payload) => ({
+const priorityFilter = {
+  [SET_PRIORITY_FILTER]: (state, payload) => ({
     ...state,
     filter: { ...state.filter, ...payload }
   }),
@@ -31,4 +31,4 @@ const departmentFilter = {
 };
 
 export default (state, action) =>
-  bindReducer(state, action, departmentFilter, initialState);
+  bindReducer(state, action, priorityFilter, initialState);

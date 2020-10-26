@@ -2,25 +2,25 @@ import {
   SET_DEPARTMENT_FILTER,
   UPDATE_DEPARTMENT_FILTER,
   SET_FILTERED_BMS,
-  setDepartmentFilter,
-  updateDepartmentFilter,
+  setPriorityFilter,
+  updatePriorityFilter,
   setFilteredBms
-} from "../departmentFilter.actions";
+} from "../priorityFilter.actions";
 
-describe("updateDepartmentFilter action", () => {
+describe("updatePriorityFilter action", () => {
   it("should create UPDATE_DEPARTMENT_FILTER action", () => {
     const filter = { filter: true };
-    expect(updateDepartmentFilter(filter)).toEqual({
+    expect(updatePriorityFilter(filter)).toEqual({
       type: UPDATE_DEPARTMENT_FILTER,
       payload: filter
     });
   });
 });
 
-describe("setDepartmentFilter action", () => {
+describe("setPriorityFilter action", () => {
   it("should create SET_DEPARTMENT_FILTER action", () => {
     const filter = { filter: true };
-    expect(setDepartmentFilter(filter)).toEqual({
+    expect(setPriorityFilter(filter)).toEqual({
       type: SET_DEPARTMENT_FILTER,
       payload: filter
     });
