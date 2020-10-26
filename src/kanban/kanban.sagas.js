@@ -6,7 +6,7 @@ import {
   takeEvery,
   takeLatest
 } from "redux-saga/effects";
-import { dissoc, path, pathOr, prop, propOr } from "ramda";
+import { ascend, dissoc, path, pathOr, prop, propOr, sortWith } from "ramda";
 import { toast } from "react-toastify";
 import {
   GET_KANBAN,
@@ -131,9 +131,11 @@ export function* getJobOrders(action, start = 0) {
           [ccId, "bmIds", bmId],
           clientCorporations
         ).concat([{ id: jobOrder.id, employmentType: jobOrder.employmentType }]);
+        const sortedCcjos = sortWith([ascend(prop("employmentType"))], ccjos);
+
         clientCorporations[ccId] = {
           bmIds: {
-            [bmId]: ccjos
+            [bmId]: sortedCcjos
           }
         };
 
