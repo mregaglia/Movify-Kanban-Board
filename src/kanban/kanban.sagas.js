@@ -26,7 +26,6 @@ import {
   setBms,
   removeJobSubmission
 } from "./kanban.actions";
-import { updatePriorityFilter } from "../priorityFilter/priorityFilter.actions";
 import {
   getBusinessManagers,
   getJobOrders as getJobOrdersService,
