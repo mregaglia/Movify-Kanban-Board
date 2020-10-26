@@ -130,7 +130,7 @@ export function* getJobOrders(action, start = 0) {
           [],
           [ccId, "bmIds", bmId],
           clientCorporations
-        ).concat([jobOrder.id]);
+        ).concat([{ id: jobOrder.id, employmentType: jobOrder.employmentType }]);
         clientCorporations[ccId] = {
           bmIds: {
             [bmId]: ccjos
