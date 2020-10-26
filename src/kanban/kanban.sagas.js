@@ -68,7 +68,6 @@ export function* getBms(start = 0) {
     const bmIds = yield all(bmList.map(bm => prop("id", bm)));
     const stateBms = yield select(getStateBms);
     yield put(setBms(stateBms.concat(bmIds)));
-    yield put(updatePriorityFilter());
 
     if (propOr(0, "count", bmsResponse) > 0)
       yield call(
