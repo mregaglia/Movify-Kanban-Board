@@ -77,7 +77,7 @@ const Header = ({ authenticated, board }) => {
             <HeaderLink label="Business" to="/kanban" />
             <HeaderLink label="Recruitment" to="/recruitment" />
           </nav>
-          <PriorityFilter />
+          <PriorityFilter board={board} />
         </Row>
         <Transition board={board} />
       </Container >
