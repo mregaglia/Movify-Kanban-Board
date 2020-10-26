@@ -1,8 +1,6 @@
 import { bindReducer } from "../utils/reducer";
 import {
-  SET_PRIORITY_FILTER,
-  SET_FILTERED_BMS,
-  SET_FILTERED_CCS
+  SET_PRIORITY_FILTER
 } from "./priorityFilter.actions";
 
 export const initialState = {
@@ -10,23 +8,13 @@ export const initialState = {
     Antwerp: true,
     Brussels: true,
     Luxembourg: true
-  },
-  kanbanBms: [],
-  recruitmentCcs: []
+  }
 };
 
 const priorityFilter = {
   [SET_PRIORITY_FILTER]: (state, payload) => ({
     ...state,
     filter: { ...state.filter, ...payload }
-  }),
-  [SET_FILTERED_BMS]: (state, payload) => ({
-    ...state,
-    kanbanBms: payload
-  }),
-  [SET_FILTERED_CCS]: (state, payload) => ({
-    ...state,
-    recruitmentCcs: payload
   })
 };
 
