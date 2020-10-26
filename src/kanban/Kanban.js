@@ -56,7 +56,7 @@ Kanban.propTypes = {
 
 export default connect(
   state => ({
-    bms: pathOr([], ["priorityFilter", "kanbanBms"], state),
+    bms: pathOr([], ["kanban", "bmList"], state),
     loading: pathOr(true, ["kanban", "loading"], state)
   }),
   { getKanban }
