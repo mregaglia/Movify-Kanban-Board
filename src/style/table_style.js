@@ -32,8 +32,7 @@ export const TableContentTdLabel = styled.td(({ theme }) => ({
 export const TableContentTdTitle = styled.td(({ theme }) => ({
     padding: "13px 7px",
     fontWeight: "bold",
-    fontSize: "1.3em",
-    padding: "12px"
+    fontSize: "1.3em"
 }))
 
 export const TableContentTdTitleEmpty = styled.td(({ theme }) => ({

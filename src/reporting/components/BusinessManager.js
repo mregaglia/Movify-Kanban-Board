@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { TableContentTd, TableContentTdTitle, TableContentTbodyTr, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdTitleEmpty } from "../../style/table_style"
+import { TableContentTd, TableContentTdTitle, TableContentTbodyTr, TableContentTbodyTrNoLine, TableContentTdLabel } from "../../style/table_style"
 import { pathOr } from 'ramda'
 import { object } from "prop-types"
 

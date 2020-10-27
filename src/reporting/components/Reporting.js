@@ -8,6 +8,7 @@ import { path, isEmpty } from "ramda";
 import TableData from "./TableData";
 import TablePercentage from './TablePercentage'
 import Loader from 'react-loader-spinner'
+import GaugeComponent from './GaugeComponent'
 
 const Container = styled.div({
     display: "flex",
@@ -61,7 +62,7 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
                     (!isEmpty(employeeSelected) && !isLoadingKpi) && (
                         <>
                             <BoxGauge>
-                                <p> C'est ici que sera la jauge</p>
+                                <GaugeComponent />
                             </BoxGauge>
                             <BoxTableData>
                                 <TableData />
