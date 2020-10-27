@@ -14,7 +14,6 @@ export const TableTheadTr = styled.tr(({ theme }) => ({
     color: "#ffffff",
     textAlign: "left",
     fontWeight: "bold"
-
 }))
 
 export const TableContentTh = styled.th(({ theme }) => ({
@@ -22,16 +21,29 @@ export const TableContentTh = styled.th(({ theme }) => ({
 }))
 
 export const TableContentTd = styled.td(({ theme }) => ({
+    padding: "12px 15px",
+    textAlign: "center"
+}))
+
+export const TableContentTdLabel = styled.td(({ theme }) => ({
     padding: "12px 15px"
 }))
 
 export const TableContentTdTitle = styled.td(({ theme }) => ({
-    padding: "6px 7px",
+    padding: "13px 7px",
     fontWeight: "bold",
     fontSize: "1.3em",
+    padding: "12px"
+}))
+
+export const TableContentTdTitleEmpty = styled.td(({ theme }) => ({
+    padding: "24px"
 }))
 
 export const TableContentTbodyTr = styled.tr(({ theme }) => ({
     borderBottom: "1px solid #dddddd"
+}))
 
+export const TableContentTbodyTrNoLine = styled.tr(({ theme }) => ({
+    borderBottom: "0px"
 }))

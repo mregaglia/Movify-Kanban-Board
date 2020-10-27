@@ -4,9 +4,10 @@ import SelectEmployees from "./SelectEmployees"
 import { getEmployees } from "../employees/employees.actions"
 import { connect } from "react-redux";
 import { bool, object } from "prop-types";
-import { path, pathOr, isEmpty } from "ramda";
+import { path, isEmpty } from "ramda";
 import TableData from "./TableData";
 import TablePercentage from './TablePercentage'
+import Loader from 'react-loader-spinner'
 
 const Container = styled.div({
     display: "flex",
@@ -33,7 +34,7 @@ const BoxTablePercentage = styled.div({
     order: "3"
 })
 
-const Reporting = ({ getEmployees, employeeSelected, downloadingData }) => {
+const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
 
     useEffect(() => {
         getEmployees();
@@ -44,9 +45,20 @@ const Reporting = ({ getEmployees, employeeSelected, downloadingData }) => {
         <div>
             <SelectEmployees />
             <Container>
-
                 {
-                    (!isEmpty(employeeSelected)) && (
+                    (!isEmpty(employeeSelected) && isLoadingKpi) && (
+                        <div>
+                            <Loader
+                                type="Rings"
+                                color="#6BD7DA"
+                                height={100}
+                                width={100}
+                            />
+                        </div>
+                    )
+                }
+                {
+                    (!isEmpty(employeeSelected) && !isLoadingKpi) && (
                         <>
                             <BoxGauge>
                                 <p> C'est ici que sera la jauge</p>
@@ -67,15 +79,14 @@ const Reporting = ({ getEmployees, employeeSelected, downloadingData }) => {
 }
 
 Reporting.propTypes = {
-    downloadingData: bool,
     employeeSelected: object,
-    data: object
+    isLoadingKpi: bool
 };
 
 export default connect(
     state => ({
-        downloadingData: pathOr(false, ["employees", "downloadingData"], state),
-        employeeSelected: path(["employees", "employeeSelected"], state)
+        employeeSelected: path(["employees", "employeeSelected"], state),
+        isLoadingKpi: path(["kpi", "isLoadingKpi"], state)
     }),
     { getEmployees }
 )(Reporting);

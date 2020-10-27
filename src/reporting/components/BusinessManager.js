@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { TableContentTd, TableContentTdTitle, TableContentTbodyTr } from "../../style/table_style"
+import { TableContentTd, TableContentTdTitle, TableContentTbodyTr, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdTitleEmpty } from "../../style/table_style"
 import { pathOr } from 'ramda'
 import { object } from "prop-types"
 
@@ -10,14 +10,14 @@ const BusinessManager = ({ datas }) => {
 
     return (
         <>
-            <TableContentTbodyTr>
+            <TableContentTbodyTrNoLine>
                 <TableContentTdTitle>Business Development</TableContentTdTitle>
-            </TableContentTbodyTr>
+            </TableContentTbodyTrNoLine>
             {
                 Object.keys(datas).map((key, i) => {
                     return (
                         <TableContentTbodyTr key={i}>
-                            <TableContentTd>{datas[key].TITLE}</TableContentTd>
+                            <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
                             <TableContentTd>{datas[key].FIRST_WEEK}</TableContentTd>
                             <TableContentTd>{datas[key].SECOND_WEEK}</TableContentTd>
                             <TableContentTd>{datas[key].THIRD_WEEK}</TableContentTd>

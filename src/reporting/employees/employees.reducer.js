@@ -2,8 +2,7 @@ import { bindReducer } from "../../utils/reducer";
 
 import {
   SET_EMPLOYEES,
-  SET_EMPLOYEE_SELECTED,
-  DOWNLOADING_DATA
+  SET_EMPLOYEE_SELECTED
 } from "./employees.actions"
 
 export const initialState = {
@@ -20,12 +19,7 @@ const employees = {
   [SET_EMPLOYEE_SELECTED]: (state, payload) => ({
     ...state,
     employeeSelected: payload
-  }),
-  [DOWNLOADING_DATA]: (state, payload) => ({
-    ...state,
-    downloadingData: payload
   })
-  
 }
 
 export default (state, action) =>

@@ -1,6 +1,7 @@
 import React from "react";
 import Select from 'react-select'
-import { setEmployeeSelected, setDownloadingData } from "../employees/employees.actions"
+import { setEmployeeSelected } from "../employees/employees.actions"
+import { setKpiLoading } from '../kpi/kpi.actions'
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
 import { array } from "prop-types";
@@ -12,7 +13,7 @@ const Container = styled.div({
     margin: "0 auto"
 })
 
-const SelectEmployees = ({ employees, setEmployeeSelected }) => {
+const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading }) => {
 
     const options = getValuesFromEmployees(employees)
 
@@ -20,7 +21,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
         for (let i = 0; i < employees.length; i++) {
             if (parseInt(employeeSelected.value) === employees[i].id) {
                 setEmployeeSelected(employees[i]);
-                setDownloadingData(true)
+                setKpiLoading(true)
                 break;
             }
         }
@@ -65,5 +66,5 @@ export default connect(
     state => ({
         employees: pathOr([], ["employees", "employeesToSet", 'data'], state),
     }),
-    { setEmployeeSelected }
+    { setEmployeeSelected, setKpiLoading }
 )(SelectEmployees);

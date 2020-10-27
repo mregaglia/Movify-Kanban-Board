@@ -16,7 +16,8 @@ import {
 
 import {
     GET_EMPLOYEE_KPI,
-    setEmployeeKpi
+    setEmployeeKpi,
+    setKpiLoading
 } from './kpi.actions'
 
 import {
@@ -61,17 +62,17 @@ export function* getKpiDataEmployee(action) {
 
             if (occupation === BUSINESS_MANAGER) {
 
-                objectDataBusinessManager = countDataBusinessManager(objectDataBusinessManager, weekLabel, kpiNote)
+                // objectDataBusinessManager = countDataBusinessManager(objectDataBusinessManager, weekLabel, kpiNote)
                 
-                const cvSent = yield call(getSubmissionStatusChangedCvSent, employeeId, dates[i].startTimestamp, dates[i].endTimestamp);
-                const projectStart = yield call(getSubmissionStatusChangedProjectStart, employeeId, dates[i].startTimestamp, dates[i].endTimestamp);
-                const prospectionMeetingSchedule = yield call(getProspectionMeetingSchedule, employeeId, dates[i].startTimestamp, dates[i].endTimestamp);
-                const kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
+                // const cvSent = yield call(getSubmissionStatusChangedCvSent, employeeId, dates[i].startTimestamp, dates[i].endTimestamp);
+                // const projectStart = yield call(getSubmissionStatusChangedProjectStart, employeeId, dates[i].startTimestamp, dates[i].endTimestamp);
+                // const prospectionMeetingSchedule = yield call(getProspectionMeetingSchedule, employeeId, dates[i].startTimestamp, dates[i].endTimestamp);
+                // const kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
 
-                objectDataBusinessManager.CV_SENT[weekLabel] = cvSent;
-                objectDataBusinessManager.PROJECT_START[weekLabel] = projectStart
-                objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] = prospectionMeetingSchedule
-                objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder
+                // objectDataBusinessManager.CV_SENT[weekLabel] = cvSent;
+                // objectDataBusinessManager.PROJECT_START[weekLabel] = projectStart
+                // objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] = prospectionMeetingSchedule
+                // objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder
 
                 
             }
@@ -83,6 +84,7 @@ export function* getKpiDataEmployee(action) {
     objectConversionYTDRecruitment = calculateConversionYTDRecruitment(objectDataRecruitment, objectConversionYTDRecruitment)
     objectConvertionYTDBusinessManager = calculateConversionYTDBusinessManager(objectDataBusinessManager, objectConvertionYTDBusinessManager)
     yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, objectConversionYTDRecruitment, objectConvertionYTDBusinessManager))
+    yield put(setKpiLoading(false))
 }
 
 const getWeekLabel = (index) => {

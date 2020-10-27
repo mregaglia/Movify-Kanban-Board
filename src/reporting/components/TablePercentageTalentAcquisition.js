@@ -1,18 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
-import { TableContentTd, TableContentTdTitle, TableContentTbodyTr } from "../../style/table_style"
+import { TableContentTd, TableContentTdTitle, TableContentTbodyTr, TableContentTbodyTrNoLine, TableContentTdTitleEmpty } from "../../style/table_style"
 import { pathOr } from 'ramda'
 import { object } from "prop-types"
 
 const TablePercentageTalentAcquisition = ({ dataConversionYTDRecruitment }) => {
     return (
         <>
-            <TableContentTbodyTr>
-                <TableContentTdTitle></TableContentTdTitle>
-            </TableContentTbodyTr>
-            {
-                console.log(dataConversionYTDRecruitment)
-            }
+            <TableContentTbodyTrNoLine>
+                <TableContentTdTitleEmpty></TableContentTdTitleEmpty>
+            </TableContentTbodyTrNoLine>
             {
                 Object.keys(dataConversionYTDRecruitment).map((key, i) => {
                     return (
