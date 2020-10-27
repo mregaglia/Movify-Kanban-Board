@@ -10,7 +10,7 @@ import TablePercentage from './TablePercentage'
 
 const Container = styled.div({
     display: "flex",
-    flexWrap: "wrap",
+    flexWrap: "nowrap",
     padding: "15px",
     justifyContent: "center",
     div: {
@@ -18,14 +18,19 @@ const Container = styled.div({
     }
 })
 
-const BoxTable = styled.div({
+const BoxGauge = styled.div({
+    flex: "1",
+    order: "1"
+})
+
+const BoxTableData = styled.div({
     flex: "2",
     order: "2"
 })
 
-const BoxGauge = styled.div({
+const BoxTablePercentage = styled.div({
     flex: "1",
-    order: "1"
+    order: "3"
 })
 
 const Reporting = ({ getEmployees, employeeSelected, downloadingData }) => {
@@ -39,14 +44,19 @@ const Reporting = ({ getEmployees, employeeSelected, downloadingData }) => {
         <div>
             <SelectEmployees />
             <Container>
-                
+
                 {
                     (!isEmpty(employeeSelected)) && (
                         <>
-                            <BoxTable>
+                            <BoxGauge>
+                                <p> C'est ici que sera la jauge</p>
+                            </BoxGauge>
+                            <BoxTableData>
                                 <TableData />
+                            </BoxTableData>
+                            <BoxTablePercentage>
                                 <TablePercentage />
-                            </BoxTable>
+                            </BoxTablePercentage>
                         </>
                     )
                 }
