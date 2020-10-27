@@ -1,7 +1,6 @@
 import { bindReducer } from "../../utils/reducer";
 
 import {
-  KPI_RESET_DATA,
   SET_EMPLOYEE_KPI
 } from "./kpi.actions"
 
@@ -10,10 +9,6 @@ export const initialState = {
 }
 
 const kpi = {
-  [KPI_RESET_DATA]: (state, payload) => ({
-    ...state,
-    dataEmployee: payload
-  }),
   [SET_EMPLOYEE_KPI]: (state, payload) => ({
     ...state,
     dataEmployee: payload

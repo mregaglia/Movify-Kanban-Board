@@ -5,14 +5,17 @@ import { BUSINESS_MANAGER } from '../components/EmployeeData'
 import {
     initalizeObjectBusinessManager,
     initalizeObjectRecruitment,
+    initializeObjectConversionYTDBusinessManager,
+    initializeObjectConversionYTDRecruitment,
     countDataBusinessManager,
     countDataSourcingOfficer,
-    initializeObjectDate
+    initializeObjectDate,
+    calculateConversionYTDBusinessManager,
+    calculateConversionYTDRecruitment
 } from '../../utils/reporting'
 
 import {
     GET_EMPLOYEE_KPI,
-    kpiResetData,
     setEmployeeKpi
 } from './kpi.actions'
 
@@ -31,46 +34,55 @@ export const THIRD_WEEK = "THIRD_WEEK"
 export const FOURTH_WEEK = "FOURTH_WEEK"
 
 export function* getKpiDataEmployee(action) {
-    yield put(kpiResetData());
+    // TODO: Check if kpiResetData is necessary
+
+    let dates = getLast4weeksDate();
 
     let employeeId = path(["payload", "id"], action);
     let occupation = path(["payload", "occupation"], action);
 
-    let objectBusinessManager = initalizeObjectBusinessManager(occupation);
-
-    let objecteDataRecruitment = initalizeObjectRecruitment()
+    let objectDataBusinessManager = initalizeObjectBusinessManager(occupation);
+    let objectDataRecruitment = initalizeObjectRecruitment()
     let objectDateEmployee = initializeObjectDate();
-    let dates = getLast4weeksDate();
 
+    let objectConvertionYTDBusinessManager = initializeObjectConversionYTDBusinessManager();
+    let objectConversionYTDRecruitment = initializeObjectConversionYTDRecruitment();
+    
     try {
         for (let i = 0; i < dates.length; i++) {
             let kpiNote = yield call(getNoteFromEmployee, employeeId, dates[i].start, dates[i].end)
             let weekLabel = getWeekLabel(i)
-            objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
 
-            objecteDataRecruitment = countDataSourcingOfficer(objecteDataRecruitment, weekLabel, kpiNote)
+            objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
+            objectDataRecruitment = countDataSourcingOfficer(objectDataRecruitment, weekLabel, kpiNote)
+
             const appointments = yield call(getAppointment, employeeId, dates[i].startTimestamp, dates[i].endTimestamp);
-            objecteDataRecruitment.INTERVIEW_DONE[weekLabel] = appointments;
+            objectDataRecruitment.INTERVIEW_DONE[weekLabel] = appointments;
 
             if (occupation === BUSINESS_MANAGER) {
 
-                objectBusinessManager = countDataBusinessManager(objectBusinessManager, weekLabel, kpiNote)
+                objectDataBusinessManager = countDataBusinessManager(objectDataBusinessManager, weekLabel, kpiNote)
                 
                 const cvSent = yield call(getSubmissionStatusChangedCvSent, employeeId, dates[i].startTimestamp, dates[i].endTimestamp);
                 const projectStart = yield call(getSubmissionStatusChangedProjectStart, employeeId, dates[i].startTimestamp, dates[i].endTimestamp);
                 const prospectionMeetingSchedule = yield call(getProspectionMeetingSchedule, employeeId, dates[i].startTimestamp, dates[i].endTimestamp);
                 const kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
 
-                objectBusinessManager.CV_SENT[weekLabel] = cvSent;
-                objectBusinessManager.PROJECT_START[weekLabel] = projectStart
-                objectBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] = prospectionMeetingSchedule
-                objectBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder
+                objectDataBusinessManager.CV_SENT[weekLabel] = cvSent;
+                objectDataBusinessManager.PROJECT_START[weekLabel] = projectStart
+                objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] = prospectionMeetingSchedule
+                objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder
+
+                
             }
         }
     } catch (e) {
         //
     }
-    yield put(setEmployeeKpi(objectDateEmployee, objecteDataRecruitment, objectBusinessManager))
+
+    objectConversionYTDRecruitment = calculateConversionYTDRecruitment(objectDataRecruitment, objectConversionYTDRecruitment)
+    objectConvertionYTDBusinessManager = calculateConversionYTDBusinessManager(objectDataBusinessManager, objectConvertionYTDBusinessManager)
+    yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, objectConversionYTDRecruitment, objectConvertionYTDBusinessManager))
 }
 
 const getWeekLabel = (index) => {
