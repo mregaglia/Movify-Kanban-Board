@@ -1,4 +1,4 @@
-import { BUSINESS_MANAGER, SOURCING_OFFICER } from '../reporting/components/EmployeeData'
+import { BUSINESS_MANAGER } from '../reporting/components/EmployeeData'
 
 export const PROSPECTION = "Prospection"
 export const CALL = "Call"
@@ -27,7 +27,7 @@ export const LABEL_CONTRACT_PROPOSED = "Contract proposed"
 export const LABEL_HIRED = "Hired"
 
 
-export const initalizeTableBusinessManager = (occupation) => {
+export const initalizeObjectBusinessManager = (occupation) => {
   if(occupation === BUSINESS_MANAGER) {
     return {
       CALL: { TITLE: LABEL_CALL,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -43,7 +43,7 @@ export const initalizeTableBusinessManager = (occupation) => {
   }
 }
 
-export const initalizeTableRecruitment = () => {
+export const initalizeObjectRecruitment = () => {
   return {
     CONTACTED_BY_INMAIL: { TITLE: LABEL_CONTACTED_BY_INMAIL,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     CONTACTED_BY_PHONE: { TITLE: LABEL_CONTACTED_BY_PHONE,FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -55,25 +55,25 @@ export const initalizeTableRecruitment = () => {
   }
 }
 
-export const initializeTableDate = () => {
+export const initializeObjectDate = () => {
   return {
     DATES: { FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
   }
 }
 
-export const countDataBusinessManager = (tableDataBusinessManager, labelWeek, notes) => {
-  countNoteForBusinessManager(labelWeek, notes, tableDataBusinessManager)
-  return tableDataBusinessManager;
+export const countDataBusinessManager = (objectDataBusinessManager, labelWeek, notes) => {
+  countNoteForBusinessManager(labelWeek, notes, objectDataBusinessManager)
+  return objectDataBusinessManager;
 }
 
-export const countDataSourcingOfficer = (tableDataRecruitment, labelWeek, notes) => {
-  countNoteForRecruitment(labelWeek, notes, tableDataRecruitment)
-  return tableDataRecruitment;
+export const countDataSourcingOfficer = (objectDataRecruitment, labelWeek, notes) => {
+  countNoteForRecruitment(labelWeek, notes, objectDataRecruitment)
+  return objectDataRecruitment;
 }
 
-export const countNoteForRecruitment = (labelWeek, notes, tableDataEmployee) => {
+export const countNoteForRecruitment = (labelWeek, notes, objectDataEmployee) => {
   let data = notes.data;
-  if (data.length === 0) return tableDataEmployee
+  if (data.length === 0) return objectDataEmployee
 
   for (let i = 0; i < data.length; i++) {
 
@@ -81,19 +81,19 @@ export const countNoteForRecruitment = (labelWeek, notes, tableDataEmployee) => 
 
     switch (action) {
       case CALL:
-        if (data[i].candidates.total === 1) tableDataEmployee.CONTACTED_BY_PHONE[labelWeek]++;
+        if (data[i].candidates.total === 1) objectDataEmployee.CONTACTED_BY_PHONE[labelWeek]++;
         break;
       case LINKED_INMAIL:
-        tableDataEmployee.CONTACTED_BY_INMAIL[labelWeek]++
+        objectDataEmployee.CONTACTED_BY_INMAIL[labelWeek]++
         break;
       case NO_SHOW:
-        tableDataEmployee.NO_SHOW[labelWeek]++
+        objectDataEmployee.NO_SHOW[labelWeek]++
         break;
       case INTERVIEW_DONE:
-        tableDataEmployee.INTERVIEW_DONE[labelWeek]++
+        objectDataEmployee.INTERVIEW_DONE[labelWeek]++
         break;
       case CONTRACT_PROPOSED:
-        tableDataEmployee.CONTRACT_PROPOSED[labelWeek]++;
+        objectDataEmployee.CONTRACT_PROPOSED[labelWeek]++;
         break;
       default:
         break;
@@ -101,9 +101,9 @@ export const countNoteForRecruitment = (labelWeek, notes, tableDataEmployee) => 
   }
 }
 
-export const countNoteForBusinessManager = (labelWeek, notes, tableDataEmployee) => {
+export const countNoteForBusinessManager = (labelWeek, notes, objectDataEmployee) => {
   let data = notes.data;
-  if (data.length === 0) return tableDataEmployee
+  if (data.length === 0) return objectDataEmployee
 
   for (let i = 0; i < data.length; i++) {
 
@@ -111,14 +111,17 @@ export const countNoteForBusinessManager = (labelWeek, notes, tableDataEmployee)
     
     switch (action) {
       case PROSPECTION:
-        tableDataEmployee.PROSPECTION_MEETING_DONE[labelWeek]++;
+        objectDataEmployee.PROSPECTION_MEETING_DONE[labelWeek]++;
         break;
       case CALL:
-        if (data[i].clientContacts.total) tableDataEmployee.CALL[labelWeek]++;
+        if (data[i].clientContacts.total) objectDataEmployee.CALL[labelWeek]++;
         break;
       default:
         break;
     }
   }
+}
+
+export const calculateConversionYTD = () => {
 
 }

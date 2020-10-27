@@ -38,14 +38,19 @@ const Reporting = ({ getEmployees, employeeSelected, downloadingData }) => {
 
         <div>
             <SelectEmployees />
-            {
-                (!isEmpty(employeeSelected)) && (
-                    <>
-                        <TableData />
-                        <TablePercentage />
-                    </>
-                )
-            }
+            <Container>
+                
+                {
+                    (!isEmpty(employeeSelected)) && (
+                        <>
+                            <BoxTable>
+                                <TableData />
+                                <TablePercentage />
+                            </BoxTable>
+                        </>
+                    )
+                }
+            </Container>
 
         </div >
     )
