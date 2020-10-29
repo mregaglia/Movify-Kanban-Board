@@ -1,14 +1,16 @@
 import React from 'react'
-
+import styled from 'styled-components'
 import { connect } from "react-redux";
+
+const Paragraph = styled.p`
+  font-size: 35px;
+`
 
 const WeeklySpeed = () => {
     return (
         <div>
-           Weekly Speed
-            
+           <Paragraph>Weekly Speed : </Paragraph>
         </div >
-        
     )
 }
 

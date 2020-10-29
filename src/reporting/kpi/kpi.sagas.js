@@ -70,46 +70,46 @@ export function* getKpiDataEmployee(action) {
             objectDataRecruitment.INTERVIEW_DONE[weekLabel] = appointments;
 
             if (occupation === BUSINESS_MANAGER) {
-                objectDataBusinessManager = countDataBusinessManager(objectDataBusinessManager, weekLabel, kpiNote)
+                // objectDataBusinessManager = countDataBusinessManager(objectDataBusinessManager, weekLabel, kpiNote)
 
-                const [cvSent, projectStart, prospectionMeetingSchedule, kpiJobOrder] = yield all([
-                    call(getSubmissionStatusChangedCvSent, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'cvSent'),
-                    call(getSubmissionStatusChangedProjectStart, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'projectStart'),
-                    call(getProspectionMeetingSchedule, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'prospectionMeetingSchedule'),
-                    call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'kpiJobOrder')
-                ])
+                // const [cvSent, projectStart, prospectionMeetingSchedule, kpiJobOrder] = yield all([
+                //     call(getSubmissionStatusChangedCvSent, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'cvSent'),
+                //     call(getSubmissionStatusChangedProjectStart, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'projectStart'),
+                //     call(getProspectionMeetingSchedule, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'prospectionMeetingSchedule'),
+                //     call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'kpiJobOrder')
+                // ])
 
-                objectDataBusinessManager.CV_SENT[weekLabel] = cvSent;
-                objectDataBusinessManager.PROJECT_START[weekLabel] = projectStart
-                objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] = prospectionMeetingSchedule
-                objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder
+                // objectDataBusinessManager.CV_SENT[weekLabel] = cvSent;
+                // objectDataBusinessManager.PROJECT_START[weekLabel] = projectStart
+                // objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] = prospectionMeetingSchedule
+                // objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder
             }
         }
     } catch (e) {
         //
     }
 
-    let weekNumberOfTheYear = moment().week();
+    // let weekNumberOfTheYear = moment().week();
 
-    objectConversionYTDRecruitment = calculateConversionYTDRecruitment(objectDataRecruitment, objectConversionYTDRecruitment)
-    objectConversionYTDBusinessManager = calculateConversionYTDBusinessManager(objectDataBusinessManager, objectConversionYTDBusinessManager)
+    // objectConversionYTDRecruitment = calculateConversionYTDRecruitment(objectDataRecruitment, objectConversionYTDRecruitment)
+    // objectConversionYTDBusinessManager = calculateConversionYTDBusinessManager(objectDataBusinessManager, objectConversionYTDBusinessManager)
 
-    let kpiNoteOfTheYear = yield call(getKpiNoteSaga, employeeId, dateStartOfThisYear, dates[0].end)
+    // let kpiNoteOfTheYear = yield call(getKpiNoteSaga, employeeId, dateStartOfThisYear, dates[0].end)
 
     
-    if (occupation === BUSINESS_MANAGER) {
-        objectConversionYTDBusinessManager = yield call(calculateYTDDataBusinessManager, objectConversionYTDBusinessManager, employeeId, dateStartOfThisYearTimestamp, dates[0].endTimestamp)
-        objectConversionYTDBusinessManager = calculateTotalYTDBusinessManager(kpiNoteOfTheYear, objectConversionYTDBusinessManager)
-        objectConversionYTDBusinessManager = calculateAverageYTDBusinessManager(objectConversionYTDBusinessManager, weekNumberOfTheYear)
+    // if (occupation === BUSINESS_MANAGER) {
+    //     objectConversionYTDBusinessManager = yield call(calculateYTDDataBusinessManager, objectConversionYTDBusinessManager, employeeId, dateStartOfThisYearTimestamp, dates[0].endTimestamp)
+    //     objectConversionYTDBusinessManager = calculateTotalYTDBusinessManager(kpiNoteOfTheYear, objectConversionYTDBusinessManager)
+    //     objectConversionYTDBusinessManager = calculateAverageYTDBusinessManager(objectConversionYTDBusinessManager, weekNumberOfTheYear)
 
-        objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
-        objectConversionYTDRecruitment = yield call(calculateYTDDataRecruitment, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[0].end)
-        objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
-    } else {
-        objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
-        objectConversionYTDRecruitment = yield call(calculateYTDDataRecruitment, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[0].end)
-        objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
-    }
+    //     objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
+    //     objectConversionYTDRecruitment = yield call(calculateYTDDataRecruitment, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[0].end)
+    //     objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
+    // } else {
+    //     objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
+    //     objectConversionYTDRecruitment = yield call(calculateYTDDataRecruitment, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[0].end)
+    //     objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
+    // }
 
     yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, objectConversionYTDRecruitment, objectConversionYTDBusinessManager))
     yield put(setKpiLoading(false))
