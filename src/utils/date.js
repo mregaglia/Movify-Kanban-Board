@@ -30,6 +30,14 @@ const getWeekDateAndTimestamp = (week) => {
   }
 }
 
+export const getStartDateOfYear = () => {
+  return parseInt(moment().startOf('year').format('YYYYMMDD'))
+}
+
+export const getStartDateOfYearTimestamp = () => {
+  return parseInt(moment().startOf('year').valueOf())
+}
+
 export const getDateString = (date) => {
 
   let day = date.toString().substring(6, 8).replace('0', '')

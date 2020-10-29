@@ -28,6 +28,7 @@ export const LABEL_CONTRACT_PROPOSED = "Contract proposed"
 export const LABEL_HIRED = "Hired"
 
 export const CONVERSION_YTD = "CONVERSION_YTD"
+export const TOTAL_YTD = "TOTAL_YTD"
 
 
 export const initalizeObjectBusinessManager = (occupation) => {
@@ -93,19 +94,19 @@ export const countDataBusinessManager = (objectDataBusinessManager, labelWeek, n
   return objectDataBusinessManager;
 }
 
-export const countDataSourcingOfficer = (objectDataRecruitment, labelWeek, notes) => {
+export const countDataRecruitment = (objectDataRecruitment, labelWeek, notes) => {
   countNoteForRecruitment(labelWeek, notes, objectDataRecruitment)
   return objectDataRecruitment;
 }
 
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
-  let data = notes.data;
+  let data = notes;
   if (data.length === 0) return objectDataRecruitment
-
+  
   for (let i = 0; i < data.length; i++) {
-
+    
     let action = data[i].action
-
+    
     switch (action) {
       case CALL:
         if (data[i].candidates.total === 1) objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
@@ -129,7 +130,7 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
 }
 
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
-  let data = notes.data;
+  let data = notes;
   if (data.length === 0) return objectDataBusinessManager
 
   for (let i = 0; i < data.length; i++) {
@@ -150,43 +151,98 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
 }
 
 export const calculateConversionYTDBusinessManager = (objectDataBusinessManager, objectConversionYTDBusinessManager) => {
-  let prospectionMeetingScheduleConversionYTD = Math.round((objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[FIRST_WEEK] / objectDataBusinessManager.CALL[FIRST_WEEK]))*100
+  let prospectionMeetingScheduleConversionYTD = Math.round((objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[FIRST_WEEK] / objectDataBusinessManager.CALL[FIRST_WEEK])) * 100
   objectConversionYTDBusinessManager.PROSPECTION_MEETING_SCHEDULE[CONVERSION_YTD] = (isNaN(prospectionMeetingScheduleConversionYTD) || (prospectionMeetingScheduleConversionYTD === Infinity)) ? 0 : prospectionMeetingScheduleConversionYTD;
 
-  let prospectionMeetingDoneConversionYTD = Math.round((objectDataBusinessManager.PROSPECTION_MEETING_DONE[FIRST_WEEK] / objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[FIRST_WEEK]))*100
+  let prospectionMeetingDoneConversionYTD = Math.round((objectDataBusinessManager.PROSPECTION_MEETING_DONE[FIRST_WEEK] / objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[FIRST_WEEK])) * 100
   objectConversionYTDBusinessManager.PROSPECTION_MEETING_DONE[CONVERSION_YTD] = (isNaN(prospectionMeetingDoneConversionYTD) || (prospectionMeetingDoneConversionYTD === Infinity)) ? 0 : prospectionMeetingDoneConversionYTD;
 
-  let newVacancyConversionYTD = Math.round(objectDataBusinessManager.NEW_VACANCY[FIRST_WEEK] / objectDataBusinessManager.PROSPECTION_MEETING_DONE[FIRST_WEEK])*100
+  let newVacancyConversionYTD = Math.round(objectDataBusinessManager.NEW_VACANCY[FIRST_WEEK] / objectDataBusinessManager.PROSPECTION_MEETING_DONE[FIRST_WEEK]) * 100
   objectConversionYTDBusinessManager.NEW_VACANCY[CONVERSION_YTD] = (isNaN(newVacancyConversionYTD) || (newVacancyConversionYTD === Infinity)) ? 0 : newVacancyConversionYTD;
 
-  let cvSentConversionYTD = Math.round(objectDataBusinessManager.CV_SENT[FIRST_WEEK] / objectDataBusinessManager.NEW_VACANCY[FIRST_WEEK])*100
+  let cvSentConversionYTD = Math.round(objectDataBusinessManager.CV_SENT[FIRST_WEEK] / objectDataBusinessManager.NEW_VACANCY[FIRST_WEEK]) * 100
   objectConversionYTDBusinessManager.CV_SENT[CONVERSION_YTD] = (isNaN(cvSentConversionYTD) || (cvSentConversionYTD === Infinity)) ? 0 : cvSentConversionYTD;
 
-  let intakeConversionYTD = Math.round(objectDataBusinessManager.INTAKE[FIRST_WEEK] / objectDataBusinessManager.NEW_VACANCY[FIRST_WEEK])*100
+  let intakeConversionYTD = Math.round(objectDataBusinessManager.INTAKE[FIRST_WEEK] / objectDataBusinessManager.NEW_VACANCY[FIRST_WEEK]) * 100
   objectConversionYTDBusinessManager.INTAKE[CONVERSION_YTD] = (isNaN(intakeConversionYTD) || (intakeConversionYTD === Infinity)) ? 0 : intakeConversionYTD;
 
-  let projectStart = Math.round((objectDataBusinessManager.PROJECT_START[FIRST_WEEK] / objectDataBusinessManager.INTAKE[FIRST_WEEK]))*100
-  objectConversionYTDBusinessManager.PROJECT_START[CONVERSION_YTD] = (isNaN(projectStart)  || (projectStart === Infinity)) ? 0 : projectStart;
+  let projectStart = Math.round((objectDataBusinessManager.PROJECT_START[FIRST_WEEK] / objectDataBusinessManager.INTAKE[FIRST_WEEK])) * 100
+  objectConversionYTDBusinessManager.PROJECT_START[CONVERSION_YTD] = (isNaN(projectStart) || (projectStart === Infinity)) ? 0 : projectStart;
 
   return objectConversionYTDBusinessManager;
 }
 
 export const calculateConversionYTDRecruitment = (objectDataRecruitment, objectConversionYTDRecruitment) => {
-  let interviewScheduleConversionYTD = Math.round(objectDataRecruitment.INTERVIEW_SCHEDULE[FIRST_WEEK] / (objectDataRecruitment.CONTACTED_BY_INMAIL[FIRST_WEEK] + objectDataRecruitment.CONTACTED_BY_PHONE[FIRST_WEEK]))*100
-  objectConversionYTDRecruitment.INTERVIEW_SCHEDULE[CONVERSION_YTD] = (isNaN(interviewScheduleConversionYTD)|| (interviewScheduleConversionYTD === Infinity)) ? 0 : interviewScheduleConversionYTD;
 
-  let noShowConversionYTD = Math.round(objectDataRecruitment.NO_SHOW[FIRST_WEEK] / objectDataRecruitment.INTERVIEW_SCHEDULE[FIRST_WEEK])*100
-  objectConversionYTDRecruitment.NO_SHOW[CONVERSION_YTD] = (isNaN(noShowConversionYTD)|| (noShowConversionYTD === Infinity)) ? 0 : noShowConversionYTD;
+  let interviewScheduleConversionYTD = Math.round(objectDataRecruitment.INTERVIEW_SCHEDULE[FIRST_WEEK] / (objectDataRecruitment.CONTACTED_BY_INMAIL[FIRST_WEEK] + objectDataRecruitment.CONTACTED_BY_PHONE[FIRST_WEEK])) * 100
+  objectConversionYTDRecruitment.INTERVIEW_SCHEDULE[CONVERSION_YTD] = (isNaN(interviewScheduleConversionYTD) || (interviewScheduleConversionYTD === Infinity)) ? 0 : interviewScheduleConversionYTD;
 
-  let interviewDoneConversionYTD = Math.round(objectDataRecruitment.INTERVIEW_DONE[FIRST_WEEK] / objectDataRecruitment.INTERVIEW_SCHEDULE[FIRST_WEEK])*100
-  objectConversionYTDRecruitment.INTERVIEW_DONE[CONVERSION_YTD] = (isNaN(interviewDoneConversionYTD)|| (interviewDoneConversionYTD === Infinity)) ? 0 : interviewDoneConversionYTD;
+  let noShowConversionYTD = Math.round(objectDataRecruitment.NO_SHOW[FIRST_WEEK] / objectDataRecruitment.INTERVIEW_SCHEDULE[FIRST_WEEK]) * 100
+  objectConversionYTDRecruitment.NO_SHOW[CONVERSION_YTD] = (isNaN(noShowConversionYTD) || (noShowConversionYTD === Infinity)) ? 0 : noShowConversionYTD;
 
-  let contactProposedConversionYTD = Math.round(objectDataRecruitment.CONTRACT_PROPOSED[FIRST_WEEK] / objectDataRecruitment.INTERVIEW_DONE[FIRST_WEEK])*100
-  objectConversionYTDRecruitment.CONTRACT_PROPOSED[CONVERSION_YTD] = (isNaN(contactProposedConversionYTD)|| (contactProposedConversionYTD === Infinity)) ? 0 : contactProposedConversionYTD;
+  let interviewDoneConversionYTD = Math.round(objectDataRecruitment.INTERVIEW_DONE[FIRST_WEEK] / objectDataRecruitment.INTERVIEW_SCHEDULE[FIRST_WEEK]) * 100
+  objectConversionYTDRecruitment.INTERVIEW_DONE[CONVERSION_YTD] = (isNaN(interviewDoneConversionYTD) || (interviewDoneConversionYTD === Infinity)) ? 0 : interviewDoneConversionYTD;
 
-  let hiredConversionYTD = Math.round(objectDataRecruitment.HIRED[FIRST_WEEK] / objectDataRecruitment.CONTRACT_PROPOSED[FIRST_WEEK])*100
-  objectConversionYTDRecruitment.HIRED[CONVERSION_YTD] = (isNaN(hiredConversionYTD)|| (hiredConversionYTD === Infinity)) ? 0 : hiredConversionYTD;
+  let contactProposedConversionYTD = Math.round(objectDataRecruitment.CONTRACT_PROPOSED[FIRST_WEEK] / objectDataRecruitment.INTERVIEW_DONE[FIRST_WEEK]) * 100
+  objectConversionYTDRecruitment.CONTRACT_PROPOSED[CONVERSION_YTD] = (isNaN(contactProposedConversionYTD) || (contactProposedConversionYTD === Infinity)) ? 0 : contactProposedConversionYTD;
+
+  let hiredConversionYTD = Math.round(objectDataRecruitment.HIRED[FIRST_WEEK] / objectDataRecruitment.CONTRACT_PROPOSED[FIRST_WEEK]) * 100
+  objectConversionYTDRecruitment.HIRED[CONVERSION_YTD] = (isNaN(hiredConversionYTD) || (hiredConversionYTD === Infinity)) ? 0 : hiredConversionYTD;
 
   return objectConversionYTDRecruitment;
 }
 
+export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) => {
+
+  if (notesOfyear.length === 0) return objectYTDRecruitment
+
+  for (let i = 0; i < notesOfyear.length; i++) {
+
+    let action = notesOfyear[i].action
+
+    switch (action) {
+      case CALL:
+        if (notesOfyear[i].candidates.total === 1) objectYTDRecruitment.CONTACTED_BY_PHONE[TOTAL_YTD]++;
+        break;
+      case LINKED_INMAIL:
+        objectYTDRecruitment.CONTACTED_BY_INMAIL[TOTAL_YTD]++
+        break;
+      case NO_SHOW:
+        objectYTDRecruitment.NO_SHOW[TOTAL_YTD]++
+        break;
+      case INTERVIEW_DONE:
+        objectYTDRecruitment.INTERVIEW_DONE[TOTAL_YTD]++
+        break;
+      case CONTRACT_PROPOSED:
+        objectYTDRecruitment.CONTRACT_PROPOSED[TOTAL_YTD]++;
+        break;
+      default:
+        break;
+    }
+  }
+
+  
+  return objectYTDRecruitment
+}
+
+export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessManager) => {
+
+  if (notesOfyear.length === 0) return objectYTDBusinessManager
+
+  for (let i = 0; i < notesOfyear.length; i++) {
+
+    let action = notesOfyear[i].action
+
+    switch (action) {
+      case PROSPECTION:
+        objectYTDBusinessManager.PROSPECTION_MEETING_DONE[TOTAL_YTD]++;
+        break;
+      case CALL:
+        if (notesOfyear[i].clientContacts.total) objectYTDBusinessManager.CALL[TOTAL_YTD]++;
+        break;
+      default:
+        break;
+    }
+  }
+  return objectYTDBusinessManager
+}
