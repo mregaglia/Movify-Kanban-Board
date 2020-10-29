@@ -102,11 +102,11 @@ export const countDataRecruitment = (objectDataRecruitment, labelWeek, notes) =>
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes;
   if (data.length === 0) return objectDataRecruitment
-  
+
   for (let i = 0; i < data.length; i++) {
-    
+
     let action = data[i].action
-    
+
     switch (action) {
       case CALL:
         if (data[i].candidates.total === 1) objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
@@ -221,7 +221,7 @@ export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) 
     }
   }
 
-  
+
   return objectYTDRecruitment
 }
 
@@ -245,4 +245,18 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
     }
   }
   return objectYTDBusinessManager
+}
+
+export const calculateAverageYTDBusinessManager = (objectConversionYTDBusinessManager, weekNumberOfTheYear) => {
+  Object.keys(objectConversionYTDBusinessManager).map((key, i) => {
+    objectConversionYTDBusinessManager[key].AVERAGE = Math.floor(objectConversionYTDBusinessManager[key].TOTAL_YTD / weekNumberOfTheYear)
+  })
+  return objectConversionYTDBusinessManager
+}
+
+export const calculateAverageYTDRecruitment = (objectConversionYTDRecruitment, weekNumberOfTheYear) => {
+  Object.keys(objectConversionYTDRecruitment).map((key, i) => {
+    objectConversionYTDRecruitment[key].AVERAGE = Math.floor(objectConversionYTDRecruitment[key].TOTAL_YTD / weekNumberOfTheYear)
+  })
+  return objectConversionYTDRecruitment
 }
