@@ -1,19 +1,21 @@
 
 import { call, put, takeLatest } from "redux-saga/effects";
-import { prop } from 'ramda'
+import { pathOr, prop } from 'ramda'
 import {
     getBusinessManagerAndSourcingOfficer
 } from "./employees.service"
-
 import {
-    getEmployeeKpi
+    getEmployeeKpi,
+    setGaugeLimit
 } from '../kpi/kpi.actions'
-
 import {
     GET_EMPLOYEES,
     setEmployees,
     SET_EMPLOYEE_SELECTED
 } from './employees.actions'
+import {
+    getGaugeLimitFromFile
+} from '../../utils/reporting'
 
 export function* getEmployees() {
     try {
@@ -25,6 +27,8 @@ export function* getEmployees() {
 }
 
 export function* onEmployeeSelected(action) {
+    let limitGauge = getGaugeLimitFromFile(pathOr("", ["payload", "occupation"], action))
+    yield put(setGaugeLimit(limitGauge))
     yield put(getEmployeeKpi(prop("payload", action)))
 }
 

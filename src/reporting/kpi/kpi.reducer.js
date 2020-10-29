@@ -2,12 +2,14 @@ import { bindReducer } from "../../utils/reducer";
 
 import {
   SET_EMPLOYEE_KPI,
-  SET_LOADING_KPI
+  SET_LOADING_KPI,
+  SET_GAUGE_LIMIT
 } from "./kpi.actions"
 
 export const initialState = {
   dataEmployee: {},
-  isLoadingKpi: false
+  isLoadingKpi: false,
+  gaugeLimit: {}
 }
 
 const kpi = {
@@ -18,7 +20,12 @@ const kpi = {
   [SET_LOADING_KPI]: (state, payload) => ({
     ...state,
     isLoadingKpi: payload
-  })
+  }),
+  [SET_GAUGE_LIMIT]: (state, payload) => ({
+    ...state,
+    gaugeLimit: payload
+  }),
+
 }
 
 export default (state, action) =>

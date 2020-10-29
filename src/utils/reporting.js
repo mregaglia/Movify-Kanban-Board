@@ -1,5 +1,7 @@
-import { BUSINESS_MANAGER } from '../reporting/components/EmployeeData'
+import { BUSINESS_MANAGER, SOURCING_OFFICER } from '../reporting/components/EmployeeData'
 import { FIRST_WEEK } from '../reporting/kpi/kpi.sagas'
+
+import GaugeLimitFile from '../reporting/gauge-limit.json'
 
 export const PROSPECTION = "Prospection"
 export const CALL = "Call"
@@ -259,4 +261,13 @@ export const calculateAverageYTDRecruitment = (objectConversionYTDRecruitment, w
     objectConversionYTDRecruitment[key].AVERAGE = Math.floor(objectConversionYTDRecruitment[key].TOTAL_YTD / weekNumberOfTheYear)
   })
   return objectConversionYTDRecruitment
+}
+
+export const getGaugeLimitFromFile = (occupation) => {
+  console.log(GaugeLimitFile)
+  if (occupation === BUSINESS_MANAGER) {
+    return GaugeLimitFile.BUSINESS_MANAGER
+  } else if (occupation === SOURCING_OFFICER) {
+    return GaugeLimitFile.SOURCING_OFFICER
+  }
 }

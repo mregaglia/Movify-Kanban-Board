@@ -5,8 +5,6 @@ import GaugeChart from 'react-gauge-chart'
 const GaugeComponent = () => {
     return (
         <>
-
-            <p>Hey jauge</p>
             <GaugeChart 
                 id="gauge-chart5"
                 nrOfLevels={420}

@@ -1,5 +1,5 @@
 {
-    "BUSINESS_DEVELOPMENT" :{
+    "BUSINESS_MANAGER" :{
         "GREEN": {"START" : 15, "MAX": 20}, "ORANGE": {"START": 10, "END": 14}, "RED" : {"START" : 0, "END" : 9}
     },
     "SOURCING_OFFICER" :{
