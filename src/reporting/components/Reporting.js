@@ -12,28 +12,11 @@ import GaugeComponent from './GaugeComponent'
 
 const Container = styled.div({
     display: "flex",
-    flexWrap: "nowrap",
-    padding: "15px",
-    justifyContent: "center",
-    div: {
-        padding: "10px",
-    }
+    margin: "60px",
+    justifyContent: "center"
 })
 
-const BoxGauge = styled.div({
-    flex: "1",
-    order: "1"
-})
 
-const BoxTableData = styled.div({
-    flex: "2",
-    order: "2"
-})
-
-const BoxTablePercentage = styled.div({
-    flex: "1",
-    order: "3"
-})
 
 const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
 
@@ -61,15 +44,10 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
                 {
                     (!isEmpty(employeeSelected) && !isLoadingKpi) && (
                         <>
-                            <BoxGauge>
-                                <GaugeComponent />
-                            </BoxGauge>
-                            <BoxTableData>
-                                <TableData />
-                            </BoxTableData>
-                            <BoxTablePercentage>
-                                <TablePercentage />
-                            </BoxTablePercentage>
+                            <GaugeComponent />
+
+                            <TableData />
+                            <TablePercentage />
                         </>
                     )
                 }

@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
 export const Table = styled.table({
+    tableLayout: "fixed",
     borderCollapse: "collapse",
-    margin: "25px 0",
+    margin: "25px 25px 25px 25px",
     fontSize: "1.2em",
     minWidth: "400px",
     borderRadius: "5px 5px 5px 5px",
@@ -17,12 +18,13 @@ export const TableTheadTr = styled.tr(({ theme }) => ({
 }))
 
 export const TableContentTh = styled.th(({ theme }) => ({
-    padding: "12px 15px"
+    padding: "12px 15px",
+    whiteSpace: "nowrap"
 }))
 
 export const TableContentTd = styled.td(({ theme }) => ({
     padding: "12px 15px",
-    textAlign: "center"
+    textAlign: "center", 
 }))
 
 export const TableContentTdLabel = styled.td(({ theme }) => ({

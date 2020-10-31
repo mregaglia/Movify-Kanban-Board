@@ -8,7 +8,7 @@ import { getColorGaugeLimit } from '../../utils/gaugecalculation'
 import styled from 'styled-components'
 
 const BoxGauge = styled.div(({ color, theme }) => ({
-    maxWidth: "350px"
+    maxWidth: "500px"
 }));
 
 const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd }) => {
