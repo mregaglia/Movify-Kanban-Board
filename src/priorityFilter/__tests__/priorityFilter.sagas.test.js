@@ -3,17 +3,17 @@ import {
   getStateFilter,
   getStateBms,
   getStateBmIds,
-  updateDepartmentFilter
-} from "../departmentFilter.sagas";
+  updatePriorityFilter
+} from "../priorityFilter.sagas";
 import {
-  UPDATE_DEPARTMENT_FILTER,
-  setDepartmentFilter,
-  setFilteredBms
-} from "../departmentFilter.actions";
+  setPriorityFilter,
+  setFilteredBms,
+  UPDATE_PRIORITY_FILTER
+} from "../priorityFilter.actions";
 
-describe("updateDepartmentFilter saga", () => {
+describe("updatePriorityFilter saga", () => {
   const filter = { filter: true };
-  const action = { type: UPDATE_DEPARTMENT_FILTER, payload: filter };
+  const action = { type: UPDATE_PRIORITY_FILTER, payload: filter };
   const stateFilter = {
     filter2: false,
     ...filter
@@ -25,10 +25,10 @@ describe("updateDepartmentFilter saga", () => {
   };
   const stateBmIds = [1, 2, 3];
   const kanbanBms = [1, 3];
-  const generator = updateDepartmentFilter(action);
+  const generator = updatePriorityFilter(action);
 
-  it("should put setDepartmentFilter action", () => {
-    expect(generator.next().value).toEqual(put(setDepartmentFilter(filter)));
+  it("should put setPriorityFilter action", () => {
+    expect(generator.next().value).toEqual(put(setPriorityFilter(filter)));
   });
   it("should put get state filter", () => {
     expect(generator.next().value).toEqual(select(getStateFilter));

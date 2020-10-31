@@ -16,10 +16,14 @@ import {
 import {
     getGaugeLimitFromFile
 } from '../../utils/reporting'
+import {
+    sortTableEmployee
+} from '../../utils/employees'
 
 export function* getEmployees() {
     try {
         const employees = yield call(getBusinessManagerAndSourcingOfficer);
+        employees = sortTableEmployee(employees.data)
         yield put(setEmployees(employees))
     } catch (e) {
         //

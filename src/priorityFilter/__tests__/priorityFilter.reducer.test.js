@@ -1,10 +1,10 @@
 import {
   SET_DEPARTMENT_FILTER,
   SET_FILTERED_BMS
-} from "../departmentFilter.actions";
-import reducer, { initialState } from "../departmentFilter.reducer";
+} from "../priorityFilter.actions";
+import reducer, { initialState } from "../priorityFilter.reducer";
 
-describe("departmentFilter reducer", () => {
+describe("priorityFilter reducer", () => {
   it("should return initial state", () => {
     expect(reducer()).toEqual(initialState);
   });

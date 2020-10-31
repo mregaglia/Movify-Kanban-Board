@@ -41,6 +41,8 @@ const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading }) => {
 }
 
 function getValuesFromEmployees(employees) {
+    console.log("la", employees)
+    
     return employees.map((employee) => {
         let occupationLabel = "";
         switch (employee.occupation) {
@@ -64,7 +66,7 @@ SelectEmployees.propTypes = {
 
 export default connect(
     state => ({
-        employees: pathOr([], ["employees", "employeesToSet", 'data'], state),
+        employees: pathOr([], ["employees", "employeesToSet"], state),
     }),
     { setEmployeeSelected, setKpiLoading }
 )(SelectEmployees);

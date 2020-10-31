@@ -18,12 +18,12 @@ export const LABEL_PROSPECTION_MEETING_SCHEDULE = "Prospection meeting scheduled
 export const LABEL_MEETING_DONE = "Prospection meeting done"
 export const LABEL_NEW_VACANCY = "New vacancy"
 export const LABEL_CV_SENT = "CV sent"
-export const LABEL_INTAKE = "intake"
+export const LABEL_INTAKE = "Intake"
 export const LABEL_PROJECT_START = "Project Start"
 
 export const LABEL_CONTACTED_BY_INMAIL = "Contacted by InMail"
 export const LABEL_CONTACTED_BY_PHONE = "Contacted by phone"
-export const LABEL_INTERVIEW_SCHEDULE = "Interview Schedule"
+export const LABEL_INTERVIEW_SCHEDULE = "Interview scheduled"
 export const LABEL_NO_SHOW = "No Show"
 export const LABEL_INTERVIEW_DONE = "Interview done"
 export const LABEL_CONTRACT_PROPOSED = "Contract proposed"
@@ -104,7 +104,7 @@ export const countDataRecruitment = (objectDataRecruitment, labelWeek, notes) =>
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes;
   if (data.length === 0) return objectDataRecruitment
-
+  console.log(notes)
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
@@ -120,6 +120,7 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
         objectDataRecruitment.NO_SHOW[labelWeek]++
         break;
       case INTERVIEW_DONE:
+
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
         break;
       case CONTRACT_PROPOSED:
@@ -153,6 +154,7 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
 }
 
 export const calculateConversionYTDBusinessManager = (objectDataBusinessManager, objectConversionYTDBusinessManager) => {
+
   let prospectionMeetingScheduleConversionYTD = Math.round((objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[FIRST_WEEK] / objectDataBusinessManager.CALL[FIRST_WEEK])) * 100
   objectConversionYTDBusinessManager.PROSPECTION_MEETING_SCHEDULE[CONVERSION_YTD] = (isNaN(prospectionMeetingScheduleConversionYTD) || (prospectionMeetingScheduleConversionYTD === Infinity)) ? 0 : prospectionMeetingScheduleConversionYTD;
 

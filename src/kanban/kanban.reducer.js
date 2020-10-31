@@ -1,4 +1,4 @@
-import { dissoc, mergeDeepWith } from "ramda";
+import { dissoc, mergeDeepRight, mergeDeepWith } from "ramda";
 import { bindReducer } from "../utils/reducer";
 import { unionArrays } from "../utils/kanban";
 import {
@@ -6,6 +6,7 @@ import {
   SET_BMS,
   UPDATE_BMS,
   UPDATE_CLIENT_CORPORATIONS,
+  UPDATE_FILTERED_JOB_ORDERS,
   SET_JOB_ORDERS,
   UPDATE_JOB_ORDERS,
   SET_JOB_SUBMISSIONS,
@@ -39,6 +40,13 @@ const kanban = {
     ...state,
     clientCorporations: mergeDeepWith(
       unionArrays,
+      state.clientCorporations,
+      payload
+    )
+  }),
+  [UPDATE_FILTERED_JOB_ORDERS]: (state, payload) => ({
+    ...state,
+    clientCorporations: mergeDeepRight(
       state.clientCorporations,
       payload
     )
