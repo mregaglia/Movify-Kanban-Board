@@ -28,7 +28,8 @@ export const TableContentTd = styled.td(({ theme }) => ({
 }))
 
 export const TableContentTdLabel = styled.td(({ theme }) => ({
-    padding: "12px 15px"
+    padding: "12px 15px",
+    whiteSpace: "nowrap"
 }))
 
 export const TableContentTdTitle = styled.td(({ theme }) => ({
@@ -38,7 +39,7 @@ export const TableContentTdTitle = styled.td(({ theme }) => ({
 }))
 
 export const TableContentTdTitleEmpty = styled.td(({ theme }) => ({
-    padding: "24px"
+    padding: "27px"
 }))
 
 export const TableContentTbodyTr = styled.tr(({ theme }) => ({

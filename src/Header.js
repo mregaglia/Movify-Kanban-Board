@@ -13,7 +13,8 @@ const Container = styled.div(({ theme }) => ({
   flexDirection: "column",
   position: "sticky",
   top: 0,
-  boxShadow: "0 0 8px 0 rgba(0,0,0,0.2)"
+  boxShadow: "0 0 8px 0 rgba(0,0,0,0.2)",
+  zIndex: 5
 }));
 
 const Row = styled.div({

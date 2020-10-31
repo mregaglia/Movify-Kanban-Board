@@ -10,8 +10,15 @@ import { BUSINESS_MANAGER, SOURCING_OFFICER } from "./EmployeeData"
 
 const Container = styled.div({
     width: "30%",
-    margin: "0 auto"
+    margin: "0 auto",
+    position: "relative",
+    zIndex: "1"
 })
+
+const SelectCustomized = styled(Select)`
+position: relative; z-index: 1000;
+`
+
 
 const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading }) => {
 
@@ -30,7 +37,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading }) => {
     return (
         <>
             <Container>
-                <Select
+                <SelectCustomized
                     options={options}
                     onChange={onChangeInput}
                 />
@@ -42,7 +49,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading }) => {
 
 function getValuesFromEmployees(employees) {
     console.log("la", employees)
-    
+
     return employees.map((employee) => {
         let occupationLabel = "";
         switch (employee.occupation) {
