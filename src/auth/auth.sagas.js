@@ -26,6 +26,9 @@ import {
   refreshToken as refreshTokenService,
   ping
 } from "./auth.service";
+import {
+  getReportingAccess
+} from "./user.sagas"
 
 export function* authorize(action) {
   const { username, password } = prop("payload", action);
@@ -64,12 +67,16 @@ export function* loginWithToken(tokenResponse) {
     const baseUrl = prop("restUrl", loginResponse);
     yield call(setBaseUrl, baseUrl);
     yield call(setBaseUrlStorage, baseUrl);
-
+    
+    yield call(getReportingAccess);
+    
     yield put(loginSuccess());
   } else {
     yield put(loginFail());
   }
 }
+
+
 
 export const getAuthenticatedState = state =>
   pathOr(false, ["auth", "authenticated"], state);
@@ -77,6 +84,7 @@ export const getAuthenticatedState = state =>
 export function* checkAuth() {
   try {
     yield call(ping);
+    yield call(getReportingAccess);
     yield put(authSuccess());
   } catch (e) {
     yield put(refreshTokenAction());

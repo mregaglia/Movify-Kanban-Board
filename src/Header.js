@@ -13,7 +13,8 @@ const Container = styled.div(({ theme }) => ({
   flexDirection: "column",
   position: "sticky",
   top: 0,
-  boxShadow: "0 0 8px 0 rgba(0,0,0,0.2)"
+  boxShadow: "0 0 8px 0 rgba(0,0,0,0.2)",
+  zIndex: 5
 }));
 
 const Row = styled.div({
@@ -65,7 +66,7 @@ HeaderLink.propTypes = {
   to: string
 };
 
-const Header = ({ authenticated, board }) => {
+const Header = ({ authenticated, board, hasReportingAccess }) => {
 
   if (!authenticated) return null;
   else
@@ -76,6 +77,11 @@ const Header = ({ authenticated, board }) => {
           <nav>
             <HeaderLink label="Business" to="/kanban" />
             <HeaderLink label="Recruitment" to="/recruitment" />
+
+            {
+              hasReportingAccess && <HeaderLink label="Reporting" to="/reporting" />
+            }
+
           </nav>
           <PriorityFilter board={board} />
         </Row>
@@ -86,9 +92,11 @@ const Header = ({ authenticated, board }) => {
 
 Header.propTypes = {
   authenticated: bool,
-  board: string
+  board: string,
+  hasReportingAccess: bool
 };
 
 export default connect(state => ({
-  authenticated: path(["auth", "authenticated"], state)
+  authenticated: path(["auth", "authenticated"], state),
+  hasReportingAccess: path(["user", "hasReportingAccess"], state)
 }))(Header);

@@ -5,7 +5,7 @@ export default {
     red: "#f34d3d",
     bullhorn: "#F16A22",
     orange: "#FF8A40",
-    yellow: "#FFBF53",
+    yellow: "#FFBF53", // yellow
     green: "#60C659",
     linkedin: "#0077B5",
     black: "#000",
@@ -47,7 +47,7 @@ export default {
     big: 36
   },
   bmColors: [
-    "#FF5757",
+    "#FF5757", // Rouge
     "#6BD7DA",
     "#FF8A40",
     "#FFBF53",
@@ -55,7 +55,7 @@ export default {
     "#60C659",
     "#7758B3",
     "#84DCCF",
-    "#17B79B",
+    "#17B79B", // Green
     "#F7E06B",
     "#246EB9",
     "#C9B7E8",
@@ -71,7 +71,7 @@ export default {
     "#C2ABE8",
     "#f34d3d",
     "#FCAD56",
-    "#17B79B",
+    "#17B79B", 
     "#F7E06B",
     "#246EB9",
     "#84DCCF",

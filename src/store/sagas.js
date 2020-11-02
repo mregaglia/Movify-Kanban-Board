@@ -5,6 +5,10 @@ import priorityFilterSagas from "../priorityFilter/priorityFilter.sagas";
 import addCandidateSagas from "../addCandidate/addCandidate.sagas";
 import recruitmentSagas from "../recruitment/recruitment.sagas";
 import transitionSagas from "../transition/transition.sagas";
+import userSaga from "../auth/user.sagas"
+import employeeSagas from "../reporting/employees/employees.sagas"
+import kpiSagas from "../reporting/kpi/kpi.sagas"
+
 
 export default function* rootSaga() {
   yield all([
@@ -13,6 +17,9 @@ export default function* rootSaga() {
     ...priorityFilterSagas(),
     ...addCandidateSagas(),
     ...recruitmentSagas(),
-    ...transitionSagas()
+    ...transitionSagas(),
+    ...userSaga(),
+    ...employeeSagas(),
+    ...kpiSagas()
   ]);
 }

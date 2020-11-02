@@ -24,19 +24,19 @@ const Board = ({
   jobSubmissions,
   statuses
 }) => (
-  <Container>
-    {statuses.map(status => (
-      <Column
-        board={board}
-        key={status}
-        status={status}
-        columnWidth={getColumnWidth(propOr(1, "length", statuses))}
-        jobSubmissions={propOr([], status, jobSubmissions)}
-        columnId={createColumnId(bmId, clientCorporationId, jobOrderId, status)}
-      />
-    ))}
-  </Container>
-);
+    <Container>
+      {statuses.map(status => (
+        <Column
+          board={board}
+          key={status}
+          status={status}
+          columnWidth={getColumnWidth(propOr(1, "length", statuses))}
+          jobSubmissions={propOr([], status, jobSubmissions)}
+          columnId={createColumnId(bmId, clientCorporationId, jobOrderId, status)}
+        />
+      ))}
+    </Container>
+  );
 
 Board.propTypes = {
   bmId: number,

@@ -38,8 +38,8 @@ const Title = styled.div(({ theme }) => ({
 }));
 
 const Transition = ({ board, candidates }) => {
-  if (board === "kanban" && !prop("length", candidates)) return null;
-
+  if (board === "reporting" || (board === "kanban" && !prop("length", candidates))) return null;
+  
   return (
     <Container>
       <Title>Transition board</Title>

@@ -1,0 +1,11 @@
+{
+    "BUSINESS_MANAGER" :{
+        "GREEN": {"START" : 15, "END": 20}, "ORANGE": {"START": 10, "END": 14}, "RED" : {"START" : 0, "END" : 9}
+    },
+    "SOURCING_OFFICER" :{
+        "GREEN": {"START" : 25, "END": 30}, "ORANGE": {"START": 20, "END": 24}, "RED" : {"START" : 0, "END" : 19}
+    },
+    "TALENT_ACQUISITION" :{
+        "GREEN": {"START" : 25, "END": 30}, "ORANGE": {"START": 20, "END": 24}, "RED" : {"START" : 0, "END" : 19}
+    }
+}
