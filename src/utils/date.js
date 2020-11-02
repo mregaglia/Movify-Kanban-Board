@@ -11,22 +11,22 @@ export const isOverDiff = (timestamp, diff) => {
 
 export const getLast4weeksDate = () => {
 
-  let tableWeek = [1, 2, 3, 4]
+  let tableWeek = [4, 3, 2, 1]
 
   let dates = tableWeek.map(getWeekDateAndTimestamp)
-  
+
   return dates;
 }
 
 const getWeekDateAndTimestamp = (week) => {
-  let startWeek =   moment().subtract(week, 'weeks').startOf('isoWeek');
+  let startWeek = moment().subtract(week, 'weeks').startOf('isoWeek');
   let endWeek = moment().subtract(week, 'weeks').endOf('isoWeek')
 
   return {
     start: parseInt(startWeek.format('YYYYMMDD')),
     end: parseInt(endWeek.format('YYYYMMDD')),
     startTimestamp: startWeek.valueOf(),
-    endTimestamp : endWeek.valueOf()
+    endTimestamp: endWeek.valueOf()
   }
 }
 
@@ -41,8 +41,8 @@ export const getStartDateOfYearTimestamp = () => {
 export const getDateString = (date) => {
 
   let day = date.toString().substring(6, 8).replace('0', '')
-  let month = date.toString().substring(4,6);
-  
+  let month = date.toString().substring(4, 6);
+
   switch (month) {
     case "01":
       return day + " january"
