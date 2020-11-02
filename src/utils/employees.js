@@ -1,5 +1,4 @@
 export const sortTableEmployee = (tableEmployee) => {
-    console.log("Hi", tableEmployee)
     tableEmployee.sort(function (employeeA, employeeB) {
         if (employeeA.occupation < employeeB.occupation) { return -1; }
         if (employeeA.occupation > employeeB.occupation) { return 1; }

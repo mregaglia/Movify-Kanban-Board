@@ -22,7 +22,9 @@ import {
 import {
     GET_EMPLOYEE_KPI,
     setEmployeeKpi,
-    setKpiLoading
+    setKpiLoading,
+    setObjectYTD,
+    setCalculationYTD
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
@@ -88,31 +90,34 @@ export function* getKpiDataEmployee(action) {
     } catch (e) {
         //
     }
-
-    // let weekNumberOfTheYear = moment().week();
-
-    // objectConversionYTDRecruitment = calculateConversionYTDRecruitment(objectDataRecruitment, objectConversionYTDRecruitment)
-    // objectConversionYTDBusinessManager = calculateConversionYTDBusinessManager(objectDataBusinessManager, objectConversionYTDBusinessManager)
-
-    // let kpiNoteOfTheYear = yield call(getKpiNoteSaga, employeeId, dateStartOfThisYear, dates[0].end)
-
-    
-    // if (occupation === BUSINESS_MANAGER) {
-    //     objectConversionYTDBusinessManager = yield call(calculateYTDDataBusinessManager, objectConversionYTDBusinessManager, employeeId, dateStartOfThisYearTimestamp, dates[0].endTimestamp)
-    //     objectConversionYTDBusinessManager = calculateTotalYTDBusinessManager(kpiNoteOfTheYear, objectConversionYTDBusinessManager)
-    //     objectConversionYTDBusinessManager = calculateAverageYTDBusinessManager(objectConversionYTDBusinessManager, weekNumberOfTheYear)
-
-    //     objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
-    //     objectConversionYTDRecruitment = yield call(calculateYTDDataRecruitment, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[0].end)
-    //     objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
-    // } else {
-    //     objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
-    //     objectConversionYTDRecruitment = yield call(calculateYTDDataRecruitment, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[0].end)
-    //     objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
-    // }
-
-    yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, objectConversionYTDRecruitment, objectConversionYTDBusinessManager))
     yield put(setKpiLoading(false))
+
+    yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
+
+    let weekNumberOfTheYear = moment().week();
+
+    objectConversionYTDRecruitment = calculateConversionYTDRecruitment(objectDataRecruitment, objectConversionYTDRecruitment)
+    objectConversionYTDBusinessManager = calculateConversionYTDBusinessManager(objectDataBusinessManager, objectConversionYTDBusinessManager)
+
+    let kpiNoteOfTheYear = yield call(getKpiNoteSaga, employeeId, dateStartOfThisYear, dates[0].end)
+
+    if (occupation === BUSINESS_MANAGER) {
+        objectConversionYTDBusinessManager = yield call(calculateYTDDataBusinessManager, objectConversionYTDBusinessManager, employeeId, dateStartOfThisYearTimestamp, dates[0].endTimestamp)
+        objectConversionYTDBusinessManager = calculateTotalYTDBusinessManager(kpiNoteOfTheYear, objectConversionYTDBusinessManager)
+        objectConversionYTDBusinessManager = calculateAverageYTDBusinessManager(objectConversionYTDBusinessManager, weekNumberOfTheYear)
+
+        objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
+        objectConversionYTDRecruitment = yield call(calculateYTDDataRecruitment, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[0].end)
+        objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
+    } else {
+        objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
+        objectConversionYTDRecruitment = yield call(calculateYTDDataRecruitment, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[0].end)
+        objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
+    }
+
+    yield put(setObjectYTD(objectConversionYTDRecruitment, objectConversionYTDBusinessManager))
+
+    yield put(setCalculationYTD(false))
 }
 
 export function* getKpiNoteSaga(employeeId, dateStart, dateEnd) {

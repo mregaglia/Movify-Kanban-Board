@@ -32,7 +32,7 @@ TablePercentageBusinessManager.propTypes = {
 
 export default connect(
     state => ({
-        dataConversionYTDBusinessManager: pathOr({}, ["kpi", "dataEmployee", "objectConvertionYTDBusinessManager"], state),
+        dataConversionYTDBusinessManager: pathOr({}, ["kpi", "dataYTDEmployee", "objectConvertionYTDBusinessManager"], state),
     }),
     {}
 )(TablePercentageBusinessManager);

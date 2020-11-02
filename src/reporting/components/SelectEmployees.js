@@ -1,7 +1,7 @@
 import React from "react";
 import Select from 'react-select'
 import { setEmployeeSelected } from "../employees/employees.actions"
-import { setKpiLoading } from '../kpi/kpi.actions'
+import { setKpiLoading, setCalculationYTD } from '../kpi/kpi.actions'
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
 import { array } from "prop-types";
@@ -20,7 +20,7 @@ position: relative; z-index: 1000;
 `
 
 
-const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading }) => {
+const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading, setCalculationYTD }) => {
 
     const options = getValuesFromEmployees(employees)
 
@@ -29,6 +29,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading }) => {
             if (parseInt(employeeSelected.value) === employees[i].id) {
                 setEmployeeSelected(employees[i]);
                 setKpiLoading(true)
+                setCalculationYTD(true)
                 break;
             }
         }
@@ -48,8 +49,6 @@ const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading }) => {
 }
 
 function getValuesFromEmployees(employees) {
-    console.log("la", employees)
-
     return employees.map((employee) => {
         let occupationLabel = "";
         switch (employee.occupation) {
@@ -75,5 +74,5 @@ export default connect(
     state => ({
         employees: pathOr([], ["employees", "employeesToSet"], state),
     }),
-    { setEmployeeSelected, setKpiLoading }
+    { setEmployeeSelected, setKpiLoading, setCalculationYTD }
 )(SelectEmployees);

@@ -31,7 +31,7 @@ TablePercentageTalentAcquisition.propTypes = {
 
 export default connect(
     state => ({
-        dataConversionYTDRecruitment: pathOr({}, ["kpi", "dataEmployee", "objectConversionYTDRecruitment"], state)
+        dataConversionYTDRecruitment: pathOr({}, ["kpi", "dataYTDEmployee", "objectConversionYTDRecruitment"], state)
     }),
     {}
 )(TablePercentageTalentAcquisition);

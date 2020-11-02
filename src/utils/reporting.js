@@ -104,7 +104,6 @@ export const countDataRecruitment = (objectDataRecruitment, labelWeek, notes) =>
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes;
   if (data.length === 0) return objectDataRecruitment
-  console.log(notes)
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
@@ -266,7 +265,6 @@ export const calculateAverageYTDRecruitment = (objectConversionYTDRecruitment, w
 }
 
 export const getGaugeLimitFromFile = (occupation) => {
-  console.log(GaugeLimitFile)
   if (occupation === BUSINESS_MANAGER) {
     return GaugeLimitFile.BUSINESS_MANAGER
   } else if (occupation === SOURCING_OFFICER) {
