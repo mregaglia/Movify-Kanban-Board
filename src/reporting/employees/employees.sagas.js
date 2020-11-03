@@ -33,6 +33,7 @@ export function* getEmployees() {
 
 export function* onEmployeeSelected(action) {
     let limitGauge = getGaugeLimitFromFile(pathOr("", ["payload", "occupation"], action))
+    console.log(limitGauge)
     yield put(setGaugeLimit(limitGauge))
     yield put(getEmployeeKpi(prop("payload", action)))
 }

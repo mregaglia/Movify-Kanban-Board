@@ -15,13 +15,7 @@ export const getNoteFromEmployee = (idEmployee, dateStart, dateEnd, startValue) 
         }
     );
 
-export const getSubmissionStatusChangedCvSent = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
-    get("query/JobSubmissionEditHistory", {
-        fields: "*",
-        where: `modifyingPerson.id=${idEmployee} AND fieldChanges.columnName='status' AND fieldChanges.newValue='WF Response' AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`
-    }).then(response =>
-        prop("count", response)
-    )
+
 
 export const getSubmissionStatusChangedProjectStart = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
     get("query/JobSubmissionEditHistory", {
@@ -34,6 +28,19 @@ export const getJobOrders = (idEmployee, dateStartTimestamp, dateEndTimestamp) =
         fields: "id",
         where: `owner.id=${idEmployee} AND isDeleted=false AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`,
         count: "50"
+    })
+
+export const getAllJobOrders = (idEmployee) =>
+    get("query/JobOrder", {
+        fields: "id",
+        where: `owner.id=${idEmployee} AND isDeleted=false AND isOpen=false`,
+        count: "50"
+    })
+
+export const getJobSubmissionsByJobOrderId = (idJobOrder) =>
+    get("query/JobSubmission", {
+        fields: "id",
+        where: `jobOrder.id=${idJobOrder} AND isDeleted=false`
     })
 
 

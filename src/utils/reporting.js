@@ -1,4 +1,4 @@
-import { BUSINESS_MANAGER, SOURCING_OFFICER } from '../reporting/components/EmployeeData'
+import { BUSINESS_MANAGER, SOURCING_OFFICER, TALENT_ACQUISITION } from '../reporting/components/EmployeeData'
 
 import GaugeLimitFile from '../reporting/gauge-limit.json'
 
@@ -264,5 +264,7 @@ export const getGaugeLimitFromFile = (occupation) => {
     return GaugeLimitFile.BUSINESS_MANAGER
   } else if (occupation === SOURCING_OFFICER) {
     return GaugeLimitFile.SOURCING_OFFICER
+  } else if (occupation === TALENT_ACQUISITION) {
+    return GaugeLimitFile.TALENT_ACQUISITION
   }
 }

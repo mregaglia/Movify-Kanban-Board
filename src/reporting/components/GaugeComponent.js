@@ -8,38 +8,36 @@ import { getColorGaugeLimit } from '../../utils/gaugecalculation'
 import styled from 'styled-components'
 
 const BoxGauge = styled.div(({ color, theme }) => ({
-    maxWidth: "500px"
+    width: "410px",
+    paddingTop: "35px"
 }));
 
 const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd }) => {
 
-    const [redLimit, setRedLimit] = useState(0);
-    const [yellowLimit, setYellowLimit] = useState(0);
-    const [greenLimit, setGreenLimit] = useState(0);
+    const endGreenGaugeConverted = 1;
+    const startGreendGaugeConverted = (gaugeGreenStart / gaugeGreenEnd).toFixed(2)
+    const numberGapGreen = endGreenGaugeConverted - startGreendGaugeConverted
 
-    useEffect(() => {
-        //onsole.log(getColorGaugeLimit(gaugeRedEnd, gaugeGreenEnd))
-        // setRedLimit(getColorGaugeLimit(gaugeRedEnd, gaugeGreenEnd));
-        // setYellowLimit(getColorGaugeLimit(gaugeOrangeEnd, gaugeGreenEnd));
-        // setGreenLimit(getColorGaugeLimit(gaugeGreenEnd, gaugeGreenEnd))
-    }, [])
+    const endOrangeGaugeConverted = (gaugeOrangeEnd / gaugeGreenEnd).toFixed(2)
+    const startOrangeGaugeConverted = (gaugeOrangeStart / gaugeGreenEnd).toFixed(2)
+    const numberGapOrange = endOrangeGaugeConverted - startOrangeGaugeConverted
+
+    const endRedGaugeConverted = (gaugeRedEnd / gaugeGreenEnd).toFixed(2)
+    const startRedGaugeConverted = (gaugeRedStart / gaugeGreenEnd).toFixed(2)
+    const numberGapRed = endRedGaugeConverted - startRedGaugeConverted
 
     return (
-
-
         <BoxGauge>
             <GaugeChart
                 id="gauge-chart5"
                 nrOfLevels={420}
-                arcsLength={[0.3, 0.4, 0.3]}
+                arcsLength={[numberGapRed, numberGapOrange, numberGapGreen]}
                 colors={[theme.bmColors[0], theme.colors.yellow, theme.bmColors[8]]}
-                percent={0.37}
+                percent={0}
                 arcPadding={0.02}
+                textColor="#000000"
             />
         </BoxGauge>
-
-
-
     )
 }
 
