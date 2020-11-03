@@ -8,6 +8,7 @@ import { path } from "ramda";
 
 export const BUSINESS_MANAGER = "Business Manager"
 export const SOURCING_OFFICER = "Sourcing Officer"
+export const TALENT_ACQUISITION = "Talent Acquisition "
 
 const Container = styled.div({
     display: "flex",

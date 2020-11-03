@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import { pathOr } from "ramda";
 import { array } from "prop-types";
 import styled from "styled-components"
-import { BUSINESS_MANAGER, SOURCING_OFFICER } from "./EmployeeData"
+import { getValuesFromEmployees } from '../../utils/employees'
 
 const Container = styled.div({
     width: "30%",
@@ -18,7 +18,6 @@ const Container = styled.div({
 const SelectCustomized = styled(Select)`
 position: relative; z-index: 1000;
 `
-
 
 const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading, setCalculationYTD }) => {
 
@@ -48,23 +47,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading, setCal
     )
 }
 
-function getValuesFromEmployees(employees) {
-    return employees.map((employee) => {
-        let occupationLabel = "";
-        switch (employee.occupation) {
-            case BUSINESS_MANAGER:
-                occupationLabel = "BM";
-                break;
-            case SOURCING_OFFICER:
-                occupationLabel = "TA";
-                break;
-            default:
-                occupationLabel = "";
-                break;
-        }
-        return ({ value: `${employee.id}`, label: occupationLabel + " - " + employee.firstName + " " + employee.lastName })
-    })
-}
+
 
 SelectEmployees.propTypes = {
     employees: array

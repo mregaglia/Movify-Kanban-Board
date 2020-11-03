@@ -2,7 +2,7 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import { pathOr, prop } from 'ramda'
 import {
-    getBusinessManagerAndSourcingOfficer
+    getBusinessManagerSourcingOfficerAndTalentAcquisition
 } from "./employees.service"
 import {
     getEmployeeKpi,
@@ -22,7 +22,8 @@ import {
 
 export function* getEmployees() {
     try {
-        const employees = yield call(getBusinessManagerAndSourcingOfficer);
+        const employees = yield call(getBusinessManagerSourcingOfficerAndTalentAcquisition);
+        console.log(employees)
         employees = sortTableEmployee(employees.data)
         yield put(setEmployees(employees))
     } catch (e) {
