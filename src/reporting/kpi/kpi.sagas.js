@@ -31,8 +31,7 @@ import {
     getSubmissionStatusChangedCvSent,
     getSubmissionStatusChangedProjectStart,
     getJobOrders,
-    getProspectionMeetingSchedule,
-    getAppointment
+    getProspectionMeetingSchedule
 } from './kpi.service'
 
 export const FIRST_WEEK = "FIRST_WEEK"
@@ -63,23 +62,20 @@ export function* getKpiDataEmployee(action) {
             const kpiNote = yield call(getKpiNoteSaga, employeeId, dates[i].start, dates[i].end, '/kpiNote')
 
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
-
             objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
 
             if (occupation === BUSINESS_MANAGER) {
                 objectDataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager,)
 
-                const [cvSent, projectStart, prospectionMeetingSchedule, kpiJobOrder] = yield all([
-                    call(getSubmissionStatusChangedCvSent, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'cvSent'),
+                const [projectStart, prospectionMeetingSchedule, kpiJobOrder] = yield all([
                     call(getSubmissionStatusChangedProjectStart, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'projectStart'),
                     call(getProspectionMeetingSchedule, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'prospectionMeetingSchedule'),
                     call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'kpiJobOrder')
                 ])
 
-                objectDataBusinessManager.CV_SENT[weekLabel] = cvSent;
                 objectDataBusinessManager.PROJECT_START[weekLabel] = projectStart
                 objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] = prospectionMeetingSchedule
-                objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder
+                objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
             }
         }
     } catch (e) {
@@ -94,21 +90,22 @@ export function* getKpiDataEmployee(action) {
     let kpiNoteOfTheYear = yield call(getKpiNoteSaga, employeeId, dateStartOfThisYear, dates[0].end)
 
     if (occupation === BUSINESS_MANAGER) {
-
-        objectConversionYTDBusinessManager = calculateConversionYTDBusinessManager(objectDataBusinessManager, objectConversionYTDBusinessManager)
-
+        
         objectConversionYTDBusinessManager = yield call(calculateYTDDataBusinessManager, objectConversionYTDBusinessManager, employeeId, dateStartOfThisYearTimestamp, dates[0].endTimestamp)
         objectConversionYTDBusinessManager = calculateTotalYTDBusinessManager(kpiNoteOfTheYear, objectConversionYTDBusinessManager)
+        objectConversionYTDBusinessManager = calculateConversionYTDBusinessManager(objectConversionYTDBusinessManager)
         objectConversionYTDBusinessManager = calculateAverageYTDBusinessManager(objectConversionYTDBusinessManager, weekNumberOfTheYear)
 
         objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
+        objectConversionYTDRecruitment = calculateConversionYTDRecruitment(objectConversionYTDRecruitment)
         objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
     } else {
-        objectConversionYTDRecruitment = calculateConversionYTDRecruitment(objectDataRecruitment, objectConversionYTDRecruitment)
         objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
+        objectConversionYTDRecruitment = calculateConversionYTDRecruitment(objectConversionYTDRecruitment)
         objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
     }
 
+    console.log(objectConversionYTDRecruitment, objectConversionYTDBusinessManager)
     yield put(setObjectYTD(objectConversionYTDRecruitment, objectConversionYTDBusinessManager))
 
     yield put(setCalculationYTD(false))
@@ -140,17 +137,15 @@ export function* getKpiNoteSaga(employeeId, dateStart, dateEnd) {
 export function* calculateYTDDataBusinessManager(objectConversionYTDBusinessManager, employeeId, dateStartOfThisYearTimestamp, closerDateWeekTimestamp) {
 
     try {
-        const [cvSent, projectStart, prospectionMeetingSchedule, kpiJobOrder] = yield all([
-            call(getSubmissionStatusChangedCvSent, employeeId, dateStartOfThisYearTimestamp, closerDateWeekTimestamp, 'cvSent'),
+        const [projectStart, prospectionMeetingSchedule, kpiJobOrder] = yield all([
             call(getSubmissionStatusChangedProjectStart, employeeId, dateStartOfThisYearTimestamp, closerDateWeekTimestamp, '/projectStart'),
             call(getProspectionMeetingSchedule, employeeId, dateStartOfThisYearTimestamp, closerDateWeekTimestamp, '/prospectionMeetingSchedule'),
             call(getJobOrders, employeeId, dateStartOfThisYearTimestamp, closerDateWeekTimestamp, '/kpiJobOrder')
         ])
 
-        objectConversionYTDBusinessManager.CV_SENT[TOTAL_YTD] = cvSent;
         objectConversionYTDBusinessManager.PROJECT_START[TOTAL_YTD] = projectStart
         objectConversionYTDBusinessManager.PROSPECTION_MEETING_SCHEDULE[TOTAL_YTD] = prospectionMeetingSchedule
-        objectConversionYTDBusinessManager.NEW_VACANCY[TOTAL_YTD] = kpiJobOrder
+        objectConversionYTDBusinessManager.NEW_VACANCY[TOTAL_YTD] = kpiJobOrder.count
     } catch (e) {
         //
     }
