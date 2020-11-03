@@ -93,18 +93,13 @@ export const initializeObjectDate = () => {
 
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes;
+  console.log(data)
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
 
     switch (action) {
-      case CALL:
-        if (data[i].candidates.total === 1) objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
-        break;
-      case LINKED_INMAIL:
-        objectDataRecruitment.CONTACTED_BY_INMAIL[labelWeek]++
-        break;
       case NO_SHOW:
         objectDataRecruitment.NO_SHOW[labelWeek]++
         break;
@@ -120,6 +115,50 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
   }
   return objectDataRecruitment
 }
+
+export const countCallAndInMailForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
+  let data = notes;
+  if (data.length === 0) return objectDataRecruitment
+  for (let i = 0; i < data.length; i++) {
+    let action = data[i].action
+    switch (action) {
+      case CALL:
+        if (data[i].candidates.total === 1) objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
+        break;
+      case LINKED_INMAIL:
+        objectDataRecruitment.CONTACTED_BY_INMAIL[labelWeek]++
+        break;
+      default:
+        break;
+    }
+  }
+  return objectDataRecruitment
+}
+
+export const countCallAndInMailForRecruitmentAndWeeklySpeed = (labelWeek, notes, objectDataRecruitment, objectNoteForWeeklySpeed) => {
+  let data = notes;
+  if (data.length === 0) return objectDataRecruitment
+  for (let i = 0; i < data.length; i++) {
+    let action = data[i].action
+    switch (action) {
+      case CALL:
+        if (data[i].candidates.total === 1){
+          objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
+          objectNoteForWeeklySpeed = [...objectNoteForWeeklySpeed, ...data[i].candidates.data]
+        } 
+        break;
+      case LINKED_INMAIL:
+        objectDataRecruitment.CONTACTED_BY_INMAIL[labelWeek]++
+        objectNoteForWeeklySpeed = [...objectNoteForWeeklySpeed, ...data[i].candidates.data]
+        break;
+      default:
+        break;
+    }
+  }
+  return [objectDataRecruitment, objectNoteForWeeklySpeed]
+}
+
+
 
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
   let data = notes;

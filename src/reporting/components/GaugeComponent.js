@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { connect } from "react-redux";
 import GaugeChart from 'react-gauge-chart'
 import theme from '../../style/theme'
 import { number } from 'prop-types'
 import { pathOr } from 'ramda'
-import { getColorGaugeLimit } from '../../utils/gaugecalculation'
 import styled from 'styled-components'
 
 const BoxGauge = styled.div(({ color, theme }) => ({

@@ -22,8 +22,7 @@ import {
 
 export function* getEmployees() {
     try {
-        const employees = yield call(getBusinessManagerSourcingOfficerAndTalentAcquisition);
-        console.log(employees)
+        let employees = yield call(getBusinessManagerSourcingOfficerAndTalentAcquisition);
         employees = sortTableEmployee(employees.data)
         yield put(setEmployees(employees))
     } catch (e) {
@@ -33,7 +32,6 @@ export function* getEmployees() {
 
 export function* onEmployeeSelected(action) {
     let limitGauge = getGaugeLimitFromFile(pathOr("", ["payload", "occupation"], action))
-    console.log(limitGauge)
     yield put(setGaugeLimit(limitGauge))
     yield put(getEmployeeKpi(prop("payload", action)))
 }

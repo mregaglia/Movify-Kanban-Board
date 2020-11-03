@@ -15,8 +15,6 @@ export const getNoteFromEmployee = (idEmployee, dateStart, dateEnd, startValue) 
         }
     );
 
-
-
 export const getSubmissionStatusChangedProjectStart = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
     get("query/JobSubmissionEditHistory", {
         fields: "id",
