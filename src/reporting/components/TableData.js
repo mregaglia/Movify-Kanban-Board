@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { string, object } from "prop-types";
 import { pathOr } from "ramda";
 import { Table, TableTheadTr, TableContentTh } from "../../style/table_style"
-import { BUSINESS_MANAGER, SOURCING_OFFICER } from './EmployeeData'
+import { BUSINESS_MANAGER, SOURCING_OFFICER, TALENT_ACQUISITION } from './EmployeeData'
 import WeeklySpeed from './WeeklySpeed'
 
 const TableData = ({ occupation, dates }) => {
@@ -28,7 +28,7 @@ const TableData = ({ occupation, dates }) => {
                     }
 
                     {
-                        (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER) && <TalentAcquisition />
+                        (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER || occupation === TALENT_ACQUISITION) && <TalentAcquisition />
                     }
 
                 </tbody>

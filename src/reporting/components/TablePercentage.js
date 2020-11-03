@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { Table, TableTheadTr, TableContentTh } from "../../style/table_style"
 import { pathOr, path } from "ramda"
 import { string, bool } from 'prop-types'
-import { BUSINESS_MANAGER, SOURCING_OFFICER } from './EmployeeData'
+import { BUSINESS_MANAGER, SOURCING_OFFICER, TALENT_ACQUISITION } from './EmployeeData'
 import TablePercentageTalentAcquisition from './TablePercentageTalentAcquisition'
 import TablePercentageBusinessManager from './TablePercentageBusinessManager'
 import Loader from 'react-loader-spinner'
@@ -43,15 +43,12 @@ const TablePercentage = ({ occupation, isCalculatingYTD }) => {
                             </TableTheadTr>
                         </thead>
                         <tbody>
-
                             {
                                 occupation === BUSINESS_MANAGER && <TablePercentageBusinessManager />
                             }
-
                             {
-                                (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER) && <TablePercentageTalentAcquisition />
+                                (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER || occupation === TALENT_ACQUISITION) && <TablePercentageTalentAcquisition />
                             }
-
                         </tbody>
                     </Table>
                 )

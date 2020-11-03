@@ -45,7 +45,6 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
                     (!isEmpty(employeeSelected) && !isLoadingKpi) && (
                         <>
                             <GaugeComponent />
-
                             <TableData />
                             <TablePercentage />
                         </>
