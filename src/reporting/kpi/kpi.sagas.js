@@ -9,8 +9,8 @@ import {
     initalizeObjectRecruitment,
     initializeObjectConversionYTDBusinessManager,
     initializeObjectConversionYTDRecruitment,
-    countDataBusinessManager,
-    countDataRecruitment,
+    countNoteForBusinessManager,
+    countNoteForRecruitment,
     initializeObjectDate,
     calculateConversionYTDBusinessManager,
     calculateConversionYTDRecruitment,
@@ -59,20 +59,15 @@ export function* getKpiDataEmployee(action) {
 
     try {
         for (let i = 0; i < dates.length; i++) {
-
             let weekLabel = getWeekLabel(i)
-
-            const [kpiNote, appointments] = yield all([
-                call(getKpiNoteSaga, employeeId, dates[i].start, dates[i].end, '/kpiNote'),
-                call(getAppointment, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, '/appointments')
-            ])
+            const kpiNote = yield call(getKpiNoteSaga, employeeId, dates[i].start, dates[i].end, '/kpiNote')
 
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
-            objectDataRecruitment = countDataRecruitment(objectDataRecruitment, weekLabel, kpiNote)
-            objectDataRecruitment.INTERVIEW_DONE[weekLabel] = appointments;
+
+            objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
 
             if (occupation === BUSINESS_MANAGER) {
-                objectDataBusinessManager = countDataBusinessManager(objectDataBusinessManager, weekLabel, kpiNote)
+                objectDataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager,)
 
                 const [cvSent, projectStart, prospectionMeetingSchedule, kpiJobOrder] = yield all([
                     call(getSubmissionStatusChangedCvSent, employeeId, dates[i].startTimestamp, dates[i].endTimestamp, 'cvSent'),
@@ -99,20 +94,18 @@ export function* getKpiDataEmployee(action) {
     let kpiNoteOfTheYear = yield call(getKpiNoteSaga, employeeId, dateStartOfThisYear, dates[0].end)
 
     if (occupation === BUSINESS_MANAGER) {
-        
-         objectConversionYTDBusinessManager = calculateConversionYTDBusinessManager(objectDataBusinessManager, objectConversionYTDBusinessManager)
+
+        objectConversionYTDBusinessManager = calculateConversionYTDBusinessManager(objectDataBusinessManager, objectConversionYTDBusinessManager)
 
         objectConversionYTDBusinessManager = yield call(calculateYTDDataBusinessManager, objectConversionYTDBusinessManager, employeeId, dateStartOfThisYearTimestamp, dates[0].endTimestamp)
         objectConversionYTDBusinessManager = calculateTotalYTDBusinessManager(kpiNoteOfTheYear, objectConversionYTDBusinessManager)
         objectConversionYTDBusinessManager = calculateAverageYTDBusinessManager(objectConversionYTDBusinessManager, weekNumberOfTheYear)
 
         objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
-        objectConversionYTDRecruitment = yield call(calculateYTDDataRecruitment, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[0].end)
         objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
     } else {
         objectConversionYTDRecruitment = calculateConversionYTDRecruitment(objectDataRecruitment, objectConversionYTDRecruitment)
         objectConversionYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectConversionYTDRecruitment)
-        objectConversionYTDRecruitment = yield call(calculateYTDDataRecruitment, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[0].end)
         objectConversionYTDRecruitment = calculateAverageYTDRecruitment(objectConversionYTDRecruitment, weekNumberOfTheYear)
     }
 
@@ -142,17 +135,6 @@ export function* getKpiNoteSaga(employeeId, dateStart, dateEnd) {
         //
     }
     return kpiNote;
-}
-
-export function* calculateYTDDataRecruitment(objectConversionYTDRecruitment, employeeId, dateStartTimeStamp, dateEndTimestamp) {
-    try {
-        const appointments = yield call(getAppointment, employeeId, dateStartTimeStamp, dateEndTimestamp);
-        objectConversionYTDRecruitment.INTERVIEW_SCHEDULE[TOTAL_YTD] = appointments
-        return objectConversionYTDRecruitment
-    } catch (e) {
-        //
-    }
-    return objectConversionYTDRecruitment
 }
 
 export function* calculateYTDDataBusinessManager(objectConversionYTDBusinessManager, employeeId, dateStartOfThisYearTimestamp, closerDateWeekTimestamp) {

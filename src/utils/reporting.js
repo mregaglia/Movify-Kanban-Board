@@ -9,7 +9,8 @@ export const CALL_RECRUITMENT = "Contacted by phone"
 export const INTAKE = "Intake"
 export const LINKED_INMAIL = "LinkedIn InMail"
 export const NO_SHOW = "No show"
-export const INTERVIEW_DONE = "Interview 1"
+export const INTERVIEW_DONE_1 = "Interview 1"
+export const INTERVIEW_DONE_2 = "Interview 2"
 export const CONTRACT_PROPOSED = "Offer"
 
 export const LABEL_DATES = "DATES"
@@ -91,16 +92,6 @@ export const initializeObjectDate = () => {
   }
 }
 
-export const countDataBusinessManager = (objectDataBusinessManager, labelWeek, notes) => {
-  countNoteForBusinessManager(labelWeek, notes, objectDataBusinessManager)
-  return objectDataBusinessManager;
-}
-
-export const countDataRecruitment = (objectDataRecruitment, labelWeek, notes) => {
-  countNoteForRecruitment(labelWeek, notes, objectDataRecruitment)
-  return objectDataRecruitment;
-}
-
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes;
   if (data.length === 0) return objectDataRecruitment
@@ -118,8 +109,7 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
       case NO_SHOW:
         objectDataRecruitment.NO_SHOW[labelWeek]++
         break;
-      case INTERVIEW_DONE:
-
+      case INTERVIEW_DONE_1 || INTERVIEW_DONE_2:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
         break;
       case CONTRACT_PROPOSED:
@@ -129,6 +119,7 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
         break;
     }
   }
+  return objectDataRecruitment
 }
 
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
@@ -146,14 +137,18 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
       case CALL:
         if (data[i].clientContacts.total) objectDataBusinessManager.CALL[labelWeek]++;
         break;
+      case INTAKE:
+        objectDataBusinessManager.INTAKE[labelWeek]++;
+        break;
       default:
         break;
     }
   }
+  return objectDataBusinessManager
 }
 
 export const calculateConversionYTDBusinessManager = (objectDataBusinessManager, objectConversionYTDBusinessManager) => {
-  
+
   let prospectionMeetingScheduleConversionYTD = Math.round((objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[FIRST_WEEK] / objectDataBusinessManager.CALL[FIRST_WEEK])) * 100
   objectConversionYTDBusinessManager.PROSPECTION_MEETING_SCHEDULE[CONVERSION_YTD] = (isNaN(prospectionMeetingScheduleConversionYTD) || (prospectionMeetingScheduleConversionYTD === Infinity)) ? 0 : prospectionMeetingScheduleConversionYTD;
 
@@ -213,7 +208,7 @@ export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) 
       case NO_SHOW:
         objectYTDRecruitment.NO_SHOW[TOTAL_YTD]++
         break;
-      case INTERVIEW_DONE:
+      case INTERVIEW_DONE_1 || INTERVIEW_DONE_2:
         objectYTDRecruitment.INTERVIEW_DONE[TOTAL_YTD]++
         break;
       case CONTRACT_PROPOSED:
@@ -223,8 +218,6 @@ export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) 
         break;
     }
   }
-
-
   return objectYTDRecruitment
 }
 
@@ -242,6 +235,9 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
         break;
       case CALL:
         if (notesOfyear[i].clientContacts.total) objectYTDBusinessManager.CALL[TOTAL_YTD]++;
+        break;
+      case INTAKE:
+        objectYTDBusinessManager.INTAKE[TOTAL_YTD]++;
         break;
       default:
         break;

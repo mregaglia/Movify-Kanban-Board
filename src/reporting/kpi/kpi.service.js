@@ -17,9 +17,11 @@ export const getNoteFromEmployee = (idEmployee, dateStart, dateEnd, startValue) 
 
 export const getSubmissionStatusChangedCvSent = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
     get("query/JobSubmissionEditHistory", {
-        fields: "id",
+        fields: "*",
         where: `modifyingPerson.id=${idEmployee} AND fieldChanges.columnName='status' AND fieldChanges.newValue='WF Response' AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`
-    }).then(response => prop("count", response))
+    }).then(response =>
+        prop("count", response)
+    )
 
 export const getSubmissionStatusChangedProjectStart = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
     get("query/JobSubmissionEditHistory", {
@@ -32,7 +34,9 @@ export const getJobOrders = (idEmployee, dateStartTimestamp, dateEndTimestamp) =
         fields: "id",
         where: `owner.id=${idEmployee} AND isDeleted=false AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`,
         count: "50"
-    }).then(response => prop("count", response))
+    }).then(response => 
+        prop("count", response)
+    )
 
 
 export const getProspectionMeetingSchedule = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
