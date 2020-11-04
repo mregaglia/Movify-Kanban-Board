@@ -8,7 +8,7 @@ import {
 export const getBusinessManagers = (start = 0) =>
   get("query/CorporateUser", {
     fields: "id,firstName,lastName,occupation,primaryDepartment",
-    where: "occupation='Business Manager' AND isDeleted=false",
+    where: "occupation IN ('Business Manager %26 Reporting Owner', 'Business Manager', 'Reporting Owner %26 Business Manager') AND isDeleted=false",
     orderBy: "firstName,primaryDepartment.name",
     start
   });
