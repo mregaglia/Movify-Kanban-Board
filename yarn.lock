@@ -9207,7 +9207,7 @@ react-error-overlay@^6.0.7:
   resolved "https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.7.tgz#1dcfb459ab671d53f660a991513cb2f0a0553108"
   integrity sha512-TAv1KJFh3RhqxNvhzxj6LeT5NWklP6rDr2a0jaTfsZ5wSZWHOGeqQyejUp3xxLfPt2UpyJEcVQB/zyPcmonNFA==
 
-react-gauge-chart@^0.2.5:
+react-gauge-chart@0.2.5:
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/react-gauge-chart/-/react-gauge-chart-0.2.5.tgz#53484afe49889e7c64f41b2858c540df98e020ed"
   integrity sha512-8ghjOzdqZtGXWujPI4uBH5n4szhRom3OAh/NHZd+nTD3Q6a/RIDf8Z8ytEeABaYyHVVIUOcXuAk/Azqc1F/Iyg==
@@ -9383,10 +9383,10 @@ react-toastify@6.0.9:
     prop-types "^15.7.2"
     react-transition-group "^4.4.1"
 
-react-tooltip@4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-4.2.1.tgz#7cb2ea0e32c95d4e91f6de7bc83a2b23375d4238"
-  integrity sha512-UnbPca1JJsCeJ/6bnBdivacciEFw5JjfFSALCnFbQkTfTo6kcPF0ryO+mUiMNIoaUBTI28wGlcDEQxfICQivcA==
+react-tooltip@4.2.10:
+  version "4.2.10"
+  resolved "https://registry.yarnpkg.com/react-tooltip/-/react-tooltip-4.2.10.tgz#ed1a1acd388940c96f4b6309f4fd4dcce5e01bdc"
+  integrity sha512-D7ZLx6/QwpUl0SZRek3IZy/HWpsEEp0v3562tcT8IwZgu8IgV7hY5ZzniTkHyRcuL+IQnljpjj7A7zCgl2+T3w==
   dependencies:
     prop-types "^15.7.2"
     uuid "^7.0.3"
