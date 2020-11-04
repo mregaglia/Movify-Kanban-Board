@@ -17,7 +17,9 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-router-dom": "5.2.0",
+    "redux": "4.0.5",
     "react-redux": "7.2.2",
+    "redux-form": "8.3.6",
     "react-beautiful-dnd": "11.0.5",
     "react-modal": "3.11.2",
     "react-contextmenu": "2.14.0",
@@ -27,8 +29,6 @@
     "react-gauge-chart": "0.2.5",
     "react-scripts": "3.4.1",
     "react-select": "^3.1.0",
-    "redux": "4.0.5",
-    "redux-form": "8.3.3",
     "redux-saga": "1.1.3",
     "styled-components": "5.1.0"
   },
