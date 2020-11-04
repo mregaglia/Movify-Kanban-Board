@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import SelectEmployees from "./SelectEmployees"
 import { getEmployees } from "../employees/employees.actions"
 import { connect } from "react-redux";
-import { bool, object } from "prop-types";
+import { bool, func, object } from "prop-types";
 import { path, isEmpty } from "ramda";
 import TableData from "./TableData";
 import TablePercentage from './TablePercentage'
@@ -57,6 +57,7 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
 }
 
 Reporting.propTypes = {
+    getEmployees: func,
     employeeSelected: object,
     isLoadingKpi: bool
 };

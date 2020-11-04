@@ -22,9 +22,9 @@ import {
 
 export function* getEmployees() {
     try {
-        let employees = yield call(getBusinessManagerSourcingOfficerAndTalentAcquisition);
-        employees = sortTableEmployee(employees.data)
-        yield put(setEmployees(employees))
+        const employees = yield call(getBusinessManagerSourcingOfficerAndTalentAcquisition);
+        const sortedEmployees = sortTableEmployee(employees.data)
+        yield put(setEmployees(sortedEmployees))
     } catch (e) {
         //
     }
