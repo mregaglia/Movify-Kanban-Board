@@ -59,7 +59,7 @@ export function* getKpiDataEmployee(action) {
     let objectConversionYTDRecruitment = initializeObjectConversionYTDRecruitment();
 
 
-    if( occupation != BUSINESS_MANAGER){
+    if( occupation !== BUSINESS_MANAGER){
         yield all([
             call(getLast4WeekDataSaga, employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
             call(calculateYTDSaga, occupation, objectConversionYTDBusinessManager, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[3].end, dateStartOfThisYear, dates[3].endTimestamp),    
@@ -78,7 +78,7 @@ export function* getKpiDataEmployee(action) {
 }
 
 export function* getCvSent(employeeId, dates) {
-    const jobSubmissionsTab = []
+    let jobSubmissionsTab = []
     const tabCvSent = [0, 0, 0, 0]
     try {
         // Retrieving all jobOrders open for employee

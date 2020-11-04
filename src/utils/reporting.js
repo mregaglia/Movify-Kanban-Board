@@ -141,10 +141,10 @@ export const countCallAndInMailForRecruitmentAndWeeklySpeed = (labelWeek, notes,
     let action = data[i].action
     switch (action) {
       case CALL:
-        if (data[i].candidates.total === 1){
+        if (data[i].candidates.total === 1) {
           objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
           objectNoteForWeeklySpeed = [...objectNoteForWeeklySpeed, ...data[i].candidates.data]
-        } 
+        }
         break;
       case LINKED_INMAIL:
         objectDataRecruitment.CONTACTED_BY_INMAIL[labelWeek]++
@@ -284,16 +284,16 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
 }
 
 export const calculateAverageYTDBusinessManager = (objectConversionYTDBusinessManager, weekNumberOfTheYear) => {
-  Object.keys(objectConversionYTDBusinessManager).map((key, i) => {
+  for (let key in Object.keys(objectConversionYTDBusinessManager)) {
     objectConversionYTDBusinessManager[key].AVERAGE = Math.floor(objectConversionYTDBusinessManager[key].TOTAL_YTD / weekNumberOfTheYear)
-  })
+  }
   return objectConversionYTDBusinessManager
 }
 
 export const calculateAverageYTDRecruitment = (objectConversionYTDRecruitment, weekNumberOfTheYear) => {
-  Object.keys(objectConversionYTDRecruitment).map((key, i) => {
+  for (let key in Object.keys(objectConversionYTDRecruitment)) {
     objectConversionYTDRecruitment[key].AVERAGE = Math.floor(objectConversionYTDRecruitment[key].TOTAL_YTD / weekNumberOfTheYear)
-  })
+  }
   return objectConversionYTDRecruitment
 }
 
