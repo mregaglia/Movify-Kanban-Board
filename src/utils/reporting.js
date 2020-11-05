@@ -1,4 +1,8 @@
-import { BUSINESS_MANAGER, SOURCING_OFFICER, TALENT_ACQUISITION } from '../reporting/components/EmployeeData'
+import {
+  BUSINESS_MANAGER,
+  SOURCING_OFFICER,
+  TALENT_ACQUISITION
+} from './employees'
 
 import GaugeLimitFile from '../reporting/gauge-limit.json'
 

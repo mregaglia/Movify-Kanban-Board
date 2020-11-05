@@ -2,7 +2,6 @@ import moment from 'moment'
 import { call, put, takeLatest, all } from "redux-saga/effects";
 import { path } from 'ramda'
 import { getLast4weeksDate, getDateString, getStartDateOfYear, getStartDateOfYearTimestamp } from '../../utils/date'
-import { BUSINESS_MANAGER } from '../components/EmployeeData'
 import { TOTAL_YTD } from '../../utils/reporting'
 import {
     initalizeObjectBusinessManager,
@@ -35,6 +34,11 @@ import {
     getJobSubmissionsByJobOrderId,
     getSubmissionStatusChangedCvSent
 } from './kpi.service'
+import {
+    BUSINESS_MANAGER,
+    SOURCING_OFFICER,
+    TALENT_ACQUISITION
+} from '../../utils/employees'
 
 export const FIRST_WEEK = "FIRST_WEEK"
 export const SECOND_WEEK = "SECOND_WEEK"
@@ -102,7 +106,7 @@ export function* getCvSent(employeeId, dates) {
         return tabCvSent;        
     } catch (e) {
         //
-    }
+    } 
 }
 
 export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {

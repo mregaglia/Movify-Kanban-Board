@@ -5,8 +5,12 @@ import { connect } from "react-redux";
 import { string, object } from "prop-types";
 import { pathOr } from "ramda";
 import { Table, TableTheadTr, TableContentTh } from "../../style/table_style"
-import { BUSINESS_MANAGER, SOURCING_OFFICER, TALENT_ACQUISITION } from './EmployeeData'
 import WeeklySpeed from './WeeklySpeed'
+import {
+    BUSINESS_MANAGER,
+    SOURCING_OFFICER,
+    TALENT_ACQUISITION
+} from '../../utils/employees'
 
 const TableData = ({ occupation, dates }) => {
 
