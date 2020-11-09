@@ -37,7 +37,6 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSe
     
 
     return (
-
         <div>
             {
                 (userConnectedOccupation.includes(REPORTING_OWNER)) && <SelectEmployees />

@@ -35,9 +35,7 @@ import {
     getSubmissionStatusChangedCvSent
 } from './kpi.service'
 import {
-    BUSINESS_MANAGER,
-    SOURCING_OFFICER,
-    TALENT_ACQUISITION
+    BUSINESS_MANAGER
 } from '../../auth/user.sagas'
 
 export const FIRST_WEEK = "FIRST_WEEK"
@@ -69,7 +67,7 @@ export function* getKpiDataEmployee(action) {
             call(calculateYTDSaga, occupation, objectConversionYTDBusinessManager, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[3].end, dateStartOfThisYear, dates[3].endTimestamp),    
         ])
     } else {
-        const [cvSentTab] = yield all([
+        yield all([
             call(getLast4WeekDataSaga, employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
             call(calculateYTDSaga, occupation, objectConversionYTDBusinessManager, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[3].end, dateStartOfThisYear, dates[3].endTimestamp),    
             call(getCvSent, employeeId, dates)
