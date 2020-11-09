@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import SelectEmployees from "./SelectEmployees"
 import { getEmployees } from "../employees/employees.actions"
 import { connect } from "react-redux";
-import { bool, func, object } from "prop-types";
+import { bool, func, object, string } from "prop-types";
 import { path, isEmpty } from "ramda";
 import TableData from "./TableData";
 import TablePercentage from './TablePercentage'
@@ -16,7 +16,7 @@ const Container = styled.div({
     justifyContent: "center"
 })
 
-const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
+const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, userConnectedOccupation }) => {
 
     useEffect(() => {
         getEmployees();
@@ -57,13 +57,15 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
 Reporting.propTypes = {
     getEmployees: func,
     employeeSelected: object,
-    isLoadingKpi: bool
+    isLoadingKpi: bool,
+    userConnectedOccupation: string,
 };
 
 export default connect(
     state => ({
         employeeSelected: path(["employees", "employeeSelected"], state),
-        isLoadingKpi: path(["kpi", "isLoadingKpi"], state)
+        isLoadingKpi: path(["kpi", "isLoadingKpi"], state),
+        userConnectedOccupation: path(["user", "accessToReportingTab", "occupation"], state)
     }),
     { getEmployees }
 )(Reporting);

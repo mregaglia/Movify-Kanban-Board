@@ -5,13 +5,13 @@ import {
 } from "./user.actions"
 
 export const initialState = {
-    hasReportingAccess: false,
+    accessToReportingTab: {},
 }
 
 const user = {
     [UPDATE_REPORTONG_ACCESS]: (state, payload) => ({
         ...state, 
-        hasReportingAccess: payload
+        accessToReportingTab: payload
     })
 }
 

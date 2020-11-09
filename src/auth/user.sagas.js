@@ -29,7 +29,7 @@ export function* getReportingAccess() {
 
     let hasAccess = roleToAccessReporting.some(role => occupation.includes(role))
     
-    yield put(updateReportingAccess(hasAccess))
+    yield put(updateReportingAccess(hasAccess, occupation))
   } catch (e) {
     //
   }

@@ -98,5 +98,5 @@ Header.propTypes = {
 
 export default connect(state => ({
   authenticated: path(["auth", "authenticated"], state),
-  hasReportingAccess: path(["user", "hasReportingAccess"], state)
+  hasReportingAccess: path(["user", "accessToReportingTab", "hasAccessToReporting"], state)
 }))(Header);
