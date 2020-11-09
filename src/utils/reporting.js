@@ -2,7 +2,7 @@ import {
   BUSINESS_MANAGER,
   SOURCING_OFFICER,
   TALENT_ACQUISITION
-} from './employees'
+} from '../auth/user.sagas'
 
 import GaugeLimitFile from '../reporting/gauge-limit.json'
 

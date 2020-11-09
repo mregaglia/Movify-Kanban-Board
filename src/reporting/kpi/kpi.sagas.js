@@ -38,7 +38,7 @@ import {
     BUSINESS_MANAGER,
     SOURCING_OFFICER,
     TALENT_ACQUISITION
-} from '../../utils/employees'
+} from '../../auth/user.sagas'
 
 export const FIRST_WEEK = "FIRST_WEEK"
 export const SECOND_WEEK = "SECOND_WEEK"

@@ -11,7 +11,7 @@ import {
     BUSINESS_MANAGER,
     SOURCING_OFFICER,
     TALENT_ACQUISITION
-} from '../../utils/employees'
+} from '../../auth/user.sagas'
 
 const Loading = styled.div({
     paddingTop: "280px",

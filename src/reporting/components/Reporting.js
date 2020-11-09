@@ -16,8 +16,6 @@ const Container = styled.div({
     justifyContent: "center"
 })
 
-
-
 const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
 
     useEffect(() => {

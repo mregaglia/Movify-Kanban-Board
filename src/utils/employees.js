@@ -1,17 +1,8 @@
-
-export const BUSINESS_MANAGER = "Business Manager"
-export const TALENT_ACQUISITION = "Talent Acquisition"
-export const SOURCING_OFFICER = "Sourcing Officer"
-
-export const BM_REPORTING_OWNER_1 = "Reporting Owner & Business Manager"
-export const BM_REPORTING_OWNER_2 = "Business Manager & Reporting Owner"
-
-export const TA_REPORTING_OWNER_1 = "Reporting Owner & Talent Acquisition"
-export const TA_REPORTING_OWNER_2 = "Talent Acquisition & Reporting Owner"
-
-export const SO_REPORTING_OWNER_1 = "Sourcing Officer & Reporting Owner"
-export const SO_REPORTING_OWNER_2 = "Reporting Owner & Sourcing Officer"
-
+import{
+    BUSINESS_MANAGER,
+    SOURCING_OFFICER,
+    TALENT_ACQUISITION
+} from '../auth/user.sagas'
 
 export const sortTableEmployee = (tableEmployee) => {
     tableEmployee.sort(function (employeeA, employeeB) {
@@ -23,30 +14,34 @@ export const sortTableEmployee = (tableEmployee) => {
 }
 
 export const getValuesFromEmployees = (employees) => {
-    console.log(employees)
     return employees.map((employee) => {
         let occupationLabel = "";
 
-        switch (employee.occupation) {
-            case BUSINESS_MANAGER:
-            case BM_REPORTING_OWNER_1:
-            case BM_REPORTING_OWNER_2:
-                occupationLabel = "BM";
-                break;
-            case SOURCING_OFFICER:
-            case SO_REPORTING_OWNER_1:
-            case SO_REPORTING_OWNER_2:
-                occupationLabel = "SO";
-                break;
-            case TALENT_ACQUISITION:
-            case TA_REPORTING_OWNER_1:
-            case TA_REPORTING_OWNER_2:
-                occupationLabel = "TA"
-                break;
-            default:
-                occupationLabel = "";
-                break;
+        let occupation = employee.occupation
+
+        if (occupation.includes(BUSINESS_MANAGER)) {
+            occupationLabel = "BM";
+        } else if (occupation.includes(SOURCING_OFFICER)) {
+            occupationLabel = "SO";
+        } else if (occupation.includes(TALENT_ACQUISITION)) {
+            occupationLabel = "TA"
         }
+
+        // switch (occupation) {
+        //     case occupation.includes(BUSINESS_MANAGER):
+        //         occupationLabel = "BM";
+        //         break;
+        //     case occupation.includes(SOURCING_OFFICER):
+        //         occupationLabel = "SO";
+        //         break;
+        //     case occupation.includes(TALENT_ACQUISITION):
+        //         occupationLabel = "TA"
+        //         break;
+        //     default:
+        //         occupationLabel = "";
+        //         break;
+        // }
+
         return ({ value: `${employee.id}`, label: occupationLabel + " - " + employee.firstName + " " + employee.lastName })
     })
 }
