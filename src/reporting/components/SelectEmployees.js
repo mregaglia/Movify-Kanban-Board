@@ -1,10 +1,10 @@
 import React from "react";
 import Select from 'react-select'
-import { setEmployeeSelected } from "../employees/employees.actions"
+import { setEmployeeSelected } from '../employees/employees.actions'
 import { setKpiLoading, setCalculationYTD } from '../kpi/kpi.actions'
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
-import { array } from "prop-types";
+import { array, func } from "prop-types";
 import styled from "styled-components"
 import { getValuesFromEmployees } from '../../utils/employees'
 
@@ -47,10 +47,11 @@ const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading, setCal
     )
 }
 
-
-
 SelectEmployees.propTypes = {
-    employees: array
+    employees: array,
+    setEmployeeSelected: func,
+    setKpiLoading: func,
+    setCalculationYTD: func
 };
 
 export default connect(

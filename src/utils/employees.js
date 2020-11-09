@@ -13,6 +13,13 @@ export const sortTableEmployee = (tableEmployee) => {
     return tableEmployee;
 }
 
+export const initializeEmployeeSelected = (employeeId, occupation) => {
+    return {
+        id: employeeId,
+        occupation: occupation
+    }
+}
+
 export const getValuesFromEmployees = (employees) => {
     return employees.map((employee) => {
         let occupationLabel = "";

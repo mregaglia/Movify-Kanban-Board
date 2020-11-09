@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import GaugeChart from 'react-gauge-chart'
 import theme from '../../style/theme'
 import { number } from 'prop-types'
-import { pathOr } from 'ramda'
+import { path } from 'ramda'
 import styled from 'styled-components'
 
 const BoxGauge = styled.div(({ color, theme }) => ({
@@ -51,12 +51,12 @@ GaugeComponent.propTypes = {
 
 export default connect(
     state => ({
-        gaugeGreenStart: pathOr({}, ["kpi", "gaugeLimit", "GREEN", "START"], state),
-        gaugeGreenEnd: pathOr({}, ["kpi", "gaugeLimit", "GREEN", "END"], state),
-        gaugeOrangeStart: pathOr({}, ["kpi", "gaugeLimit", "ORANGE", "START"], state),
-        gaugeOrangeEnd: pathOr({}, ["kpi", "gaugeLimit", "ORANGE", "END"], state),
-        gaugeRedStart: pathOr({}, ["kpi", "gaugeLimit", "RED", "START"], state),
-        gaugeRedEnd: pathOr({}, ["kpi", "gaugeLimit", "RED", "END"], state),
+        gaugeGreenStart: path(["kpi", "gaugeLimit", "GREEN", "START"], state),
+        gaugeGreenEnd: path(["kpi", "gaugeLimit", "GREEN", "END"], state),
+        gaugeOrangeStart: path(["kpi", "gaugeLimit", "ORANGE", "START"], state),
+        gaugeOrangeEnd: path(["kpi", "gaugeLimit", "ORANGE", "END"], state),
+        gaugeRedStart: path(["kpi", "gaugeLimit", "RED", "START"], state),
+        gaugeRedEnd: path(["kpi", "gaugeLimit", "RED", "END"], state),
     }),
     {}
 )(GaugeComponent);
