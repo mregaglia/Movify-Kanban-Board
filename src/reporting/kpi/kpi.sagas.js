@@ -63,7 +63,7 @@ export function* getKpiDataEmployee(action) {
     let objectConversionYTDRecruitment = initializeObjectConversionYTDRecruitment();
 
 
-    if( occupation !== BUSINESS_MANAGER){
+    if(!occupation.includes(BUSINESS_MANAGER)){
         yield all([
             call(getLast4WeekDataSaga, employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
             call(calculateYTDSaga, occupation, objectConversionYTDBusinessManager, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[3].end, dateStartOfThisYear, dates[3].endTimestamp),    
@@ -74,10 +74,6 @@ export function* getKpiDataEmployee(action) {
             call(calculateYTDSaga, occupation, objectConversionYTDBusinessManager, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[3].end, dateStartOfThisYear, dates[3].endTimestamp),    
             call(getCvSent, employeeId, dates)
         ])
-        objectDataBusinessManager.CV_SENT[FIRST_WEEK] = cvSentTab[0]
-        objectDataBusinessManager.CV_SENT[SECOND_WEEK] = cvSentTab[1]
-        objectDataBusinessManager.CV_SENT[THIRD_WEEK] = cvSentTab[2]
-        objectDataBusinessManager.CV_SENT[FOURTH_WEEK] = cvSentTab[3]
     }
 }
 

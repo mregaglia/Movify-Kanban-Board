@@ -28,11 +28,11 @@ const TableData = ({ occupation, dates }) => {
                 </thead>
                 <tbody>
                     {
-                        occupation === BUSINESS_MANAGER && <BusinessManager />
+                        (occupation.includes(BUSINESS_MANAGER)) && <BusinessManager />
                     }
 
                     {
-                        (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER || occupation === TALENT_ACQUISITION) && <TalentAcquisition />
+                        (occupation.includes(BUSINESS_MANAGER) || occupation.includes(SOURCING_OFFICER) || occupation.includes(TALENT_ACQUISITION)) && <TalentAcquisition />
                     }
 
                 </tbody>
