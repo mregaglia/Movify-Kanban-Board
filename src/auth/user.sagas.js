@@ -31,11 +31,11 @@ export function* getReportingAccess() {
     // const jacquelineUserId = 11579
     // const jacquelineOccupation = "Talent Acquisition"
 
-    const userId = 9788
-    const occupation = "Business Manager 11579 9788"
+    // const userId = 9788
+    // const occupation = "Business Manager 11579 9788"
 
-    // const userId = yield call(getUserId)
-    // const occupation = yield call(getUserOccupation, userId)
+    const userId = yield call(getUserId)
+    const occupation = yield call(getUserOccupation, userId)
 
     let employeeIdAccess = []
 

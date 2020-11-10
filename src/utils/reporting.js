@@ -14,9 +14,14 @@ export const LINKED_INMAIL = "LinkedIn InMail"
 export const NO_SHOW = "No show"
 export const INTERVIEW_DONE_1 = "Interview 1"
 export const INTERVIEW_DONE_2 = "Interview 2"
+export const INTERVIEW_DONE_3 = "Interview 3"
 export const CONTRACT_PROPOSED = "Offer"
+export const INTERVIEW_SCHEDULED = "Interview Scheduled"
+export const PROJECT_START = "Kick Off Meeting"
 
 export const LABEL_DATES = "DATES"
+
+export const LABEL_CALL_ATTEMPS = "Client Attempt"
 export const LABEL_CALL = "Call"
 export const LABEL_PROSPECTION_MEETING_SCHEDULE = "Prospection meeting scheduled"
 export const LABEL_MEETING_DONE = "Prospection meeting done"
@@ -40,6 +45,7 @@ export const TOTAL_YTD = "TOTAL_YTD"
 export const initalizeObjectBusinessManager = (occupation) => {
   if (occupation === BUSINESS_MANAGER) {
     return {
+      CALL_ATTEMPS: { TITLE: LABEL_CALL_ATTEMPS, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       CALL: { TITLE: LABEL_CALL, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       PROSPECTION_MEETING_SCHEDULE: { TITLE: LABEL_PROSPECTION_MEETING_SCHEDULE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       PROSPECTION_MEETING_DONE: { TITLE: LABEL_MEETING_DONE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -81,7 +87,7 @@ export const initializeObjectConversionYTDRecruitment = () => {
   return {
     CONTACTED_BY_INMAIL: { CONVERSION_YTD: "-", TOTAL_YTD: 0, AVERAGE: 0 },
     CONTACTED_BY_PHONE: { CONVERSION_YTD: "-", TOTAL_YTD: 0, AVERAGE: 0 },
-    INTERVIEW_SCHEDULE: { CONVERSION_YTD: 0, TOTAL_YTD: 0, AVERAGE: 0 },
+    INTERVIEW_SCHEDULED: { CONVERSION_YTD: 0, TOTAL_YTD: 0, AVERAGE: 0 },
     NO_SHOW: { CONVERSION_YTD: 0, TOTAL_YTD: 0, AVERAGE: 0 },
     INTERVIEW_DONE: { CONVERSION_YTD: 0, TOTAL_YTD: 0, AVERAGE: 0 },
     CONTRACT_PROPOSED: { CONVERSION_YTD: 0, TOTAL_YTD: 0, AVERAGE: 0 },
@@ -106,63 +112,29 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
       case NO_SHOW:
         objectDataRecruitment.NO_SHOW[labelWeek]++
         break;
-      case INTERVIEW_DONE_1 || INTERVIEW_DONE_2:
+      case INTERVIEW_DONE_1 || INTERVIEW_DONE_2 || INTERVIEW_DONE_3:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
         break;
       case CONTRACT_PROPOSED:
         objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++;
         break;
-      default:
-        break;
-    }
-  }
-  return objectDataRecruitment
-}
-
-export const countCallAndInMailForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
-  let data = notes;
-  if (data.length === 0) return objectDataRecruitment
-  for (let i = 0; i < data.length; i++) {
-    let action = data[i].action
-    
-    switch (action) {
       case CALL:
         if (data[i].candidates.total === 1) objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
         break;
       case LINKED_INMAIL:
         objectDataRecruitment.CONTACTED_BY_INMAIL[labelWeek]++
         break;
+      case INTERVIEW_SCHEDULED:
+        if (data[i].candidates.total === 1) objectDataRecruitment.INTERVIEW_SCHEDULED[labelWeek]++
+        break;
+      case CONTRACT_PROPOSED:
+        objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++
       default:
         break;
     }
   }
   return objectDataRecruitment
 }
-
-export const countCallAndInMailForRecruitmentAndWeeklySpeed = (labelWeek, notes, objectDataRecruitment, objectNoteForWeeklySpeed) => {
-  let data = notes;
-  if (data.length === 0) return objectDataRecruitment
-  for (let i = 0; i < data.length; i++) {
-    let action = data[i].action
-    switch (action) {
-      case CALL:
-        if (data[i].candidates.total === 1) {
-          objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
-          objectNoteForWeeklySpeed = [...objectNoteForWeeklySpeed, ...data[i].candidates.data]
-        }
-        break;
-      case LINKED_INMAIL:
-        objectDataRecruitment.CONTACTED_BY_INMAIL[labelWeek]++
-        objectNoteForWeeklySpeed = [...objectNoteForWeeklySpeed, ...data[i].candidates.data]
-        break;
-      default:
-        break;
-    }
-  }
-  return [objectDataRecruitment, objectNoteForWeeklySpeed]
-}
-
-
 
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
   let data = notes;
@@ -172,14 +144,18 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
     let action = data[i].action
 
     switch (action) {
-      case PROSPECTION:
-        objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++;
-        break;
       case CALL:
         if (data[i].clientContacts.total) objectDataBusinessManager.CALL[labelWeek]++;
         break;
       case INTAKE:
         objectDataBusinessManager.INTAKE[labelWeek]++;
+        break;
+      case PROSPECTION:
+        objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
+      case PROJECT_START:
+        objectDataBusinessManager.PROJECT_START[labelWeek]++
+      case INTERVIEW_SCHEDULED:
+        if (data[i].clientContacts.total === 1) objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[labelWeek]++
         break;
       default:
         break;
@@ -274,6 +250,7 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
       case PROSPECTION:
         objectYTDBusinessManager.PROSPECTION_MEETING_DONE[TOTAL_YTD]++;
         break;
+
       case CALL:
         if (notesOfyear[i].clientContacts.total) objectYTDBusinessManager.CALL[TOTAL_YTD]++;
         break;
@@ -296,7 +273,7 @@ export const calculateAverageYTDBusinessManager = (objectConversionYTDBusinessMa
 
 export const calculateAverageYTDRecruitment = (objectConversionYTDRecruitment, weekNumberOfTheYear) => {
   for (let key in Object.keys(objectConversionYTDRecruitment)) {
-    
+
     objectConversionYTDRecruitment[key].AVERAGE = Math.floor(objectConversionYTDRecruitment[key].TOTAL_YTD / weekNumberOfTheYear)
   }
   return objectConversionYTDRecruitment
