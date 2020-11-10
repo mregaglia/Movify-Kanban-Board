@@ -124,6 +124,7 @@ export const countCallAndInMailForRecruitment = (labelWeek, notes, objectDataRec
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
     let action = data[i].action
+    
     switch (action) {
       case CALL:
         if (data[i].candidates.total === 1) objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
@@ -166,7 +167,6 @@ export const countCallAndInMailForRecruitmentAndWeeklySpeed = (labelWeek, notes,
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
   let data = notes;
   if (data.length === 0) return objectDataBusinessManager
-
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
@@ -296,6 +296,7 @@ export const calculateAverageYTDBusinessManager = (objectConversionYTDBusinessMa
 
 export const calculateAverageYTDRecruitment = (objectConversionYTDRecruitment, weekNumberOfTheYear) => {
   for (let key in Object.keys(objectConversionYTDRecruitment)) {
+    
     objectConversionYTDRecruitment[key].AVERAGE = Math.floor(objectConversionYTDRecruitment[key].TOTAL_YTD / weekNumberOfTheYear)
   }
   return objectConversionYTDRecruitment

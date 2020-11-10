@@ -50,5 +50,5 @@ export const getSubmissionStatusChangedCvSent = (idJobSubmission, dateStartTimes
 export const getProspectionMeetingSchedule = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
     get("query/UserEditHistory", {
         fields: "targetEntity",
-        where: `modifyingPerson.id=${idEmployee} AND fieldChanges.columnName='status' AND fieldChanges.newValue='Prospection schedule' AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`
+        where: `modifyingPerson.id=${idEmployee} AND fieldChanges.columnName='status' AND fieldChanges.newValue='Prospection scheduled' AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`
     }).then(response => prop("count", response))

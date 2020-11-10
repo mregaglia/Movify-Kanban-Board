@@ -26,15 +26,14 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSe
 
     useEffect(() => {
         if (!userConnectedOccupation.includes(REPORTING_OWNER)) {
-            let initializedEmployeeConnected = initializeEmployeeSelected(userConnectedId, userConnectedOccupation)
-            setEmployeeSelected(initializedEmployeeConnected);
+             let initializedEmployeeConnected = initializeEmployeeSelected(userConnectedId, userConnectedOccupation)
+             setEmployeeSelected(initializedEmployeeConnected);
             setKpiLoading(true)
-            setCalculationYTD(true)
+            // setCalculationYTD(true)
         } else {
             getEmployees();
         }
     }, [])
-    
 
     return (
         <div>
@@ -44,7 +43,7 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSe
 
             <Container>
                 {
-                    ((!isEmpty(employeeSelected) && isLoadingKpi) || (isLoadingKpi)) && (
+                    (!isEmpty(employeeSelected) && isLoadingKpi) && (
                         <div>
                             <Loader
                                 type="Rings"
@@ -56,7 +55,7 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSe
                     )
                 }
                 {
-                    ((!userConnectedOccupation.includes(REPORTING_OWNER) && !isLoadingKpi) || (!isEmpty(employeeSelected) && !isLoadingKpi)) && (
+                    (!isEmpty(employeeSelected) && !isLoadingKpi) && (
                         <>
                             <GaugeComponent />
                             <TableData />

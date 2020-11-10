@@ -48,10 +48,10 @@ const TablePercentage = ({ occupation, isCalculatingYTD }) => {
                         </thead>
                         <tbody>
                             {
-                                occupation === BUSINESS_MANAGER && <TablePercentageBusinessManager />
+                                occupation.includes(BUSINESS_MANAGER) && <TablePercentageBusinessManager />
                             }
                             {
-                                (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER || occupation === TALENT_ACQUISITION) && <TablePercentageTalentAcquisition />
+                                (occupation.includes(BUSINESS_MANAGER) || occupation.includes(SOURCING_OFFICER) || occupation.includes(TALENT_ACQUISITION)) && <TablePercentageTalentAcquisition />
                             }
                         </tbody>
                     </Table>

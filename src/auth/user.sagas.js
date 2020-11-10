@@ -9,6 +9,10 @@ import {
   getUserOccupation
 } from "./user.service"
 
+import {
+  getIdEmployeeAccessAndOccupation
+} from '../utils/employees'
+
 export const REPORTING_OWNER = "Reporting Owner"
 export const BUSINESS_MANAGER = "Business Manager"
 export const TALENT_ACQUISITION = "Talent Acquisition"
@@ -24,12 +28,21 @@ const roleToAccessReporting = [
 
 export function* getReportingAccess() {
   try {
+  
     const userId = yield call(getUserId)
     const occupation = yield call(getUserOccupation, userId)
 
+    let employeeIdAccess = []
+
     let hasAccess = roleToAccessReporting.some(role => occupation.includes(role))
+
+    if(!occupation.includes(REPORTING_OWNER)) {
+      let dataEmployeeFiltered = getIdEmployeeAccessAndOccupation(occupation)
+      employeeIdAccess = dataEmployeeFiltered.tabEmployeesIdsAccessibleByUserConnected
+      occupation = dataEmployeeFiltered.userConnectedOccupation
+    }
     
-    yield put(updateReportingAccess(hasAccess, BUSINESS_MANAGER, userId))
+    yield put(updateReportingAccess(hasAccess, occupation, userId, employeeIdAccess))
   } catch (e) {
     //
   }

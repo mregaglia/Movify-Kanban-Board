@@ -20,6 +20,19 @@ export const initializeEmployeeSelected = (employeeId, occupation) => {
     }
 }
 
+export const getIdEmployeeAccessAndOccupation = (occupationNotFiltered) => {
+    let tabIdEmployees = occupationNotFiltered.split(' ')
+    let occupation = tabIdEmployees[0] + " " + tabIdEmployees[1]
+
+    tabIdEmployees.splice(0, 1)
+    tabIdEmployees.splice(0, 1)
+
+    return {
+        tabEmployeesIdsAccessibleByUserConnected : tabIdEmployees,
+        userConnectedOccupation: occupation
+    }
+}
+
 export const getValuesFromEmployees = (employees) => {
     return employees.map((employee) => {
         let occupationLabel = "";
