@@ -7,6 +7,8 @@ export const SET_OBJECT_YTD = "SET_OBJECT_YTD"
 
 export const SET_GAUGE_LIMIT = "SET_GAUGE_LIMIT"
 
+export const SET_CV_SENT = "SET_CV_SENT"
+
 export const getEmployeeKpi = (employee) => ({ type: GET_EMPLOYEE_KPI, payload: employee });
 export const setEmployeeKpi = (objectDate, objectDataRecruitment, objectDataBusinessManager) => ({ type: SET_EMPLOYEE_KPI, payload: { dates: objectDate, datasRecruitment: objectDataRecruitment, datasBusinessManager: objectDataBusinessManager } })
 
@@ -16,3 +18,5 @@ export const setKpiLoading = (isLoadingKpi) => ({ type: SET_LOADING_KPI, payload
 export const setCalculationYTD = (isCalculatingYTD) => ({ type: SET_CALCULATION_YTD, payload: isCalculatingYTD });
 
 export const setGaugeLimit = (gaugeLimit) => ({ type: SET_GAUGE_LIMIT, payload: gaugeLimit });
+
+export const setCvSent = (cvSent) => ({ type: SET_CV_SENT, payload: cvSent})

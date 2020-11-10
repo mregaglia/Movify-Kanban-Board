@@ -2,7 +2,7 @@ import moment from 'moment'
 import { call, put, takeLatest, all } from "redux-saga/effects";
 import { path } from 'ramda'
 import { getLast4weeksDate, getDateString, getStartDateOfYear, getStartDateOfYearTimestamp } from '../../utils/date'
-import { TOTAL_YTD } from '../../utils/reporting'
+import {  TOTAL_YTD } from '../../utils/reporting'
 import {
     initalizeObjectBusinessManager,
     initalizeObjectRecruitment,
@@ -11,6 +11,7 @@ import {
     countNoteForBusinessManager,
     countNoteForRecruitment,
     initializeObjectDate,
+    initializeObjectCvSent,
     calculateConversionYTDBusinessManager,
     calculateConversionYTDRecruitment,
     calculateTotalYTDBusinessManager,
@@ -23,11 +24,15 @@ import {
     setEmployeeKpi,
     setKpiLoading,
     setObjectYTD,
-    setCalculationYTD
+    setCalculationYTD,
+    setCvSent
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
-    getJobOrders
+    getJobOrders,
+    getAllJobOrders,
+    getJobSubmissionsByJobOrderId,
+    getSubmissionStatusChangedCvSent
 } from './kpi.service'
 import {
     BUSINESS_MANAGER
@@ -55,10 +60,19 @@ export function* getKpiDataEmployee(action) {
     let objectConversionYTDBusinessManager = initializeObjectConversionYTDBusinessManager();
     let objectConversionYTDRecruitment = initializeObjectConversionYTDRecruitment();
 
-    yield all([
-        call(getLast4WeekDataSaga, employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
-        //call(calculateYTDSaga, occupation, objectConversionYTDBusinessManager, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[3].end, dateStartOfThisYear, dates[3].endTimestamp),
-    ])
+    if(occupation.includes(BUSINESS_MANAGER)) {
+        yield all([
+            call(getLast4WeekDataSaga, employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
+            getCvSent(employeeId, dates),
+            //call(calculateYTDSaga, occupation, objectConversionYTDBusinessManager, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[3].end, dateStartOfThisYear, dates[3].endTimestamp),
+        ])
+    } else {
+        yield all([
+            call(getLast4WeekDataSaga, employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
+            //call(calculateYTDSaga, occupation, objectConversionYTDBusinessManager, objectConversionYTDRecruitment, employeeId, dateStartOfThisYearTimestamp, dates[3].end, dateStartOfThisYear, dates[3].endTimestamp),
+        ])
+    }
+    
 }
 
 export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
@@ -81,6 +95,38 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
     } catch (e) {
         //
     }
+}
+
+export function* getCvSent(employeeId, dates) {
+    let jobSubmissionsTab = []
+    const cvSentObject = initializeObjectCvSent()
+
+    try {
+        // Retrieving all jobOrders open for employee
+        const jobOrderOpen = yield call(getAllJobOrders, employeeId);
+
+        // retrieving all jobsubmissions linked to the jobOrder
+        for(let i = 0; i < jobOrderOpen.length; i++) {
+            let jobSubmission = yield call(getJobSubmissionsByJobOrderId, jobOrderOpen[i].id)
+            jobSubmissionsTab = [...jobSubmissionsTab, ...jobSubmission]
+        }
+
+        // Looking for any modification for this jobSubmission to WF Response
+        for (let i = 0; i < dates.length; i++) {
+            let labelWeek = getWeekLabel(i)
+            for(let j = 0; j < jobSubmissionsTab.length; j++) {
+                let isCvSent = yield call(getSubmissionStatusChangedCvSent, jobSubmissionsTab[j].id, dates[i].startTimestamp, dates[i].endTimestamp)
+                if(isCvSent) {
+                    cvSentObject[labelWeek]++;
+                    jobSubmissionsTab.slice(j, 1)
+                }
+            }
+        }
+        console.log(cvSentObject)
+        yield put(setCvSent(cvSentObject));        
+    } catch (e) {
+        //
+    } 
 }
 
 export function* getKpiNoteSaga(employeeId, dateStart, dateEnd) {

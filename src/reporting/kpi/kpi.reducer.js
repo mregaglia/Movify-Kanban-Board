@@ -5,7 +5,8 @@ import {
   SET_LOADING_KPI,
   SET_GAUGE_LIMIT,
   SET_CALCULATION_YTD,
-  SET_OBJECT_YTD
+  SET_OBJECT_YTD,
+  SET_CV_SENT
 } from "./kpi.actions"
 
 export const initialState = {
@@ -35,6 +36,17 @@ const kpi = {
   [SET_GAUGE_LIMIT]: (state, payload) => ({
     ...state,
     gaugeLimit: payload
+  }),
+  [SET_CV_SENT]: (state, payload) => ({
+    ...state,
+    dataEmployee: {
+      ...state.dataEmployee,
+      datasBusinessManager: {
+        ...state.dataEmployee.datasBusinessManager,
+        CV_SENT:
+          payload
+      }
+    }
   }),
 
 }

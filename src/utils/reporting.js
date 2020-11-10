@@ -18,10 +18,11 @@ export const INTERVIEW_DONE_3 = "Interview 3"
 export const CONTRACT_PROPOSED = "Offer"
 export const INTERVIEW_SCHEDULED = "Interview Scheduled"
 export const PROJECT_START = "Kick Off Meeting"
+export const CALL_ATTEMPS = "Call Attempt"
 
 export const LABEL_DATES = "DATES"
 
-export const LABEL_CALL_ATTEMPS = "Client Attempt"
+export const LABEL_CALL_ATTEMPS = "Call Attempt"
 export const LABEL_CALL = "Call"
 export const LABEL_PROSPECTION_MEETING_SCHEDULE = "Prospection meeting scheduled"
 export const LABEL_MEETING_DONE = "Prospection meeting done"
@@ -56,6 +57,16 @@ export const initalizeObjectBusinessManager = (occupation) => {
     }
   } else {
     return {}
+  }
+}
+
+export const initializeObjectCvSent = () => {
+  return {
+    TITLE: LABEL_CV_SENT,
+    FIRST_WEEK: 0,
+    SECOND_WEEK: 0,
+    THIRD_WEEK: 0,
+    FOURTH_WEEK: 0
   }
 }
 
@@ -129,6 +140,7 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
         break;
       case CONTRACT_PROPOSED:
         objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++
+        break
       default:
         break;
     }
@@ -137,6 +149,7 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
 }
 
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
+  console.log(notes)
   let data = notes;
   if (data.length === 0) return objectDataBusinessManager
   for (let i = 0; i < data.length; i++) {
@@ -144,6 +157,9 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
     let action = data[i].action
 
     switch (action) {
+      case CALL_ATTEMPS:
+        objectDataBusinessManager.CALL_ATTEMPS[labelWeek]++;
+        break;
       case CALL:
         if (data[i].clientContacts.total) objectDataBusinessManager.CALL[labelWeek]++;
         break;
@@ -152,8 +168,10 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         break;
       case PROSPECTION:
         objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
+        break;
       case PROJECT_START:
         objectDataBusinessManager.PROJECT_START[labelWeek]++
+        break;
       case INTERVIEW_SCHEDULED:
         if (data[i].clientContacts.total === 1) objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[labelWeek]++
         break;
