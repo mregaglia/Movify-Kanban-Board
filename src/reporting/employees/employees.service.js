@@ -1,4 +1,5 @@
 import { get } from "../../utils/api";
+import { prop } from "ramda"
 
 export const getBusinessManagerSourcingOfficerAndTalentAcquisition = (start = 0) =>
     get("query/CorporateUser", {
@@ -9,3 +10,10 @@ export const getBusinessManagerSourcingOfficerAndTalentAcquisition = (start = 0)
         orderBy: "firstName,primaryDepartment.name",
         start: 0
     });
+
+    export const getUserById = (id) => 
+    get("query/CorporateUser", {
+        fields: "id,firstName,lastName,occupation,primaryDepartment",
+        where: `id=${id} AND isDeleted=false`,
+        start: 0
+    }).then(response => prop("data", response))

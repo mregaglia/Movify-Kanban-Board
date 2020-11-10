@@ -32,7 +32,7 @@ export function* getReportingAccess() {
     // const jacquelineOccupation = "Talent Acquisition"
 
     const userId = 9788
-    const occupation = "Business Manager 12345 790768"
+    const occupation = "Business Manager 11579 9788"
 
     // const userId = yield call(getUserId)
     // const occupation = yield call(getUserOccupation, userId)

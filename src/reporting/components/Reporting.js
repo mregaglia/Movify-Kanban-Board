@@ -3,9 +3,9 @@ import styled from 'styled-components'
 import SelectEmployees from "./SelectEmployees"
 import { getEmployees } from "../employees/employees.actions"
 import { connect } from "react-redux";
-import { setEmployeeSelected } from '../employees/employees.actions'
+import { setEmployeeSelected, getEmployeeAccessibleData } from '../employees/employees.actions'
 import { setKpiLoading, setCalculationYTD } from '../kpi/kpi.actions'
-import { bool, func, object, string, number } from "prop-types";
+import { array, bool, func, object, string, number } from "prop-types";
 import { path, isEmpty } from "ramda";
 import TableData from "./TableData";
 import TablePercentage from './TablePercentage'
@@ -22,14 +22,17 @@ const Container = styled.div({
     justifyContent: "center"
 })
 
-const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, setKpiLoading, setCalculationYTD, userConnectedId, userConnectedOccupation }) => {
+const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, setKpiLoading, setCalculationYTD, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess }) => {
 
     useEffect(() => {
         if (!userConnectedOccupation.includes(REPORTING_OWNER)) {
-             let initializedEmployeeConnected = initializeEmployeeSelected(userConnectedId, userConnectedOccupation)
-             setEmployeeSelected(initializedEmployeeConnected);
+            let initializedEmployeeConnected = initializeEmployeeSelected(userConnectedId, userConnectedOccupation)
+            setEmployeeSelected(initializedEmployeeConnected);
             setKpiLoading(true)
             // setCalculationYTD(true)
+            if (!isEmpty(employeeIdAccess)) {
+                getEmployeeAccessibleData(employeeIdAccess)
+            }
         } else {
             getEmployees();
         }
@@ -38,7 +41,7 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSe
     return (
         <div>
             {
-                (userConnectedOccupation.includes(REPORTING_OWNER)) && <SelectEmployees />
+                (userConnectedOccupation.includes(REPORTING_OWNER) || !isEmpty(employeeIdAccess)) && <SelectEmployees />
             }
 
             <Container>
@@ -77,7 +80,9 @@ Reporting.propTypes = {
     setEmployeeSelected: func,
     setKpiLoading: func,
     setCalculationYTD: func,
-    getEmployees: func
+    getEmployees: func,
+    getEmployeeAccessibleData: func,
+    employeeIdAccess: array
 };
 
 export default connect(
@@ -85,7 +90,8 @@ export default connect(
         employeeSelected: path(["employees", "employeeSelected"], state),
         isLoadingKpi: path(["kpi", "isLoadingKpi"], state),
         userConnectedOccupation: path(["user", "accessToReportingTab", "occupation"], state),
-        userConnectedId: path(["user", "accessToReportingTab", "userId"], state)
+        userConnectedId: path(["user", "accessToReportingTab", "userId"], state),
+        employeeIdAccess: path(["user", "accessToReportingTab", "employeeIdAccess"], state),
     }),
-    { getEmployees, setEmployeeSelected, setKpiLoading, setCalculationYTD }
+    { getEmployees, setEmployeeSelected, setKpiLoading, setCalculationYTD, getEmployeeAccessibleData }
 )(Reporting);
