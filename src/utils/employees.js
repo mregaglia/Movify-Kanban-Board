@@ -27,6 +27,10 @@ export const getIdEmployeeAccessAndOccupation = (occupationNotFiltered) => {
     tabIdEmployees.splice(0, 1)
     tabIdEmployees.splice(0, 1)
 
+    tabIdEmployees = tabIdEmployees.map(function (id) {
+        return parseInt(id)
+    })
+
     return {
         tabEmployeesIdsAccessibleByUserConnected : tabIdEmployees,
         userConnectedOccupation: occupation

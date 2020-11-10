@@ -28,9 +28,14 @@ const roleToAccessReporting = [
 
 export function* getReportingAccess() {
   try {
-  
-    const userId = yield call(getUserId)
-    const occupation = yield call(getUserOccupation, userId)
+    // const jacquelineUserId = 11579
+    // const jacquelineOccupation = "Talent Acquisition"
+
+    const userId = 9788
+    const occupation = "Business Manager 12345 790768"
+
+    // const userId = yield call(getUserId)
+    // const occupation = yield call(getUserOccupation, userId)
 
     let employeeIdAccess = []
 
