@@ -30,6 +30,7 @@ export const TableContentTd = styled.td(({ theme }) => ({
 export const TableContentTdLabel = styled.td(({ theme }) => ({
     padding: "12px 15px",
     whiteSpace: "nowrap"
+
 }))
 
 export const TableContentTdTitle = styled.td(({ theme }) => ({
