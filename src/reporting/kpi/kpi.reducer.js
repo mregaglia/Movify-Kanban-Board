@@ -6,14 +6,21 @@ import {
   SET_GAUGE_LIMIT,
   SET_CALCULATION_YTD,
   SET_OBJECT_YTD,
-  SET_CV_SENT
+  SET_CV_SENT,
+  SET_YTD_TOTAL_BUSINESS_MANAGER,
+  SET_YTD_TOTAL_RECRUITMENT,
+  SET_AVERAGE_YTD_BUSINESS_MANAGER,
+  SET_AVERAGE_YTD_RECRUITMENT,
+  SET_CONVERSION_YTD_BUSINESS_MANAGER,
+  SET_CONVERSION_YTD_RECRUITMENT
 } from "./kpi.actions"
 
 export const initialState = {
   dataEmployee: {},
+  dataYTDEmployee: {},
   isLoadingKpi: false,
   isCalculatingYTD: false,
-  gaugeLimit: {}
+  gaugeLimit: {},
 }
 
 const kpi = {
@@ -43,9 +50,50 @@ const kpi = {
       ...state.dataEmployee,
       datasBusinessManager: {
         ...state.dataEmployee.datasBusinessManager,
-        CV_SENT:
-          payload
+        CV_SENT: payload
       }
+    },
+  }),
+  [SET_YTD_TOTAL_BUSINESS_MANAGER]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      TOTAL_YTD_BM : payload
+    }
+  }),
+  [SET_YTD_TOTAL_RECRUITMENT]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      TOTAL_YTD_RE : payload
+    }
+  }),
+  [SET_AVERAGE_YTD_BUSINESS_MANAGER]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      AVERAGE_YTD_BM : payload
+    }
+  }),
+  [SET_AVERAGE_YTD_RECRUITMENT]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      AVERAGE_YTD_RE : payload
+    }
+  }),
+  [SET_CONVERSION_YTD_BUSINESS_MANAGER]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      CONVERSION_YTD_BM : payload
+    }
+  }),
+  [SET_CONVERSION_YTD_RECRUITMENT]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      CONVERSION_YTD_RE : payload
     }
   }),
 
