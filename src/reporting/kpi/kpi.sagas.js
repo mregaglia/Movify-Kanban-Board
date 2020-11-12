@@ -31,7 +31,10 @@ import {
     setAverageYTDBusinessManager,
     setAverageYTDRecruitment,
     setConversionYTDBusinessManager,
-    setConversionYTDRecruitment
+    setConversionYTDRecruitment,
+    setLoadingYTDTotal,
+    setLoadingYTDAverage,
+    setLoadingYTDConversion
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
@@ -94,8 +97,10 @@ export function* calculateTotalYTD(employeeId, dateStartOfThisYear, dateEnd, occ
             yield put(setYTDTotalRecruitment(objectYTDRecruitment.TOTAL_YTD))
         } else {
             objectYTDRecruitment = calculateTotalYTDRecruitment(kpiNoteOfTheYear, objectYTDRecruitment)
-            yield put(setYTDTotalRecruitment(objectYTDRecruitment))
+            yield put(setYTDTotalRecruitment(objectYTDRecruitment.TOTAL_YTD))
         }
+
+        yield put(setLoadingYTDTotal(false))
 
         yield all([
             call(calculateAverageYTD, occupation, objectYTDBusinessManager, objectYTDRecruitment),
@@ -118,6 +123,8 @@ export function* calculateConversionYTD(occupation, objectYTDBusinessManager, ob
             objectYTDRecruitment = calculateConversionYTDRecruitment(objectYTDRecruitment)
             yield put(setConversionYTDRecruitment(objectYTDRecruitment.CONVERSION_YTD))
         }
+
+        yield put(setLoadingYTDConversion(false))
     } catch(e) {
         //
     }
@@ -137,6 +144,8 @@ export function* calculateAverageYTD(occupation, objectYTDBusinessManager, objec
 
             yield put(setAverageYTDRecruitment(objectYTDRecruitment.AVERAGE))
         }
+
+        yield put(setLoadingYTDAverage(false))
     } catch (e) {
         //
     }

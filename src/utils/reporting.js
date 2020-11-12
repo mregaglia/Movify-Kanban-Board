@@ -18,11 +18,9 @@ export const INTERVIEW_DONE_3 = "Interview 3"
 export const CONTRACT_PROPOSED = "Offer"
 export const INTERVIEW_SCHEDULED = "Interview Scheduled"
 export const PROJECT_START = "Kick Off Meeting"
-export const CALL_ATTEMPS = "Call Attempt"
 
 export const LABEL_DATES = "DATES"
 
-export const LABEL_CALL_ATTEMPS = "Call Attempt"
 export const LABEL_CALL = "Call"
 export const LABEL_PROSPECTION_MEETING_SCHEDULE = "Prospection meeting scheduled"
 export const LABEL_MEETING_DONE = "Prospection meeting done"
@@ -46,7 +44,6 @@ export const TOTAL_YTD = "TOTAL_YTD"
 export const initalizeObjectBusinessManager = (occupation) => {
   if (occupation === BUSINESS_MANAGER) {
     return {
-      CALL_ATTEMPS: { TITLE: LABEL_CALL_ATTEMPS, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       CALL: { TITLE: LABEL_CALL, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       PROSPECTION_MEETING_SCHEDULE: { TITLE: LABEL_PROSPECTION_MEETING_SCHEDULE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       PROSPECTION_MEETING_DONE: { TITLE: LABEL_MEETING_DONE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -197,9 +194,6 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
     let action = data[i].action
 
     switch (action) {
-      case CALL_ATTEMPS:
-        objectDataBusinessManager.CALL_ATTEMPS[labelWeek]++;
-        break;
       case CALL:
         if (data[i].clientContacts.total) objectDataBusinessManager.CALL[labelWeek]++;
         break;
