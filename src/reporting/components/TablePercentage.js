@@ -16,60 +16,44 @@ import {
 const Loading = styled.div({
     paddingTop: "280px",
     paddingLeft: "140px"
-    
+
 })
 
 
-const TablePercentage = ({ occupation, isCalculatingYTD }) => {
+const TablePercentage = ({ occupation }) => {
 
     return (
         <div>
             {
-                (isCalculatingYTD) && (
-                    <Loading>
-                        <Loader
-                            type="Rings"
-                            color="#6BD7DA"
-                            height={100}
-                            width={100}
-                        />
-                    </Loading>
-                )
-            }
-            {
-                (!isCalculatingYTD) && (
-                    <Table>
-                        <thead>
-                            <TableTheadTr>
-                                <TableContentTh>Conversion %</TableContentTh>
-                                <TableContentTh>Total YTD</TableContentTh>
-                                <TableContentTh>Average</TableContentTh>
-                            </TableTheadTr>
-                        </thead>
-                        <tbody>
-                            {
-                                occupation.includes(BUSINESS_MANAGER) && <TablePercentageBusinessManager />
-                            }
-                            {
-                                (occupation.includes(BUSINESS_MANAGER) || occupation.includes(SOURCING_OFFICER) || occupation.includes(TALENT_ACQUISITION)) && <TablePercentageTalentAcquisition />
-                            }
-                        </tbody>
-                    </Table>
-                )
+                <Table>
+                    <thead>
+                        <TableTheadTr>
+                            <TableContentTh>Conversion %</TableContentTh>
+                            <TableContentTh>Total YTD</TableContentTh>
+                            <TableContentTh>Average</TableContentTh>
+                        </TableTheadTr>
+                    </thead>
+                    <tbody>
+                        {
+                            occupation.includes(BUSINESS_MANAGER) && <TablePercentageBusinessManager />
+                        }
+                        {
+                            (occupation.includes(BUSINESS_MANAGER) || occupation.includes(SOURCING_OFFICER) || occupation.includes(TALENT_ACQUISITION)) && <TablePercentageTalentAcquisition />
+                        }
+                    </tbody>
+                </Table>
             }
         </div>
     )
 }
 
 TablePercentage.propTypes = {
-    occupation: string,
-    isCalculatingYTD: bool
+    occupation: string
 };
 
 export default connect(
     state => ({
-        occupation: pathOr("", ["employees", "employeeSelected", "occupation"], state),
-        isCalculatingYTD: path(["kpi", "isCalculatingYTD"], state)
+        occupation: pathOr("", ["employees", "employeeSelected", "occupation"], state)
     }),
     {}
 )(TablePercentage);

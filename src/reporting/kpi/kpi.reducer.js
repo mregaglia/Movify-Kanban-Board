@@ -19,7 +19,6 @@ export const initialState = {
   dataEmployee: {},
   dataYTDEmployee: {},
   isLoadingKpi: false,
-  isCalculatingYTD: false,
   gaugeLimit: {},
 }
 
@@ -35,10 +34,6 @@ const kpi = {
   [SET_LOADING_KPI]: (state, payload) => ({
     ...state,
     isLoadingKpi: payload
-  }),
-  [SET_CALCULATION_YTD]: (state, payload) => ({
-    ...state,
-    isCalculatingYTD: payload
   }),
   [SET_GAUGE_LIMIT]: (state, payload) => ({
     ...state,

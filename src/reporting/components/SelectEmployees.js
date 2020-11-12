@@ -1,7 +1,7 @@
 import React from "react";
 import Select from 'react-select'
 import { setEmployeeSelected } from '../employees/employees.actions'
-import { setKpiLoading, setCalculationYTD } from '../kpi/kpi.actions'
+import { setKpiLoading } from '../kpi/kpi.actions'
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
 import { array, func } from "prop-types";
@@ -28,7 +28,6 @@ const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading, setCal
             if (parseInt(employeeSelected.value) === employees[i].id) {
                 setEmployeeSelected(employees[i]);
                 setKpiLoading(true)
-                setCalculationYTD(true)
                 break;
             }
         }
@@ -50,13 +49,12 @@ const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading, setCal
 SelectEmployees.propTypes = {
     employees: array,
     setEmployeeSelected: func,
-    setKpiLoading: func,
-    setCalculationYTD: func
+    setKpiLoading: func
 };
 
 export default connect(
     state => ({
         employees: pathOr([], ["employees", "employeesToSet"], state),
     }),
-    { setEmployeeSelected, setKpiLoading, setCalculationYTD }
+    { setEmployeeSelected, setKpiLoading, }
 )(SelectEmployees);

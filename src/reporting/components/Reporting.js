@@ -4,7 +4,7 @@ import SelectEmployees from "./SelectEmployees"
 import { getEmployees } from "../employees/employees.actions"
 import { connect } from "react-redux";
 import { setEmployeeSelected, getEmployeeAccessibleData } from '../employees/employees.actions'
-import { setKpiLoading, setCalculationYTD } from '../kpi/kpi.actions'
+import { setKpiLoading } from '../kpi/kpi.actions'
 import { array, bool, func, object, string, number } from "prop-types";
 import { path, isEmpty } from "ramda";
 import TableData from "./TableData";
@@ -29,7 +29,6 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSe
             let initializedEmployeeConnected = initializeEmployeeSelected(userConnectedId, userConnectedOccupation)
             setEmployeeSelected(initializedEmployeeConnected);
             setKpiLoading(true)
-            // setCalculationYTD(true)
             if (!isEmpty(employeeIdAccess)) {
                 getEmployeeAccessibleData(employeeIdAccess)
             }
@@ -79,7 +78,6 @@ Reporting.propTypes = {
     userConnectedOccupation: string,
     setEmployeeSelected: func,
     setKpiLoading: func,
-    setCalculationYTD: func,
     getEmployees: func,
     getEmployeeAccessibleData: func,
     employeeIdAccess: array
@@ -93,5 +91,5 @@ export default connect(
         userConnectedId: path(["user", "accessToReportingTab", "userId"], state),
         employeeIdAccess: path(["user", "accessToReportingTab", "employeeIdAccess"], state),
     }),
-    { getEmployees, setEmployeeSelected, setKpiLoading, setCalculationYTD, getEmployeeAccessibleData }
+    { getEmployees, setEmployeeSelected, setKpiLoading, getEmployeeAccessibleData }
 )(Reporting);
