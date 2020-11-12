@@ -4,7 +4,7 @@ import { TableContentTd, TableContentTbodyTr, TableContentTbodyTrNoLine, TableCo
 import { pathOr } from 'ramda'
 import { object } from "prop-types"
 
-const TablePercentageBusinessManager = ({ dataConversionYTDBusinessManager }) => {
+const TablePercentageBusinessManager = ({ dataConversionYTD, dataTotalYTD, dataAverageYTD }) => {
 
     return (
         <>
@@ -12,27 +12,31 @@ const TablePercentageBusinessManager = ({ dataConversionYTDBusinessManager }) =>
                 <TableContentTdTitleEmpty></TableContentTdTitleEmpty>
             </TableContentTbodyTrNoLine>
             {
-                Object.keys(dataConversionYTDBusinessManager).map((key, i) => {
+                Object.keys(dataConversionYTD).map((key, i) => {
                     return (
                         <TableContentTbodyTr key={i}>
-                            <TableContentTd>{dataConversionYTDBusinessManager[key].CONVERSION_YTD}</TableContentTd>
-                            <TableContentTd>{dataConversionYTDBusinessManager[key].TOTAL_YTD}</TableContentTd>
-                            <TableContentTd>{dataConversionYTDBusinessManager[key].AVERAGE}</TableContentTd>
+                            <TableContentTd>{dataConversionYTD[key]}</TableContentTd>
+                            <TableContentTd>{dataTotalYTD[key]}</TableContentTd>
+                            <TableContentTd>{dataAverageYTD[key]}</TableContentTd>
                         </TableContentTbodyTr>
                     )
-                  })
+                })
             }
         </>
     )
 }
 
 TablePercentageBusinessManager.propTypes = {
-    dataConversionYTDBusinessManager: object
+    dataConversionYTD: object,
+    dataTotalYTD: object,
+    dataAverageYTD: object
 };
 
 export default connect(
     state => ({
-        dataConversionYTDBusinessManager: pathOr({}, ["kpi", "dataYTDEmployee", "objectConvertionYTDBusinessManager"], state),
+        dataConversionYTD: pathOr({}, ["kpi", "dataYTDEmployee", "CONVERSION_YTD_BM"], state),
+        dataTotalYTD: pathOr({}, ["kpi", "dataYTDEmployee", "TOTAL_YTD_BM"], state),
+        dataAverageYTD: pathOr({}, ["kpi", "dataYTDEmployee", "AVERAGE_YTD_BM"], state),
     }),
     {}
 )(TablePercentageBusinessManager);
