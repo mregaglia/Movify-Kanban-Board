@@ -143,6 +143,13 @@ export const initializeObjectConversionYTDRecruitment = () => {
   }
 }
 
+export const initializeObjectDataRecruitmentAndIds = () => {
+  return {
+    OBJECT_DATA_RECRUITMENT: {},
+    SOURCING_IDS: []
+  }
+}
+
 export const initializeObjectDate = () => {
   return {
     DATES: { FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -154,7 +161,6 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
 
-    
     let action = data[i].action
     
     switch (action) {
@@ -185,6 +191,47 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
   }
   
   return objectDataRecruitment
+}
+
+export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDataRecruitment, objectDataRecruitmentAndSourcingIds) => {
+  let data = notes;
+  if (data.length === 0) return objectDataRecruitment
+  for (let i = 0; i < data.length; i++) {
+
+    let action = data[i].action
+    
+    switch (action) {
+      case NO_SHOW:
+        objectDataRecruitment.NO_SHOW[labelWeek]++
+        break;
+      case INTERVIEW_DONE_1 || INTERVIEW_DONE_2 || INTERVIEW_DONE_3:
+        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        break;
+      case CONTRACT_PROPOSED:
+        objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++;
+        break;
+      case CALL:
+        if (data[i].candidates.total === 1){
+          objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
+          objectDataRecruitmentAndSourcingIds.SOURCING_IDS = [...objectDataRecruitmentAndSourcingIds.SOURCING_IDS, data[i].candidates.data[0].id ]
+        } 
+        break;
+      case LINKED_INMAIL:
+        objectDataRecruitment.CONTACTED_BY_INMAIL[labelWeek]++
+        objectDataRecruitmentAndSourcingIds.SOURCING_IDS = [...objectDataRecruitmentAndSourcingIds.SOURCING_IDS, data[i].candidates.data[0].id ]
+        break;
+      case INTERVIEW_SCHEDULED:
+        if (data[i].candidates.total === 1) objectDataRecruitment.INTERVIEW_SCHEDULED[labelWeek]++
+        break;
+      case CONTRACT_PROPOSED:
+        objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++
+        break
+      default:
+        break;
+    }
+  }
+  objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT = objectDataRecruitment
+  return objectDataRecruitmentAndSourcingIds
 }
 
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
@@ -350,7 +397,3 @@ export const calculateConversionYTDBusinessManager = (objectConversionYTDBusines
 
     return objectConversionYTDRecruitment;
   }
-
-
-
-  
