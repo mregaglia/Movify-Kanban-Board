@@ -71,7 +71,7 @@ export const initalizeObjectRecruitment = () => {
   return {
     CONTACTED_BY_INMAIL: { TITLE: LABEL_CONTACTED_BY_INMAIL, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     CONTACTED_BY_PHONE: { TITLE: LABEL_CONTACTED_BY_PHONE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
-    INTERVIEW_SCHEDULE: { TITLE: LABEL_INTERVIEW_SCHEDULE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+    INTERVIEW_SCHEDULED: { TITLE: LABEL_INTERVIEW_SCHEDULE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     NO_SHOW: { TITLE: LABEL_NO_SHOW, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     INTERVIEW_DONE: { TITLE: LABEL_INTERVIEW_DONE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     CONTRACT_PROPOSED: { TITLE: LABEL_CONTRACT_PROPOSED, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -154,8 +154,9 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
 
+    
     let action = data[i].action
-
+    
     switch (action) {
       case NO_SHOW:
         objectDataRecruitment.NO_SHOW[labelWeek]++
@@ -182,11 +183,12 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
         break;
     }
   }
+  
   return objectDataRecruitment
 }
 
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
-  console.log(notes)
+  
   let data = notes;
   if (data.length === 0) return objectDataBusinessManager
   for (let i = 0; i < data.length; i++) {

@@ -113,7 +113,7 @@ export function* calculateTotalYTD(employeeId, dateStartOfThisYear, dateEnd, occ
 
 export function* calculateConversionYTD(occupation, objectYTDBusinessManager, objectYTDRecruitment) {
     try {
-        if(occupation.includes(BUSINESS_MANAGER)){
+        if (occupation.includes(BUSINESS_MANAGER)) {
             objectYTDBusinessManager = calculateConversionYTDBusinessManager(objectYTDBusinessManager)
             objectYTDRecruitment = calculateConversionYTDRecruitment(objectYTDRecruitment)
 
@@ -125,7 +125,7 @@ export function* calculateConversionYTD(occupation, objectYTDBusinessManager, ob
         }
 
         yield put(setLoadingYTDConversion(false))
-    } catch(e) {
+    } catch (e) {
         //
     }
 }
@@ -155,21 +155,25 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
     try {
         for (let i = 0; i < dates.length; i++) {
             let weekLabel = getWeekLabel(i)
+
             const kpiNote = yield call(getKpiNoteSaga, employeeId, dates[i].start, dates[i].end)
 
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
             objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
-
+        
             if (occupation.includes(BUSINESS_MANAGER)) {
                 objectDataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
+                
                 let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
                 objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
             }
         }
+        
         yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
+        
         yield put(setKpiLoading(false))
     } catch (e) {
-        //
+        //j
     }
 }
 
@@ -198,7 +202,6 @@ export function* getCvSent(employeeId, dates) {
                 }
             }
         }
-        console.log(cvSentObject)
         yield put(setCvSent(cvSentObject));
     } catch (e) {
         //
@@ -216,8 +219,8 @@ export function* getKpiNoteSaga(employeeId, dateStart, dateEnd) {
             kpiNote = [...kpiNote, ...kpiNoteRetrieved.data]
             remainingValue = remainingValue + 50
 
-            noteRemaining = (((kpiNoteRetrieved.total - remainingValue) < 0)) ? false : true;
-
+            noteRemaining = (((kpiNoteRetrieved.total - remainingValue) <= 0)) ? false : true;
+            
             if (!noteRemaining) {
                 return kpiNote
             }
@@ -229,6 +232,7 @@ export function* getKpiNoteSaga(employeeId, dateStart, dateEnd) {
 }
 
 const getWeekLabel = (index) => {
+
     switch (index) {
         case 0:
             return FIRST_WEEK;

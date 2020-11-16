@@ -10,8 +10,13 @@ export const isOverDiff = (timestamp, diff) => {
 };
 
 export const getLast4weeksDate = () => {
-
-  let tableWeek = [4, 3, 2, 1]
+  let day = moment().day()
+  let tableWeek = []
+  if (day <= 3) {
+    tableWeek = [4, 3, 2, 1]
+  } else {
+    tableWeek = [3, 2, 1, 0]
+  }
 
   let dates = tableWeek.map(getWeekDateAndTimestamp)
 
@@ -19,9 +24,16 @@ export const getLast4weeksDate = () => {
 }
 
 const getWeekDateAndTimestamp = (week) => {
-  let startWeek = moment().subtract(week, 'weeks').startOf('isoWeek');
-  let endWeek = moment().subtract(week, 'weeks').endOf('isoWeek')
+  let startWeek, endWeek
+  if (week !== 0) {
+    startWeek = moment().subtract(week, 'weeks').startOf('isoWeek')
+    endWeek = moment().subtract(week, 'weeks').endOf('isoWeek')
+  } else {
+    startWeek = moment().startOf('isoWeek')
+    endWeek = moment()
+  }
 
+  
   return {
     start: parseInt(startWeek.format('YYYYMMDD')),
     end: parseInt(endWeek.format('YYYYMMDD')),
