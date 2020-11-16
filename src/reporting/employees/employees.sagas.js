@@ -2,7 +2,8 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import { pathOr, prop } from 'ramda'
 import {
-    getBusinessManagerAndSourcingOfficer
+    getBusinessManagerSourcingOfficerAndTalentAcquisition,
+    getUserById
 } from "./employees.service"
 import {
     getEmployeeKpi,
@@ -11,7 +12,8 @@ import {
 import {
     GET_EMPLOYEES,
     setEmployees,
-    SET_EMPLOYEE_SELECTED
+    SET_EMPLOYEE_SELECTED,
+    GET_EMPLOYEE_ACCESSIBLE_DATA
 } from './employees.actions'
 import {
     getGaugeLimitFromFile
@@ -22,10 +24,25 @@ import {
 
 export function* getEmployees() {
     try {
-        const employees = yield call(getBusinessManagerAndSourcingOfficer);
+        const employees = yield call(getBusinessManagerSourcingOfficerAndTalentAcquisition);
         const sortedEmployees = sortTableEmployee(employees.data)
         yield put(setEmployees(sortedEmployees))
     } catch (e) {
+        //
+    }
+}
+
+export function* getEmployeesById(action) {
+    let idsEmployee = action.payload
+    let employeeData = []
+    try{
+        for(let i = 0; i < idsEmployee.length; i++) {
+            let data = yield call(getUserById,idsEmployee[i]);
+            employeeData = [...employeeData, ...data]
+        }
+        const sortedEmployees = sortTableEmployee(employeeData)
+        yield put(setEmployees(sortedEmployees))
+    } catch(e) {
         //
     }
 }
@@ -39,6 +56,7 @@ export function* onEmployeeSelected(action) {
 export default function employeeSagas() {
     return [
         takeLatest(GET_EMPLOYEES, getEmployees),
-        takeLatest(SET_EMPLOYEE_SELECTED, onEmployeeSelected)
+        takeLatest(SET_EMPLOYEE_SELECTED, onEmployeeSelected),
+        takeLatest(GET_EMPLOYEE_ACCESSIBLE_DATA, getEmployeesById)
     ];
 }

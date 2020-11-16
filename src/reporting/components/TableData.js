@@ -5,8 +5,12 @@ import { connect } from "react-redux";
 import { string, object } from "prop-types";
 import { pathOr } from "ramda";
 import { Table, TableTheadTr, TableContentTh } from "../../style/table_style"
-import { BUSINESS_MANAGER, SOURCING_OFFICER } from './EmployeeData'
 import WeeklySpeed from './WeeklySpeed'
+import {
+    BUSINESS_MANAGER,
+    SOURCING_OFFICER,
+    TALENT_ACQUISITION
+} from '../../auth/user.sagas'
 
 const TableData = ({ occupation, dates }) => {
 
@@ -24,11 +28,11 @@ const TableData = ({ occupation, dates }) => {
                 </thead>
                 <tbody>
                     {
-                        occupation === BUSINESS_MANAGER && <BusinessManager />
+                        (occupation.includes(BUSINESS_MANAGER)) && <BusinessManager />
                     }
 
                     {
-                        (occupation === BUSINESS_MANAGER || occupation === SOURCING_OFFICER) && <TalentAcquisition />
+                        (occupation.includes(BUSINESS_MANAGER) || occupation.includes(SOURCING_OFFICER) || occupation.includes(TALENT_ACQUISITION)) && <TalentAcquisition />
                     }
 
                 </tbody>

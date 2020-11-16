@@ -3,12 +3,18 @@ import styled from 'styled-components'
 import SelectEmployees from "./SelectEmployees"
 import { getEmployees } from "../employees/employees.actions"
 import { connect } from "react-redux";
-import { bool, func, object } from "prop-types";
+import { setEmployeeSelected, getEmployeeAccessibleData } from '../employees/employees.actions'
+import { setKpiLoading } from '../kpi/kpi.actions'
+import { array, bool, func, object, string, number } from "prop-types";
 import { path, isEmpty } from "ramda";
 import TableData from "./TableData";
 import TablePercentage from './TablePercentage'
 import Loader from 'react-loader-spinner'
 import GaugeComponent from './GaugeComponent'
+import { initializeEmployeeSelected } from '../../utils/employees'
+import {
+    REPORTING_OWNER
+} from '../../auth/user.sagas'
 
 const Container = styled.div({
     display: "flex",
@@ -16,18 +22,27 @@ const Container = styled.div({
     justifyContent: "center"
 })
 
-
-
-const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
+const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, setKpiLoading, setCalculationYTD, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess }) => {
 
     useEffect(() => {
-        getEmployees();
-    }, [getEmployees])
+        if (!userConnectedOccupation.includes(REPORTING_OWNER)) {
+            let initializedEmployeeConnected = initializeEmployeeSelected(userConnectedId, userConnectedOccupation)
+            setEmployeeSelected(initializedEmployeeConnected);
+            setKpiLoading(true)
+            if (!isEmpty(employeeIdAccess)) {
+                getEmployeeAccessibleData(employeeIdAccess)
+            }
+        } else {
+            getEmployees();
+        }
+    }, [])
 
     return (
-
         <div>
-            <SelectEmployees />
+            {
+                (userConnectedOccupation.includes(REPORTING_OWNER) || !isEmpty(employeeIdAccess)) && <SelectEmployees />
+            }
+
             <Container>
                 {
                     (!isEmpty(employeeSelected) && isLoadingKpi) && (
@@ -45,7 +60,6 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
                     (!isEmpty(employeeSelected) && !isLoadingKpi) && (
                         <>
                             <GaugeComponent />
-
                             <TableData />
                             <TablePercentage />
                         </>
@@ -58,15 +72,24 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi }) => {
 }
 
 Reporting.propTypes = {
-    getEmployees: func,
     employeeSelected: object,
-    isLoadingKpi: bool
+    isLoadingKpi: bool,
+    userConnectedId: number,
+    userConnectedOccupation: string,
+    setEmployeeSelected: func,
+    setKpiLoading: func,
+    getEmployees: func,
+    getEmployeeAccessibleData: func,
+    employeeIdAccess: array
 };
 
 export default connect(
     state => ({
         employeeSelected: path(["employees", "employeeSelected"], state),
-        isLoadingKpi: path(["kpi", "isLoadingKpi"], state)
+        isLoadingKpi: path(["kpi", "isLoadingKpi"], state),
+        userConnectedOccupation: path(["user", "accessToReportingTab", "occupation"], state),
+        userConnectedId: path(["user", "accessToReportingTab", "userId"], state),
+        employeeIdAccess: path(["user", "accessToReportingTab", "employeeIdAccess"], state),
     }),
-    { getEmployees }
+    { getEmployees, setEmployeeSelected, setKpiLoading, getEmployeeAccessibleData }
 )(Reporting);

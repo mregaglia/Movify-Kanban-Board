@@ -1,12 +1,12 @@
 import React from "react";
 import Select from 'react-select'
-import { setEmployeeSelected } from "../employees/employees.actions"
-import { setKpiLoading, setCalculationYTD } from '../kpi/kpi.actions'
+import { setEmployeeSelected } from '../employees/employees.actions'
+import { setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion } from '../kpi/kpi.actions'
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
-import { array } from "prop-types";
+import { array, func } from "prop-types";
 import styled from "styled-components"
-import { BUSINESS_MANAGER, SOURCING_OFFICER } from "./EmployeeData"
+import { getValuesFromEmployees } from '../../utils/employees'
 
 const Container = styled.div({
     width: "30%",
@@ -19,8 +19,7 @@ const SelectCustomized = styled(Select)`
 position: relative; z-index: 1000;
 `
 
-
-const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading, setCalculationYTD }) => {
+const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion }) => {
 
     const options = getValuesFromEmployees(employees)
 
@@ -29,7 +28,9 @@ const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading, setCal
             if (parseInt(employeeSelected.value) === employees[i].id) {
                 setEmployeeSelected(employees[i]);
                 setKpiLoading(true)
-                setCalculationYTD(true)
+                setLoadingYTDTotal(true)
+                setLoadingYTDAverage(true)
+                setLoadingYTDConversion(true)
                 break;
             }
         }
@@ -48,31 +49,18 @@ const SelectEmployees = ({ employees, setEmployeeSelected, setKpiLoading, setCal
     )
 }
 
-function getValuesFromEmployees(employees) {
-    return employees.map((employee) => {
-        let occupationLabel = "";
-        switch (employee.occupation) {
-            case BUSINESS_MANAGER:
-                occupationLabel = "BM";
-                break;
-            case SOURCING_OFFICER:
-                occupationLabel = "TA";
-                break;
-            default:
-                occupationLabel = "";
-                break;
-        }
-        return ({ value: `${employee.id}`, label: occupationLabel + " - " + employee.firstName + " " + employee.lastName })
-    })
-}
-
 SelectEmployees.propTypes = {
-    employees: array
+    employees: array,
+    setEmployeeSelected: func,
+    setKpiLoading: func,
+    setLoadingYTDTotal: func,
+    setLoadingYTDAverage: func,
+    setLoadingYTDConversion: func
 };
 
 export default connect(
     state => ({
         employees: pathOr([], ["employees", "employeesToSet"], state),
     }),
-    { setEmployeeSelected, setKpiLoading, setCalculationYTD }
+    { setEmployeeSelected, setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion }
 )(SelectEmployees);
