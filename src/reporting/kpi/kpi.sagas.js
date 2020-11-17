@@ -1,8 +1,7 @@
 import moment from 'moment'
 import { call, put, takeLatest, all } from "redux-saga/effects";
 import { path } from 'ramda'
-import { getLast4weeksDate, getDateString, getStartDateOfYear, getStartDateOfYearTimestamp } from '../../utils/date'
-import { TOTAL_YTD } from '../../utils/reporting'
+import { getLast4weeksDate, getDateString, getStartDateOfYear } from '../../utils/date'
 import {
     initalizeObjectBusinessManager,
     initalizeObjectRecruitment,
@@ -25,8 +24,6 @@ import {
     GET_EMPLOYEE_KPI,
     setEmployeeKpi,
     setKpiLoading,
-    setObjectYTD,
-    setCalculationYTD,
     setCvSent,
     setYTDTotalRecruitment,
     setYTDTotalBusinessManager,
@@ -59,8 +56,6 @@ export function* getKpiDataEmployee(action) {
 
     let dates = getLast4weeksDate();
     let dateStartOfThisYear = getStartDateOfYear()
-
-    let dateStartOfThisYearTimestamp = getStartDateOfYearTimestamp()
 
     let employeeId = path(["payload", "id"], action);
     let occupation = path(["payload", "occupation"], action);

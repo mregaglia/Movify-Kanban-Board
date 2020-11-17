@@ -37,14 +37,13 @@ export function* getReportingAccess() {
     const userId = yield call(getUserId)
     const occupation = yield call(getUserOccupation, userId)
 
+    console.log("identifiant", userId, occupation)
     let employeeIdAccess = []
 
     let hasAccess = roleToAccessReporting.some(role => occupation.includes(role))
-
-    console.log(hasAccess)
+    console.log(hasAccess, "identifiant", userId, occupation)
     if (!occupation.includes(REPORTING_OWNER)) {
       let dataEmployeeFiltered = getIdEmployeeAccessAndOccupation(occupation)
-
       employeeIdAccess = dataEmployeeFiltered.tabEmployeesIdsAccessibleByUserConnected
       occupation = dataEmployeeFiltered.userConnectedOccupation
     }

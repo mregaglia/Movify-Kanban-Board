@@ -6,7 +6,7 @@ import { object, bool } from "prop-types"
 import Loader from 'react-loader-spinner'
 
 const TablePercentageTalentAcquisition = ({ dataConversionYTD, dataTotalYTD, dataAverageYTD, isLoadingConversionYTD, isLoadingTotalYTD, isLoadingAverageYTD }) => {
-    
+
     return (
         <>
             <TableContentTbodyTrNoLine>
@@ -16,24 +16,27 @@ const TablePercentageTalentAcquisition = ({ dataConversionYTD, dataTotalYTD, dat
                 Object.keys(dataConversionYTD).map((key, i) => {
                     return (
                         <TableContentTbodyTr key={i}>
-                            {!isLoadingConversionYTD && <TableContentTd>{dataConversionYTD[key]}</TableContentTd>}
-                            {isLoadingConversionYTD && (
-                                <TableContentTd>
-                                    <Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" />
-                                </TableContentTd>
-                            )}
-                            {!isLoadingTotalYTD && <TableContentTd>{dataTotalYTD[key]}</TableContentTd>}
-                            {isLoadingTotalYTD && (
-                                <TableContentTd>
-                                    <Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" />
-                                </TableContentTd>
-                            )}
-                            {!isLoadingAverageYTD && <TableContentTd>{dataAverageYTD[key]}</TableContentTd>}
-                            {isLoadingAverageYTD && (
-                                <TableContentTd>
-                                    <Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" />
-                                </TableContentTd>
-                            )}
+                            <TableContentTd>
+                                {!isLoadingConversionYTD
+                                    ? (dataConversionYTD[key])
+                                    : (
+                                        <Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" />
+                                    )}
+                            </TableContentTd>
+                            <TableContentTd>
+                                {!isLoadingTotalYTD
+                                    ? dataTotalYTD[key]
+                                    : (
+                                        <Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" />
+                                    )}
+                            </TableContentTd>
+                            <TableContentTd>
+                                {!isLoadingAverageYTD
+                                    ? dataAverageYTD[key]
+                                    : (
+                                        <Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" />
+                                    )}
+                            </TableContentTd>
                         </TableContentTbodyTr>
                     )
                 })
