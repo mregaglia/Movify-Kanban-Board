@@ -183,11 +183,9 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
       case INTERVIEW_SCHEDULED:
         if (data[i].candidates.total === 1) objectDataRecruitment.INTERVIEW_SCHEDULED[labelWeek]++
         break;
-      case CONTRACT_PROPOSED:
-        objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++
-        break
       case HIRED:
         objectDataRecruitment.HIRED[labelWeek]++
+        break;
       default:
         break;
     }
@@ -226,11 +224,9 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
       case INTERVIEW_SCHEDULED:
         if (data[i].candidates.total === 1) objectDataRecruitment.INTERVIEW_SCHEDULED[labelWeek]++
         break;
-      case CONTRACT_PROPOSED:
-        objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++
-        break
       case HIRED:
         objectDataRecruitment.HIRED[labelWeek]++
+        break;
       default:
         break;
     }
@@ -296,6 +292,9 @@ export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) 
       case INTERVIEW_SCHEDULED:
         if (notesOfyear[i].candidates.total === 1) objectYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULED++
         break;
+      case HIRED:
+        objectYTDRecruitment.TOTAL_YTD.HIRED++
+        break;
       default:
         break;
     }
@@ -312,22 +311,22 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
     let action = notesOfyear[i].action
     switch (action) {
       case CALL:
-        if (notesOfyear[i].clientContacts.total) objectYTDBusinessManager.TOTAL_YTD.CALL++;
-        break;
+        if (notesOfyear[i].clientContacts.total) objectYTDBusinessManager.TOTAL_YTD.CALL++
+        break
       case INTAKE:
-        objectYTDBusinessManager.TOTAL_YTD.INTAKE++;
-        break;
+        objectYTDBusinessManager.TOTAL_YTD.INTAKE++
+        break
       case PROSPECTION:
         objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE++
-        break;
+        break
       case PROJECT_START:
         objectYTDBusinessManager.TOTAL_YTD.PROJECT_START++
-        break;
+        break
       case INTERVIEW_SCHEDULED:
         if (notesOfyear[i].clientContacts.total === 1) objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE++
-        break;
+        break
       default:
-        break;
+        break
     }
   }
   return objectYTDBusinessManager
