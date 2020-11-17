@@ -78,9 +78,6 @@ const Header = ({ authenticated, board, hasReportingAccess }) => {
             <HeaderLink label="Business" to="/kanban" />
             <HeaderLink label="Recruitment" to="/recruitment" />
             {
-              console.log("Header", hasReportingAccess)
-            }
-            {
               hasReportingAccess && <HeaderLink label="Reporting" to="/reporting" />
             }
 

@@ -37,21 +37,19 @@ export function* getReportingAccess() {
     const userId = yield call(getUserId)
     const occupation = yield call(getUserOccupation, userId)
 
-    console.log("identifiant", userId, occupation)
     let employeeIdAccess = []
 
     let hasAccess = roleToAccessReporting.some(role => occupation.includes(role))
-    console.log(hasAccess, "identifiant", userId, occupation)
 
-    if (!occupation.includes(REPORTING_OWNER)) {
-      let dataEmployeeFiltered = getIdEmployeeAccessAndOccupation(occupation)
-      console.log("1")
-      employeeIdAccess = dataEmployeeFiltered.tabEmployeesIdsAccessibleByUserConnected
-      console.log("2")
-      occupation = dataEmployeeFiltered.userConnectedOccupation
-      console.log("3")
-    }
-    console.log("end of method")
+    // if (!occupation.includes(REPORTING_OWNER)) {
+    //   let dataEmployeeFiltered = getIdEmployeeAccessAndOccupation(occupation)
+    //   console.log("1")
+    //   employeeIdAccess = dataEmployeeFiltered.tabEmployeesIdsAccessibleByUserConnected
+    //   console.log("2")
+    //   occupation = dataEmployeeFiltered.userConnectedOccupation
+    //   console.log("3")
+    // }
+
     yield put(updateReportingAccess(hasAccess, occupation, userId, employeeIdAccess))
   } catch (e) {
     //
