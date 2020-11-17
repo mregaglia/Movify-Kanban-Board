@@ -7,6 +7,7 @@ export const SET_OBJECT_YTD = "SET_OBJECT_YTD"
 export const SET_GAUGE_LIMIT = "SET_GAUGE_LIMIT"
 
 export const SET_CV_SENT = "SET_CV_SENT"
+export const SET_CV_SENT_IS_LOADED_WEEK = "SET_CV_SENT_IS_LOADED_WEEK"
 
 export const SET_YTD_TOTAL_BUSINESS_MANAGER = "SET_YTD_TOTAL"
 export const SET_YTD_TOTAL_RECRUITMENT = "SET_YTD_TOTAL_RECRUITMENT"
@@ -30,6 +31,7 @@ export const setKpiLoading = (isLoadingKpi) => ({ type: SET_LOADING_KPI, payload
 export const setGaugeLimit = (gaugeLimit) => ({ type: SET_GAUGE_LIMIT, payload: gaugeLimit });
 
 export const setCvSent = (cvSent) => ({ type: SET_CV_SENT, payload: cvSent })
+export const setCvSentIsLoadingWeek = (cvSentIsLoaded) => ({ type: SET_CV_SENT_IS_LOADED_WEEK, payload: cvSentIsLoaded})
 
 export const setYTDTotalBusinessManager = (ytdTotalBusinessManager) => ({ type: SET_YTD_TOTAL_BUSINESS_MANAGER, payload: ytdTotalBusinessManager })
 export const setYTDTotalRecruitment = (ytdTotalRecruitment) => ({ type: SET_YTD_TOTAL_RECRUITMENT, payload: ytdTotalRecruitment })

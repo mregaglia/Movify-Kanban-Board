@@ -36,7 +36,8 @@ import {
     setConversionYTDRecruitment,
     setLoadingYTDTotal,
     setLoadingYTDAverage,
-    setLoadingYTDConversion
+    setLoadingYTDConversion,
+    setCvSentIsLoadingWeek
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
@@ -219,6 +220,7 @@ export function* getCvSent(employeeId, dates) {
             }
         }
         yield put(setCvSent(cvSentObject));
+        yield put(setCvSentIsLoadingWeek(false))
     } catch (e) {
         //
     }
