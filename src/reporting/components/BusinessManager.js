@@ -15,9 +15,6 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                 <TableContentTdTitle>Business Development</TableContentTdTitle>
             </TableContentTbodyTrNoLine>
             {
-                console.log("cvSentLoading",isCvSentWeekLoading)
-            }
-            {
                 Object.keys(datas).map((key, i) => {
                     if(datas[key].TITLE === "CV sent") {
                         if(isCvSentWeekLoading) {
