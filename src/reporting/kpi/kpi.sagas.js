@@ -165,7 +165,9 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
             if(weekLabel === FOURTH_WEEK) {
                 let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
                 objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
-                objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT                
+                objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT    
+                console.log(objectDataRecruitmentAndSourcingIds.SOURCING_IDS)
+                //yield put(calculatingWeeklySpeeSaga(objectDataRecruitmentAndSourcingIds.SOURCING_IDS))
             } else {
                 objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
             }
@@ -182,8 +184,13 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
         
         yield put(setKpiLoading(false))
     } catch (e) {
-        //j
+        //
     }
+}
+
+
+export function* calculatingWeeklySpeeSaga(sourcingIds){
+
 }
 
 export function* getCvSent(employeeId, dates) {

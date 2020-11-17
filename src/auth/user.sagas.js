@@ -28,11 +28,11 @@ const roleToAccessReporting = [
 
 export function* getReportingAccess() {
   try {
-    // const jacquelineUserId = 11579
+     //const userId = 13034
     // const jacquelineOccupation = "Talent Acquisition"
 
-    // const userId = 9788
-    // const occupation = "Business Manager 11579 9788"
+    //const userId = 11579
+    //const occupation = "Business Manager"
 
     const userId = yield call(getUserId)
     const occupation = yield call(getUserOccupation, userId)
@@ -41,12 +41,14 @@ export function* getReportingAccess() {
 
     let hasAccess = roleToAccessReporting.some(role => occupation.includes(role))
 
-    if(!occupation.includes(REPORTING_OWNER)) {
+    console.log(hasAccess)
+    if (!occupation.includes(REPORTING_OWNER)) {
       let dataEmployeeFiltered = getIdEmployeeAccessAndOccupation(occupation)
+
       employeeIdAccess = dataEmployeeFiltered.tabEmployeesIdsAccessibleByUserConnected
       occupation = dataEmployeeFiltered.userConnectedOccupation
     }
-    
+
     yield put(updateReportingAccess(hasAccess, occupation, userId, employeeIdAccess))
   } catch (e) {
     //
