@@ -15,6 +15,19 @@ export const getNoteFromEmployee = (idEmployee, dateStart, dateEnd, startValue) 
         }
     );
 
+export const getJobOrdersForYTD = (idEmployee, startDateOfTheYear, todayDate, start) =>
+    post(
+        "search/JobOrder",
+        {
+            query: `owner.id:${idEmployee} AND isDeleted:false AND dateAdded:[${startDateOfTheYear} TO ${todayDate}]`
+        },  
+        {
+            fields: "id",
+            count: '50',
+            start: `${start}`
+        }
+    );
+
 export const getSubmissionStatusChangedProjectStart = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
     get("query/JobSubmissionEditHistory", {
         fields: "id",
@@ -28,7 +41,7 @@ export const getJobOrders = (idEmployee, dateStartTimestamp, dateEndTimestamp) =
         count: "50"
     })
 
-export const getAllJobOrders = (idEmployee) =>
+export const getAllJobOrdersOpen = (idEmployee) =>
     get("query/JobOrder", {
         fields: "id",
         where: `owner.id=${idEmployee} AND isDeleted=false AND isOpen=true`,

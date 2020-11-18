@@ -366,12 +366,6 @@ export const calculateConversionYTDBusinessManager = (objectConversionYTDBusines
   let prospectionMeetingDoneConversionYTD = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE / objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE) * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.PROSPECTION_MEETING_DONE = (isNaN(prospectionMeetingDoneConversionYTD) || (prospectionMeetingDoneConversionYTD === Infinity)) ? "0 %" : prospectionMeetingDoneConversionYTD + " %";
 
-  let newVacancyConversionYTD = Math.round(objectConversionYTDBusinessManager.TOTAL_YTD.NEW_VACANCY / objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE * 100)
-  objectConversionYTDBusinessManager.CONVERSION_YTD.NEW_VACANCY = (isNaN(newVacancyConversionYTD) || (newVacancyConversionYTD === Infinity)) ? "0 %" : newVacancyConversionYTD + " %";
-
-  let cvSentConversionYTD = Math.round(objectConversionYTDBusinessManager.TOTAL_YTD.CV_SENT / objectConversionYTDBusinessManager.TOTAL_YTD.NEW_VACANCY * 100)
-  objectConversionYTDBusinessManager.CONVERSION_YTD.CV_SENT = (isNaN(cvSentConversionYTD) || (cvSentConversionYTD === Infinity)) ? "0 %" : cvSentConversionYTD + " %";
-
   let intakeConversionYTD = Math.round(objectConversionYTDBusinessManager.TOTAL_YTD.INTAKE / objectConversionYTDBusinessManager.TOTAL_YTD.NEW_VACANCY * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.INTAKE = (isNaN(intakeConversionYTD) || (intakeConversionYTD === Infinity)) ? "0 %" : intakeConversionYTD + " %";
 

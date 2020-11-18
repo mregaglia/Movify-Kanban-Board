@@ -15,7 +15,8 @@ import {
   SET_LOADING_YTD_TOTAL,
   SET_LOADING_YTD_AVERAGE,
   SET_LOADING_YTD_CONVERSION,
-  SET_CV_SENT_IS_LOADED_WEEK
+  SET_CV_SENT_IS_LOADED_WEEK,
+  SET_LOADING_YTD_NEW_VACANCY
 } from "./kpi.actions"
 
 export const initialState = {
@@ -81,7 +82,8 @@ export const initialState = {
   isLoadingYTDTotal: false,
   isLoadingYTDAverage: false,
   isLoadingYTDConversion: false,
-  isCvSentWeekLoading: false
+  isCvSentWeekLoading: false,
+  isLoadingYTDNewVacancy: false
 }
 
 const kpi = {
@@ -168,6 +170,10 @@ const kpi = {
   [SET_CV_SENT_IS_LOADED_WEEK]: (state, payload) => ({
     ...state,
     isCvSentWeekLoading: payload
+  }),
+  [SET_LOADING_YTD_NEW_VACANCY]: (state, payload) => ({
+    ...state,
+    isLoadingYTDNewVacancy: payload
   }),
 
 }

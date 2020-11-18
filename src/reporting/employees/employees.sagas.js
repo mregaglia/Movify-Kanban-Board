@@ -25,6 +25,7 @@ import {
 export function* getEmployees() {
     try {
         const employees = yield call(getBusinessManagerSourcingOfficerAndTalentAcquisition);
+        console.log(employees)
         const sortedEmployees = sortTableEmployee(employees.data)
         yield put(setEmployees(sortedEmployees))
     } catch (e) {

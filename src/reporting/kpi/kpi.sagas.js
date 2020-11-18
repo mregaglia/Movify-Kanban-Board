@@ -1,7 +1,7 @@
 import moment from 'moment'
 import { call, put, takeLatest, all } from "redux-saga/effects";
 import { path } from 'ramda'
-import { getLast4weeksDate, getDateString, getStartDateOfYear } from '../../utils/date'
+import { getLast4weeksDate, getDateString, getStartDateOfYear, getStartDateOfYearTimestamp } from '../../utils/date'
 import {
     initalizeObjectBusinessManager,
     initalizeObjectRecruitment,
@@ -34,14 +34,16 @@ import {
     setLoadingYTDTotal,
     setLoadingYTDAverage,
     setLoadingYTDConversion,
-    setCvSentIsLoadingWeek
+    setCvSentIsLoadingWeek,
+    setLoadingYTDNewVacancy
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
     getJobOrders,
-    getAllJobOrders,
+    getAllJobOrdersOpen,
     getJobSubmissionsByJobOrderId,
-    getSubmissionStatusChangedCvSent
+    getSubmissionStatusChangedCvSent,
+    getJobOrdersForYTD
 } from './kpi.service'
 import {
     BUSINESS_MANAGER
@@ -57,7 +59,7 @@ export function* getKpiDataEmployee(action) {
     let dates = getLast4weeksDate();
     let dateStartOfThisYear = getStartDateOfYear()
 
-    let employeeId = path(["payload", "id"], action);
+    let idEmployee = path(["payload", "id"], action);
     let occupation = path(["payload", "occupation"], action);
 
     let objectDataBusinessManager = initalizeObjectBusinessManager(occupation);
@@ -69,17 +71,27 @@ export function* getKpiDataEmployee(action) {
 
     if (occupation.includes(BUSINESS_MANAGER)) {
         yield all([
-            call(getLast4WeekDataSaga, employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
-            getCvSent(employeeId, dates),
-            call(calculateTotalYTD, employeeId, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment),
+            call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
+            getCvSent(idEmployee, dates),
+            call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment),
+            call(calculateTotalNewVacancyYTD, idEmployee, dates[3].end)
         ])
     } else {
         yield all([
-            call(getLast4WeekDataSaga, employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
-            call(calculateTotalYTD, employeeId, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment),
+            call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
+            call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment),
         ])
     }
 }
+
+export function* calculateTotalCvSentYTD() {
+    try{
+
+    } catch(e) {
+        //
+    }
+}
+
 
 export function* calculateTotalYTD(employeeId, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment) {
 
@@ -194,7 +206,7 @@ export function* getCvSent(employeeId, dates) {
 
     try {
         // Retrieving all jobOrders open for employee
-        const jobOrderOpen = yield call(getAllJobOrders, employeeId);
+        const jobOrderOpen = yield call(getAllJobOrdersOpen, employeeId);
 
         // retrieving all jobsubmissions linked to the jobOrder
         for (let i = 0; i < jobOrderOpen.length; i++) {
@@ -241,6 +253,31 @@ export function* getKpiNoteSaga(employeeId, dateStart, dateEnd) {
         //
     }
     return kpiNote;
+}
+
+export function* calculateTotalNewVacancyYTD(idEmployee, todayDate) {
+    let dateStartOfThisYear = getStartDateOfYear()
+    let jobOrderKpiYTD = [];
+    let noteRemaining = true;
+    let remainingValue = 0;
+    try{
+        while (noteRemaining) {
+            let jobOrderYTD = yield call(getJobOrdersForYTD, idEmployee, dateStartOfThisYear, todayDate, remainingValue)
+        
+            jobOrderKpiYTD = [...jobOrderKpiYTD, ...jobOrderYTD.data]
+            remainingValue = remainingValue + 50
+
+            noteRemaining = (((jobOrderYTD.total - remainingValue) <= 0)) ? false : true;
+            
+            if (!noteRemaining) {
+                yield put(setLoadingYTDNewVacancy(false))
+                return jobOrderKpiYTD
+            }
+        }
+    } catch(e) {
+        //
+    }
+    return jobOrderKpiYTD
 }
 
 const getWeekLabel = (index) => {
