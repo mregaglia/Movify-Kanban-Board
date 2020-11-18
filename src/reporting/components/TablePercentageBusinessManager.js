@@ -5,7 +5,7 @@ import { pathOr } from 'ramda'
 import { object, bool } from "prop-types"
 import Loader from 'react-loader-spinner'
 
-const TablePercentageBusinessManager = ({ dataConversionYTD, dataTotalYTD, dataAverageYTD, isLoadingConversionYTD, isLoadingTotalYTD, isLoadingAverageYTD, isLoadingYTDNewVacancy }) => {
+const TablePercentageBusinessManager = ({ dataConversionYTD, dataTotalYTD, dataAverageYTD, isLoadingConversionYTD, isLoadingTotalYTD, isLoadingAverageYTD, isLoadingYTDNewVacancy, isLoadingYTDConversionNewVacancy }) => {
 
     return (
         <>
@@ -30,19 +30,35 @@ const TablePercentageBusinessManager = ({ dataConversionYTD, dataTotalYTD, dataA
                                 </TableContentTbodyTr>
                             )
                         } else {
-                            return (
-                                <TableContentTbodyTr key={i}>
-                                    <TableContentTd>
-                                        {dataConversionYTD[key]}
-                                    </TableContentTd>
-                                    <TableContentTd>
-                                        {dataTotalYTD[key]}
-                                    </TableContentTd>
-                                    <TableContentTd>
-                                        {dataAverageYTD[key]}
-                                    </TableContentTd>
-                                </TableContentTbodyTr>
-                            )
+                            if (isLoadingYTDConversionNewVacancy) {
+                                return (
+                                    <TableContentTbodyTr key={i}>
+                                        <TableContentTd>
+                                            <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                        </TableContentTd>
+                                        <TableContentTd>
+                                            {dataTotalYTD[key]}
+                                        </TableContentTd>
+                                        <TableContentTd>
+                                            {dataAverageYTD[key]}
+                                        </TableContentTd>
+                                    </TableContentTbodyTr>
+                                )
+                            } else {
+                                return (
+                                    <TableContentTbodyTr key={i}>
+                                        <TableContentTd>
+                                            {dataConversionYTD[key]}
+                                        </TableContentTd>
+                                        <TableContentTd>
+                                            {dataTotalYTD[key]}
+                                        </TableContentTd>
+                                        <TableContentTd>
+                                            {dataAverageYTD[key]}
+                                        </TableContentTd>
+                                    </TableContentTbodyTr>
+                                )
+                            }
                         }
                     } else {
                         return (
@@ -87,7 +103,8 @@ TablePercentageBusinessManager.propTypes = {
     isLoadingConversionYTD: bool,
     isLoadingTotalYTD: bool,
     isLoadingAverageYTD: bool,
-    isLoadingYTDNewVacancy: bool
+    isLoadingYTDNewVacancy: bool,
+    isLoadingYTDConversionNewVacancy: bool
 };
 
 export default connect(
@@ -98,7 +115,8 @@ export default connect(
         isLoadingConversionYTD: pathOr({}, ["kpi", "isLoadingYTDConversion"], state),
         isLoadingTotalYTD: pathOr({}, ["kpi", "isLoadingYTDTotal"], state),
         isLoadingAverageYTD: pathOr({}, ["kpi", "isLoadingYTDAverage"], state),
-        isLoadingYTDNewVacancy: pathOr({}, ["kpi", "isLoadingYTDNewVacancy"], state)
+        isLoadingYTDNewVacancy: pathOr({}, ["kpi", "isLoadingYTDNewVacancy"], state),
+        isLoadingYTDConversionNewVacancy: pathOr({}, ["kpi", "isLoadingYTDConversionNewVacancy"], state)
     }),
     {}
 )(TablePercentageBusinessManager);

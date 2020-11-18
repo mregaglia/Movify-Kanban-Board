@@ -17,7 +17,9 @@ import {
   SET_LOADING_YTD_CONVERSION,
   SET_CV_SENT_IS_LOADED_WEEK,
   SET_LOADING_YTD_NEW_VACANCY,
-  SET_NEW_VACANCY_YTD
+  SET_NEW_VACANCY_YTD,
+  SET_CONVERSION_YTD_NEW_VACANCY,
+  SET_LOADING_YTD_CONVERSION_NEW_VACANCY
 } from "./kpi.actions"
 
 export const initialState = {
@@ -84,7 +86,8 @@ export const initialState = {
   isLoadingYTDAverage: false,
   isLoadingYTDConversion: false,
   isCvSentWeekLoading: false,
-  isLoadingYTDNewVacancy: false
+  isLoadingYTDNewVacancy: false,
+  isLoadingYTDConversionNewVacancy: false
 }
 
 const kpi = {
@@ -201,15 +204,29 @@ const kpi = {
     ...state,
     dataYTDEmployee: {
       ...state.dataYTDEmployee,
-      TOTAL_YTD_BM:{
+      TOTAL_YTD_BM: {
         ...state.dataYTDEmployee.TOTAL_YTD_BM,
         NEW_VACANCY: payload.TOTAL_YTD.NEW_VACANCY
       },
-      AVERAGE_YTD_BM:{
+      AVERAGE_YTD_BM: {
         ...state.dataYTDEmployee.AVERAGE_YTD_BM,
         NEW_VACANCY: payload.AVERAGE.NEW_VACANCY
       }
     }
+  }),
+  [SET_CONVERSION_YTD_NEW_VACANCY]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      CONVERSION_YTD_BM: {
+        ...state.dataYTDEmployee.CONVERSION_YTD_BM,
+        NEW_VACANCY: payload
+      }
+    }
+  }),
+  [SET_LOADING_YTD_CONVERSION_NEW_VACANCY]: (state, payload) => ({
+    ...state,
+    isLoadingYTDConversionNewVacancy: payload
   }),
 
 }

@@ -4,7 +4,7 @@ import SelectEmployees from "./SelectEmployees"
 import { getEmployees } from "../employees/employees.actions"
 import { connect } from "react-redux";
 import { setEmployeeSelected, getEmployeeAccessibleData } from '../employees/employees.actions'
-import { setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion, setCvSentIsLoadingWeek, setLoadingYTDNewVacancy } from '../kpi/kpi.actions'
+import { setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion, setCvSentIsLoadingWeek, setLoadingYTDNewVacancy, setLoadingYTDConversionNewVacancy } from '../kpi/kpi.actions'
 import { array, bool, func, object, string, number } from "prop-types";
 import { path, isEmpty } from "ramda";
 import TableData from "./TableData";
@@ -22,7 +22,7 @@ const Container = styled.div({
     justifyContent: "center"
 })
 
-const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess, setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion, setCvSentIsLoadingWeek }) => {
+const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess, setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion, setCvSentIsLoadingWeek, setLoadingYTDConversionNewVacancy }) => {
 
     useEffect(() => {
         setKpiLoading(true)
@@ -31,7 +31,7 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSe
         setLoadingYTDAverage(true)
         setLoadingYTDConversion(true)
         setLoadingYTDNewVacancy(true)
-
+        setLoadingYTDConversionNewVacancy(true)
         if (!userConnectedOccupation.includes(REPORTING_OWNER)) {
             let initializedEmployeeConnected = initializeEmployeeSelected(userConnectedId, userConnectedOccupation)
             setEmployeeSelected(initializedEmployeeConnected);
@@ -93,7 +93,8 @@ Reporting.propTypes = {
     setLoadingYTDTotal: func,
     setLoadingYTDAverage: func,
     setLoadingYTDConversion: func,
-    setCvSentIsLoadingWeek: func
+    setCvSentIsLoadingWeek: func,
+    setLoadingYTDConversionNewVacancy: func
 };
 
 export default connect(
@@ -104,5 +105,5 @@ export default connect(
         userConnectedId: path(["user", "accessToReportingTab", "userId"], state),
         employeeIdAccess: path(["user", "accessToReportingTab", "employeeIdAccess"], state),
     }),
-    { getEmployees, setEmployeeSelected, setKpiLoading, getEmployeeAccessibleData, setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion, setCvSentIsLoadingWeek }
+    { getEmployees, setEmployeeSelected, setKpiLoading, getEmployeeAccessibleData, setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion, setCvSentIsLoadingWeek, setLoadingYTDConversionNewVacancy }
 )(Reporting);

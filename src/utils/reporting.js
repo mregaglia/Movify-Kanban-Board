@@ -356,6 +356,7 @@ export const calculateAverageYTDBusinessManager = (objectYTDBusinessManager, wee
 
 export const calculateAverageYTDRecruitment = (objectYTDRecruitment, weekNumberOfTheYear) => {
   Object.entries(objectYTDRecruitment.AVERAGE).forEach(([key, value]) => {
+    console.log(objectYTDRecruitment.TOTAL_YTD[key], weekNumberOfTheYear)
     objectYTDRecruitment.AVERAGE[key] = calculateAverageYTDData(objectYTDRecruitment.TOTAL_YTD[key], weekNumberOfTheYear)
   })
 
@@ -389,7 +390,6 @@ export const calculateConversionYTDBusinessManager = (objectConversionYTDBusines
 
   let projectStart = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.PROJECT_START / objectConversionYTDBusinessManager.TOTAL_YTD.INTAKE) * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.PROJECT_START = (isNaN(projectStart) || (projectStart === Infinity)) ? "0 %" : projectStart + " %";
-
 
   return objectConversionYTDBusinessManager;
 }

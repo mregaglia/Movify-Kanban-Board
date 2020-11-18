@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { call, put, takeLatest, all } from "redux-saga/effects";
+import { call, put, takeLatest, all, select } from "redux-saga/effects";
 import { path } from 'ramda'
 import { getLast4weeksDate, getDateString, getStartDateOfYear, getStartDateOfYearTimestamp } from '../../utils/date'
 import {
@@ -38,7 +38,9 @@ import {
     setLoadingYTDConversion,
     setCvSentIsLoadingWeek,
     setLoadingYTDNewVacancy,
-    setNewVacancyYTD
+    setNewVacancyYTD,
+    setConversionYTDNewVacancy,
+    setLoadingYTDConversionNewVacancy
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
@@ -76,16 +78,35 @@ export function* getKpiDataEmployee(action) {
     if (occupation.includes(BUSINESS_MANAGER)) {
         yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
-            getCvSent(idEmployee, dates),
+            //getCvSent(idEmployee, dates),
             call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
             call(calculateTotalNewVacancyYTD, idEmployee, dates[3].end, weekNumberOfTheYear)
         ])
-
+        yield call(calculateConversionYTDNewVacancy)
     } else {
         yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
-            call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment),
+            call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
         ])
+    }
+}
+
+export const getProspectionMeetingDoneTotalYTD = (state) => state.kpi.dataYTDEmployee.TOTAL_YTD_BM.PROSPECTION_MEETING_DONE
+export const getNewVacancyTotalYTD = (state) => state.kpi.dataYTDEmployee.TOTAL_YTD_BM.NEW_VACANCY
+
+export function* calculateConversionYTDNewVacancy() {
+    try{    
+
+        let totalProspectionMeetingDoneYTD = yield select(getProspectionMeetingDoneTotalYTD)
+        let totalNewVacancyYTD = yield select(getNewVacancyTotalYTD)
+
+        let conversionNewVacancyYTD = Math.round((totalNewVacancyYTD / totalProspectionMeetingDoneYTD) * 100)
+        conversionNewVacancyYTD = (isNaN(conversionNewVacancyYTD) || (conversionNewVacancyYTD === Infinity)) ? "0 %" : conversionNewVacancyYTD + " %"
+
+        yield put(setConversionYTDNewVacancy(conversionNewVacancyYTD))
+        yield put(setLoadingYTDConversionNewVacancy(false))
+    } catch(e) {
+        //
     }
 }
 
@@ -276,17 +297,20 @@ export function* calculateTotalNewVacancyYTD(idEmployee, todayDate, weekNumberOf
             noteRemaining = (((jobOrderYTD.total - remainingValue) <= 0)) ? false : true;
             
             if (!noteRemaining) {
-                
                 let numberOfNewVacancyYTD = jobOrderKpiYTD.length
                 objectNewVacancyYTD.TOTAL_YTD.NEW_VACANCY = numberOfNewVacancyYTD
                 objectNewVacancyYTD.AVERAGE.NEW_VACANCY = calculateAverageYTDData(numberOfNewVacancyYTD, weekNumberOfTheYear)
+
                 yield put(setNewVacancyYTD(objectNewVacancyYTD))
                 yield put(setLoadingYTDNewVacancy(false))
+
+                return numberOfNewVacancyYTD
             }
         }
     } catch(e) {
         //
     }
+    return 0
 }
 
 const getWeekLabel = (index) => {
