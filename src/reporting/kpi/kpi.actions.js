@@ -11,6 +11,7 @@ export const SET_CV_SENT_IS_LOADED_WEEK = "SET_CV_SENT_IS_LOADED_WEEK"
 
 export const SET_YTD_TOTAL_BUSINESS_MANAGER = "SET_YTD_TOTAL"
 export const SET_YTD_TOTAL_RECRUITMENT = "SET_YTD_TOTAL_RECRUITMENT"
+export const SET_NEW_VACANCY_YTD = "SET_NEW_VACANCY_YTD"
 export const SET_LOADING_YTD_TOTAL = "SET_LOADING_YTD_TOTAL"
 export const SET_LOADING_YTD_NEW_VACANCY = "SET_LOADING_YTD_NEW_VACANCY"
 
@@ -36,6 +37,7 @@ export const setCvSentIsLoadingWeek = (cvSentIsLoaded) => ({ type: SET_CV_SENT_I
 
 export const setYTDTotalBusinessManager = (ytdTotalBusinessManager) => ({ type: SET_YTD_TOTAL_BUSINESS_MANAGER, payload: ytdTotalBusinessManager })
 export const setYTDTotalRecruitment = (ytdTotalRecruitment) => ({ type: SET_YTD_TOTAL_RECRUITMENT, payload: ytdTotalRecruitment })
+export const setNewVacancyYTD = (newVacancyYTD) => ({type: SET_NEW_VACANCY_YTD, payload: newVacancyYTD})
 export const setLoadingYTDTotal = (isLoadingYTDTotal) => ({ type: SET_LOADING_YTD_TOTAL, payload: isLoadingYTDTotal})
 export const setLoadingYTDNewVacancy = (isLoadingYTDNewVacancy) => ({type: SET_LOADING_YTD_NEW_VACANCY, payload: isLoadingYTDNewVacancy})
 

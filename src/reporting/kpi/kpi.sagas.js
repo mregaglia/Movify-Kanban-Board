@@ -18,7 +18,9 @@ import {
     calculateAverageYTDRecruitment,
     calculateAverageYTDBusinessManager,
     countNoteForRecruitmentAndIdsSourcing,
-    initializeObjectDataRecruitmentAndIds
+    initializeObjectDataRecruitmentAndIds,
+    initialiserObjectNewVacancyYTD,
+    calculateAverageYTDData
 } from '../../utils/reporting'
 import {
     GET_EMPLOYEE_KPI,
@@ -35,7 +37,8 @@ import {
     setLoadingYTDAverage,
     setLoadingYTDConversion,
     setCvSentIsLoadingWeek,
-    setLoadingYTDNewVacancy
+    setLoadingYTDNewVacancy,
+    setNewVacancyYTD
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
@@ -55,6 +58,7 @@ export const THIRD_WEEK = "THIRD_WEEK"
 export const FOURTH_WEEK = "FOURTH_WEEK"
 
 export function* getKpiDataEmployee(action) {
+    let weekNumberOfTheYear = moment().format('w')
 
     let dates = getLast4weeksDate();
     let dateStartOfThisYear = getStartDateOfYear()
@@ -73,9 +77,10 @@ export function* getKpiDataEmployee(action) {
         yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
             getCvSent(idEmployee, dates),
-            call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment),
-            call(calculateTotalNewVacancyYTD, idEmployee, dates[3].end)
+            call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
+            call(calculateTotalNewVacancyYTD, idEmployee, dates[3].end, weekNumberOfTheYear)
         ])
+
     } else {
         yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
@@ -93,7 +98,7 @@ export function* calculateTotalCvSentYTD() {
 }
 
 
-export function* calculateTotalYTD(employeeId, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment) {
+export function* calculateTotalYTD(employeeId, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear) {
 
     try {
 
@@ -112,7 +117,7 @@ export function* calculateTotalYTD(employeeId, dateStartOfThisYear, dateEnd, occ
         yield put(setLoadingYTDTotal(false))
 
         yield all([
-            call(calculateAverageYTD, occupation, objectYTDBusinessManager, objectYTDRecruitment),
+            call(calculateAverageYTD, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
             call(calculateConversionYTD, occupation, objectYTDBusinessManager, objectYTDRecruitment)
         ])
     } catch (e) {
@@ -138,8 +143,8 @@ export function* calculateConversionYTD(occupation, objectYTDBusinessManager, ob
     }
 }
 
-export function* calculateAverageYTD(occupation, objectYTDBusinessManager, objectYTDRecruitment) {
-    let weekNumberOfTheYear = moment().format('w')
+export function* calculateAverageYTD(occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear) {
+    
     try {
         if (occupation.includes(BUSINESS_MANAGER)) {
             objectYTDBusinessManager = calculateAverageYTDBusinessManager(objectYTDBusinessManager, weekNumberOfTheYear)
@@ -255,11 +260,12 @@ export function* getKpiNoteSaga(employeeId, dateStart, dateEnd) {
     return kpiNote;
 }
 
-export function* calculateTotalNewVacancyYTD(idEmployee, todayDate) {
+export function* calculateTotalNewVacancyYTD(idEmployee, todayDate, weekNumberOfTheYear) {
     let dateStartOfThisYear = getStartDateOfYear()
     let jobOrderKpiYTD = [];
     let noteRemaining = true;
     let remainingValue = 0;
+    let objectNewVacancyYTD = initialiserObjectNewVacancyYTD()
     try{
         while (noteRemaining) {
             let jobOrderYTD = yield call(getJobOrdersForYTD, idEmployee, dateStartOfThisYear, todayDate, remainingValue)
@@ -270,14 +276,17 @@ export function* calculateTotalNewVacancyYTD(idEmployee, todayDate) {
             noteRemaining = (((jobOrderYTD.total - remainingValue) <= 0)) ? false : true;
             
             if (!noteRemaining) {
+                
+                let numberOfNewVacancyYTD = jobOrderKpiYTD.length
+                objectNewVacancyYTD.TOTAL_YTD.NEW_VACANCY = numberOfNewVacancyYTD
+                objectNewVacancyYTD.AVERAGE.NEW_VACANCY = calculateAverageYTDData(numberOfNewVacancyYTD, weekNumberOfTheYear)
+                yield put(setNewVacancyYTD(objectNewVacancyYTD))
                 yield put(setLoadingYTDNewVacancy(false))
-                return jobOrderKpiYTD
             }
         }
     } catch(e) {
         //
     }
-    return jobOrderKpiYTD
 }
 
 const getWeekLabel = (index) => {

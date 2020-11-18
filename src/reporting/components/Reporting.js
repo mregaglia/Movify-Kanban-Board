@@ -31,6 +31,7 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSe
         setLoadingYTDAverage(true)
         setLoadingYTDConversion(true)
         setLoadingYTDNewVacancy(true)
+
         if (!userConnectedOccupation.includes(REPORTING_OWNER)) {
             let initializedEmployeeConnected = initializeEmployeeSelected(userConnectedId, userConnectedOccupation)
             setEmployeeSelected(initializedEmployeeConnected);
@@ -41,7 +42,7 @@ const Reporting = ({ getEmployees, employeeSelected, isLoadingKpi, setEmployeeSe
         } else {
             getEmployees();
         }
-    }, [])
+    }, [employeeSelected])
 
     return (
         <div>

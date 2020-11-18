@@ -16,7 +16,8 @@ import {
   SET_LOADING_YTD_AVERAGE,
   SET_LOADING_YTD_CONVERSION,
   SET_CV_SENT_IS_LOADED_WEEK,
-  SET_LOADING_YTD_NEW_VACANCY
+  SET_LOADING_YTD_NEW_VACANCY,
+  SET_NEW_VACANCY_YTD
 } from "./kpi.actions"
 
 export const initialState = {
@@ -117,7 +118,14 @@ const kpi = {
     ...state,
     dataYTDEmployee: {
       ...state.dataYTDEmployee,
-      TOTAL_YTD_BM: payload
+      TOTAL_YTD_BM: {
+        ...state.dataYTDEmployee.TOTAL_YTD_BM,
+        CALL: payload.CALL,
+        PROSPECTION_MEETING_SCHEDULE: payload.PROSPECTION_MEETING_SCHEDULE,
+        PROSPECTION_MEETING_DONE: payload.PROSPECTION_MEETING_DONE,
+        INTAKE: payload.INTAKE,
+        PROJECT_START: payload.PROJECT_START
+      }
     }
   }),
   [SET_YTD_TOTAL_RECRUITMENT]: (state, payload) => ({
@@ -131,7 +139,14 @@ const kpi = {
     ...state,
     dataYTDEmployee: {
       ...state.dataYTDEmployee,
-      AVERAGE_YTD_BM: payload
+      AVERAGE_YTD_BM: {
+        ...state.dataYTDEmployee.AVERAGE_YTD_BM,
+        CALL: payload.CALL,
+        PROSPECTION_MEETING_SCHEDULE: payload.PROSPECTION_MEETING_SCHEDULE,
+        PROSPECTION_MEETING_DONE: payload.PROSPECTION_MEETING_DONE,
+        INTAKE: payload.INTAKE,
+        PROJECT_START: payload.PROJECT_START
+      }
     }
   }),
   [SET_AVERAGE_YTD_RECRUITMENT]: (state, payload) => ({
@@ -145,7 +160,14 @@ const kpi = {
     ...state,
     dataYTDEmployee: {
       ...state.dataYTDEmployee,
-      CONVERSION_YTD_BM: payload
+      CONVERSION_YTD_BM: {
+        ...state.dataYTDEmployee.CONVERSION_YTD_BM,
+        CALL: payload.CALL,
+        PROSPECTION_MEETING_SCHEDULE: payload.PROSPECTION_MEETING_SCHEDULE,
+        PROSPECTION_MEETING_DONE: payload.PROSPECTION_MEETING_DONE,
+        INTAKE: payload.INTAKE,
+        PROJECT_START: payload.PROJECT_START
+      }
     }
   }),
   [SET_CONVERSION_YTD_RECRUITMENT]: (state, payload) => ({
@@ -174,6 +196,20 @@ const kpi = {
   [SET_LOADING_YTD_NEW_VACANCY]: (state, payload) => ({
     ...state,
     isLoadingYTDNewVacancy: payload
+  }),
+  [SET_NEW_VACANCY_YTD]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      TOTAL_YTD_BM:{
+        ...state.dataYTDEmployee.TOTAL_YTD_BM,
+        NEW_VACANCY: payload.TOTAL_YTD.NEW_VACANCY
+      },
+      AVERAGE_YTD_BM:{
+        ...state.dataYTDEmployee.AVERAGE_YTD_BM,
+        NEW_VACANCY: payload.AVERAGE.NEW_VACANCY
+      }
+    }
   }),
 
 }

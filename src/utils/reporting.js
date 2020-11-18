@@ -68,6 +68,20 @@ export const initializeObjectCvSent = () => {
   }
 }
 
+export const initialiserObjectNewVacancyYTD = () => {
+  return {
+    CONVERSION_YTD:{
+      NEW_VACANCY: 0,
+    },
+    TOTAL_YTD:{
+      NEW_VACANCY: 0
+    },
+    AVERAGE:{
+      NEW_VACANCY: 0
+    }
+  }
+}
+
 export const initalizeObjectRecruitment = () => {
   return {
     CONTACTED_BY_INMAIL: { TITLE: LABEL_CONTACTED_BY_INMAIL, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -334,7 +348,7 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
 
 export const calculateAverageYTDBusinessManager = (objectYTDBusinessManager, weekNumberOfTheYear) => {
   Object.entries(objectYTDBusinessManager.AVERAGE).forEach(([key, value]) => {
-    objectYTDBusinessManager.AVERAGE[key] = Math.floor(objectYTDBusinessManager.TOTAL_YTD[key] / weekNumberOfTheYear)
+    objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(objectYTDBusinessManager.TOTAL_YTD[key], weekNumberOfTheYear)
   })
 
   return objectYTDBusinessManager
@@ -342,10 +356,14 @@ export const calculateAverageYTDBusinessManager = (objectYTDBusinessManager, wee
 
 export const calculateAverageYTDRecruitment = (objectYTDRecruitment, weekNumberOfTheYear) => {
   Object.entries(objectYTDRecruitment.AVERAGE).forEach(([key, value]) => {
-    objectYTDRecruitment.AVERAGE[key] = Math.floor(objectYTDRecruitment.TOTAL_YTD[key] / weekNumberOfTheYear)
+    objectYTDRecruitment.AVERAGE[key] = calculateAverageYTDData(objectYTDRecruitment.TOTAL_YTD[key], weekNumberOfTheYear)
   })
 
   return objectYTDRecruitment
+}
+
+export const calculateAverageYTDData = (totalYTD, weekNumberOfTheYear) => {
+  return Math.floor(totalYTD / weekNumberOfTheYear)
 }
 
 export const getGaugeLimitFromFile = (occupation) => {
