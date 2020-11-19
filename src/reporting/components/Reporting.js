@@ -13,7 +13,8 @@ import Loader from 'react-loader-spinner'
 import GaugeComponent from './GaugeComponent'
 import { initializeEmployeeSelected } from '../../utils/employees'
 import {
-    REPORTING_OWNER
+    REPORTING_OWNER,
+    BUSINESS_MANAGER
 } from '../../auth/user.sagas'
 
 const Container = styled.div({
@@ -25,6 +26,20 @@ const Container = styled.div({
 const Reporting = ({ setLoadingYTDConversionCVSent, setLoadingYTDCVSent, getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess, setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion, setCvSentIsLoadingWeek, setLoadingYTDConversionNewVacancy }) => {
 
     useEffect(() => {
+        if (!userConnectedOccupation.includes(REPORTING_OWNER) ) {
+            let initializedEmployeeConnected = initializeEmployeeSelected(userConnectedId, userConnectedOccupation)
+
+            setEmployeeSelected(initializedEmployeeConnected);
+
+            if (!isEmpty(employeeIdAccess)) {
+                getEmployeeAccessibleData(employeeIdAccess)
+            }
+        } else {
+            getEmployees();
+        }
+    }, [])
+
+    useEffect(() => {
         setKpiLoading(true)
         setCvSentIsLoadingWeek(true)
         setLoadingYTDTotal(true)
@@ -34,17 +49,6 @@ const Reporting = ({ setLoadingYTDConversionCVSent, setLoadingYTDCVSent, getEmpl
         setLoadingYTDConversionNewVacancy(true)
         setLoadingYTDCVSent(true)
         setLoadingYTDConversionCVSent(true)
-        if (!userConnectedOccupation.includes(REPORTING_OWNER)) {
-            let initializedEmployeeConnected = initializeEmployeeSelected(userConnectedId, userConnectedOccupation)
-            setEmployeeSelected(initializedEmployeeConnected);
-            setKpiLoading(true)
-            if (!isEmpty(employeeIdAccess)) {
-                getEmployeeAccessibleData(employeeIdAccess)
-            }
-        } else {
-            getEmployees();
-        }
-        
     }, [employeeSelected])
 
     return (
@@ -97,7 +101,7 @@ Reporting.propTypes = {
     setLoadingYTDConversion: func,
     setCvSentIsLoadingWeek: func,
     setLoadingYTDConversionNewVacancy: func,
-    setLoadingYTDCVSent: func, 
+    setLoadingYTDCVSent: func,
     setLoadingYTDConversionCVSent: func
 };
 
