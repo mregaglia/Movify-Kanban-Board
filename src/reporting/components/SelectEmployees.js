@@ -27,7 +27,6 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
         for (let i = 0; i < employees.length; i++) {
             if (parseInt(employeeSelected.value) === employees[i].id) {
                 setEmployeeSelected(employees[i]);
-                
                 break;
             }
         }
