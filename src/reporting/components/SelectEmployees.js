@@ -4,7 +4,7 @@ import { setEmployeeSelected } from '../employees/employees.actions'
 
 import { connect } from "react-redux";
 import { pathOr } from "ramda";
-import { array, func } from "prop-types";
+import { array } from "prop-types";
 import styled from "styled-components"
 import { getValuesFromEmployees } from '../../utils/employees'
 
