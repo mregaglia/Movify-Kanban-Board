@@ -20,21 +20,21 @@ const TablePercentageTalentAcquisition = ({ dataConversionYTD, dataTotalYTD, dat
                                 {!isLoadingConversionYTD
                                     ? (dataConversionYTD[key])
                                     : (
-                                        <Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" />
+                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
                                     )}
                             </TableContentTd>
                             <TableContentTd>
                                 {!isLoadingTotalYTD
                                     ? dataTotalYTD[key]
                                     : (
-                                        <Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" />
+                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
                                     )}
                             </TableContentTd>
                             <TableContentTd>
                                 {!isLoadingAverageYTD
                                     ? dataAverageYTD[key]
                                     : (
-                                        <Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" />
+                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
                                     )}
                             </TableContentTd>
                         </TableContentTbodyTr>

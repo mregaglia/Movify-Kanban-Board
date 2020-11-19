@@ -68,6 +68,34 @@ export const initializeObjectCvSent = () => {
   }
 }
 
+export const initialiserObjectNewVacancyYTD = () => {
+  return {
+    CONVERSION_YTD:{
+      NEW_VACANCY: 0,
+    },
+    TOTAL_YTD:{
+      NEW_VACANCY: 0
+    },
+    AVERAGE:{
+      NEW_VACANCY: 0
+    }
+  }
+}
+
+export const initialiserObjectCVSentYTD = () => {
+  return {
+    CONVERSION_YTD:{
+      CV_SENT: 0,
+    },
+    TOTAL_YTD:{
+      CV_SENT: 0
+    },
+    AVERAGE:{
+      CV_SENT: 0
+    }
+  }
+}
+
 export const initalizeObjectRecruitment = () => {
   return {
     CONTACTED_BY_INMAIL: { TITLE: LABEL_CONTACTED_BY_INMAIL, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -334,7 +362,7 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
 
 export const calculateAverageYTDBusinessManager = (objectYTDBusinessManager, weekNumberOfTheYear) => {
   Object.entries(objectYTDBusinessManager.AVERAGE).forEach(([key, value]) => {
-    objectYTDBusinessManager.AVERAGE[key] = Math.floor(objectYTDBusinessManager.TOTAL_YTD[key] / weekNumberOfTheYear)
+    objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(objectYTDBusinessManager.TOTAL_YTD[key], weekNumberOfTheYear)
   })
 
   return objectYTDBusinessManager
@@ -342,10 +370,14 @@ export const calculateAverageYTDBusinessManager = (objectYTDBusinessManager, wee
 
 export const calculateAverageYTDRecruitment = (objectYTDRecruitment, weekNumberOfTheYear) => {
   Object.entries(objectYTDRecruitment.AVERAGE).forEach(([key, value]) => {
-    objectYTDRecruitment.AVERAGE[key] = Math.floor(objectYTDRecruitment.TOTAL_YTD[key] / weekNumberOfTheYear)
+    objectYTDRecruitment.AVERAGE[key] = calculateAverageYTDData(objectYTDRecruitment.TOTAL_YTD[key], weekNumberOfTheYear)
   })
 
   return objectYTDRecruitment
+}
+
+export const calculateAverageYTDData = (totalYTD, weekNumberOfTheYear) => {
+  return Math.floor(totalYTD / weekNumberOfTheYear)
 }
 
 export const getGaugeLimitFromFile = (occupation) => {
@@ -366,18 +398,11 @@ export const calculateConversionYTDBusinessManager = (objectConversionYTDBusines
   let prospectionMeetingDoneConversionYTD = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE / objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE) * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.PROSPECTION_MEETING_DONE = (isNaN(prospectionMeetingDoneConversionYTD) || (prospectionMeetingDoneConversionYTD === Infinity)) ? "0 %" : prospectionMeetingDoneConversionYTD + " %";
 
-  let newVacancyConversionYTD = Math.round(objectConversionYTDBusinessManager.TOTAL_YTD.NEW_VACANCY / objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE * 100)
-  objectConversionYTDBusinessManager.CONVERSION_YTD.NEW_VACANCY = (isNaN(newVacancyConversionYTD) || (newVacancyConversionYTD === Infinity)) ? "0 %" : newVacancyConversionYTD + " %";
-
-  let cvSentConversionYTD = Math.round(objectConversionYTDBusinessManager.TOTAL_YTD.CV_SENT / objectConversionYTDBusinessManager.TOTAL_YTD.NEW_VACANCY * 100)
-  objectConversionYTDBusinessManager.CONVERSION_YTD.CV_SENT = (isNaN(cvSentConversionYTD) || (cvSentConversionYTD === Infinity)) ? "0 %" : cvSentConversionYTD + " %";
-
   let intakeConversionYTD = Math.round(objectConversionYTDBusinessManager.TOTAL_YTD.INTAKE / objectConversionYTDBusinessManager.TOTAL_YTD.NEW_VACANCY * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.INTAKE = (isNaN(intakeConversionYTD) || (intakeConversionYTD === Infinity)) ? "0 %" : intakeConversionYTD + " %";
 
   let projectStart = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.PROJECT_START / objectConversionYTDBusinessManager.TOTAL_YTD.INTAKE) * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.PROJECT_START = (isNaN(projectStart) || (projectStart === Infinity)) ? "0 %" : projectStart + " %";
-
 
   return objectConversionYTDBusinessManager;
 }

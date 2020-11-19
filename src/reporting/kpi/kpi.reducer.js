@@ -15,7 +15,15 @@ import {
   SET_LOADING_YTD_TOTAL,
   SET_LOADING_YTD_AVERAGE,
   SET_LOADING_YTD_CONVERSION,
-  SET_CV_SENT_IS_LOADED_WEEK
+  SET_CV_SENT_IS_LOADED_WEEK,
+  SET_LOADING_YTD_NEW_VACANCY,
+  SET_NEW_VACANCY_YTD,
+  SET_CONVERSION_YTD_NEW_VACANCY,
+  SET_LOADING_YTD_CONVERSION_NEW_VACANCY,
+  SET_LOADING_YTD_CV_SENT,
+  SET_CV_SENT_YTD, 
+  SET_LOADING_YTD_CONVERSION_CV_SENT,
+  SET_CV_SENT_CONVERSION_YTD
 } from "./kpi.actions"
 
 export const initialState = {
@@ -81,7 +89,11 @@ export const initialState = {
   isLoadingYTDTotal: false,
   isLoadingYTDAverage: false,
   isLoadingYTDConversion: false,
-  isCvSentWeekLoading: false
+  isCvSentWeekLoading: false,
+  isLoadingYTDNewVacancy: false,
+  isLoadingYTDConversionNewVacancy: false,
+  isLoadingYTDCVSent: false,
+  isLoadingYTDConversionCVSent: false
 }
 
 const kpi = {
@@ -115,7 +127,14 @@ const kpi = {
     ...state,
     dataYTDEmployee: {
       ...state.dataYTDEmployee,
-      TOTAL_YTD_BM: payload
+      TOTAL_YTD_BM: {
+        ...state.dataYTDEmployee.TOTAL_YTD_BM,
+        CALL: payload.CALL,
+        PROSPECTION_MEETING_SCHEDULE: payload.PROSPECTION_MEETING_SCHEDULE,
+        PROSPECTION_MEETING_DONE: payload.PROSPECTION_MEETING_DONE,
+        INTAKE: payload.INTAKE,
+        PROJECT_START: payload.PROJECT_START
+      }
     }
   }),
   [SET_YTD_TOTAL_RECRUITMENT]: (state, payload) => ({
@@ -129,7 +148,14 @@ const kpi = {
     ...state,
     dataYTDEmployee: {
       ...state.dataYTDEmployee,
-      AVERAGE_YTD_BM: payload
+      AVERAGE_YTD_BM: {
+        ...state.dataYTDEmployee.AVERAGE_YTD_BM,
+        CALL: payload.CALL,
+        PROSPECTION_MEETING_SCHEDULE: payload.PROSPECTION_MEETING_SCHEDULE,
+        PROSPECTION_MEETING_DONE: payload.PROSPECTION_MEETING_DONE,
+        INTAKE: payload.INTAKE,
+        PROJECT_START: payload.PROJECT_START
+      }
     }
   }),
   [SET_AVERAGE_YTD_RECRUITMENT]: (state, payload) => ({
@@ -143,7 +169,14 @@ const kpi = {
     ...state,
     dataYTDEmployee: {
       ...state.dataYTDEmployee,
-      CONVERSION_YTD_BM: payload
+      CONVERSION_YTD_BM: {
+        ...state.dataYTDEmployee.CONVERSION_YTD_BM,
+        CALL: payload.CALL,
+        PROSPECTION_MEETING_SCHEDULE: payload.PROSPECTION_MEETING_SCHEDULE,
+        PROSPECTION_MEETING_DONE: payload.PROSPECTION_MEETING_DONE,
+        INTAKE: payload.INTAKE,
+        PROJECT_START: payload.PROJECT_START
+      }
     }
   }),
   [SET_CONVERSION_YTD_RECRUITMENT]: (state, payload) => ({
@@ -169,7 +202,74 @@ const kpi = {
     ...state,
     isCvSentWeekLoading: payload
   }),
-
+  [SET_LOADING_YTD_NEW_VACANCY]: (state, payload) => ({
+    ...state,
+    isLoadingYTDNewVacancy: payload
+  }),
+  [SET_NEW_VACANCY_YTD]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      TOTAL_YTD_BM: {
+        ...state.dataYTDEmployee.TOTAL_YTD_BM,
+        NEW_VACANCY: payload.TOTAL_YTD.NEW_VACANCY
+      },
+      AVERAGE_YTD_BM: {
+        ...state.dataYTDEmployee.AVERAGE_YTD_BM,
+        NEW_VACANCY: payload.AVERAGE.NEW_VACANCY
+      }
+    }
+  }),
+  [SET_CONVERSION_YTD_NEW_VACANCY]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      CONVERSION_YTD_BM: {
+        ...state.dataYTDEmployee.CONVERSION_YTD_BM,
+        NEW_VACANCY: payload
+      }
+    }
+  }),
+  [SET_LOADING_YTD_CONVERSION_NEW_VACANCY]: (state, payload) => ({
+    ...state,
+    isLoadingYTDConversionNewVacancy: payload
+  }),
+  [SET_LOADING_YTD_CV_SENT]: (state, payload) => ({
+    ...state,
+    isLoadingYTDCVSent: payload
+  }),
+  [SET_CV_SENT_YTD]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      TOTAL_YTD_BM: {
+        ...state.dataYTDEmployee.TOTAL_YTD_BM,
+        CV_SENT: payload.TOTAL_YTD.CV_SENT
+      },
+      AVERAGE_YTD_BM: {
+        ...state.dataYTDEmployee.AVERAGE_YTD_BM,
+        CV_SENT: payload.AVERAGE.CV_SENT
+      }
+    }
+  }),
+  [SET_LOADING_YTD_CV_SENT]: (state, payload) => ({
+    ...state,
+    isLoadingYTDCVSent: payload
+  }),
+  [SET_LOADING_YTD_CONVERSION_CV_SENT]: (state, payload) => ({
+    ...state,
+    isLoadingYTDConversionCVSent: payload
+  }),
+  [SET_CV_SENT_CONVERSION_YTD]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      CONVERSION_YTD_BM: {
+        ...state.dataYTDEmployee.CONVERSION_YTD_BM,
+        CV_SENT: payload
+      }
+    }
+  }),
 }
 
 export default (state, action) =>

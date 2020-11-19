@@ -16,18 +16,18 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
             </TableContentTbodyTrNoLine>
             {
                 Object.keys(datas).map((key, i) => {
-                    if(datas[key].TITLE === "CV sent") {
-                        if(isCvSentWeekLoading) {
+                    if (datas[key].TITLE === "CV sent") {
+                        if (isCvSentWeekLoading) {
                             return (
                                 <TableContentTbodyTr key={i}>
                                     <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
-                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" /></TableContentTd>
-                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" /></TableContentTd>
-                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" /></TableContentTd>
-                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} color="#6BD7DA" /></TableContentTd>
+                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} /></TableContentTd>
+                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} /></TableContentTd>
+                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} /></TableContentTd>
+                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} /></TableContentTd>
                                 </TableContentTbodyTr>
                             )
-                        }else {
+                        } else {
                             return (
                                 <TableContentTbodyTr key={i}>
                                     <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
@@ -38,8 +38,8 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                 </TableContentTbodyTr>
                             )
                         }
-                        
-                    }else{
+
+                    } else {
                         return (
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
@@ -50,8 +50,8 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                             </TableContentTbodyTr>
                         )
                     }
-                    
-                  })
+
+                })
             }
         </>
     )
