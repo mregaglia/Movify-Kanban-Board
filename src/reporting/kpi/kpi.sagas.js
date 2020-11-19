@@ -86,17 +86,26 @@ export function* getKpiDataEmployee(action) {
         yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
             call(getCvSent, idEmployee, dates),
-            call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
-            call(calculateTotalNewVacancyYTD, idEmployee, dates[3].end, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
+            call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
         ])
-        yield call(calculateConversionYTDNewVacancy)
-        yield call(calculateConversionYTDCVSent)
-
     } else {
         yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
             call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
         ])
+    }
+}
+
+export function* getYTDData(idEmployee, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dateEndTimestamp) {
+    try {
+        yield all([
+            call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
+            call(calculateTotalNewVacancyYTD, idEmployee, dateEnd, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dateEndTimestamp)
+        ])
+        yield call(calculateConversionYTDNewVacancy)
+        yield call(calculateConversionYTDCVSent)
+    } catch (e) {
+        //
     }
 }
 
