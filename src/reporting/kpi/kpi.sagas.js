@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { call, put, takeLatest, all, select, cps } from "redux-saga/effects";
+import { call, put, takeLatest, all, select } from "redux-saga/effects";
 import { path } from 'ramda'
 import { getLast4weeksDate, getDateString, getStartDateOfYear, getStartDateOfYearTimestamp } from '../../utils/date'
 import {
@@ -221,15 +221,16 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
             let weekLabel = getWeekLabel(i)
 
             const kpiNote = yield call(getKpiNoteSaga, employeeId, dates[i].start, dates[i].end)
-
+            
+            console.log(kpiNote)
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
 
             if (weekLabel === FOURTH_WEEK) {
                 let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
                 objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
                 objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
-                //yield put(calculatingWeeklySpeeSaga(objectDataRecruitmentAndSourcingIds.SOURCING_IDS))
             } else {
+                console.log(kpiNote)
                 objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
             }
 
@@ -247,11 +248,6 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
     } catch (e) {
         //
     }
-}
-
-
-export function* calculatingWeeklySpeeSaga(sourcingIds) {
-
 }
 
 export function* getCvSent(employeeId, dates) {

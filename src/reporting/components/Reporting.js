@@ -13,8 +13,7 @@ import Loader from 'react-loader-spinner'
 import GaugeComponent from './GaugeComponent'
 import { initializeEmployeeSelected } from '../../utils/employees'
 import {
-    REPORTING_OWNER,
-    BUSINESS_MANAGER
+    REPORTING_OWNER
 } from '../../auth/user.sagas'
 
 const Container = styled.div({
@@ -90,7 +89,6 @@ Reporting.propTypes = {
     isLoadingKpi: bool,
     userConnectedId: number,
     userConnectedOccupation: string,
-    setEmployeeSelected: func,
     setKpiLoading: func,
     getEmployees: func,
     getEmployeeAccessibleData: func,

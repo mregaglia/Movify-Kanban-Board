@@ -6,8 +6,7 @@ import {
     getUserById
 } from "./employees.service"
 import {
-    getEmployeeKpi,
-    setGaugeLimit
+    getEmployeeKpi
 } from '../kpi/kpi.actions'
 import {
     GET_EMPLOYEES,
@@ -15,9 +14,6 @@ import {
     SET_EMPLOYEE_SELECTED,
     GET_EMPLOYEE_ACCESSIBLE_DATA
 } from './employees.actions'
-import {
-    getGaugeLimitFromFile
-} from '../../utils/reporting'
 import {
     sortTableEmployee
 } from '../../utils/employees'
@@ -48,8 +44,6 @@ export function* getEmployeesById(action) {
 }
 
 export function* onEmployeeSelected(action) {
-    let limitGauge = getGaugeLimitFromFile(pathOr("", ["payload", "occupation"], action))
-    yield put(setGaugeLimit(limitGauge))
     yield put(getEmployeeKpi(prop("payload", action)))
 }
 
