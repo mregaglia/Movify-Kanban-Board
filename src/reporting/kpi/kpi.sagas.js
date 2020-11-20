@@ -229,11 +229,10 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
 
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
 
-            if (weekLabel === FOURTH_WEEK && (occupation.includes(BUSINESS_MANAGER) || occupation.includes(SOURCING_OFFICER))) {
+            if (weekLabel === FOURTH_WEEK && (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER))) {
                 let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
                 objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
                 objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
-
 
                 yield put(getCategoriesFromCandidates(objectDataRecruitmentAndSourcingIds.SOURCING_IDS))
             } else {

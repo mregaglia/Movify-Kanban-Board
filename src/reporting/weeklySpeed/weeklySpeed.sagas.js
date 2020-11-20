@@ -42,7 +42,7 @@ export function* getCandidatesCategory(action) {
                 call(getCandidateCategory, idsCandidate[4], '/candidateCategoryFive'),
             ])
 
-            categories = [...categories, candidateCategoryOne.data, candidateCategoryTwo.data, candidateCategoryThree.data, candidateCategoryFour.data, candidateCategoryFive.data]
+            categories = [...categories, candidateCategoryOne, candidateCategoryTwo, candidateCategoryThree, candidateCategoryFour, candidateCategoryFive]
 
             idsCandidate = idsCandidate.slice(5, idsCandidate.length)
         }
@@ -50,14 +50,18 @@ export function* getCandidatesCategory(action) {
         if (idsCandidate.length > 0) {
             for (let i = 0; i < idsCandidate.length; i++) {
                 let result = yield call(getCandidateCategory, idsCandidate[i])
-                categories = [...categories, result.data]
+                categories = [...categories, result]
             }
         }
 
         console.log(categories)
     } catch (e) {
-
+        //
     }
+}
+
+export function* calculateWeeklySpeedFromCategoryCandidate() {
+
 }
 
 export default function weeklySpeedSagas() {
