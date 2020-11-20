@@ -56,8 +56,13 @@ import {
     getJobOrdersForYTD
 } from './kpi.service'
 import {
-    BUSINESS_MANAGER
+    BUSINESS_MANAGER,
+    TALENT_ACQUISITION,
+    SOURCING_OFFICER
 } from '../../auth/user.sagas'
+import {
+    getCategoriesFromCandidates
+} from '../weeklySpeed/weeklySpeed.action'
 
 export const FIRST_WEEK = "FIRST_WEEK"
 export const SECOND_WEEK = "SECOND_WEEK"
@@ -221,13 +226,16 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
             let weekLabel = getWeekLabel(i)
 
             const kpiNote = yield call(getKpiNoteSaga, employeeId, dates[i].start, dates[i].end)
-            
+
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
 
-            if (weekLabel === FOURTH_WEEK) {
+            if (weekLabel === FOURTH_WEEK && (occupation.includes(BUSINESS_MANAGER) || occupation.includes(SOURCING_OFFICER))) {
                 let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
                 objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
                 objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
+
+
+                yield put(getCategoriesFromCandidates(objectDataRecruitmentAndSourcingIds.SOURCING_IDS))
             } else {
                 objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
             }
