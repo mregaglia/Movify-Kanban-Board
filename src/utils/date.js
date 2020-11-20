@@ -32,7 +32,8 @@ const getWeekDateAndTimestamp = (week) => {
     endWeek = getEndWeekDataWithTime(endWeekDate)
   } else {
     startWeek = moment().startOf('isoWeek')
-    let endWeekDate = moment()
+    let endWeekDate = moment().endOf('isoWeek')
+    console.log(endWeekDate)
     endWeek = getEndWeekDataWithTime(endWeekDate)
   }
 
