@@ -36,7 +36,6 @@ const getWeekDateAndTimestamp = (week) => {
     endWeek = getEndWeekDataWithTime(endWeekDate)
   }
 
-  
   return {
     start: parseInt(startWeek.format('YYYYMMDD')),
     end: parseInt(endWeek.format('YYYYMMDD')),

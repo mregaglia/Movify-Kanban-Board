@@ -188,7 +188,6 @@ export const initializeObjectDate = () => {
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes;
   if (data.length === 0) return objectDataRecruitment
-  console.log("new", notes)
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
@@ -207,7 +206,6 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
         if (data[i].candidates.total === 1) objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
         break;
       case LINKED_INMAIL:
-        console.log(data[i])
         objectDataRecruitment.CONTACTED_BY_INMAIL[labelWeek]++
         break;
       case INTERVIEW_SCHEDULED:

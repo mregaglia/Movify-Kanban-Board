@@ -222,7 +222,6 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
 
             const kpiNote = yield call(getKpiNoteSaga, employeeId, dates[i].start, dates[i].end)
             
-            console.log(kpiNote)
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
 
             if (weekLabel === FOURTH_WEEK) {
@@ -230,7 +229,6 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
                 objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
                 objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
             } else {
-                console.log(kpiNote)
                 objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
             }
 
