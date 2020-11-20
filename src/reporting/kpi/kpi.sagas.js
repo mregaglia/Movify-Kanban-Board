@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { call, put, takeLatest, all, select, cps } from "redux-saga/effects";
+import { call, put, takeLatest, all, select } from "redux-saga/effects";
 import { path } from 'ramda'
 import { getLast4weeksDate, getDateString, getStartDateOfYear, getStartDateOfYearTimestamp } from '../../utils/date'
 import {
@@ -56,8 +56,13 @@ import {
     getJobOrdersForYTD
 } from './kpi.service'
 import {
-    BUSINESS_MANAGER
+    BUSINESS_MANAGER,
+    TALENT_ACQUISITION,
+    SOURCING_OFFICER
 } from '../../auth/user.sagas'
+import {
+    getCategoriesFromCandidates
+} from '../weeklySpeed/weeklySpeed.action'
 
 export const FIRST_WEEK = "FIRST_WEEK"
 export const SECOND_WEEK = "SECOND_WEEK"
@@ -224,11 +229,13 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
 
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
 
-            if (weekLabel === FOURTH_WEEK) {
+            if (weekLabel === FOURTH_WEEK && (occupation.includes(BUSINESS_MANAGER) || occupation.includes(SOURCING_OFFICER))) {
                 let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
                 objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
                 objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
-                //yield put(calculatingWeeklySpeeSaga(objectDataRecruitmentAndSourcingIds.SOURCING_IDS))
+
+
+                yield put(getCategoriesFromCandidates(objectDataRecruitmentAndSourcingIds.SOURCING_IDS))
             } else {
                 objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
             }
@@ -247,11 +254,6 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
     } catch (e) {
         //
     }
-}
-
-
-export function* calculatingWeeklySpeeSaga(sourcingIds) {
-
 }
 
 export function* getCvSent(employeeId, dates) {

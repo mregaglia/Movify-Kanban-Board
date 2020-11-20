@@ -8,6 +8,7 @@ import transitionSagas from "../transition/transition.sagas";
 import userSaga from "../auth/user.sagas"
 import employeeSagas from "../reporting/employees/employees.sagas"
 import kpiSagas from "../reporting/kpi/kpi.sagas"
+import weeklySpeedSagas from "../reporting/weeklySpeed/weeklySpeed.sagas"
 
 
 export default function* rootSaga() {
@@ -20,6 +21,7 @@ export default function* rootSaga() {
     ...transitionSagas(),
     ...userSaga(),
     ...employeeSagas(),
-    ...kpiSagas()
+    ...kpiSagas(), 
+    ...weeklySpeedSagas()
   ]);
 }

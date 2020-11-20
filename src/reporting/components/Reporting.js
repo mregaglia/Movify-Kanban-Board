@@ -12,9 +12,9 @@ import TablePercentage from './TablePercentage'
 import Loader from 'react-loader-spinner'
 import GaugeComponent from './GaugeComponent'
 import { initializeEmployeeSelected } from '../../utils/employees'
+import {getGaugeLimit} from '../weeklySpeed/weeklySpeed.action'
 import {
-    REPORTING_OWNER,
-    BUSINESS_MANAGER
+    REPORTING_OWNER
 } from '../../auth/user.sagas'
 
 const Container = styled.div({
@@ -23,7 +23,7 @@ const Container = styled.div({
     justifyContent: "center"
 })
 
-const Reporting = ({ setLoadingYTDConversionCVSent, setLoadingYTDCVSent, getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess, setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion, setCvSentIsLoadingWeek, setLoadingYTDConversionNewVacancy }) => {
+const Reporting = ({ getGaugeLimit, setLoadingYTDConversionCVSent, setLoadingYTDCVSent, getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess, setKpiLoading, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion, setCvSentIsLoadingWeek, setLoadingYTDConversionNewVacancy }) => {
 
     useEffect(() => {
         if (!userConnectedOccupation.includes(REPORTING_OWNER) ) {
@@ -49,6 +49,7 @@ const Reporting = ({ setLoadingYTDConversionCVSent, setLoadingYTDCVSent, getEmpl
         setLoadingYTDConversionNewVacancy(true)
         setLoadingYTDCVSent(true)
         setLoadingYTDConversionCVSent(true)
+        getGaugeLimit()
     }, [employeeSelected])
 
     return (
@@ -90,7 +91,6 @@ Reporting.propTypes = {
     isLoadingKpi: bool,
     userConnectedId: number,
     userConnectedOccupation: string,
-    setEmployeeSelected: func,
     setKpiLoading: func,
     getEmployees: func,
     getEmployeeAccessibleData: func,
@@ -102,7 +102,8 @@ Reporting.propTypes = {
     setCvSentIsLoadingWeek: func,
     setLoadingYTDConversionNewVacancy: func,
     setLoadingYTDCVSent: func,
-    setLoadingYTDConversionCVSent: func
+    setLoadingYTDConversionCVSent: func,
+    getGaugeLimit: func
 };
 
 export default connect(
@@ -113,5 +114,5 @@ export default connect(
         userConnectedId: path(["user", "accessToReportingTab", "userId"], state),
         employeeIdAccess: path(["user", "accessToReportingTab", "employeeIdAccess"], state),
     }),
-    { setLoadingYTDConversionCVSent, setLoadingYTDCVSent, getEmployees, setEmployeeSelected, setKpiLoading, getEmployeeAccessibleData, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion, setCvSentIsLoadingWeek, setLoadingYTDConversionNewVacancy }
+    { getGaugeLimit, setLoadingYTDConversionCVSent, setLoadingYTDCVSent, getEmployees, setEmployeeSelected, setKpiLoading, getEmployeeAccessibleData, setLoadingYTDTotal, setLoadingYTDAverage, setLoadingYTDConversion, setCvSentIsLoadingWeek, setLoadingYTDConversionNewVacancy }
 )(Reporting);

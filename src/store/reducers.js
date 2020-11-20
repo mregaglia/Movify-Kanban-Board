@@ -9,6 +9,7 @@ import transition from "../transition/transition.reducer";
 import user from '../auth/user.reducer';
 import employees from '../reporting/employees/employees.reducer';
 import kpi from '../reporting/kpi/kpi.reducer'
+import weeklySpeed from '../reporting/weeklySpeed/weeklySpeed.reducer'
 
 export default combineReducers({
   form,
@@ -20,5 +21,6 @@ export default combineReducers({
   transition,
   user,
   employees,
-  kpi
+  kpi,
+  weeklySpeed
 });

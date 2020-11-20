@@ -3,7 +3,6 @@ import { bindReducer } from "../../utils/reducer";
 import {
   SET_EMPLOYEE_KPI,
   SET_LOADING_KPI,
-  SET_GAUGE_LIMIT,
   SET_OBJECT_YTD,
   SET_CV_SENT,
   SET_YTD_TOTAL_BUSINESS_MANAGER,
@@ -15,7 +14,7 @@ import {
   SET_LOADING_YTD_TOTAL,
   SET_LOADING_YTD_AVERAGE,
   SET_LOADING_YTD_CONVERSION,
-  SET_CV_SENT_IS_LOADED_WEEK,
+  SET_LOADING_YTD_WEEK,
   SET_LOADING_YTD_NEW_VACANCY,
   SET_NEW_VACANCY_YTD,
   SET_CONVERSION_YTD_NEW_VACANCY,
@@ -85,7 +84,6 @@ export const initialState = {
     }
   },
   isLoadingKpi: false,
-  gaugeLimit: {},
   isLoadingYTDTotal: false,
   isLoadingYTDAverage: false,
   isLoadingYTDConversion: false,
@@ -108,10 +106,6 @@ const kpi = {
   [SET_LOADING_KPI]: (state, payload) => ({
     ...state,
     isLoadingKpi: payload
-  }),
-  [SET_GAUGE_LIMIT]: (state, payload) => ({
-    ...state,
-    gaugeLimit: payload
   }),
   [SET_CV_SENT]: (state, payload) => ({
     ...state,
@@ -198,7 +192,7 @@ const kpi = {
     ...state,
     isLoadingYTDConversion: payload
   }),
-  [SET_CV_SENT_IS_LOADED_WEEK]: (state, payload) => ({
+  [SET_LOADING_YTD_WEEK]: (state, payload) => ({
     ...state,
     isCvSentWeekLoading: payload
   }),

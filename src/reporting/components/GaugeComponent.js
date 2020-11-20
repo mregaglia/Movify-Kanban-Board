@@ -13,6 +13,7 @@ const BoxGauge = styled.div(({ color, theme }) => ({
 
 const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd }) => {
 
+    console.log(gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd)
     const endGreenGaugeConverted = 1;
     const startGreendGaugeConverted = (gaugeGreenStart / gaugeGreenEnd).toFixed(2)
     const numberGapGreen = endGreenGaugeConverted - startGreendGaugeConverted
@@ -51,12 +52,12 @@ GaugeComponent.propTypes = {
 
 export default connect(
     state => ({
-        gaugeGreenStart: path(["kpi", "gaugeLimit", "GREEN", "START"], state),
-        gaugeGreenEnd: path(["kpi", "gaugeLimit", "GREEN", "END"], state),
-        gaugeOrangeStart: path(["kpi", "gaugeLimit", "ORANGE", "START"], state),
-        gaugeOrangeEnd: path(["kpi", "gaugeLimit", "ORANGE", "END"], state),
-        gaugeRedStart: path(["kpi", "gaugeLimit", "RED", "START"], state),
-        gaugeRedEnd: path(["kpi", "gaugeLimit", "RED", "END"], state),
+        gaugeGreenStart: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "GREEN", "START"], state),
+        gaugeGreenEnd: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "GREEN", "END"], state),
+        gaugeOrangeStart: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "ORANGE", "START"], state),
+        gaugeOrangeEnd: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "ORANGE", "END"], state),
+        gaugeRedStart: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "START"], state),
+        gaugeRedEnd: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "END"], state),
     }),
     {}
 )(GaugeComponent);

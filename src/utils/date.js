@@ -3,12 +3,13 @@ import moment from 'moment';
 export const DIFF_DAY = 24 * 60 * 60 * 1000;
 export const DIFF_5_DAYS = 5 * DIFF_DAY;
 export const DIFF_10_DAYS = 10 * DIFF_DAY;
+const time = '23:59:59'
 
 export const isOverDiff = (timestamp, diff) => {
   const now = new Date().getTime();
   return now - timestamp > diff;
 };
-
+  
 export const getLast4weeksDate = () => {
   let day = moment().day()
   let tableWeek = []
@@ -27,19 +28,25 @@ const getWeekDateAndTimestamp = (week) => {
   let startWeek, endWeek
   if (week !== 0) {
     startWeek = moment().subtract(week, 'weeks').startOf('isoWeek')
-    endWeek = moment().subtract(week, 'weeks').endOf('isoWeek')
+    let endWeekDate = moment().subtract(week, 'weeks').endOf('isoWeek')
+    endWeek = getEndWeekDataWithTime(endWeekDate)
   } else {
     startWeek = moment().startOf('isoWeek')
-    endWeek = moment()
+    let endWeekDate = moment()
+    endWeek = getEndWeekDataWithTime(endWeekDate)
   }
 
-  
   return {
     start: parseInt(startWeek.format('YYYYMMDD')),
     end: parseInt(endWeek.format('YYYYMMDD')),
     startTimestamp: startWeek.valueOf(),
     endTimestamp: endWeek.valueOf()
   }
+}
+
+const getEndWeekDataWithTime = (date) => {
+  var now = date.format('YYYY-MM-DD')
+  return moment(now + ' ' + time)
 }
 
 export const getStartDateOfYear = () => {
