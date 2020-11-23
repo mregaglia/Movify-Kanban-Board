@@ -17,6 +17,7 @@ export const INTERVIEW_DONE_2 = "Interview 2"
 export const INTERVIEW_DONE_3 = "Interview 3"
 export const CONTRACT_PROPOSED = "Offer"
 export const INTERVIEW_SCHEDULED = "Interview Scheduled"
+export const PROSPECTION_SCHEDULED = "Prospection scheduled"
 export const PROJECT_START = "Kick Off Meeting"
 export const HIRED = "Hired"
 
@@ -225,6 +226,7 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
 export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDataRecruitment, objectDataRecruitmentAndSourcingIds) => {
   let data = notes;
   if (data.length === 0) return objectDataRecruitment
+
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
@@ -284,8 +286,8 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
       case PROJECT_START:
         objectDataBusinessManager.PROJECT_START[labelWeek]++
         break;
-      case INTERVIEW_SCHEDULED:
-        if (data[i].clientContacts.total === 1) objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[labelWeek]++
+      case PROSPECTION_SCHEDULED:
+        objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[labelWeek]++
         break;
       default:
         break;

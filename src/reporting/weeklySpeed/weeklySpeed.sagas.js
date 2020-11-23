@@ -1,9 +1,11 @@
 
 import { takeLatest, select, put, call, all } from "redux-saga/effects"
-import { GET_GAUGE_LIMIT, GET_CATEGORIES_FROM_CANDIDATES, setGaugeLimit } from './weeklySpeed.action'
+import { GET_GAUGE_LIMIT, GET_CATEGORIES_FROM_CANDIDATES, setGaugeLimit, setWeeklySpeed } from './weeklySpeed.action'
 import { getCandidateCategory } from './weeklySpeek.service'
 import { BUSINESS_MANAGER, TALENT_ACQUISITION, SOURCING_OFFICER } from '../../auth/user.sagas'
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
+import gaugeCountData from '../gauge-count-data.json'
+import { parse } from "path"
 
 export const getOccupationFromEmployeeSelected = (state) => state.employees.employeeSelected.occupation
 
@@ -54,14 +56,32 @@ export function* getCandidatesCategory(action) {
             }
         }
 
-        console.log(categories)
+        yield call(calculateWeeklySpeedFromCategoryCandidate, categories)
     } catch (e) {
         //
     }
 }
 
-export function* calculateWeeklySpeedFromCategoryCandidate() {
+export function* calculateWeeklySpeedFromCategoryCandidate(categories) {
+    console.log(categories)
+    let weeklySpeed = 0
+    let isAlreadyCounted = false
+    try{
+        for(let i = 0; i < categories.length; i++) {
+            for (var key of Object.keys(gaugeCountData.TALENT_ACQUISITION)) {
+                if(gaugeCountData.TALENT_ACQUISITION[key].includes(categories[i][0])) {
+                    weeklySpeed += parseInt(gaugeCountData.TALENT_ACQUISITION[key])
+                    isAlreadyCounted = true
+                    break;
+                }
+            }
+            if(!isAlreadyCounted) weeklySpeed++
+        }
 
+        yield put(setWeeklySpeed(weeklySpeed))
+    } catch (e) {
+        //
+    }
 }
 
 export default function weeklySpeedSagas() {
