@@ -2,10 +2,11 @@
 import { takeLatest, select, put, call, all } from "redux-saga/effects"
 import { GET_GAUGE_LIMIT, GET_CATEGORIES_FROM_CANDIDATES, setGaugeLimit, setWeeklySpeed } from './weeklySpeed.action'
 import { getCandidateCategory } from './weeklySpeek.service'
-import { BUSINESS_MANAGER, TALENT_ACQUISITION, SOURCING_OFFICER } from '../../auth/user.sagas'
+import { BUSINESS_MANAGER, TALENT_ACQUISITION } from '../../auth/user.sagas'
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
 import gaugeCountData from '../gauge-count-data.json'
-import { parse } from "path"
+
+export const POINT_FOR_INTERVIEW_DONE = 5
 
 export const getOccupationFromEmployeeSelected = (state) => state.employees.employeeSelected.occupation
 
@@ -62,6 +63,8 @@ export function* getCandidatesCategory(action) {
     }
 }
 
+export const getInterviewDone = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.FOURTH_WEEK
+
 export function* calculateWeeklySpeedFromCategoryCandidate(categories) {
     console.log(categories)
     let weeklySpeed = 0
@@ -77,6 +80,10 @@ export function* calculateWeeklySpeedFromCategoryCandidate(categories) {
             }
             if(!isAlreadyCounted) weeklySpeed++
         }
+
+        let numberOfInterviewDone = yield select(getInterviewDone)
+
+        weeklySpeed += (numberOfInterviewDone * POINT_FOR_INTERVIEW_DONE)
 
         yield put(setWeeklySpeed(weeklySpeed))
     } catch (e) {
