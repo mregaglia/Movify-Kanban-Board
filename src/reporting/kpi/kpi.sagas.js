@@ -61,7 +61,9 @@ import {
     SOURCING_OFFICER
 } from '../../auth/user.sagas'
 import {
-    getCategoriesFromCandidates
+    getCategoriesFromCandidates,
+    calculateWeeklySpeedBusinessManager,
+    setWeeklySpeed
 } from '../weeklySpeed/weeklySpeed.action'
 
 export const FIRST_WEEK = "FIRST_WEEK"
@@ -93,6 +95,7 @@ export function* getKpiDataEmployee(action) {
             call(getCvSent, idEmployee, dates),
             call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
         ])
+        yield put(calculateWeeklySpeedBusinessManager())
     } else {
         yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
@@ -244,6 +247,7 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
 
                 let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
                 objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
+
             }
         }
 

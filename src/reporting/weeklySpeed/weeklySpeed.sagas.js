@@ -1,14 +1,28 @@
 
 import { takeLatest, select, put, call, all } from "redux-saga/effects"
-import { GET_GAUGE_LIMIT, GET_CATEGORIES_FROM_CANDIDATES, setGaugeLimit, setWeeklySpeed } from './weeklySpeed.action'
+import { GET_GAUGE_LIMIT, GET_CATEGORIES_FROM_CANDIDATES, CALCULATE_WEEKLY_SPEED_BUSINESS_MANAGER, setGaugeLimit, setWeeklySpeed } from './weeklySpeed.action'
 import { getCandidateCategory } from './weeklySpeek.service'
 import { BUSINESS_MANAGER, TALENT_ACQUISITION, SOURCING_OFFICER } from '../../auth/user.sagas'
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
 import gaugeCountData from '../gauge-count-data.json'
 
+// Recrtuitment
 export const POINT_FOR_INTERVIEW_DONE = 5
 
+// Business Manager
+export const POINT_PROSPECTION_MEETING_NEW_CONTACT = 2
+export const POINT_PROSPECTION_MEETING_RE_PROSP = 1
+export const POINT_INTERVIEW_DONE = 1
+export const POINT_CV_SENT = 2
+export const POINT_INTAKE = 5
+
 export const getOccupationFromEmployeeSelected = (state) => state.employees.employeeSelected.occupation
+// Recruitment & Business Manager 
+export const getInterviewDone = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.FOURTH_WEEK
+
+// Business Manager
+export const getIntake = (state) => state.kpi.dataEmployee.datasBusinessManager.INTAKE.FOURTH_WEEK
+export const getCVSent = (state) => state.kpi.dataEmployee.datasBusinessManager.CV_SENT.FOURTH_WEEK
 
 export function* getGaugeLimit() {
     try {
@@ -69,7 +83,7 @@ export function* getCandidatesCategory(action) {
     }
 }
 
-export const getInterviewDone = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.FOURTH_WEEK
+
 
 export function* calculateWeeklySpeedForRecruitment(categories) {
     let weeklySpeed = 0
@@ -103,7 +117,7 @@ export function* calculateWeeklySpeedForSourcingOfficer(categories) {
     let isAlreadyCounted = false
     try {
         for (let i = 0; i < categories.length; i++) {
-            console.log(categories[i][0])
+
             for (var key of Object.keys(gaugeCountData.SOURCING_OFFICER)) {
                 if (gaugeCountData.SOURCING_OFFICER[key].includes(categories[i][0].id)) {
                     weeklySpeed += parseInt(key)
@@ -122,9 +136,29 @@ export function* calculateWeeklySpeedForSourcingOfficer(categories) {
     }
 }
 
+
+export function* calculateWeeklySpeedForBusinessManager() {
+    console.log("haaa")
+    try {
+
+        let interviewsDone = yield select(getInterviewDone)
+        let intake = yield select(getIntake)
+        let cvSent = yield select(getCVSent)
+
+        let weeklySpeed = (interviewsDone * POINT_FOR_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
+
+        
+        yield put(setWeeklySpeed(weeklySpeed))
+
+    } catch(e) {
+        //
+    }
+}
+
 export default function weeklySpeedSagas() {
     return [
         takeLatest(GET_GAUGE_LIMIT, getGaugeLimit),
-        takeLatest(GET_CATEGORIES_FROM_CANDIDATES, getCandidatesCategory)
+        takeLatest(GET_CATEGORIES_FROM_CANDIDATES, getCandidatesCategory),
+        takeLatest(CALCULATE_WEEKLY_SPEED_BUSINESS_MANAGER, calculateWeeklySpeedForBusinessManager)
     ];
 }
