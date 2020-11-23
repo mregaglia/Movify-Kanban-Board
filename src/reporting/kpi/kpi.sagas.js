@@ -234,7 +234,7 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
                 objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
                 objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
 
-                yield put(getCategoriesFromCandidates(objectDataRecruitmentAndSourcingIds.SOURCING_IDS))
+                yield put(getCategoriesFromCandidates(objectDataRecruitmentAndSourcingIds.SOURCING_IDS, occupation))
             } else {
                 objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
             }
