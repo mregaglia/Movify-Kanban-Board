@@ -267,7 +267,8 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
 
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
 
-  let data = notes;
+  let data = notes
+  let prospections = []
   if (data.length === 0) return objectDataBusinessManager
   for (let i = 0; i < data.length; i++) {
 
@@ -278,10 +279,11 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         if (data[i].clientContacts.total) objectDataBusinessManager.CALL[labelWeek]++;
         break;
       case INTAKE:
-        objectDataBusinessManager.INTAKE[labelWeek]++;
+        if (data[i].clientContacts.total) objectDataBusinessManager.INTAKE[labelWeek]++;
         break;
       case PROSPECTION:
         objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
+        if(labelWeek === "FOURTH_WEEK") prospections = [...prospections, data[i]]
         break;
       case PROJECT_START:
         objectDataBusinessManager.PROJECT_START[labelWeek]++
@@ -293,6 +295,12 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         break;
     }
   }
+  if(labelWeek === "FOURTH_WEEK") {
+    return {
+      PROSPECTIONS : prospections,
+      OBJECT_DATA_BUSINESS_MANAGER : objectDataBusinessManager
+    }
+  } 
   return objectDataBusinessManager
 }
 
@@ -344,7 +352,7 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
         if (notesOfyear[i].clientContacts.total) objectYTDBusinessManager.TOTAL_YTD.CALL++
         break
       case INTAKE:
-        objectYTDBusinessManager.TOTAL_YTD.INTAKE++
+        if (notesOfyear[i].clientContacts.total) objectYTDBusinessManager.TOTAL_YTD.INTAKE++
         break
       case PROSPECTION:
         objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE++

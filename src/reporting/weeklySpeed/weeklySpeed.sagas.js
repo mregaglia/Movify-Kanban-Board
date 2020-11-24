@@ -5,13 +5,15 @@ import { getCandidateCategory } from './weeklySpeek.service'
 import { BUSINESS_MANAGER, TALENT_ACQUISITION, SOURCING_OFFICER } from '../../auth/user.sagas'
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
 import gaugeCountData from '../gauge-count-data.json'
+import { getDateFrom365daysAgo } from '../../utils/date'
+import { getNoteProspectionScheduleLastYear } from './weeklySpeek.service'
 
 // Recrtuitment
 export const POINT_FOR_INTERVIEW_DONE = 5
 
 // Business Manager
-export const POINT_PROSPECTION_MEETING_NEW_CONTACT = 2
-export const POINT_PROSPECTION_MEETING_RE_PROSP = 1
+export const POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT = 2
+export const POINT_PROSPECTION_MEETING_DONE_RE_PROSP = 1
 export const POINT_INTERVIEW_DONE = 1
 export const POINT_CV_SENT = 2
 export const POINT_INTAKE = 5
@@ -137,20 +139,35 @@ export function* calculateWeeklySpeedForSourcingOfficer(categories) {
 }
 
 
-export function* calculateWeeklySpeedForBusinessManager() {
-    console.log("haaa")
+export function* calculateWeeklySpeedForBusinessManager(action) {
+    let meetingSchedule = action.payload.MEETING_SCHEDULED
+    let dateStart = action.payload.DATE_START
+    let idEmployee = action.payload.EMPLOYEE_ID
+    let date365daysAgoTimestamp = getDateFrom365daysAgo()
+    let weeklySpeed = 0
     try {
 
-        let interviewsDone = yield select(getInterviewDone)
-        let intake = yield select(getIntake)
-        let cvSent = yield select(getCVSent)
+        const [interviewsDone, intake, cvSent] = yield ([
+            yield select(getInterviewDone, '/interviewsDone'),
+            yield select(getIntake, '/intake'),
+            yield select(getCVSent, '/cvSent'),
 
-        let weeklySpeed = (interviewsDone * POINT_FOR_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
+        ])
 
-        
-        yield put(setWeeklySpeed(weeklySpeed))
+        console.log(meetingSchedule)
+        // while (meetingSchedule.length > 1) {
+        //     const [resultCallOne, resultCallTwo] = yield all([
+        //         yield call(getNoteProspectionScheduleLastYear, idEmployee, date365daysAgoTimestamp, dateStart, '/resultCallOne'),
+        //         yield call(getNoteProspectionScheduleLastYear, idEmployee, date365daysAgoTimestamp, dateStart, '/resultCallTwo'),
+        //     ])
+        //     if(resultCallOne.total)
+        // }
 
-    } catch(e) {
+        // weeklySpeed += (interviewsDone * POINT_FOR_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
+
+        // yield put(setWeeklySpeed(weeklySpeed))
+
+    } catch (e) {
         //
     }
 }

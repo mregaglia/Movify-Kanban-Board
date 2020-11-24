@@ -90,12 +90,12 @@ export function* getKpiDataEmployee(action) {
     let objectYTDRecruitment = initializeObjectConversionYTDRecruitment();
 
     if (occupation.includes(BUSINESS_MANAGER)) {
-        yield all([
-            call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
-            call(getCvSent, idEmployee, dates),
-            call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
+        const [prospectionSchedule] = yield all([
+            call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation, '/prospectionSchedule'),
+            //call(getCvSent, idEmployee, dates),
+            //call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
         ])
-        yield put(calculateWeeklySpeedBusinessManager())
+        yield put(calculateWeeklySpeedBusinessManager(idEmployee, dates[3].start, prospectionSchedule))
     } else {
         yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
@@ -243,11 +243,27 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
             }
 
             if (occupation.includes(BUSINESS_MANAGER)) {
-                objectDataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
 
-                let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
-                objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
+                if(weekLabel === "FOURTH_WEEK") {
+                    let dataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
 
+                    objectDataBusinessManager = dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER
+                
+                    let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
+                    objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
+
+                    yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
+
+                    yield put(setKpiLoading(false))
+
+                    return dataBusinessManager.PROSPECTIONS
+                    
+                } else {
+                    objectDataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
+                
+                    let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
+                    objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
+                }
             }
         }
 
