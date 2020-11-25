@@ -6,7 +6,7 @@ import { BUSINESS_MANAGER, TALENT_ACQUISITION, SOURCING_OFFICER } from '../../au
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
 import gaugeCountData from '../gauge-count-data.json'
 import { getDateFrom365daysAgo } from '../../utils/date'
-import { getNoteProspectionScheduleLastYear } from './weeklySpeek.service'
+import { getNoteProspectionLastYear } from './weeklySpeek.service'
 
 // Recrtuitment
 export const POINT_FOR_INTERVIEW_DONE = 5
@@ -140,32 +140,38 @@ export function* calculateWeeklySpeedForSourcingOfficer(categories) {
 
 
 export function* calculateWeeklySpeedForBusinessManager(action) {
-    let meetingSchedule = action.payload.MEETING_SCHEDULED
+    let prospectionMeetingDoneFromLastWeek = action.payload.MEETING_SCHEDULED
     let dateStart = action.payload.DATE_START
     let idEmployee = action.payload.EMPLOYEE_ID
     let date365daysAgoTimestamp = getDateFrom365daysAgo()
     let weeklySpeed = 0
+    let hasAlreadyBeenContacted = false
     try {
 
         const [interviewsDone, intake, cvSent] = yield ([
             yield select(getInterviewDone, '/interviewsDone'),
             yield select(getIntake, '/intake'),
             yield select(getCVSent, '/cvSent'),
-
         ])
 
-        console.log(meetingSchedule)
-        // while (meetingSchedule.length > 1) {
-        //     const [resultCallOne, resultCallTwo] = yield all([
-        //         yield call(getNoteProspectionScheduleLastYear, idEmployee, date365daysAgoTimestamp, dateStart, '/resultCallOne'),
-        //         yield call(getNoteProspectionScheduleLastYear, idEmployee, date365daysAgoTimestamp, dateStart, '/resultCallTwo'),
-        //     ])
-        //     if(resultCallOne.total)
-        // }
+        let prospectionMeetingDoneForTheYear = yield call(getNoteProspectionLastYear, idEmployee, date365daysAgoTimestamp, dateStart)
 
-        // weeklySpeed += (interviewsDone * POINT_FOR_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
+        for (let i = 0; i < prospectionMeetingDoneFromLastWeek.length; i++) {
+            let idClientContact = prospectionMeetingDoneFromLastWeek[i].clientContacts.data[0].id
 
-        // yield put(setWeeklySpeed(weeklySpeed))
+            for (let j = 0; j < prospectionMeetingDoneForTheYear.length; j++) {
+                let idClientContactProspectionMeetingDone = prospectionMeetingDoneForTheYear[j].clientContacts.data[0].id
+                hasAlreadyBeenContacted = (idClientContact === idClientContactProspectionMeetingDone) ? true : false
+                if (hasAlreadyBeenContacted) break
+            }
+
+            weeklySpeed += (hasAlreadyBeenContacted) ? POINT_PROSPECTION_MEETING_DONE_RE_PROSP : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
+            hasAlreadyBeenContacted = false
+        }
+
+        weeklySpeed += (interviewsDone * POINT_FOR_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
+
+        yield put(setWeeklySpeed(weeklySpeed))
 
     } catch (e) {
         //
