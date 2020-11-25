@@ -13,6 +13,7 @@ const BoxGauge = styled.div(({ color, theme }) => ({
 
 const Paragraph = styled.p`
   font-size: 35px;
+  text-align: center;
 `
 
 const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd, pointWeeklySpeed }) => {
@@ -42,7 +43,7 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
                 arcPadding={0.02}
                 textColor="#000000"
             />
-            <Paragraph>Weekly Speed : {pointWeeklySpeed}</Paragraph>
+            <Paragraph>Weekly Speed : {pointWeeklySpeed} points</Paragraph>
         </BoxGauge>
     )
 }

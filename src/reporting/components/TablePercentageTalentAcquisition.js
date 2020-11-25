@@ -1,44 +1,86 @@
 import React from "react";
 import { connect } from "react-redux";
-import { TableContentTd, TableContentTbodyTr, TableContentTbodyTrNoLine, TableContentTdTitleEmpty } from "../../style/table_style"
+import { TableContentTd, TableContentTbodyTr, TableContentTbodyTrNoLine, TableContentTdTitleForBMEmpty, TableContentTdTitle } from "../../style/table_style"
 import { pathOr } from 'ramda'
-import { object, bool } from "prop-types"
+import { object, bool, string } from "prop-types"
 import Loader from 'react-loader-spinner'
+import {
+    BUSINESS_MANAGER
+} from '../../auth/user.sagas'
 
-const TablePercentageTalentAcquisition = ({ dataConversionYTD, dataTotalYTD, dataAverageYTD, isLoadingConversionYTD, isLoadingTotalYTD, isLoadingAverageYTD }) => {
+const TablePercentageTalentAcquisition = ({ dataConversionYTD, dataTotalYTD, dataAverageYTD, isLoadingConversionYTD, isLoadingTotalYTD, isLoadingAverageYTD, occupation }) => {
 
     return (
         <>
-            <TableContentTbodyTrNoLine>
-                <TableContentTdTitleEmpty></TableContentTdTitleEmpty>
-            </TableContentTbodyTrNoLine>
+            {
+                (occupation.includes(BUSINESS_MANAGER)) && (
+                    <TableContentTbodyTrNoLine>
+                        <TableContentTdTitleForBMEmpty></TableContentTdTitleForBMEmpty>
+                    </TableContentTbodyTrNoLine>
+                )
+            }
+            {
+                (!occupation.includes(BUSINESS_MANAGER)) && (
+                    <TableContentTbodyTrNoLine>
+                        <TableContentTdTitle></TableContentTdTitle>
+                    </TableContentTbodyTrNoLine>
+                )
+            }
             {
                 Object.keys(dataConversionYTD).map((key, i) => {
-                    return (
-                        <TableContentTbodyTr key={i}>
-                            <TableContentTd>
-                                {!isLoadingConversionYTD
-                                    ? (dataConversionYTD[key])
-                                    : (
-                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
-                                    )}
-                            </TableContentTd>
-                            <TableContentTd>
-                                {!isLoadingTotalYTD
-                                    ? dataTotalYTD[key]
-                                    : (
-                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
-                                    )}
-                            </TableContentTd>
-                            <TableContentTd>
-                                {!isLoadingAverageYTD
-                                    ? dataAverageYTD[key]
-                                    : (
-                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
-                                    )}
-                            </TableContentTd>
-                        </TableContentTbodyTr>
-                    )
+                    if(key === "HIRED") {
+                        return (
+                            <tr key={i}>
+                                <TableContentTd>
+                                    {!isLoadingConversionYTD
+                                        ? (dataConversionYTD[key])
+                                        : (
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+                                        )}
+                                </TableContentTd>
+                                <TableContentTd>
+                                    {!isLoadingTotalYTD
+                                        ? dataTotalYTD[key]
+                                        : (
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+                                        )}
+                                </TableContentTd>
+                                <TableContentTd>
+                                    {!isLoadingAverageYTD
+                                        ? dataAverageYTD[key]
+                                        : (
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+                                        )}
+                                </TableContentTd>
+                            </tr>
+                        )
+                    } else {
+                        return (
+                            <TableContentTbodyTr key={i}>
+                                <TableContentTd>
+                                    {!isLoadingConversionYTD
+                                        ? (dataConversionYTD[key])
+                                        : (
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+                                        )}
+                                </TableContentTd>
+                                <TableContentTd>
+                                    {!isLoadingTotalYTD
+                                        ? dataTotalYTD[key]
+                                        : (
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+                                        )}
+                                </TableContentTd>
+                                <TableContentTd>
+                                    {!isLoadingAverageYTD
+                                        ? dataAverageYTD[key]
+                                        : (
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+                                        )}
+                                </TableContentTd>
+                            </TableContentTbodyTr>
+                        )
+                    }
                 })
             }
         </>
@@ -51,7 +93,8 @@ TablePercentageTalentAcquisition.propTypes = {
     dataAverageYTD: object,
     isLoadingConversionYTD: bool,
     isLoadingTotalYTD: bool,
-    isLoadingAverageYTD: bool
+    isLoadingAverageYTD: bool,
+    occupation: string
 };
 
 export default connect(
@@ -61,7 +104,8 @@ export default connect(
         dataAverageYTD: pathOr({}, ["kpi", "dataYTDEmployee", "AVERAGE_YTD_RE"], state),
         isLoadingConversionYTD: pathOr({}, ["kpi", "isLoadingYTDConversion"], state),
         isLoadingTotalYTD: pathOr({}, ["kpi", "isLoadingYTDTotal"], state),
-        isLoadingAverageYTD: pathOr({}, ["kpi", "isLoadingYTDAverage"], state)
+        isLoadingAverageYTD: pathOr({}, ["kpi", "isLoadingYTDAverage"], state),
+        occupation: pathOr("", ["employees", "employeeSelected", "occupation"], state)
     }),
     {}
 )(TablePercentageTalentAcquisition);

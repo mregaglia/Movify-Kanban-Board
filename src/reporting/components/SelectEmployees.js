@@ -9,15 +9,11 @@ import styled from "styled-components"
 import { getValuesFromEmployees } from '../../utils/employees'
 
 const Container = styled.div({
-    width: "30%",
+    width: "17%",
     margin: "0 auto",
     position: "relative",
     zIndex: "1"
 })
-
-const SelectCustomized = styled(Select)`
-position: relative; z-index: 1000;
-`
 
 const SelectEmployees = ({ employees, setEmployeeSelected }) => {
 
@@ -35,7 +31,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected }) => {
     return (
         <>
             <Container>
-                <SelectCustomized
+                <Select
                     options={options}
                     onChange={onChangeInput}
                 />

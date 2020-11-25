@@ -39,6 +39,18 @@ export const TableContentTdTitle = styled.td(({ theme }) => ({
     fontSize: "1.3em"
 }))
 
+export const TableContentTdTitleForBM = styled.td(({ theme }) => ({
+    padding: "40px 7px 12px 10px",
+    fontWeight: "bold",
+    fontSize: "1.3em"
+}))
+
+export const TableContentTdTitleForBMEmpty = styled.td(({ theme }) => ({
+    padding: "67px 7px 12px 0px",
+    fontWeight: "bold",
+    fontSize: "1.3em"
+}))
+
 export const TableContentTdTitleEmpty = styled.td(({ theme }) => ({
     padding: "27px"
 }))

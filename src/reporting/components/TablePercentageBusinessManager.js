@@ -19,13 +19,13 @@ const TablePercentageBusinessManager = ({ isLoadingYTDConversionCVSent, isLoadin
                             return (
                                 <TableContentTbodyTr key={i}>
                                     <TableContentTd>
-                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                        <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
                                     </TableContentTd>
                                     <TableContentTd>
-                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                        <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
                                     </TableContentTd>
                                     <TableContentTd>
-                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                        <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
                                     </TableContentTd>
                                 </TableContentTbodyTr>
                             )
@@ -34,7 +34,7 @@ const TablePercentageBusinessManager = ({ isLoadingYTDConversionCVSent, isLoadin
                                 return (
                                     <TableContentTbodyTr key={i}>
                                         <TableContentTd>
-                                            <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
                                         </TableContentTd>
                                         <TableContentTd>
                                             {dataTotalYTD[key]}
@@ -65,13 +65,13 @@ const TablePercentageBusinessManager = ({ isLoadingYTDConversionCVSent, isLoadin
                             return (
                                 <TableContentTbodyTr key={i}>
                                     <TableContentTd>
-                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                        <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
                                     </TableContentTd>
                                     <TableContentTd>
-                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                        <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
                                     </TableContentTd>
                                     <TableContentTd>
-                                        <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                        <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
                                     </TableContentTd>
                                 </TableContentTbodyTr>
                             )
@@ -80,7 +80,7 @@ const TablePercentageBusinessManager = ({ isLoadingYTDConversionCVSent, isLoadin
                                 return (
                                     <TableContentTbodyTr key={i}>
                                         <TableContentTd>
-                                            <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
                                         </TableContentTd>
                                         <TableContentTd>
                                             {dataTotalYTD[key]}
@@ -106,21 +106,21 @@ const TablePercentageBusinessManager = ({ isLoadingYTDConversionCVSent, isLoadin
                                 )
                             }
                         }
-                    } else {
+                    } else if (key === "PROJECT_START") {
                         return (
-                            <TableContentTbodyTr key={i}>
+                            <tr key={i}>
                                 <TableContentTd>
                                     {!isLoadingConversionYTD
                                         ? dataConversionYTD[key]
                                         : (
-                                            <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
                                         )}
                                 </TableContentTd>
                                 <TableContentTd>
                                     {!isLoadingTotalYTD
                                         ? dataTotalYTD[key]
                                         : (
-                                            <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
 
                                         )}
                                 </TableContentTd>
@@ -128,7 +128,35 @@ const TablePercentageBusinessManager = ({ isLoadingYTDConversionCVSent, isLoadin
                                     {!isLoadingAverageYTD
                                         ? dataAverageYTD[key]
                                         : (
-                                            <Loader type="ThreeDots" height={20} width={20} color="#6BD7DA" />
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+
+                                        )}
+                                </TableContentTd>
+                            </tr>
+                        )
+                    } else {
+                        return (
+                            <TableContentTbodyTr key={i}>
+                                <TableContentTd>
+                                    {!isLoadingConversionYTD
+                                        ? dataConversionYTD[key]
+                                        : (
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+                                        )}
+                                </TableContentTd>
+                                <TableContentTd>
+                                    {!isLoadingTotalYTD
+                                        ? dataTotalYTD[key]
+                                        : (
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+
+                                        )}
+                                </TableContentTd>
+                                <TableContentTd>
+                                    {!isLoadingAverageYTD
+                                        ? dataAverageYTD[key]
+                                        : (
+                                            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
 
                                         )}
                                 </TableContentTd>

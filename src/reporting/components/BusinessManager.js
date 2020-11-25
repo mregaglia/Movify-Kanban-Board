@@ -4,6 +4,7 @@ import { TableContentTd, TableContentTdTitle, TableContentTbodyTr, TableContentT
 import { path, pathOr } from 'ramda'
 import { object, bool } from "prop-types"
 import Loader from 'react-loader-spinner'
+import { LABEL_PROJECT_START, LABEL_CV_SENT } from '../../utils/reporting'
 
 
 
@@ -16,15 +17,15 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
             </TableContentTbodyTrNoLine>
             {
                 Object.keys(datas).map((key, i) => {
-                    if (datas[key].TITLE === "CV sent") {
+                    if (datas[key].TITLE === LABEL_CV_SENT) {
                         if (isCvSentWeekLoading) {
                             return (
                                 <TableContentTbodyTr key={i}>
                                     <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
-                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} /></TableContentTd>
-                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} /></TableContentTd>
-                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} /></TableContentTd>
-                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={20} width={20} /></TableContentTd>
+                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
+                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
+                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
+                                    <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
                                 </TableContentTbodyTr>
                             )
                         } else {
@@ -38,7 +39,16 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                 </TableContentTbodyTr>
                             )
                         }
-
+                    } else if (datas[key].TITLE === LABEL_PROJECT_START) {
+                        return (
+                            <tr key={i}>
+                                <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
+                                <TableContentTd>{datas[key].FIRST_WEEK}</TableContentTd>
+                                <TableContentTd>{datas[key].SECOND_WEEK}</TableContentTd>
+                                <TableContentTd>{datas[key].THIRD_WEEK}</TableContentTd>
+                                <TableContentTd>{datas[key].FOURTH_WEEK}</TableContentTd>
+                            </tr>
+                        )
                     } else {
                         return (
                             <TableContentTbodyTr key={i}>
@@ -50,7 +60,6 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                             </TableContentTbodyTr>
                         )
                     }
-
                 })
             }
         </>

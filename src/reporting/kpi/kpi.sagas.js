@@ -62,8 +62,7 @@ import {
 } from '../../auth/user.sagas'
 import {
     getCategoriesFromCandidates,
-    calculateWeeklySpeedBusinessManager,
-    setWeeklySpeed
+    calculateWeeklySpeedBusinessManager
 } from '../weeklySpeed/weeklySpeed.action'
 
 export const FIRST_WEEK = "FIRST_WEEK"
@@ -244,11 +243,11 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
 
             if (occupation.includes(BUSINESS_MANAGER)) {
 
-                if(weekLabel === "FOURTH_WEEK") {
+                if (weekLabel === "FOURTH_WEEK") {
                     let dataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
 
                     objectDataBusinessManager = dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER
-                
+
                     let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
                     objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
 
@@ -257,10 +256,10 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
                     yield put(setKpiLoading(false))
 
                     return dataBusinessManager.PROSPECTIONS
-                    
+
                 } else {
                     objectDataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
-                
+
                     let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
                     objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
                 }
@@ -391,8 +390,8 @@ export function* calculateTotalCvSentYTD(jobOrderOfTheYear, dateStartTimestamp, 
 
         if (jobOrderOfTheYear.length > 0) {
             for (let i = 0; i < jobOrderOfTheYear.length; i++) {
-                let jobSubmissionRetrieved = yield call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[i].id, '/jobSubmissionZero'),
-                    jobSubmissionFromJobOrderYTD = [...jobSubmissionFromJobOrderYTD, ...jobSubmissionRetrieved]
+                let jobSubmissionRetrieved = yield call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[i].id, '/jobSubmissionZero')
+                jobSubmissionFromJobOrderYTD = [...jobSubmissionFromJobOrderYTD, ...jobSubmissionRetrieved]
             }
         }
         yield call(getJobSubmissionStatusChangedToCVSent, jobSubmissionFromJobOrderYTD, dateStartTimestamp, dateEndTimestamp)

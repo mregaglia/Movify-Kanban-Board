@@ -10,7 +10,7 @@ export const getNoteProspectionLastYear = (idEmployee, dateStart, dateEnd) =>
   post(
     "search/Note",
     {
-      query: `action:\"Prospection\" AND commentingPerson:${idEmployee} AND dateAdded:[${dateStart} TO ${dateEnd}] `,
+      query: `action:"Prospection" AND commentingPerson:${idEmployee} AND dateAdded:[${dateStart} TO ${dateEnd}] `,
       count: 400
     },
     {
