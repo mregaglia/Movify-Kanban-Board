@@ -1,9 +1,9 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { TableContentTd, TableContentTbodyTr, TableContentTdTitle, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdTitleForBM } from "../../style/table_style"
+import { TableContentTd, TableContentTbodyTr, TableContentTdTitle, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdTitleForBM, TableContentTdBold, TableContentTdLabelBold } from "../../style/table_style"
 import { pathOr } from 'ramda'
 import { object, string } from "prop-types"
-import { LABEL_HIRED } from '../../utils/reporting'
+import { LABEL_HIRED, LABEL_INTERVIEW_DONE, LABEL_INTERVIEW_SCHEDULE } from '../../utils/reporting'
 import {
     BUSINESS_MANAGER
 } from '../../auth/user.sagas'
@@ -28,7 +28,17 @@ const TalentAcquisition = ({ datas, occupation }) => {
 
             {
                 Object.keys(datas).map((key, i) => {
-                    if (datas[key].TITLE === LABEL_HIRED) {
+                    if (datas[key].TITLE === LABEL_INTERVIEW_DONE || datas[key].TITLE === LABEL_INTERVIEW_SCHEDULE) {
+                        return (
+                            <TableContentTbodyTr key={i}>
+                                <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
+                                <TableContentTdBold>{datas[key].FIRST_WEEK}</TableContentTdBold>
+                                <TableContentTdBold>{datas[key].SECOND_WEEK}</TableContentTdBold>
+                                <TableContentTdBold>{datas[key].THIRD_WEEK}</TableContentTdBold>
+                                <TableContentTdBold>{datas[key].FOURTH_WEEK}</TableContentTdBold>
+                            </TableContentTbodyTr>
+                        )
+                    } else if (datas[key].TITLE === LABEL_HIRED) {
                         return (
                             <tr key={i}>
                                 <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>

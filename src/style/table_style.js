@@ -27,10 +27,22 @@ export const TableContentTd = styled.td(({ theme }) => ({
     textAlign: "center", 
 }))
 
+export const TableContentTdBold = styled.td(({ theme }) => ({
+    padding: "12px 15px",
+    textAlign: "center", 
+    fontWeight: "bold"
+}))
+
 export const TableContentTdLabel = styled.td(({ theme }) => ({
     padding: "12px 15px",
     whiteSpace: "nowrap"
+}))
 
+
+export const TableContentTdLabelBold = styled.td(({ theme }) => ({
+    padding: "12px 15px",
+    whiteSpace: "nowrap",
+    fontWeight: "bold"
 }))
 
 export const TableContentTdTitle = styled.td(({ theme }) => ({

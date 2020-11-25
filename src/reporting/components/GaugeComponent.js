@@ -32,6 +32,7 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
 
     const weeklySpeedGauge = parseFloat((pointWeeklySpeed / gaugeGreenEnd).toFixed(2))
 
+
     return (
         <BoxGauge>
             <GaugeChart
@@ -43,7 +44,10 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
                 arcPadding={0.02}
                 textColor="#000000"
             />
-            <Paragraph>Weekly Speed : {pointWeeklySpeed} points</Paragraph>
+            <Paragraph>Weekly Speed</Paragraph>
+            <p>The goal : {gaugeGreenStart}</p>
+            <p>Your points : {pointWeeklySpeed}</p>
+            <p>Percentage : {weeklySpeedGauge * 100}</p>
         </BoxGauge>
     )
 }

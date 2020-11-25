@@ -71,13 +71,13 @@ export const initializeObjectCvSent = () => {
 
 export const initialiserObjectNewVacancyYTD = () => {
   return {
-    CONVERSION_YTD:{
+    CONVERSION_YTD: {
       NEW_VACANCY: 0,
     },
-    TOTAL_YTD:{
+    TOTAL_YTD: {
       NEW_VACANCY: 0
     },
-    AVERAGE:{
+    AVERAGE: {
       NEW_VACANCY: 0
     }
   }
@@ -85,13 +85,13 @@ export const initialiserObjectNewVacancyYTD = () => {
 
 export const initialiserObjectCVSentYTD = () => {
   return {
-    CONVERSION_YTD:{
+    CONVERSION_YTD: {
       CV_SENT: 0,
     },
-    TOTAL_YTD:{
+    TOTAL_YTD: {
       CV_SENT: 0
     },
-    AVERAGE:{
+    AVERAGE: {
       CV_SENT: 0
     }
   }
@@ -283,7 +283,7 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         break;
       case PROSPECTION:
         objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
-        if(labelWeek === "FOURTH_WEEK") prospections = [...prospections, data[i]]
+        if (labelWeek === "FOURTH_WEEK") prospections = [...prospections, data[i]]
         break;
       case PROJECT_START:
         objectDataBusinessManager.PROJECT_START[labelWeek]++
@@ -295,12 +295,12 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         break;
     }
   }
-  if(labelWeek === "FOURTH_WEEK") {
+  if (labelWeek === "FOURTH_WEEK") {
     return {
-      PROSPECTIONS : prospections,
-      OBJECT_DATA_BUSINESS_MANAGER : objectDataBusinessManager
+      PROSPECTIONS: prospections,
+      OBJECT_DATA_BUSINESS_MANAGER: objectDataBusinessManager
     }
-  } 
+  }
   return objectDataBusinessManager
 }
 
@@ -349,10 +349,10 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
     let action = notesOfyear[i].action
     switch (action) {
       case CALL:
-        if (notesOfyear[i].clientContacts.total) objectYTDBusinessManager.TOTAL_YTD.CALL++
+        if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.CALL++
         break
       case INTAKE:
-        if (notesOfyear[i].clientContacts.total) objectYTDBusinessManager.TOTAL_YTD.INTAKE++
+        if (notesOfyear[i].clientContacts.total >>= 1) objectYTDBusinessManager.TOTAL_YTD.INTAKE++
         break
       case PROSPECTION:
         objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE++
@@ -360,7 +360,7 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
       case PROJECT_START:
         objectYTDBusinessManager.TOTAL_YTD.PROJECT_START++
         break
-      case INTERVIEW_SCHEDULED:
+      case PROSPECTION_SCHEDULED:
         if (notesOfyear[i].clientContacts.total === 1) objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE++
         break
       default:
