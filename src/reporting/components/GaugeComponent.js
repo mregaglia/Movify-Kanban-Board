@@ -45,9 +45,8 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
                 textColor="#000000"
             />
             <Paragraph>Weekly Speed</Paragraph>
-            <p>The goal : {gaugeGreenStart}</p>
-            <p>Your points : {pointWeeklySpeed}</p>
-            <p>Percentage : {weeklySpeedGauge * 100}</p>
+            <p>The target : {gaugeGreenStart}</p>
+            <p>Your score : {pointWeeklySpeed}</p>
         </BoxGauge>
     )
 }

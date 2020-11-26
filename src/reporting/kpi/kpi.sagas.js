@@ -181,9 +181,16 @@ export function* calculateTotalYTD(employeeId, dateStartOfThisYear, dateEnd, occ
     }
 }
 
+export const getNewVacancyYTD = (state) => state.kpi.dataYTDEmployee.TOTAL_YTD_BM.NEW_VACANCY
+
 export function* calculateConversionYTD(occupation, objectYTDBusinessManager, objectYTDRecruitment) {
     try {
         if (occupation.includes(BUSINESS_MANAGER)) {
+
+            let newVancancyYTD = yield select(getNewVacancyYTD)
+
+            objectYTDBusinessManager.TOTAL_YTD.NEW_VACANCY = newVancancyYTD
+
             objectYTDBusinessManager = calculateConversionYTDBusinessManager(objectYTDBusinessManager)
             objectYTDRecruitment = calculateConversionYTDRecruitment(objectYTDRecruitment)
 

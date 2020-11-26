@@ -352,7 +352,7 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
         if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.CALL++
         break
       case INTAKE:
-        if (notesOfyear[i].clientContacts.total >>= 1) objectYTDBusinessManager.TOTAL_YTD.INTAKE++
+        if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.INTAKE++
         break
       case PROSPECTION:
         objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE++
@@ -408,7 +408,7 @@ export const calculateConversionYTDBusinessManager = (objectConversionYTDBusines
   let prospectionMeetingDoneConversionYTD = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE / objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE) * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.PROSPECTION_MEETING_DONE = (isNaN(prospectionMeetingDoneConversionYTD) || (prospectionMeetingDoneConversionYTD === Infinity)) ? "0 %" : prospectionMeetingDoneConversionYTD + " %";
 
-  let intakeConversionYTD = Math.round(objectConversionYTDBusinessManager.TOTAL_YTD.INTAKE / objectConversionYTDBusinessManager.TOTAL_YTD.NEW_VACANCY * 100)
+  let intakeConversionYTD = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.INTAKE / objectConversionYTDBusinessManager.TOTAL_YTD.NEW_VACANCY) * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.INTAKE = (isNaN(intakeConversionYTD) || (intakeConversionYTD === Infinity)) ? "0 %" : intakeConversionYTD + " %";
 
   let projectStart = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.PROJECT_START / objectConversionYTDBusinessManager.TOTAL_YTD.INTAKE) * 100)
