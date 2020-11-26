@@ -6,21 +6,12 @@
         "CV_SENT": 2,
         "INTAKE": 5
     },
-    "SOURCING_OFFICER_POINT": {
-        "SOURCING_IOS": 2,
-        "SOURCING_ANDROID": 1,
-        "SOURCING_WEB_DEV": 1,
-        "SOURCING_UX_UI": 1,
-        "SOURCING_PM_PO_SM": 1,
-        "SOURCING_BM": 3
+    "SOURCING_OFFICER": {
+       "2": [1444970],
+       "3": [1438945]
     },
     "TALENT_ACQUISITION": {
-        "ITV_DONE": 5,
-        "SOURCING_IOS": 2,
-        "SOURCING_ANDROID": 1,
-        "SOURING_UX_UI": 1,
-        "SOURCING_PM_PO_SM": 1,
-        "SOURCING_BM": 3
+        "2": [1444970], 
+        "3": [1438945]
     }
 }
-

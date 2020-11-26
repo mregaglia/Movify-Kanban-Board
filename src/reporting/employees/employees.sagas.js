@@ -1,6 +1,6 @@
 
 import { call, put, takeLatest } from "redux-saga/effects";
-import { pathOr, prop } from 'ramda'
+import { prop } from 'ramda'
 import {
     getBusinessManagerSourcingOfficerAndTalentAcquisition,
     getUserById

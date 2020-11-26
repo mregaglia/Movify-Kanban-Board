@@ -27,14 +27,38 @@ export const TableContentTd = styled.td(({ theme }) => ({
     textAlign: "center", 
 }))
 
+export const TableContentTdBold = styled.td(({ theme }) => ({
+    padding: "12px 15px",
+    textAlign: "center", 
+    fontWeight: "bold"
+}))
+
 export const TableContentTdLabel = styled.td(({ theme }) => ({
     padding: "12px 15px",
     whiteSpace: "nowrap"
+}))
 
+
+export const TableContentTdLabelBold = styled.td(({ theme }) => ({
+    padding: "12px 15px",
+    whiteSpace: "nowrap",
+    fontWeight: "bold"
 }))
 
 export const TableContentTdTitle = styled.td(({ theme }) => ({
     padding: "13px 7px",
+    fontWeight: "bold",
+    fontSize: "1.3em"
+}))
+
+export const TableContentTdTitleForBM = styled.td(({ theme }) => ({
+    padding: "40px 7px 12px 10px",
+    fontWeight: "bold",
+    fontSize: "1.3em"
+}))
+
+export const TableContentTdTitleForBMEmpty = styled.td(({ theme }) => ({
+    padding: "67px 7px 12px 0px",
     fontWeight: "bold",
     fontSize: "1.3em"
 }))

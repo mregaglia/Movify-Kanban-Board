@@ -17,6 +17,7 @@ export const INTERVIEW_DONE_2 = "Interview 2"
 export const INTERVIEW_DONE_3 = "Interview 3"
 export const CONTRACT_PROPOSED = "Offer"
 export const INTERVIEW_SCHEDULED = "Interview Scheduled"
+export const PROSPECTION_SCHEDULED = "Prospection scheduled"
 export const PROJECT_START = "Kick Off Meeting"
 export const HIRED = "Hired"
 
@@ -70,13 +71,13 @@ export const initializeObjectCvSent = () => {
 
 export const initialiserObjectNewVacancyYTD = () => {
   return {
-    CONVERSION_YTD:{
+    CONVERSION_YTD: {
       NEW_VACANCY: 0,
     },
-    TOTAL_YTD:{
+    TOTAL_YTD: {
       NEW_VACANCY: 0
     },
-    AVERAGE:{
+    AVERAGE: {
       NEW_VACANCY: 0
     }
   }
@@ -84,13 +85,13 @@ export const initialiserObjectNewVacancyYTD = () => {
 
 export const initialiserObjectCVSentYTD = () => {
   return {
-    CONVERSION_YTD:{
+    CONVERSION_YTD: {
       CV_SENT: 0,
     },
-    TOTAL_YTD:{
+    TOTAL_YTD: {
       CV_SENT: 0
     },
-    AVERAGE:{
+    AVERAGE: {
       CV_SENT: 0
     }
   }
@@ -225,6 +226,7 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
 export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDataRecruitment, objectDataRecruitmentAndSourcingIds) => {
   let data = notes;
   if (data.length === 0) return objectDataRecruitment
+
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
@@ -265,7 +267,8 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
 
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
 
-  let data = notes;
+  let data = notes
+  let prospections = []
   if (data.length === 0) return objectDataBusinessManager
   for (let i = 0; i < data.length; i++) {
 
@@ -276,19 +279,26 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         if (data[i].clientContacts.total) objectDataBusinessManager.CALL[labelWeek]++;
         break;
       case INTAKE:
-        objectDataBusinessManager.INTAKE[labelWeek]++;
+        if (data[i].clientContacts.total) objectDataBusinessManager.INTAKE[labelWeek]++;
         break;
       case PROSPECTION:
         objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
+        if (labelWeek === "FOURTH_WEEK") prospections = [...prospections, data[i]]
         break;
       case PROJECT_START:
         objectDataBusinessManager.PROJECT_START[labelWeek]++
         break;
-      case INTERVIEW_SCHEDULED:
-        if (data[i].clientContacts.total === 1) objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[labelWeek]++
+      case PROSPECTION_SCHEDULED:
+        objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[labelWeek]++
         break;
       default:
         break;
+    }
+  }
+  if (labelWeek === "FOURTH_WEEK") {
+    return {
+      PROSPECTIONS: prospections,
+      OBJECT_DATA_BUSINESS_MANAGER: objectDataBusinessManager
     }
   }
   return objectDataBusinessManager
@@ -339,10 +349,10 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
     let action = notesOfyear[i].action
     switch (action) {
       case CALL:
-        if (notesOfyear[i].clientContacts.total) objectYTDBusinessManager.TOTAL_YTD.CALL++
+        if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.CALL++
         break
       case INTAKE:
-        objectYTDBusinessManager.TOTAL_YTD.INTAKE++
+        if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.INTAKE++
         break
       case PROSPECTION:
         objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE++
@@ -350,7 +360,7 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
       case PROJECT_START:
         objectYTDBusinessManager.TOTAL_YTD.PROJECT_START++
         break
-      case INTERVIEW_SCHEDULED:
+      case PROSPECTION_SCHEDULED:
         if (notesOfyear[i].clientContacts.total === 1) objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE++
         break
       default:
@@ -398,7 +408,7 @@ export const calculateConversionYTDBusinessManager = (objectConversionYTDBusines
   let prospectionMeetingDoneConversionYTD = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE / objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE) * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.PROSPECTION_MEETING_DONE = (isNaN(prospectionMeetingDoneConversionYTD) || (prospectionMeetingDoneConversionYTD === Infinity)) ? "0 %" : prospectionMeetingDoneConversionYTD + " %";
 
-  let intakeConversionYTD = Math.round(objectConversionYTDBusinessManager.TOTAL_YTD.INTAKE / objectConversionYTDBusinessManager.TOTAL_YTD.NEW_VACANCY * 100)
+  let intakeConversionYTD = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.INTAKE / objectConversionYTDBusinessManager.TOTAL_YTD.NEW_VACANCY) * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.INTAKE = (isNaN(intakeConversionYTD) || (intakeConversionYTD === Infinity)) ? "0 %" : intakeConversionYTD + " %";
 
   let projectStart = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.PROJECT_START / objectConversionYTDBusinessManager.TOTAL_YTD.INTAKE) * 100)

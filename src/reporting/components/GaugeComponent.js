@@ -11,9 +11,13 @@ const BoxGauge = styled.div(({ color, theme }) => ({
     paddingTop: "35px"
 }));
 
-const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd }) => {
+const Paragraph = styled.p`
+  font-size: 35px;
+  text-align: center;
+`
 
-    console.log(gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd)
+const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd, pointWeeklySpeed }) => {
+
     const endGreenGaugeConverted = 1;
     const startGreendGaugeConverted = (gaugeGreenStart / gaugeGreenEnd).toFixed(2)
     const numberGapGreen = endGreenGaugeConverted - startGreendGaugeConverted
@@ -26,6 +30,9 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
     const startRedGaugeConverted = (gaugeRedStart / gaugeGreenEnd).toFixed(2)
     const numberGapRed = endRedGaugeConverted - startRedGaugeConverted
 
+    const weeklySpeedGauge = parseFloat((pointWeeklySpeed / gaugeGreenEnd).toFixed(2))
+
+
     return (
         <BoxGauge>
             <GaugeChart
@@ -33,10 +40,13 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
                 nrOfLevels={420}
                 arcsLength={[numberGapRed, numberGapOrange, numberGapGreen]}
                 colors={[theme.bmColors[0], theme.colors.yellow, theme.bmColors[8]]}
-                percent={0}
+                percent={weeklySpeedGauge}
                 arcPadding={0.02}
                 textColor="#000000"
             />
+            <Paragraph>Weekly Speed</Paragraph>
+            <p>The target : {gaugeGreenStart}</p>
+            <p>Your score : {pointWeeklySpeed}</p>
         </BoxGauge>
     )
 }
@@ -48,6 +58,7 @@ GaugeComponent.propTypes = {
     gaugeOrangeEnd: number,
     gaugeRedStart: number,
     gaugeRedEnd: number,
+    pointWeeklySpeed: number
 };
 
 export default connect(
@@ -58,6 +69,7 @@ export default connect(
         gaugeOrangeEnd: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "ORANGE", "END"], state),
         gaugeRedStart: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "START"], state),
         gaugeRedEnd: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "END"], state),
+        pointWeeklySpeed: path(["weeklySpeed", "pointWeeklySpeed"], state)
     }),
     {}
 )(GaugeComponent);

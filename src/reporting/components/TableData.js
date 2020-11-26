@@ -5,7 +5,6 @@ import { connect } from "react-redux";
 import { string, object } from "prop-types";
 import { pathOr } from "ramda";
 import { Table, TableTheadTr, TableContentTh } from "../../style/table_style"
-import WeeklySpeed from './WeeklySpeed'
 import {
     BUSINESS_MANAGER,
     SOURCING_OFFICER,
@@ -37,7 +36,6 @@ const TableData = ({ occupation, dates }) => {
 
                 </tbody>
             </Table>
-            <WeeklySpeed />
         </div>
     )
 }

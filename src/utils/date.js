@@ -3,13 +3,14 @@ import moment from 'moment';
 export const DIFF_DAY = 24 * 60 * 60 * 1000;
 export const DIFF_5_DAYS = 5 * DIFF_DAY;
 export const DIFF_10_DAYS = 10 * DIFF_DAY;
+export const DAYS_AGO = 365
 const time = '23:59:59'
 
 export const isOverDiff = (timestamp, diff) => {
   const now = new Date().getTime();
   return now - timestamp > diff;
 };
-  
+
 export const getLast4weeksDate = () => {
   let day = moment().day()
   let tableWeek = []
@@ -24,6 +25,10 @@ export const getLast4weeksDate = () => {
   return dates;
 }
 
+export const getDateFrom365daysAgo = () => {
+  return moment().subtract(1, 'years').format("YYYYDDMM")
+}
+
 const getWeekDateAndTimestamp = (week) => {
   let startWeek, endWeek
   if (week !== 0) {
@@ -33,7 +38,6 @@ const getWeekDateAndTimestamp = (week) => {
   } else {
     startWeek = moment().startOf('isoWeek')
     let endWeekDate = moment().endOf('isoWeek')
-    console.log(endWeekDate)
     endWeek = getEndWeekDataWithTime(endWeekDate)
   }
 
