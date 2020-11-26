@@ -262,6 +262,7 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
 
                     yield put(setKpiLoading(false))
 
+                    console.log(dataBusinessManager)
                     return dataBusinessManager.PROSPECTIONS
 
                 } else {

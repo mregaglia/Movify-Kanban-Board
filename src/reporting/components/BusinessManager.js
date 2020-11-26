@@ -4,7 +4,7 @@ import { TableContentTd, TableContentTdTitle, TableContentTbodyTr, TableContentT
 import { path, pathOr } from 'ramda'
 import { object, bool } from "prop-types"
 import Loader from 'react-loader-spinner'
-import { LABEL_PROJECT_START, LABEL_CV_SENT, LABEL_PROSPECTION_MEETING_SCHEDULE, LABEL_MEETING_DONE } from '../../utils/reporting'
+import { LABEL_PROJECT_START, LABEL_CV_SENT, LABEL_MEETING_DONE, LABEL_INTAKE } from '../../utils/reporting'
 
 
 
@@ -49,7 +49,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                 <TableContentTd>{datas[key].FOURTH_WEEK}</TableContentTd>
                             </tr>
                         )
-                    } else if (datas[key].TITLE === LABEL_PROSPECTION_MEETING_SCHEDULE || datas[key].TITLE === LABEL_MEETING_DONE) {
+                    } else if (datas[key].TITLE === LABEL_INTAKE || datas[key].TITLE === LABEL_MEETING_DONE) {
                         return (
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>

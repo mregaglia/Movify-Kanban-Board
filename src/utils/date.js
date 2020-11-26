@@ -69,29 +69,29 @@ export const getDateString = (date) => {
 
   switch (month) {
     case "01":
-      return day + " january"
+      return day + " January"
     case "02":
-      return day + " february"
+      return day + " February"
     case "03":
-      return day + " march"
+      return day + " March"
     case "04":
-      return day + " april"
+      return day + " April"
     case "05":
-      return day + " may"
+      return day + " May"
     case "06":
-      return day + " june"
+      return day + " June"
     case "07":
-      return day + " july"
+      return day + " July"
     case "08":
-      return day + " august"
+      return day + " August"
     case "09":
-      return day + " september"
+      return day + " September"
     case "10":
-      return day + " october"
+      return day + " October"
     case "11":
-      return day + " november"
+      return day + " November"
     case "12":
-      return day + " december"
+      return day + " December"
     default:
       return ""
   }
