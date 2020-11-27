@@ -16,6 +16,11 @@ const Paragraph = styled.p`
   text-align: center;
 `
 
+const GaugeDataDisplaying = styled.p`
+  font-size: 18px;
+  text-align: center;
+`
+
 const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd, pointWeeklySpeed }) => {
 
     const endGreenGaugeConverted = 1;
@@ -45,8 +50,8 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
                 textColor="#000000"
             />
             <Paragraph>Weekly Speed</Paragraph>
-            <p>The target : {gaugeGreenStart}</p>
-            <p>Your score : {pointWeeklySpeed}</p>
+            <GaugeDataDisplaying>The target : {gaugeGreenStart}</GaugeDataDisplaying>
+            <GaugeDataDisplaying>Your score : {pointWeeklySpeed}</GaugeDataDisplaying>
         </BoxGauge>
     )
 }

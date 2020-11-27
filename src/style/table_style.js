@@ -33,6 +33,13 @@ export const TableContentTdBold = styled.td(({ theme }) => ({
     fontWeight: "bold"
 }))
 
+export const TableContentTdBoldClickable = styled.td(({ theme }) => ({
+    padding: "12px 15px",
+    textAlign: "center", 
+    fontWeight: "bold",
+    cursor: "pointer"
+}))
+
 export const TableContentTdLabel = styled.td(({ theme }) => ({
     padding: "12px 15px",
     whiteSpace: "nowrap"

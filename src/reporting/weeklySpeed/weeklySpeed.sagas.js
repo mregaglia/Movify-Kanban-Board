@@ -164,14 +164,12 @@ export function* calculateWeeklySpeedForBusinessManager(action) {
                 hasAlreadyBeenContacted = (idClientContact === idClientContactProspectionMeetingDone) ? true : false
                 if (hasAlreadyBeenContacted) break
             }
-            console.log("haa")
             weeklySpeed += (hasAlreadyBeenContacted) ? POINT_PROSPECTION_MEETING_DONE_RE_PROSP : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
             hasAlreadyBeenContacted = false
         }
 
         weeklySpeed += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
 
-        console.log(weeklySpeed)
         yield put(setWeeklySpeed(weeklySpeed))
 
     } catch (e) {

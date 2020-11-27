@@ -91,14 +91,14 @@ export function* getKpiDataEmployee(action) {
     if (occupation.includes(BUSINESS_MANAGER)) {
         const [prospectionSchedule] = yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation, '/prospectionSchedule'),
-            call(getCvSent, idEmployee, dates),
-            call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
+            //call(getCvSent, idEmployee, dates),
+            //call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
         ])
         yield put(calculateWeeklySpeedBusinessManager(idEmployee, dates[3].start, prospectionSchedule))
     } else {
         yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
-            call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
+            //call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
         ])
     }
 }
@@ -261,8 +261,7 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
                     yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
 
                     yield put(setKpiLoading(false))
-
-                    console.log(dataBusinessManager)
+                    
                     return dataBusinessManager.PROSPECTIONS
 
                 } else {

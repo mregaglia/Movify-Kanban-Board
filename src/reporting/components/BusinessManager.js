@@ -1,15 +1,15 @@
 import React from "react";
 import { connect } from "react-redux";
-import { TableContentTd, TableContentTdTitle, TableContentTbodyTr, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdBold, TableContentTdLabelBold } from "../../style/table_style"
+import { TableContentTd, TableContentTdTitle, TableContentTbodyTr, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdBold, TableContentTdLabelBold, TableContentTdBoldClickable } from "../../style/table_style"
 import { path, pathOr } from 'ramda'
 import { object, bool } from "prop-types"
 import Loader from 'react-loader-spinner'
 import { LABEL_PROJECT_START, LABEL_CV_SENT, LABEL_MEETING_DONE, LABEL_INTAKE } from '../../utils/reporting'
 
-
-
 const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
-
+    function onClickBusinessManagerData(e) {
+        console.log("click")
+    }
     return (
         <>
             <TableContentTbodyTrNoLine>
@@ -56,7 +56,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                 <TableContentTdBold>{datas[key].FIRST_WEEK}</TableContentTdBold>
                                 <TableContentTdBold>{datas[key].SECOND_WEEK}</TableContentTdBold>
                                 <TableContentTdBold>{datas[key].THIRD_WEEK}</TableContentTdBold>
-                                <TableContentTdBold>{datas[key].FOURTH_WEEK}</TableContentTdBold>
+                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].FOURTH_WEEK}</TableContentTdBoldClickable>
                             </TableContentTbodyTr>
                         )
                     } else {
