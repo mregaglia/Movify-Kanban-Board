@@ -8,7 +8,6 @@ import {
     initializeObjectConversionYTDBusinessManager,
     initializeObjectConversionYTDRecruitment,
     countNoteForBusinessManager,
-    countNoteForRecruitment,
     initializeObjectDate,
     initializeObjectCvSent,
     calculateConversionYTDBusinessManager,
@@ -62,7 +61,8 @@ import {
 } from '../../auth/user.sagas'
 import {
     getCategoriesFromCandidates,
-    calculateWeeklySpeedBusinessManager
+    calculateWeeklySpeedBusinessManager,
+    setCalculatingWeeklySpeed
 } from '../weeklySpeed/weeklySpeed.action'
 
 export const FIRST_WEEK = "FIRST_WEEK"
@@ -89,12 +89,12 @@ export function* getKpiDataEmployee(action) {
     let objectYTDRecruitment = initializeObjectConversionYTDRecruitment();
 
     if (occupation.includes(BUSINESS_MANAGER)) {
-        const [prospectionSchedule] = yield all([
-            call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation, '/prospectionSchedule'),
+        const [prospectionDone] = yield all([
+            call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation, '/prospectionDone'),
             //call(getCvSent, idEmployee, dates),
             //call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
         ])
-        yield put(calculateWeeklySpeedBusinessManager(idEmployee, dates[3].start, prospectionSchedule))
+        yield put(calculateWeeklySpeedBusinessManager(idEmployee, dates[3].start, prospectionDone))
     } else {
         yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
@@ -175,7 +175,6 @@ export function* calculateTotalYTD(employeeId, dateStartOfThisYear, dateEnd, occ
             call(calculateConversionYTD, occupation, objectYTDBusinessManager, objectYTDRecruitment)
         ])
 
-
     } catch (e) {
         //
     }
@@ -238,14 +237,12 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
 
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
 
-            if (weekLabel === FOURTH_WEEK && (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER))) {
+            if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
                 let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
                 objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
                 objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
 
-                yield put(getCategoriesFromCandidates(objectDataRecruitmentAndSourcingIds.SOURCING_IDS, occupation))
-            } else {
-                objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
+                yield put(getCategoriesFromCandidates(weekLabel, objectDataRecruitmentAndSourcingIds.SOURCING_IDS, occupation))
             }
 
             if (occupation.includes(BUSINESS_MANAGER)) {
@@ -276,6 +273,7 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
         yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
 
         yield put(setKpiLoading(false))
+
     } catch (e) {
         //
     }

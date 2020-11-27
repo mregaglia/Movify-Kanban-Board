@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import GaugeChart from 'react-gauge-chart'
 import theme from '../../style/theme'
-import { number } from 'prop-types'
+import { number, object } from 'prop-types'
 import { path } from 'ramda'
 import styled from 'styled-components'
 
@@ -21,7 +21,7 @@ const GaugeDataDisplaying = styled.p`
   text-align: center;
 `
 
-const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd, pointWeeklySpeed }) => {
+const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd, weeklySpeedScore }) => {
 
     const endGreenGaugeConverted = 1;
     const startGreendGaugeConverted = (gaugeGreenStart / gaugeGreenEnd).toFixed(2)
@@ -35,8 +35,9 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
     const startRedGaugeConverted = (gaugeRedStart / gaugeGreenEnd).toFixed(2)
     const numberGapRed = endRedGaugeConverted - startRedGaugeConverted
 
-    const weeklySpeedGauge = parseFloat((pointWeeklySpeed / gaugeGreenEnd).toFixed(2))
+    let weeklySpeedGauge = (weeklySpeedScore.FOURTH_WEEK >= 0) ? parseFloat((weeklySpeedScore.FOURTH_WEEK / gaugeGreenEnd).toFixed(2)) : 0
 
+    let weeklySpeedGaugeDisplayed = (weeklySpeedGauge > 1) ? 1: weeklySpeedGauge
 
     return (
         <BoxGauge>
@@ -45,13 +46,13 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
                 nrOfLevels={420}
                 arcsLength={[numberGapRed, numberGapOrange, numberGapGreen]}
                 colors={[theme.bmColors[0], theme.colors.yellow, theme.bmColors[8]]}
-                percent={weeklySpeedGauge}
+                percent={weeklySpeedGaugeDisplayed}
                 arcPadding={0.02}
                 textColor="#000000"
             />
             <Paragraph>Weekly Speed</Paragraph>
             <GaugeDataDisplaying>The target : {gaugeGreenStart}</GaugeDataDisplaying>
-            <GaugeDataDisplaying>Your score : {pointWeeklySpeed}</GaugeDataDisplaying>
+            <GaugeDataDisplaying>Your score : {weeklySpeedScore.FOURTH_WEEK}</GaugeDataDisplaying>
         </BoxGauge>
     )
 }
@@ -63,7 +64,7 @@ GaugeComponent.propTypes = {
     gaugeOrangeEnd: number,
     gaugeRedStart: number,
     gaugeRedEnd: number,
-    pointWeeklySpeed: number
+    weeklySpeedScore: object
 };
 
 export default connect(
@@ -74,7 +75,7 @@ export default connect(
         gaugeOrangeEnd: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "ORANGE", "END"], state),
         gaugeRedStart: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "START"], state),
         gaugeRedEnd: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "END"], state),
-        pointWeeklySpeed: path(["weeklySpeed", "pointWeeklySpeed"], state)
+        weeklySpeedScore: path(["weeklySpeed", "weeklySpeedScores"], state)
     }),
     {}
 )(GaugeComponent);

@@ -1,12 +1,13 @@
-
-import { takeLatest, select, put, call, all } from "redux-saga/effects"
-import { GET_GAUGE_LIMIT, GET_CATEGORIES_FROM_CANDIDATES, CALCULATE_WEEKLY_SPEED_BUSINESS_MANAGER, setGaugeLimit, setWeeklySpeed } from './weeklySpeed.action'
+import { takeLatest, select, put, call, all, takeEvery } from "redux-saga/effects"
+import { calculateWeeklySpeedSourcingOfficer, calculateWeeklySpeedRecruitment, CALCULATE_WEEKLY_SPEED_RECRUITMENT, GET_GAUGE_LIMIT, GET_CATEGORIES_FROM_CANDIDATES, CALCULATE_WEEKLY_SPEED_BUSINESS_MANAGER, setGaugeLimit, setWeeklySpeed, CALCULATE_WEEKLY_SPEED_SOURCING_OFFICER } from './weeklySpeed.action'
 import { getCandidateCategory } from './weeklySpeek.service'
 import { BUSINESS_MANAGER, TALENT_ACQUISITION, SOURCING_OFFICER } from '../../auth/user.sagas'
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
 import gaugeCountData from '../gauge-count-data.json'
 import { getDateFrom365daysAgo } from '../../utils/date'
 import { getNoteProspectionLastYear } from './weeklySpeek.service'
+import { isEmpty } from 'ramda'
+import { FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK } from "../kpi/kpi.sagas"
 
 // Recrtuitment
 export const POINT_FOR_INTERVIEW_DONE = 5
@@ -20,7 +21,10 @@ export const POINT_INTAKE = 5
 
 export const getOccupationFromEmployeeSelected = (state) => state.employees.employeeSelected.occupation
 // Recruitment & Business Manager 
-export const getInterviewDone = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.FOURTH_WEEK
+export const getInterviewDoneFourthWeek = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.FOURTH_WEEK
+export const getInterviewDoneThirdWeek = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.THIRD_WEEK
+export const getInterviewDoneSecondWeek = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.SECOND_WEEK
+export const getInterviewDoneFirstWeek = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.FIRST_WEEK
 
 // Business Manager
 export const getIntake = (state) => state.kpi.dataEmployee.datasBusinessManager.INTAKE.FOURTH_WEEK
@@ -48,8 +52,10 @@ export function* getGaugeLimit() {
 
 export function* getCandidatesCategory(action) {
     const maxCall = 5
+
     let idsCandidate = action.payload.CANDIATES_ID
     let occupation = action.payload.OCCUPATION
+    let weekLabel = action.payload.WEEK_LABEL
     let categories = []
     try {
 
@@ -73,30 +79,31 @@ export function* getCandidatesCategory(action) {
                 categories = [...categories, result]
             }
         }
-
         if (occupation.includes(TALENT_ACQUISITION)) {
-            yield call(calculateWeeklySpeedForRecruitment, categories)
-        } else if (occupation.includes(SOURCING_OFFICER)) {
-            yield call(calculateWeeklySpeedForSourcingOfficer, categories)
-        }
+            yield put(calculateWeeklySpeedRecruitment(weekLabel, categories))
 
+        } else if (occupation.includes(SOURCING_OFFICER)) {
+            yield put(calculateWeeklySpeedSourcingOfficer(weekLabel, categories))
+        }
     } catch (e) {
         //
     }
 }
 
-
-
-export function* calculateWeeklySpeedForRecruitment(categories) {
+export function* calculateWeeklySpeedForRecruitment(action) {
+    let categories = action.payload.CATEGORIES
+    let weekLabel = action.payload.WEEK_LABEL
     let weeklySpeed = 0
     let isAlreadyCounted = false
     try {
         for (let i = 0; i < categories.length; i++) {
-            for (var key of Object.keys(gaugeCountData.TALENT_ACQUISITION)) {
-                if (gaugeCountData.TALENT_ACQUISITION[key].includes(categories[i][0].id)) {
-                    weeklySpeed += parseInt(key)
-                    isAlreadyCounted = true
-                    break;
+            if (categories[i].length > 0) {
+                for (var key of Object.keys(gaugeCountData.TALENT_ACQUISITION)) {
+                    if (gaugeCountData.TALENT_ACQUISITION[key].includes(categories[i][0].id)) {
+                        weeklySpeed += parseInt(key)
+                        isAlreadyCounted = true
+                        break;
+                    }
                 }
             }
 
@@ -104,17 +111,39 @@ export function* calculateWeeklySpeedForRecruitment(categories) {
             isAlreadyCounted = false
         }
 
-        let numberOfInterviewDone = yield select(getInterviewDone)
 
-        weeklySpeed += (numberOfInterviewDone * POINT_FOR_INTERVIEW_DONE)
+        let numberOfInterviewDone = yield call(getInterviewDone, weekLabel)
 
-        yield put(setWeeklySpeed(weeklySpeed))
+        if(numberOfInterviewDone > 0) weeklySpeed += (numberOfInterviewDone * POINT_FOR_INTERVIEW_DONE)
+
+        yield put(setWeeklySpeed(weekLabel, weeklySpeed))
     } catch (e) {
         //
     }
 }
 
-export function* calculateWeeklySpeedForSourcingOfficer(categories) {
+function* getInterviewDone(weekLabel) {
+    try {
+        switch (weekLabel) {
+            case FIRST_WEEK:
+                return yield select(getInterviewDoneFirstWeek)
+            case SECOND_WEEK:
+                return yield select(getInterviewDoneSecondWeek)
+            case THIRD_WEEK:
+                return yield select(getInterviewDoneThirdWeek)
+            case FOURTH_WEEK:
+                return yield select(getInterviewDoneFourthWeek)
+            default:
+                return
+        }
+    } catch (e) {
+        //
+    }
+}
+
+export function* calculateWeeklySpeedForSourcingOfficer(action) {
+    let categories = action.payload.CATEGORIES
+    let weekLabel = action.payload.WEEK_LABEL
     let weeklySpeed = 0
     let isAlreadyCounted = false
     try {
@@ -132,12 +161,12 @@ export function* calculateWeeklySpeedForSourcingOfficer(categories) {
             isAlreadyCounted = false
         }
 
-        yield put(setWeeklySpeed(weeklySpeed))
+        console.log(weekLabel, weeklySpeed)
+        yield put(setWeeklySpeed(weekLabel, weeklySpeed))
     } catch (e) {
         //
     }
 }
-
 
 export function* calculateWeeklySpeedForBusinessManager(action) {
     let prospectionMeetingDoneFromLastWeek = action.payload.MEETING_SCHEDULED
@@ -149,7 +178,7 @@ export function* calculateWeeklySpeedForBusinessManager(action) {
     try {
 
         const [interviewsDone, intake, cvSent] = yield ([
-            yield select(getInterviewDone, '/interviewsDone'),
+            yield select(getInterviewDoneFourthWeek, '/interviewsDone'),
             yield select(getIntake, '/intake'),
             yield select(getCVSent, '/cvSent'),
         ])
@@ -180,7 +209,9 @@ export function* calculateWeeklySpeedForBusinessManager(action) {
 export default function weeklySpeedSagas() {
     return [
         takeLatest(GET_GAUGE_LIMIT, getGaugeLimit),
-        takeLatest(GET_CATEGORIES_FROM_CANDIDATES, getCandidatesCategory),
-        takeLatest(CALCULATE_WEEKLY_SPEED_BUSINESS_MANAGER, calculateWeeklySpeedForBusinessManager)
+        takeEvery(GET_CATEGORIES_FROM_CANDIDATES, getCandidatesCategory),
+        takeLatest(CALCULATE_WEEKLY_SPEED_BUSINESS_MANAGER, calculateWeeklySpeedForBusinessManager),
+        takeEvery(CALCULATE_WEEKLY_SPEED_RECRUITMENT, calculateWeeklySpeedForRecruitment),
+        takeEvery(CALCULATE_WEEKLY_SPEED_SOURCING_OFFICER, calculateWeeklySpeedForSourcingOfficer)
     ];
 }
