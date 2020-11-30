@@ -186,6 +186,43 @@ export const initializeObjectDate = () => {
   }
 }
 
+export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
+  let data = notes;
+  if (data.length === 0) return objectDataRecruitment
+  for (let i = 0; i < data.length; i++) {
+
+    let action = data[i].action
+
+    switch (action) {
+      case NO_SHOW:
+        objectDataRecruitment.NO_SHOW[labelWeek]++
+        break;
+      case INTERVIEW_DONE_1 || INTERVIEW_DONE_2 || INTERVIEW_DONE_3:
+        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        break;
+      case CONTRACT_PROPOSED:
+        objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++;
+        break;
+      case CALL:
+        if (data[i].candidates.total === 1) objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
+        break;
+      case LINKED_INMAIL:
+        objectDataRecruitment.CONTACTED_BY_INMAIL[labelWeek]++
+        break;
+      case INTERVIEW_SCHEDULED:
+        if (data[i].candidates.total === 1) objectDataRecruitment.INTERVIEW_SCHEDULED[labelWeek]++
+        break;
+      case HIRED:
+        objectDataRecruitment.HIRED[labelWeek]++
+        break;
+      default:
+        break;
+    }
+  }
+
+  return objectDataRecruitment
+}
+
 export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDataRecruitment, objectDataRecruitmentAndSourcingIds) => {
   let data = notes;
   if (data.length === 0) return objectDataRecruitment

@@ -160,8 +160,6 @@ export function* calculateWeeklySpeedForSourcingOfficer(action) {
             if (!isAlreadyCounted) weeklySpeed++
             isAlreadyCounted = false
         }
-
-        console.log(weekLabel, weeklySpeed)
         yield put(setWeeklySpeed(weekLabel, weeklySpeed))
     } catch (e) {
         //

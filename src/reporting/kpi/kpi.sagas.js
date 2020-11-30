@@ -20,7 +20,8 @@ import {
     initializeObjectDataRecruitmentAndIds,
     initialiserObjectNewVacancyYTD,
     calculateAverageYTDData,
-    initialiserObjectCVSentYTD
+    initialiserObjectCVSentYTD,
+    countNoteForRecruitment
 } from '../../utils/reporting'
 import {
     GET_EMPLOYEE_KPI,
@@ -91,14 +92,14 @@ export function* getKpiDataEmployee(action) {
     if (occupation.includes(BUSINESS_MANAGER)) {
         const [prospectionDone] = yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation, '/prospectionDone'),
-            //call(getCvSent, idEmployee, dates),
-            //call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
+            call(getCvSent, idEmployee, dates),
+            call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
         ])
         yield put(calculateWeeklySpeedBusinessManager(idEmployee, dates[3].start, prospectionDone))
     } else {
         yield all([
             call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
-            //call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
+            call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
         ])
     }
 }
@@ -243,6 +244,8 @@ export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, obj
                 objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
 
                 yield put(getCategoriesFromCandidates(weekLabel, objectDataRecruitmentAndSourcingIds.SOURCING_IDS, occupation))
+            } else {
+                objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
             }
 
             if (occupation.includes(BUSINESS_MANAGER)) {

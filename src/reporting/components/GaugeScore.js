@@ -16,9 +16,6 @@ const GaugeScore = ({ occupation, isCalculatingWeeklySpeed, weeklySpeedScore }) 
 
         <>
             {
-                console.log(weeklySpeedScore)
-            }
-            {
                 (occupation.includes(BUSINESS_MANAGER)) && (
                     <TableContentTbodyTrNoLine>
                         <TableContentTdTitleForBM>WeeklySpeed</TableContentTdTitleForBM>
