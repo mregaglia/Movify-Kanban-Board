@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { TableContentTdTitle, TableContentTbodyTrNoLine, TableContentTdTitleForBM, TableContentTbodyTr, TableContentTdLabelBold, TableContentTdBold } from "../../style/table_style"
+import { TableContentTdTitle, TableContentTbodyTrNoLine, TableContentTdTitleForBM, TableContentTdLabelBold, TableContentTdBold } from "../../style/table_style"
 import { string, bool, object } from "prop-types"
 import { pathOr } from 'ramda'
 import Loader from 'react-loader-spinner'
