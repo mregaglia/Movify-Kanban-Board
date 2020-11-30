@@ -32,7 +32,7 @@ const GaugeScore = ({ occupation, isCalculatingWeeklySpeed, weeklySpeedScore }) 
             <tr>
                 <TableContentTdLabelBold>Your score</TableContentTdLabelBold>
                 {
-                    (isCalculatingWeeklySpeed && (weeklySpeedScore.FIRST_WEEK === -1 || weeklySpeedScore.SECOND_WEEK === -1 || weeklySpeedScore.THIRD_WEEK === -1 || weeklySpeedScore.FOURTH_WEEK === -1)) && (
+                    (isCalculatingWeeklySpeed) && (
                         <>
                             <TableContentTdBold><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTdBold>
                             <TableContentTdBold><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTdBold>
@@ -42,7 +42,7 @@ const GaugeScore = ({ occupation, isCalculatingWeeklySpeed, weeklySpeedScore }) 
                     )
                 }
                 {
-                    (weeklySpeedScore.FIRST_WEEK !== -1 && weeklySpeedScore.SECOND_WEEK !== -1 && weeklySpeedScore.THIRD_WEEK !== -1 && weeklySpeedScore.FOURTH_WEEK !== -1) && (
+                    (!isCalculatingWeeklySpeed) && (
                         <>
                             <TableContentTdBold>{weeklySpeedScore.FIRST_WEEK}</TableContentTdBold>
                             <TableContentTdBold>{weeklySpeedScore.SECOND_WEEK}</TableContentTdBold>
@@ -65,7 +65,7 @@ GaugeScore.propTypes = {
 export default connect(
     state => ({
         occupation: pathOr("", ["employees", "employeeSelected", "occupation"], state),
-        isCalculatingWeeklySpeed: pathOr("", ["weeklySpeed", "isCalculatingWeeklySpeed"], state),
+        isCalculatingWeeklySpeed: pathOr(false, ["weeklySpeed", "isCalculatingWeeklySpeed"], state),
         weeklySpeedScore: pathOr({}, ["weeklySpeed", "weeklySpeedScores"], state)
     }),
     {}

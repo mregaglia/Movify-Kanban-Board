@@ -61,6 +61,9 @@ import {
     TALENT_ACQUISITION,
     SOURCING_OFFICER
 } from '../../auth/user.sagas'
+import{
+    setCalculatingWeeklySpeed
+} from '../weeklySpeed/weeklySpeed.action'
 import {
     calculateWeeklySpeedRecruitmentForAllWeeks,
     getCandidatesCategory,
@@ -110,6 +113,7 @@ export function* getLast4WeekData(idEmployee, dates, objectDateEmployee, objectD
             call(getCvSent, idEmployee, dates),
         ])
         yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, prospectionDone)
+        yield put(setCalculatingWeeklySpeed(false))
     } catch (e) {
         //
     }

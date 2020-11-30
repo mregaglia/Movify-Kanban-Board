@@ -1,5 +1,5 @@
 import { takeLatest, select, put, call, all } from "redux-saga/effects"
-import { GET_GAUGE_LIMIT, setGaugeLimit, setWeeklySpeed } from './weeklySpeed.action'
+import { GET_GAUGE_LIMIT, setGaugeLimit, setWeeklySpeed, setCalculatingWeeklySpeed } from './weeklySpeed.action'
 import { getCandidateCategory } from './weeklySpeek.service'
 import { BUSINESS_MANAGER, TALENT_ACQUISITION } from '../../auth/user.sagas'
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
@@ -86,6 +86,7 @@ export function* calculateWeeklySpeedRecruitmentForAllWeeks(objectCategories, oc
             call(calculateWeeklySpeedForRecruitment, objectCategories[THIRD_WEEK], THIRD_WEEK, occupation),
             call(calculateWeeklySpeedForRecruitment, objectCategories[FOURTH_WEEK], FOURTH_WEEK, occupation),
         ])
+        yield put(setCalculatingWeeklySpeed(false))
     } catch(e) {
         //
     }
