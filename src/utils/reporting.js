@@ -186,6 +186,15 @@ export const initializeObjectDate = () => {
   }
 }
 
+export const initializeObjectByDates = () => {
+  return {
+    FIRST_WEEK: {},
+    SECOND_WEEK: {},
+    THIRD_WEEK: {},
+    FOURTH_WEEK: {}
+  }
+}
+
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes;
   if (data.length === 0) return objectDataRecruitment
@@ -283,7 +292,7 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         break;
       case PROSPECTION:
         objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
-        if (labelWeek === "FOURTH_WEEK") prospections = [...prospections, data[i]]
+        prospections = [...prospections, data[i]]
         break;
       case PROJECT_START:
         objectDataBusinessManager.PROJECT_START[labelWeek]++
@@ -295,13 +304,10 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         break;
     }
   }
-  if (labelWeek === "FOURTH_WEEK") {
-    return {
-      PROSPECTIONS: prospections,
-      OBJECT_DATA_BUSINESS_MANAGER: objectDataBusinessManager
-    }
+  return {
+    PROSPECTIONS: prospections,
+    OBJECT_DATA_BUSINESS_MANAGER: objectDataBusinessManager
   }
-  return objectDataBusinessManager
 }
 
 export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) => {
