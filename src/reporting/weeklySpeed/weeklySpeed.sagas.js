@@ -21,10 +21,7 @@ export const POINT_INTAKE = 5
 
 export const getOccupationFromEmployeeSelected = (state) => state.employees.employeeSelected.occupation
 // Recruitment & Business Manager 
-export const getInterviewDoneFourthWeek = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.FOURTH_WEEK
-export const getInterviewDoneThirdWeek = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.THIRD_WEEK
-export const getInterviewDoneSecondWeek = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.SECOND_WEEK
-export const getInterviewDoneFirstWeek = (state) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE.FIRST_WEEK
+export const getInterviewDone = (state, weekLabel) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE[weekLabel]
 
 // Business Manager
 export const getIntake = (state) => state.kpi.dataEmployee.datasBusinessManager.INTAKE.FOURTH_WEEK
@@ -50,12 +47,9 @@ export function* getGaugeLimit() {
     }
 }
 
-export function* getCandidatesCategory(action) {
+export function* getCandidatesCategory(idsCandidate) {
     const maxCall = 5
 
-    let idsCandidate = action.payload.CANDIATES_ID
-    let occupation = action.payload.OCCUPATION
-    let weekLabel = action.payload.WEEK_LABEL
     let categories = []
     try {
 
@@ -79,20 +73,26 @@ export function* getCandidatesCategory(action) {
                 categories = [...categories, result]
             }
         }
-        if (occupation.includes(TALENT_ACQUISITION)) {
-            yield put(calculateWeeklySpeedRecruitment(weekLabel, categories))
-
-        } else if (occupation.includes(SOURCING_OFFICER)) {
-            yield put(calculateWeeklySpeedSourcingOfficer(weekLabel, categories))
-        }
+        return categories
     } catch (e) {
         //
     }
 }
 
-export function* calculateWeeklySpeedForRecruitment(action) {
-    let categories = action.payload.CATEGORIES
-    let weekLabel = action.payload.WEEK_LABEL
+export function* calculateWeeklySpeedRecruitmentForAllWeeks(objectCategories, occupation) {
+    try{
+        yield all([
+            call(calculateWeeklySpeedForRecruitment, objectCategories[FIRST_WEEK], FIRST_WEEK, occupation),
+            call(calculateWeeklySpeedForRecruitment, objectCategories[SECOND_WEEK], SECOND_WEEK, occupation),
+            call(calculateWeeklySpeedForRecruitment, objectCategories[THIRD_WEEK], THIRD_WEEK, occupation),
+            call(calculateWeeklySpeedForRecruitment, objectCategories[FOURTH_WEEK], FOURTH_WEEK, occupation),
+        ])
+    } catch(e) {
+        //
+    }
+}
+
+export function* calculateWeeklySpeedForRecruitment(categories, weekLabel, occupation) {
     let weeklySpeed = 0
     let isAlreadyCounted = false
     try {
@@ -111,105 +111,81 @@ export function* calculateWeeklySpeedForRecruitment(action) {
             isAlreadyCounted = false
         }
 
-
-        let numberOfInterviewDone = yield call(getInterviewDone, weekLabel)
-
-        if(numberOfInterviewDone > 0) weeklySpeed += (numberOfInterviewDone * POINT_FOR_INTERVIEW_DONE)
-
+        if(occupation.includes(TALENT_ACQUISITION)) {
+            let numberOfInterviewDone = yield call(getInterviewDoneSaga, weekLabel)
+            if(numberOfInterviewDone > 0) weeklySpeed += (numberOfInterviewDone * POINT_FOR_INTERVIEW_DONE)
+        }
+        
         yield put(setWeeklySpeed(weekLabel, weeklySpeed))
     } catch (e) {
         //
     }
 }
 
-function* getInterviewDone(weekLabel) {
+function* getInterviewDoneSaga(weekLabel) {
     try {
-        switch (weekLabel) {
-            case FIRST_WEEK:
-                return yield select(getInterviewDoneFirstWeek)
-            case SECOND_WEEK:
-                return yield select(getInterviewDoneSecondWeek)
-            case THIRD_WEEK:
-                return yield select(getInterviewDoneThirdWeek)
-            case FOURTH_WEEK:
-                return yield select(getInterviewDoneFourthWeek)
-            default:
-                return
-        }
+        return yield select(getInterviewDone, weekLabel)
     } catch (e) {
         //
     }
 }
 
-export function* calculateWeeklySpeedForSourcingOfficer(action) {
-    let categories = action.payload.CATEGORIES
-    let weekLabel = action.payload.WEEK_LABEL
-    let weeklySpeed = 0
-    let isAlreadyCounted = false
-    try {
-        for (let i = 0; i < categories.length; i++) {
+// export function* calculateAllWeeklySpeedForBusinessManager(action) {
+//     let prospectionMeetingDoneFromLastWeek = action.payload.PROSPECTION_DONE
+//     let dates = action.payload.DATES
+//     let idEmployee = action.payload.EMPLOYEE_ID
 
-            for (var key of Object.keys(gaugeCountData.SOURCING_OFFICER)) {
-                if (gaugeCountData.SOURCING_OFFICER[key].includes(categories[i][0].id)) {
-                    weeklySpeed += parseInt(key)
-                    isAlreadyCounted = true
-                    break;
-                }
-            }
+//     let date365daysAgoTimestamp = getDateFrom365daysAgo()
+//     let weeklySpeed = 0
+//     let hasAlreadyBeenContacted = false
 
-            if (!isAlreadyCounted) weeklySpeed++
-            isAlreadyCounted = false
-        }
-        yield put(setWeeklySpeed(weekLabel, weeklySpeed))
-    } catch (e) {
-        //
-    }
-}
+//     try {
 
-export function* calculateWeeklySpeedForBusinessManager(action) {
-    let prospectionMeetingDoneFromLastWeek = action.payload.MEETING_SCHEDULED
-    let dateStart = action.payload.DATE_START
-    let idEmployee = action.payload.EMPLOYEE_ID
-    let date365daysAgoTimestamp = getDateFrom365daysAgo()
-    let weeklySpeed = 0
-    let hasAlreadyBeenContacted = false
-    try {
+//         const [weeklySpeedFirstWeek, weeklySpeedSecondWeekd, weeklySpeedThirdWeek, weeklySpeedFourthWeek] = yield all([
+//             yield call(calculateWeeklySpeedForBusinessManager, , '/')
+//         ])
+        
+        
 
-        const [interviewsDone, intake, cvSent] = yield ([
-            yield select(getInterviewDoneFourthWeek, '/interviewsDone'),
-            yield select(getIntake, '/intake'),
-            yield select(getCVSent, '/cvSent'),
-        ])
+//     } catch (e) {
+//         //
+//     }
+//     // yield put(setWeeklySpeed(weeklySpeed))
+// }
 
-        let prospectionMeetingDoneForTheYear = yield call(getNoteProspectionLastYear, idEmployee, date365daysAgoTimestamp, dateStart)
+// export function* calculateWeeklySpeedForBusinessManager(){
+//     try {
+//         const [interviewsDone, intake, cvSent] = yield ([
+//             yield select(getInterviewDoneFourthWeek, '/interviewsDone'),
+//             yield select(getIntake, '/intake'),
+//             yield select(getCVSent, '/cvSent'),
+//         ])
 
-        for (let i = 0; i < prospectionMeetingDoneFromLastWeek.length; i++) {
-            let idClientContact = prospectionMeetingDoneFromLastWeek[i].clientContacts.data[0].id
+//         let prospectionMeetingDoneForTheYear = yield call(getNoteProspectionLastYear, idEmployee, date365daysAgoTimestamp, dateStart)
 
-            for (let j = 0; j < prospectionMeetingDoneForTheYear.length; j++) {
-                let idClientContactProspectionMeetingDone = prospectionMeetingDoneForTheYear[j].clientContacts.data[0].id
-                hasAlreadyBeenContacted = (idClientContact === idClientContactProspectionMeetingDone) ? true : false
-                if (hasAlreadyBeenContacted) break
-            }
-            weeklySpeed += (hasAlreadyBeenContacted) ? POINT_PROSPECTION_MEETING_DONE_RE_PROSP : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
-            hasAlreadyBeenContacted = false
-        }
+//         for (let i = 0; i < prospectionMeetingDoneFromLastWeek.length; i++) {
+//             let idClientContact = prospectionMeetingDoneFromLastWeek[i].clientContacts.data[0].id
 
-        weeklySpeed += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
+//             for (let j = 0; j < prospectionMeetingDoneForTheYear.length; j++) {
+//                 let idClientContactProspectionMeetingDone = prospectionMeetingDoneForTheYear[j].clientContacts.data[0].id
+//                 hasAlreadyBeenContacted = (idClientContact === idClientContactProspectionMeetingDone) ? true : false
+//                 if (hasAlreadyBeenContacted) break
+//             }
+//             weeklySpeed += (hasAlreadyBeenContacted) ? POINT_PROSPECTION_MEETING_DONE_RE_PROSP : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
+//             hasAlreadyBeenContacted = false
+//         }
 
-        yield put(setWeeklySpeed(weeklySpeed))
+//         weeklySpeed += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
 
-    } catch (e) {
-        //
-    }
-}
+//     } catch (e) {
+//         //
+//     }
+// } 
 
 export default function weeklySpeedSagas() {
     return [
         takeLatest(GET_GAUGE_LIMIT, getGaugeLimit),
         takeEvery(GET_CATEGORIES_FROM_CANDIDATES, getCandidatesCategory),
-        takeLatest(CALCULATE_WEEKLY_SPEED_BUSINESS_MANAGER, calculateWeeklySpeedForBusinessManager),
-        takeEvery(CALCULATE_WEEKLY_SPEED_RECRUITMENT, calculateWeeklySpeedForRecruitment),
-        takeEvery(CALCULATE_WEEKLY_SPEED_SOURCING_OFFICER, calculateWeeklySpeedForSourcingOfficer)
+        //takeLatest(CALCULATE_WEEKLY_SPEED_BUSINESS_MANAGER, calculateAllWeeklySpeedForBusinessManager)
     ];
 }
