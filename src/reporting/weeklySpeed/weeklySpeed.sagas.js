@@ -157,7 +157,7 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, date365daysA
 
         for (let i = 0; i < prospectionMeetingDoneFromLastWeek.length; i++) {
             let idClientContact = prospectionMeetingDoneFromLastWeek[i].clientContacts.data[0].id
-            console.log(i)
+ 
             for (let j = 0; j < prospectionMeetingDoneForTheYear.length; j++) {
                 let idClientContactProspectionMeetingDone = prospectionMeetingDoneForTheYear[j].clientContacts.data[0].id
                 hasAlreadyBeenContacted = (idClientContact === idClientContactProspectionMeetingDone) ? true : false

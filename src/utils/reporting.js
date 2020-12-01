@@ -197,6 +197,7 @@ export const initializeObjectByDates = () => {
 
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes;
+  console.log(data)
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
 
@@ -206,7 +207,13 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
       case NO_SHOW:
         objectDataRecruitment.NO_SHOW[labelWeek]++
         break;
-      case INTERVIEW_DONE_1 || INTERVIEW_DONE_2 || INTERVIEW_DONE_3:
+      case INTERVIEW_DONE_1:
+        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        break;
+      case INTERVIEW_DONE_2:
+        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        break;
+      case INTERVIEW_DONE_3:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
         break;
       case CONTRACT_PROPOSED:
@@ -244,7 +251,13 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
       case NO_SHOW:
         objectDataRecruitment.NO_SHOW[labelWeek]++
         break;
-      case INTERVIEW_DONE_1 || INTERVIEW_DONE_2 || INTERVIEW_DONE_3:
+      case INTERVIEW_DONE_1:
+        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        break;
+      case INTERVIEW_DONE_2:
+        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        break;
+      case INTERVIEW_DONE_3:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
         break;
       case CONTRACT_PROPOSED:
