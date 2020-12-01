@@ -232,20 +232,18 @@ const kpi = {
     ...state,
     isLoadingYTDCVSent: payload
   }),
-  [SET_CV_SENT_YTD]: (state, payload) => ({
+  [SET_CV_SENT_YTD]: (state, payload) => {
+    console.log("a", payload)
+    return {
     ...state,
     dataYTDEmployee: {
       ...state.dataYTDEmployee,
       TOTAL_YTD_BM: {
         ...state.dataYTDEmployee.TOTAL_YTD_BM,
-        CV_SENT: payload.TOTAL_YTD.CV_SENT
-      },
-      AVERAGE_YTD_BM: {
-        ...state.dataYTDEmployee.AVERAGE_YTD_BM,
-        CV_SENT: payload.AVERAGE.CV_SENT
+        CV_SENT: state.dataYTDEmployee.TOTAL_YTD_BM.CV_SENT + payload
       }
     }
-  }),
+  }},
   [SET_LOADING_YTD_CV_SENT]: (state, payload) => ({
     ...state,
     isLoadingYTDCVSent: payload

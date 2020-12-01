@@ -11,7 +11,7 @@ import {
 
 const GaugeScore = ({ occupation, isCalculatingWeeklySpeed, weeklySpeedScore }) => {
 
-
+    
     return (
 
         <>

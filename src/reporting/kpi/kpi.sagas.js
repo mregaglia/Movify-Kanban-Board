@@ -1,6 +1,6 @@
 import moment from 'moment'
-import { call, put, takeLatest, all, select } from "redux-saga/effects";
-import { path } from 'ramda'
+import { call, put, takeLatest, all, select, takeEvery } from "redux-saga/effects";
+import { path, prop } from 'ramda'
 import { getLast4weeksDate, getDateString, getStartDateOfYear, getStartDateOfYearTimestamp } from '../../utils/date'
 import {
     initalizeObjectBusinessManager,
@@ -46,7 +46,11 @@ import {
     setLoadingYTDCVSent,
     setCVSentYTD,
     setLoadingYTDConversionCVSent,
-    setConversionYTDCVSent
+    setConversionYTDCVSent,
+    getJobSubmissionsByJobOrderIdAction,
+    GET_JOBSUBMISSION_BY_JOBORDER_ID,
+    getJobSubmissionStatusChangedCVSentAction,
+    GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
@@ -61,7 +65,7 @@ import {
     TALENT_ACQUISITION,
     SOURCING_OFFICER
 } from '../../auth/user.sagas'
-import{
+import {
     setCalculatingWeeklySpeed
 } from '../weeklySpeed/weeklySpeed.action'
 import {
@@ -381,85 +385,36 @@ export function* calculateTotalNewVacancyYTD(idEmployee, todayDate, weekNumberOf
 
 
 export function* calculateTotalCvSentYTD(jobOrderOfTheYear, dateStartTimestamp, dateEndTimestamp) {
-    let jobSubmissionFromJobOrderYTD = [];
+    yield all(jobOrderOfTheYear.map(jobOrder => put(getJobSubmissionsByJobOrderIdAction(prop("id", jobOrder), dateStartTimestamp, dateEndTimestamp))));
+}
+
+
+export function* getJobSubmissionByJobOrderIdSaga(action) {
+    let id = action.payload.ID
+    let dateStartTimestamp = action.payload.DATE_START
+    let dateEndTimestamp = action.payload.DATE_END
 
     try {
-        while (jobOrderOfTheYear.length >= maxCall) {
+        let jobSubmissions = yield call(getJobSubmissionsByJobOrderId, id)
+        yield all(jobSubmissions.map(jobSubmission => put(getJobSubmissionStatusChangedCVSentAction(prop("id", jobSubmission), dateStartTimestamp, dateEndTimestamp))));
 
-            const [jobSubmissionZero, jobSubmissionOne, jobSubmissionTwo, jobSubmissionThree, jobSubmissiobFour, jobSubmissionFive, jobSubmissionSix, jobSubmissionSeven, JobSubmissionEight, jobSubmissionNine] = yield all([
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[0].id, '/jobSubmissionZero'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[1].id, '/jobSubmissionOne'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[2].id, '/jobSubmissionTwo'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[3].id, '/jobSubmissionThree'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[4].id, '/jobSubmissiobFour'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[5].id, '/jobSubmissionFive'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[6].id, '/jobSubmissionSix'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[7].id, '/jobSubmissionSeven'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[8].id, '/JobSubmissionEight'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[9].id, '/jobSubmissionNine'),
-            ])
-
-            jobSubmissionFromJobOrderYTD = [...jobSubmissionFromJobOrderYTD, ...jobSubmissionZero, ...jobSubmissionOne, ...jobSubmissionTwo, ...jobSubmissionThree, ...jobSubmissiobFour, ...jobSubmissionFive, ...jobSubmissionSix, ...jobSubmissionSeven, ...JobSubmissionEight, ...jobSubmissionNine]
-
-            jobOrderOfTheYear = jobOrderOfTheYear.slice(10, jobOrderOfTheYear.length)
-        }
-
-        if (jobOrderOfTheYear.length > 0) {
-            for (let i = 0; i < jobOrderOfTheYear.length; i++) {
-                let jobSubmissionRetrieved = yield call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[i].id, '/jobSubmissionZero')
-                jobSubmissionFromJobOrderYTD = [...jobSubmissionFromJobOrderYTD, ...jobSubmissionRetrieved]
-            }
-        }
-        yield call(getJobSubmissionStatusChangedToCVSent, jobSubmissionFromJobOrderYTD, dateStartTimestamp, dateEndTimestamp)
     } catch (e) {
         //
     }
 }
 
-export function* getJobSubmissionStatusChangedToCVSent(jobSubmissionFromJobOrderYTD, dateStartTimestamp, dateEndTimestamp) {
-    let jobSubmissionWithStatusCVSentYTD = 0
-    let objectCVSentYTD = initialiserObjectCVSentYTD()
+export function* getJobSubmissionStatusChangedCVSentSaga(action) {
+    let id = action.payload.ID
+    let dateStartTimestamp = action.payload.DATE_START
+    let dateEndTimestamp = action.payload.DATE_END
+
     try {
-        while (jobSubmissionFromJobOrderYTD.length > maxCall) {
-            const [jobSubmissionFromJobOrderZero, jobSubmissionFromJobOrderOne, jobSubmissionFromJobOrderTwo, jobSubmissionFromJobOrderThree, jobSubmissionFromJobOrderFour,
-                jobSubmissionFromJobOrderFive, jobSubmissionFromJobOrderSix, jobSubmissionFromJobOrderSeven, JobSubmissionFromJobOrderEight, jobSubmissionFromJobOrderNine] = yield all([
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[0].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderZero'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[1].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderOne'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[2].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderTwo'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[3].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderThree'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[4].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderFour'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[5].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderFive'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[6].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderSix'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[7].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderSeven'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[8].id, dateStartTimestamp, dateEndTimestamp, '/JobSubmissionFromJobOrderEight'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[9].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderNine'),
-                ])
-
-            jobSubmissionWithStatusCVSentYTD = jobSubmissionWithStatusCVSentYTD + jobSubmissionFromJobOrderZero + jobSubmissionFromJobOrderOne + jobSubmissionFromJobOrderTwo + jobSubmissionFromJobOrderThree + jobSubmissionFromJobOrderFour +
-                jobSubmissionFromJobOrderFive + jobSubmissionFromJobOrderSix + jobSubmissionFromJobOrderSeven + JobSubmissionFromJobOrderEight + jobSubmissionFromJobOrderNine
-
-            jobSubmissionFromJobOrderYTD = jobSubmissionFromJobOrderYTD.slice(10, jobSubmissionFromJobOrderYTD.length)
-        }
-        // TODO: Retrieving the rest of the jobSubmissionStatus 
-
-        if (jobSubmissionFromJobOrderYTD.length > 0) {
-            for (let i = 0; i < jobSubmissionFromJobOrderYTD.length; i++) {
-                let result = yield call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[i].id, dateStartTimestamp, dateEndTimestamp)
-                jobSubmissionWithStatusCVSentYTD += result
-            }
-        }
-        let weekNumberOfTheYear = moment().format('w')
-        objectCVSentYTD.TOTAL_YTD.CV_SENT = jobSubmissionWithStatusCVSentYTD
-        objectCVSentYTD.AVERAGE.CV_SENT = calculateAverageYTDData(jobSubmissionWithStatusCVSentYTD, weekNumberOfTheYear)
-
-        yield put(setCVSentYTD(objectCVSentYTD))
-        yield put(setLoadingYTDCVSent(false))
-
-    } catch (error) {
+        let total = yield call(getSubmissionStatusChangedCvSent, id, dateStartTimestamp, dateEndTimestamp)
+        yield put(setCVSentYTD(total))
+    } catch (e) {
         //
     }
 }
-
 
 const getWeekLabel = (index) => {
 
@@ -479,6 +434,8 @@ const getWeekLabel = (index) => {
 
 export default function kpiSagas() {
     return [
-        takeLatest(GET_EMPLOYEE_KPI, getKpiDataEmployee)
+        takeLatest(GET_EMPLOYEE_KPI, getKpiDataEmployee),
+        takeEvery(GET_JOBSUBMISSION_BY_JOBORDER_ID, getJobSubmissionByJobOrderIdSaga),
+        takeEvery(GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT, getJobSubmissionStatusChangedCVSentSaga)
     ];
 }

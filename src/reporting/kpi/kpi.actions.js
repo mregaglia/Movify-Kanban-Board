@@ -25,6 +25,9 @@ export const SET_LOADING_YTD_AVERAGE = "SET_LOADING_YTD_AVERAGE"
 export const SET_LOADING_YTD_CONVERSION = "SET_LOADING_YTD_CONVERSION"
 export const SET_LOADING_YTD_WEEK = "SET_CV_SENT_IS_LOADED_WEEK"
 
+export const GET_JOBSUBMISSION_BY_JOBORDER_ID = "GET_JOBSUBMISSION_BY_JOBORDER_ID"
+export const GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT = "GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT"
+
 export const getEmployeeKpi = (employee) => ({ type: GET_EMPLOYEE_KPI, payload: employee });
 export const setEmployeeKpi = (objectDate, objectDataRecruitment, objectDataBusinessManager) => ({ type: SET_EMPLOYEE_KPI, payload: { dates: objectDate, datasRecruitment: objectDataRecruitment, datasBusinessManager: objectDataBusinessManager } })
 
@@ -51,3 +54,6 @@ export const setLoadingYTDConversionCVSent = (isLoadingYTDConversionCVSent) => (
 export const setLoadingYTDAverage = (isLoadingYTDAverage) => ({ type: SET_LOADING_YTD_AVERAGE, payload: isLoadingYTDAverage })
 export const setLoadingYTDConversion = (isLoadingYTDConversion) => ({ type: SET_LOADING_YTD_CONVERSION, payload: isLoadingYTDConversion })
 export const setCvSentIsLoadingWeek = (cvSentIsLoaded) => ({ type: SET_LOADING_YTD_WEEK, payload: cvSentIsLoaded })
+
+export const getJobSubmissionsByJobOrderIdAction = (id, dateStartTimestamp, dateEndTimestamp) => ({ type: GET_JOBSUBMISSION_BY_JOBORDER_ID, payload: { ID: id, DATE_START: dateStartTimestamp, DATE_END: dateEndTimestamp } })
+export const getJobSubmissionStatusChangedCVSentAction = (id, dateStartTimestamp, dateEndTimestamp) => ({ type: GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT, payload: { ID: id, DATE_START: dateStartTimestamp, DATE_END: dateEndTimestamp } })
