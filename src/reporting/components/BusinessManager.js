@@ -18,6 +18,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
             {
                 Object.keys(datas).map((key, i) => {
                     if (datas[key].TITLE === LABEL_CV_SENT) {
+                        
                         if (isCvSentWeekLoading) {
                             return (
                                 <TableContentTbodyTr key={i}>

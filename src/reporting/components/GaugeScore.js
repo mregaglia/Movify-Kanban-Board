@@ -15,20 +15,13 @@ const GaugeScore = ({ occupation, isCalculatingWeeklySpeed, weeklySpeedScore }) 
     return (
 
         <>
-            {
-                (occupation.includes(BUSINESS_MANAGER)) && (
-                    <TableContentTbodyTrNoLine>
-                        <TableContentTdTitleForBM>WeeklySpeed</TableContentTdTitleForBM>
-                    </TableContentTbodyTrNoLine>
-                )
-            }
-            {
-                (!occupation.includes(BUSINESS_MANAGER)) && (
-                    <TableContentTbodyTrNoLine>
-                        <TableContentTdTitle>WeeklySpeed</TableContentTdTitle>
-                    </TableContentTbodyTrNoLine>
-                )
-            }
+
+
+            <TableContentTbodyTrNoLine>
+                <TableContentTdTitle isBM={occupation.includes(BUSINESS_MANAGER)}>WeeklySpeed</TableContentTdTitle>
+            </TableContentTbodyTrNoLine>
+
+
             <tr>
                 <TableContentTdLabelBold>Your score</TableContentTdLabelBold>
                 {

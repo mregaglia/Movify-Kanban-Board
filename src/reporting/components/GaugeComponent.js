@@ -38,6 +38,7 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
     let weeklySpeedGauge = (weeklySpeedScore.FOURTH_WEEK >= 0 && !isCalculatingWeeklySpeed) ? parseFloat((weeklySpeedScore.FOURTH_WEEK / gaugeGreenEnd).toFixed(2)) : 0
     let lastWeekScore = (!isCalculatingWeeklySpeed) ? weeklySpeedScore.FOURTH_WEEK : 0
     let weeklySpeedGaugeDisplayed = (weeklySpeedGauge > 1) ? 1 : weeklySpeedGauge
+
     return (
         <BoxGauge>
             <GaugeChart

@@ -197,7 +197,7 @@ export const initializeObjectByDates = () => {
 
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes;
-  console.log(data)
+  
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
 
