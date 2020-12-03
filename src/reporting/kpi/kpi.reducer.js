@@ -1,10 +1,7 @@
-import { pathOr } from "ramda";
 import { bindReducer } from "../../utils/reducer";
-import { LABEL_CV_SENT } from '../../utils/reporting'
 
 import {
   SET_EMPLOYEE_KPI,
-  SET_LOADING_KPI,
   SET_OBJECT_YTD,
   SET_CV_SENT,
   SET_YTD_TOTAL_BUSINESS_MANAGER,
@@ -16,7 +13,6 @@ import {
   SET_LOADING_YTD_TOTAL,
   SET_LOADING_YTD_AVERAGE,
   SET_LOADING_YTD_CONVERSION,
-  SET_LOADING_YTD_WEEK,
   SET_LOADING_YTD_NEW_VACANCY,
   SET_NEW_VACANCY_YTD,
   SET_CONVERSION_YTD_NEW_VACANCY,
@@ -25,9 +21,11 @@ import {
   SET_CV_SENT_YTD,
   SET_LOADING_YTD_CONVERSION_CV_SENT,
   SET_CV_SENT_CONVERSION_YTD,
+  SET_LOADING_KPI,
   GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT,
   GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN,
-  SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED
+  SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED,
+  SET_LOADING_DATA
 } from "./kpi.actions"
 
 export const initialState = {
@@ -99,8 +97,23 @@ export const initialState = {
   isLoadingYTDConversionNewVacancy: false,
   isLoadingYTDConversionCVSent: false
 }
-
 const kpi = {
+  [SET_LOADING_DATA]: (state) => ({
+    ...state,
+    isLoadingKpi: true,
+    isCvSentWeekLoading: true,
+    isLoadingYTDTotal: true,
+    isLoadingYTDAverage: true,
+    isLoadingYTDConversion: true,
+    isLoadingYTDNewVacancy: true,
+    isLoadingYTDConversionNewVacancy: true,
+    isLoadingYTDCVSent: true,
+    isLoadingYTDConversionCVSent: true
+  }),
+  [SET_LOADING_KPI]: (state) => ({
+    ...state,
+    isLoadingKpi: false
+  }),
   [SET_EMPLOYEE_KPI]: (state, payload) => ({
     ...state,
     dataEmployee: payload
@@ -109,10 +122,6 @@ const kpi = {
   [SET_OBJECT_YTD]: (state, payload) => ({
     ...state,
     dataYTDEmployee: payload
-  }),
-  [SET_LOADING_KPI]: (state, payload) => ({
-    ...state,
-    isLoadingKpi: payload
   }),
   [SET_CV_SENT]: (state, payload) => {
     return {
@@ -204,10 +213,6 @@ const kpi = {
     ...state,
     isLoadingYTDConversion: payload
   }),
-  [SET_LOADING_YTD_WEEK]: (state, payload) => ({
-    ...state,
-    isCvSentWeekLoading: payload
-  }),
   [SET_LOADING_YTD_NEW_VACANCY]: (state, payload) => ({
     ...state,
     isLoadingYTDNewVacancy: payload
@@ -239,10 +244,6 @@ const kpi = {
   [SET_LOADING_YTD_CONVERSION_NEW_VACANCY]: (state, payload) => ({
     ...state,
     isLoadingYTDConversionNewVacancy: payload
-  }),
-  [SET_LOADING_YTD_CV_SENT]: (state, payload) => ({
-    ...state,
-    isLoadingYTDCVSent: payload
   }),
   [SET_CV_SENT_YTD]: (state, payload) => ({
     ...state,

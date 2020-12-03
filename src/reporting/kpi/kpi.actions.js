@@ -23,7 +23,6 @@ export const SET_LOADING_YTD_CV_SENT = "SET_LOADING_YTD_CV_SENT"
 export const SET_LOADING_YTD_CONVERSION_CV_SENT = "SET_LOADING_YTD_CONVERSION_CV_SENT"
 export const SET_LOADING_YTD_AVERAGE = "SET_LOADING_YTD_AVERAGE"
 export const SET_LOADING_YTD_CONVERSION = "SET_LOADING_YTD_CONVERSION"
-export const SET_LOADING_YTD_WEEK = "SET_CV_SENT_IS_LOADED_WEEK"
 
 export const GET_JOBSUBMISSION_BY_JOBORDER_ID = "GET_JOBSUBMISSION_BY_JOBORDER_ID"
 export const GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT = "GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT"
@@ -31,6 +30,10 @@ export const GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT = "GET_JOBSUBMISSION_STATU
 export const GET_JOBSUBMISSION_BY_JOBORDER_OPEN_ID = "GET_JOBSUBMISSION_BY_JOBORDER_OPEN_ID"
 export const GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN = "GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN"
 export const SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED = "SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED"
+
+export const SET_LOADING_DATA = "SET_LOADING_DATA"
+
+export const setLoadingData = () => ({type: SET_LOADING_DATA})
 
 export const getEmployeeKpi = (employee) => ({ type: GET_EMPLOYEE_KPI, payload: employee });
 export const setEmployeeKpi = (objectDate, objectDataRecruitment, objectDataBusinessManager) => ({ type: SET_EMPLOYEE_KPI, payload: { dates: objectDate, datasRecruitment: objectDataRecruitment, datasBusinessManager: objectDataBusinessManager } })
@@ -53,15 +56,13 @@ export const setConversionYTDRecruitment = (ytdConversionRecruitment) => ({ type
 export const setLoadingYTDTotal = (isLoadingYTDTotal) => ({ type: SET_LOADING_YTD_TOTAL, payload: isLoadingYTDTotal })
 export const setLoadingYTDNewVacancy = (isLoadingYTDNewVacancy) => ({ type: SET_LOADING_YTD_NEW_VACANCY, payload: isLoadingYTDNewVacancy })
 export const setLoadingYTDConversionNewVacancy = (isLoadingYTDConversionNewVacancy) => ({ type: SET_LOADING_YTD_CONVERSION_NEW_VACANCY, payload: isLoadingYTDConversionNewVacancy })
-export const setLoadingYTDCVSent = (isLoadingYTDCVSent) => ({ type: SET_LOADING_YTD_CV_SENT, payload: isLoadingYTDCVSent })
 export const setLoadingYTDConversionCVSent = (isLoadingYTDConversionCVSent) => ({ type: SET_LOADING_YTD_CONVERSION_CV_SENT, payload: isLoadingYTDConversionCVSent })
 export const setLoadingYTDAverage = (isLoadingYTDAverage) => ({ type: SET_LOADING_YTD_AVERAGE, payload: isLoadingYTDAverage })
 export const setLoadingYTDConversion = (isLoadingYTDConversion) => ({ type: SET_LOADING_YTD_CONVERSION, payload: isLoadingYTDConversion })
-export const setCvSentIsLoadingWeek = (cvSentIsLoaded) => ({ type: SET_LOADING_YTD_WEEK, payload: cvSentIsLoaded })
 
-export const getJobSubmissionsByJobOrderIdAction = (id, dateStartTimestamp, dateEndTimestamp) => ({ type: GET_JOBSUBMISSION_BY_JOBORDER_ID, payload: { ID: id, DATE_START: dateStartTimestamp, DATE_END: dateEndTimestamp } })
-export const getJobSubmissionStatusChangedCVSentAction = (id, dateStartTimestamp, dateEndTimestamp) => ({ type: GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT, payload: { ID: id, DATE_START: dateStartTimestamp, DATE_END: dateEndTimestamp } })
+export const getJobSubmissionsByJobOrderIdAction = (id, dateStartTimestamp, dateEndTimestamp) => ({ type: GET_JOBSUBMISSION_BY_JOBORDER_ID, payload: { ID: id, DATE_START: dateStartTimestamp, DATE_END: dateEndTimestamp} })
+export const getJobSubmissionStatusChangedCVSentAction = (id, dateStartTimestamp, dateEndTimestamp) => ({ type: GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT, payload: { ID: id, DATE_START: dateStartTimestamp, DATE_END: dateEndTimestamp} })
 
 export const getJobSubmissionsByJobOrderOpenAction = (id, dates) => ({ type: GET_JOBSUBMISSION_BY_JOBORDER_OPEN_ID, payload: { ID: id, DATES: dates } })
 export const getJobSbmissionsStatusFromJobsubmissionOpen = (id, dates) => ({ type: GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN, payload: { ID: id, DATES: dates } })
-export const setJobSubmissionsStatusFromWeekRetrieved = () => ({ type: SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED })
+export const setJobSubmissionsStatusFromWeekRetrieved = () => ({type: SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED})

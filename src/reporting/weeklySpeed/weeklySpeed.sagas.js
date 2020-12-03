@@ -1,15 +1,18 @@
 import { takeLatest, select, put, call, all } from "redux-saga/effects"
 import { GET_GAUGE_LIMIT, setGaugeLimit, setWeeklySpeed, setCalculatingWeeklySpeed } from './weeklySpeed.action'
 import { getCandidateCategory } from './weeklySpeek.service'
-import { BUSINESS_MANAGER, TALENT_ACQUISITION } from '../../auth/user.sagas'
+import { BUSINESS_MANAGER, SOURCING_OFFICER, TALENT_ACQUISITION } from '../../auth/user.sagas'
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
 import gaugeCountData from '../gauge-count-data.json'
 import { getDateFrom365daysAgo } from '../../utils/date'
 import { getNoteProspectionLastYear } from './weeklySpeek.service'
 import { FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK } from "../kpi/kpi.sagas"
+import { isNil } from 'ramda'
 
 // Recrtuitment
-export const POINT_FOR_INTERVIEW_DONE = 5
+export const POINT_FOR_INTERVIEW_DONE = 3
+export const POINT_FOR_INTERVIEW_SCHEDULED_TA = 2
+export const POINT_FOR_INTERVIEW_SCHEDULED_SO = 3
 
 // Business Manager
 export const POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT = 2
@@ -21,6 +24,7 @@ export const POINT_INTAKE = 5
 export const getOccupationFromEmployeeSelected = (state) => state.employees.employeeSelected.occupation
 // Recruitment & Business Manager 
 export const getInterviewDone = (state, weekLabel) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE[weekLabel]
+export const getInterviewScheduled = (state, weekLabel) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_SCHEDULED[weekLabel]
 
 // Business Manager
 export const getIntake = (state, weekLabel) => state.kpi.dataEmployee.datasBusinessManager.INTAKE[weekLabel]
@@ -79,7 +83,8 @@ export function* getCandidatesCategory(idsCandidate) {
 }
 
 export function* calculateWeeklySpeedRecruitmentForAllWeeks(objectCategories, occupation) {
-    try{
+    try {
+        console.log("oiedz")
         yield all([
             call(calculateWeeklySpeedForRecruitment, objectCategories[FIRST_WEEK], FIRST_WEEK, occupation),
             call(calculateWeeklySpeedForRecruitment, objectCategories[SECOND_WEEK], SECOND_WEEK, occupation),
@@ -87,7 +92,7 @@ export function* calculateWeeklySpeedRecruitmentForAllWeeks(objectCategories, oc
             call(calculateWeeklySpeedForRecruitment, objectCategories[FOURTH_WEEK], FOURTH_WEEK, occupation),
         ])
         yield put(setCalculatingWeeklySpeed(false))
-    } catch(e) {
+    } catch (e) {
         //
     }
 }
@@ -96,23 +101,30 @@ export function* calculateWeeklySpeedForRecruitment(categories, weekLabel, occup
     let weeklySpeed = 0
     let isAlreadyCounted = false
     try {
-        for (let i = 0; i < categories.length; i++) {
-            if (categories[i].length > 0) {
-                for (var key of Object.keys(gaugeCountData.TALENT_ACQUISITION)) {
-                    if (gaugeCountData.TALENT_ACQUISITION[key].includes(categories[i][0].id)) {
-                        weeklySpeed += parseInt(key)
-                        isAlreadyCounted = true
-                        break;
+        if (!isNil(categories) && categories.length !== 0) {
+            for (let i = 0; i < categories.length; i++) {
+                if (categories[i].length > 0) {
+                    for (var key of Object.keys(gaugeCountData.TALENT_ACQUISITION)) {
+                        if (gaugeCountData.TALENT_ACQUISITION[key].includes(categories[i][0].id)) {
+                            weeklySpeed += parseInt(key)
+                            isAlreadyCounted = true
+                            break;
+                        }
                     }
                 }
+                if (!isAlreadyCounted) weeklySpeed++
+                isAlreadyCounted = false
             }
-            if (!isAlreadyCounted) weeklySpeed++
-            isAlreadyCounted = false
         }
 
-        if(occupation.includes(TALENT_ACQUISITION)) {
+        let numberOfInterviewScheduled = yield select(getInterviewScheduled, weekLabel)
+        if (occupation.includes(TALENT_ACQUISITION)) {
             let numberOfInterviewDone = yield call(getInterviewDoneSaga, weekLabel)
-            if(numberOfInterviewDone > 0) weeklySpeed += (numberOfInterviewDone * POINT_FOR_INTERVIEW_DONE)
+            if (numberOfInterviewDone > 0) weeklySpeed += (numberOfInterviewDone * POINT_FOR_INTERVIEW_DONE)
+
+            if (numberOfInterviewScheduled > 0) weeklySpeed += (numberOfInterviewScheduled * POINT_FOR_INTERVIEW_SCHEDULED_TA)
+        } else if (occupation.includes(SOURCING_OFFICER)) {
+            if (numberOfInterviewScheduled > 0) weeklySpeed += (numberOfInterviewScheduled * POINT_FOR_INTERVIEW_SCHEDULED_SO)
         }
 
         yield put(setWeeklySpeed(weekLabel, weeklySpeed))
@@ -132,7 +144,7 @@ function* getInterviewDoneSaga(weekLabel) {
 export function* calculateAllWeeklySpeedForBusinessManager(idEmployee, dates, prospectionDone) {
     let date365daysAgoTimestamp = getDateFrom365daysAgo()
     try {
-        yield all ([
+        yield all([
             yield call(calculateWeeklySpeedForBusinessManager, idEmployee, date365daysAgoTimestamp, dates[0].end, prospectionDone.FIRST_WEEK, FIRST_WEEK),
             yield call(calculateWeeklySpeedForBusinessManager, idEmployee, date365daysAgoTimestamp, dates[1].end, prospectionDone.SECOND_WEEK, SECOND_WEEK),
             yield call(calculateWeeklySpeedForBusinessManager, idEmployee, date365daysAgoTimestamp, dates[2].end, prospectionDone.THIRD_WEEK, THIRD_WEEK),
@@ -143,7 +155,7 @@ export function* calculateAllWeeklySpeedForBusinessManager(idEmployee, dates, pr
     }
 }
 
-export function* calculateWeeklySpeedForBusinessManager(idEmployee, date365daysAgoTimestamp, dateStart, prospectionMeetingDoneFromLastWeek, weekLabel){
+export function* calculateWeeklySpeedForBusinessManager(idEmployee, date365daysAgoTimestamp, dateStart, prospectionMeetingDoneFromLastWeek, weekLabel) {
     let weeklySpeed = 0
     let hasAlreadyBeenContacted = false
     try {
@@ -157,7 +169,7 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, date365daysA
 
         for (let i = 0; i < prospectionMeetingDoneFromLastWeek.length; i++) {
             let idClientContact = prospectionMeetingDoneFromLastWeek[i].clientContacts.data[0].id
- 
+
             for (let j = 0; j < prospectionMeetingDoneForTheYear.length; j++) {
                 let idClientContactProspectionMeetingDone = prospectionMeetingDoneForTheYear[j].clientContacts.data[0].id
                 hasAlreadyBeenContacted = (idClientContact === idClientContactProspectionMeetingDone) ? true : false
@@ -166,13 +178,14 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, date365daysA
             weeklySpeed += (hasAlreadyBeenContacted) ? POINT_PROSPECTION_MEETING_DONE_RE_PROSP : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
             hasAlreadyBeenContacted = false
         }
+
         weeklySpeed += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
 
         yield put(setWeeklySpeed(weekLabel, weeklySpeed))
     } catch (e) {
         //
     }
-} 
+}
 
 export default function weeklySpeedSagas() {
     return [

@@ -279,18 +279,18 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
     
                     let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
                     objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
-                    
-                    objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] = objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] + objectDataBusinessManager.CALL[weekLabel]
+
+                    objectDataBusinessManager.CALL[weekLabel] = objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] + objectDataBusinessManager.CALL[weekLabel]
                 }
             }
         }
         yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
-
         yield put(setKpiLoading(false))
 
         if (occupation.includes(BUSINESS_MANAGER)) {
             return objectProspectionDone
         } else {
+            console.log("de")
             yield call(calculateWeeklySpeedRecruitmentForAllWeeks, objectCategories, occupation)
         }
     } catch (e) {
@@ -301,7 +301,12 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
 export function* getCvSent(employeeId, dates) {
     try {
         const jobOrdersOpen = yield call(getAllJobOrdersOpen, employeeId);
-        yield all(jobOrdersOpen.map(jobOrderOpen => put(getJobSubmissionsByJobOrderOpenAction(prop("id", jobOrderOpen), dates))));
+        if(jobOrdersOpen.length !== 0) {
+            yield all(jobOrdersOpen.map(jobOrderOpen => put(getJobSubmissionsByJobOrderOpenAction(prop("id", jobOrderOpen), dates))));
+        } else {
+            yield put(setJobSubmissionsStatusFromWeekRetrieved())
+        }
+        
     } catch (e) {
         //
     }
