@@ -280,7 +280,7 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
                     let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
                     objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
 
-                    objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] = objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] + objectDataBusinessManager.CALL[weekLabel]
+                    objectDataBusinessManager.CALL[weekLabel] = objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] + objectDataBusinessManager.CALL[weekLabel]
                 }
             }
         }

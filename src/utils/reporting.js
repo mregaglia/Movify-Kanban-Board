@@ -372,6 +372,7 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
         break
       case PROSPECTION_SCHEDULED:
         if (notesOfyear[i].clientContacts.total === 1) objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE++
+        if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.CALL++
         break
       default:
         break
