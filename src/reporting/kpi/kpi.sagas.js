@@ -285,7 +285,6 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
                 }
             }
         }
-        console.log(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager)
         yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
 
         yield put(setKpiLoading(false))

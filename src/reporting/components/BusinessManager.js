@@ -8,7 +8,7 @@ import { LABEL_PROJECT_START, LABEL_CV_SENT, LABEL_MEETING_DONE, LABEL_INTAKE } 
 
 const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
     function onClickBusinessManagerData(e) {
-        console.log("click")
+        
     }
     return (
         <>

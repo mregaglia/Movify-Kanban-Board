@@ -303,7 +303,6 @@ const kpi = {
     cvSentLoadingCounter: state.cvSentLoadingCounter + 1
   }),
   [SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED]: (state) => {
-    console.log("a")
     return{
     ...state,
     cvSentLoadingCounter: state.cvSentLoadingCounter - 1,
