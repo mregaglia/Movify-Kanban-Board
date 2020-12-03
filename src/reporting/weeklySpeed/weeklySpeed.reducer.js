@@ -6,10 +6,10 @@ export const initialState = {
   gaugeLimitForEmployeeSelected: {},
   isCalculatingWeeklySpeed: false,
   weeklySpeedScores: {
-    FIRST_WEEK: -1,
-    SECOND_WEEK: -1,
-    THIRD_WEEK: -1,
-    FOURTH_WEEK: -1
+    FIRST_WEEK: 0,
+    SECOND_WEEK: 0,
+    THIRD_WEEK: 0,
+    FOURTH_WEEK: 0
   }
 }
 

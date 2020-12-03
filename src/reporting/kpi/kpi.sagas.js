@@ -285,12 +285,12 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
             }
         }
         yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
-
         yield put(setKpiLoading(false))
 
         if (occupation.includes(BUSINESS_MANAGER)) {
             return objectProspectionDone
         } else {
+            console.log("de")
             yield call(calculateWeeklySpeedRecruitmentForAllWeeks, objectCategories, occupation)
         }
     } catch (e) {

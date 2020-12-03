@@ -461,4 +461,3 @@ export const filterCvSentStatusForWeeks = (status, dates) => {
   }
   return ""
 }
-
