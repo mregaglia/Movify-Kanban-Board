@@ -1,3 +1,4 @@
+import { pathOr } from 'ramda'
 import {
   BUSINESS_MANAGER,
   SOURCING_OFFICER,
@@ -50,22 +51,11 @@ export const initalizeObjectBusinessManager = (occupation) => {
       PROSPECTION_MEETING_SCHEDULE: { TITLE: LABEL_PROSPECTION_MEETING_SCHEDULE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       PROSPECTION_MEETING_DONE: { TITLE: LABEL_MEETING_DONE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       NEW_VACANCY: { TITLE: LABEL_NEW_VACANCY, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
-      CV_SENT: { TITLE: LABEL_CV_SENT, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       INTAKE: { TITLE: LABEL_INTAKE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       PROJECT_START: { TITLE: LABEL_PROJECT_START, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     }
   } else {
     return {}
-  }
-}
-
-export const initializeObjectCvSent = () => {
-  return {
-    TITLE: LABEL_CV_SENT,
-    FIRST_WEEK: 0,
-    SECOND_WEEK: 0,
-    THIRD_WEEK: 0,
-    FOURTH_WEEK: 0
   }
 }
 
@@ -186,8 +176,18 @@ export const initializeObjectDate = () => {
   }
 }
 
+export const initializeObjectByDates = () => {
+  return {
+    FIRST_WEEK: {},
+    SECOND_WEEK: {},
+    THIRD_WEEK: {},
+    FOURTH_WEEK: {}
+  }
+}
+
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes;
+
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
 
@@ -197,7 +197,13 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
       case NO_SHOW:
         objectDataRecruitment.NO_SHOW[labelWeek]++
         break;
-      case INTERVIEW_DONE_1 || INTERVIEW_DONE_2 || INTERVIEW_DONE_3:
+      case INTERVIEW_DONE_1:
+        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        break;
+      case INTERVIEW_DONE_2:
+        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        break;
+      case INTERVIEW_DONE_3:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
         break;
       case CONTRACT_PROPOSED:
@@ -235,7 +241,13 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
       case NO_SHOW:
         objectDataRecruitment.NO_SHOW[labelWeek]++
         break;
-      case INTERVIEW_DONE_1 || INTERVIEW_DONE_2 || INTERVIEW_DONE_3:
+      case INTERVIEW_DONE_1:
+        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        break;
+      case INTERVIEW_DONE_2:
+        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        break;
+      case INTERVIEW_DONE_3:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
         break;
       case CONTRACT_PROPOSED:
@@ -283,7 +295,7 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         break;
       case PROSPECTION:
         objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
-        if (labelWeek === "FOURTH_WEEK") prospections = [...prospections, data[i]]
+        prospections = [...prospections, data[i]]
         break;
       case PROJECT_START:
         objectDataBusinessManager.PROJECT_START[labelWeek]++
@@ -295,13 +307,10 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         break;
     }
   }
-  if (labelWeek === "FOURTH_WEEK") {
-    return {
-      PROSPECTIONS: prospections,
-      OBJECT_DATA_BUSINESS_MANAGER: objectDataBusinessManager
-    }
+  return {
+    PROSPECTIONS: prospections,
+    OBJECT_DATA_BUSINESS_MANAGER: objectDataBusinessManager
   }
-  return objectDataBusinessManager
 }
 
 export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) => {
@@ -436,3 +445,19 @@ export const calculateConversionYTDRecruitment = (objectConversionYTDRecruitment
 
   return objectConversionYTDRecruitment;
 }
+
+export const filterCvSentStatusForWeeks = (status, dates) => {
+  let dateAdded = pathOr(0, ['data', 0, 'dateAdded'], status)
+
+  if (dateAdded >= dates[0].startTimestamp && dateAdded <= dates[0].endTimestamp) {
+    return "FIRST_WEEK"
+  } else if (dateAdded >= dates[1].startTimestamp && dateAdded <= dates[1].endTimestamp) {
+    return "SECOND_WEEK"
+  } else if (dateAdded >= dates[2].startTimestamp && dateAdded <= dates[2].endTimestamp) {
+    return "THIRD_WEEK"
+  } else if (dateAdded >= dates[3].startTimestamp && dateAdded <= dates[3].endTimestamp) {
+    return "FOURTH_WEEK"
+  }
+  return ""
+}
+

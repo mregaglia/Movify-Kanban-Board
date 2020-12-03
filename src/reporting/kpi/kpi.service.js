@@ -1,5 +1,5 @@
 import { get, post } from "../../utils/api";
-import { prop } from "ramda"
+import { prop, pathOr, propOr } from "ramda"
 
 export const getNoteFromEmployee = (idEmployee, dateStart, dateEnd, startValue) =>
     post(
@@ -20,7 +20,7 @@ export const getJobOrdersForYTD = (idEmployee, startDateOfTheYear, todayDate, st
         "search/JobOrder",
         {
             query: `owner.id:${idEmployee} AND isDeleted:false AND dateAdded:[${startDateOfTheYear} TO ${todayDate}]`
-        },  
+        },
         {
             fields: "id",
             count: '50',
@@ -54,14 +54,27 @@ export const getJobSubmissionsByJobOrderId = (idJobOrder) =>
         where: `jobOrder.id=${idJobOrder} AND isDeleted=false`
     }).then(response => prop("data", response))
 
-export const getSubmissionStatusChangedCvSent = (idJobSubmission, dateStartTimestamp, dateEndTimestamp) =>
-    get("query/JobSubmissionEditHistory", {
-        fields: "id",
-        where: `targetEntity.id=${idJobSubmission} AND fieldChanges.columnName='status' AND fieldChanges.newValue='WF Response' AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`
-    }).then(response => prop("count", response))
-
 export const getProspectionMeetingSchedule = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
     get("query/UserEditHistory", {
         fields: "targetEntity",
         where: `modifyingPerson.id=${idEmployee} AND fieldChanges.columnName='status' AND fieldChanges.newValue='Prospection scheduled' AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`
     }).then(response => prop("count", response))
+
+export const getSubmissionStatusChangedCvSent = (idJobSubmission, dateStartTimestamp, dateEndTimestamp) =>
+    get("query/JobSubmissionEditHistory", {
+        fields: "id, dateAdded",
+        where: `targetEntity.id=${idJobSubmission} AND fieldChanges.columnName='status' AND fieldChanges.newValue='WF Response' AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`,
+        orderBy: '+dateAdded',
+        count: "1"
+    }).then(response => propOr(0, "count", response))
+
+export const getSubmissionStatusChangedCvSentById = (idJobSubmission) =>
+    get("query/JobSubmissionEditHistory", {
+        fields: "id, dateAdded",
+        where: `targetEntity.id=${idJobSubmission} AND fieldChanges.columnName='status' AND fieldChanges.newValue='WF Response'`
+    })
+
+export const countCVSentForWeek = (response, dateStartTimestamp, dateEndTimestamp) => {
+    let dateAdded = pathOr(0, ['data', 0, 'dateAdded'], response)
+    return (dateAdded >= dateStartTimestamp && dateAdded <= dateEndTimestamp) ? 1 : 0
+} 

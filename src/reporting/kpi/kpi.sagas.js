@@ -1,6 +1,6 @@
 import moment from 'moment'
-import { call, put, takeLatest, all, select } from "redux-saga/effects";
-import { path } from 'ramda'
+import { call, put, takeLatest, all, select, takeEvery } from "redux-saga/effects";
+import { path, prop } from 'ramda'
 import { getLast4weeksDate, getDateString, getStartDateOfYear, getStartDateOfYearTimestamp } from '../../utils/date'
 import {
     initalizeObjectBusinessManager,
@@ -8,9 +8,7 @@ import {
     initializeObjectConversionYTDBusinessManager,
     initializeObjectConversionYTDRecruitment,
     countNoteForBusinessManager,
-    countNoteForRecruitment,
     initializeObjectDate,
-    initializeObjectCvSent,
     calculateConversionYTDBusinessManager,
     calculateConversionYTDRecruitment,
     calculateTotalYTDBusinessManager,
@@ -21,7 +19,10 @@ import {
     initializeObjectDataRecruitmentAndIds,
     initialiserObjectNewVacancyYTD,
     calculateAverageYTDData,
-    initialiserObjectCVSentYTD
+    initialiserObjectCVSentYTD,
+    countNoteForRecruitment,
+    initializeObjectByDates,
+    filterCvSentStatusForWeeks
 } from '../../utils/reporting'
 import {
     GET_EMPLOYEE_KPI,
@@ -45,7 +46,16 @@ import {
     setLoadingYTDCVSent,
     setCVSentYTD,
     setLoadingYTDConversionCVSent,
-    setConversionYTDCVSent
+    setConversionYTDCVSent,
+    getJobSubmissionsByJobOrderIdAction,
+    GET_JOBSUBMISSION_BY_JOBORDER_ID,
+    getJobSubmissionStatusChangedCVSentAction,
+    GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT,
+    getJobSubmissionsByJobOrderOpenAction,
+    GET_JOBSUBMISSION_BY_JOBORDER_OPEN_ID,
+    getJobSbmissionsStatusFromJobsubmissionOpen,
+    GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN,
+    setJobSubmissionsStatusFromWeekRetrieved
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
@@ -53,7 +63,8 @@ import {
     getAllJobOrdersOpen,
     getJobSubmissionsByJobOrderId,
     getSubmissionStatusChangedCvSent,
-    getJobOrdersForYTD
+    getJobOrdersForYTD,
+    getSubmissionStatusChangedCvSentById
 } from './kpi.service'
 import {
     BUSINESS_MANAGER,
@@ -61,15 +72,20 @@ import {
     SOURCING_OFFICER
 } from '../../auth/user.sagas'
 import {
-    getCategoriesFromCandidates,
-    calculateWeeklySpeedBusinessManager
+    setCalculatingWeeklySpeed
 } from '../weeklySpeed/weeklySpeed.action'
+import {
+    calculateWeeklySpeedRecruitmentForAllWeeks,
+    getCandidatesCategory,
+    calculateAllWeeklySpeedForBusinessManager
+} from '../weeklySpeed/weeklySpeed.sagas'
 
 export const FIRST_WEEK = "FIRST_WEEK"
 export const SECOND_WEEK = "SECOND_WEEK"
 export const THIRD_WEEK = "THIRD_WEEK"
 export const FOURTH_WEEK = "FOURTH_WEEK"
 const maxCall = 10
+
 
 export function* getKpiDataEmployee(action) {
     let weekNumberOfTheYear = moment().format('w')
@@ -89,21 +105,32 @@ export function* getKpiDataEmployee(action) {
     let objectYTDRecruitment = initializeObjectConversionYTDRecruitment();
 
     if (occupation.includes(BUSINESS_MANAGER)) {
-        const [prospectionSchedule] = yield all([
-            call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation, '/prospectionSchedule'),
-            call(getCvSent, idEmployee, dates),
-            call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
+        yield all([
+            call(getLast4WeekData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
+            call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp, dates)
         ])
-        yield put(calculateWeeklySpeedBusinessManager(idEmployee, dates[3].start, prospectionSchedule))
     } else {
         yield all([
-            call(getLast4WeekDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
+            call(getLast4WeekKpiDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
             call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
         ])
     }
 }
 
-export function* getYTDData(idEmployee, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dateEndTimestamp) {
+export function* getLast4WeekData(idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
+    try {
+        const [prospectionDone] = yield all([
+            call(getLast4WeekKpiDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation, '/prospectionDone'),
+        ])
+        yield call(getCvSent, idEmployee, dates)
+        yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, prospectionDone)
+        yield put(setCalculatingWeeklySpeed(false))
+    } catch (e) {
+        //
+    }
+}
+
+export function* getYTDData(idEmployee, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dateEndTimestamp, dates) {
     try {
         yield all([
             call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
@@ -175,7 +202,6 @@ export function* calculateTotalYTD(employeeId, dateStartOfThisYear, dateEnd, occ
             call(calculateConversionYTD, occupation, objectYTDBusinessManager, objectYTDRecruitment)
         ])
 
-
     } catch (e) {
         //
     }
@@ -227,87 +253,56 @@ export function* calculateAverageYTD(occupation, objectYTDBusinessManager, objec
     }
 }
 
-export function* getLast4WeekDataSaga(employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
+export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
+
+    let objectProspectionDone = (occupation.includes(BUSINESS_MANAGER)) ? initializeObjectByDates() : {};
+    let objectCategories = (occupation.includes(TALENT_ACQUISITION)) ? initializeObjectByDates() : {};
 
     try {
         for (let i = 0; i < dates.length; i++) {
-
             let weekLabel = getWeekLabel(i)
-
             const kpiNote = yield call(getKpiNoteSaga, employeeId, dates[i].start, dates[i].end)
-
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
-
-            if (weekLabel === FOURTH_WEEK && (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER))) {
-                let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
-                objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
-                objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
-
-                yield put(getCategoriesFromCandidates(objectDataRecruitmentAndSourcingIds.SOURCING_IDS, occupation))
-            } else {
-                objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
-            }
-
-            if (occupation.includes(BUSINESS_MANAGER)) {
-
-                if (weekLabel === "FOURTH_WEEK") {
-                    let dataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
-
-                    objectDataBusinessManager = dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER
-
-                    let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
-                    objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
-
-                    yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
-
-                    yield put(setKpiLoading(false))
-
-                    return dataBusinessManager.PROSPECTIONS
-
+            if(kpiNote.length !== 0){
+                if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
+                    let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
+                    objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
+                    objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
+    
+                    objectCategories[weekLabel] = yield call(getCandidatesCategory, objectDataRecruitmentAndSourcingIds.SOURCING_IDS)
                 } else {
-                    objectDataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
-
+                    objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
+                }
+    
+                if (occupation.includes(BUSINESS_MANAGER)) {
+                    let dataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
+    
+                    objectDataBusinessManager = dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER
+                    objectProspectionDone[weekLabel] = dataBusinessManager.PROSPECTIONS
+    
                     let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
                     objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
                 }
             }
         }
-
         yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
 
         yield put(setKpiLoading(false))
+
+        if (occupation.includes(BUSINESS_MANAGER)) {
+            return objectProspectionDone
+        } else {
+            yield call(calculateWeeklySpeedRecruitmentForAllWeeks, objectCategories, occupation)
+        }
     } catch (e) {
         //
     }
 }
 
 export function* getCvSent(employeeId, dates) {
-    let jobSubmissionsTab = []
-    const cvSentObject = initializeObjectCvSent()
-
     try {
-        // Retrieving all jobOrders open for employee
-        const jobOrderOpen = yield call(getAllJobOrdersOpen, employeeId);
-
-        // retrieving all jobsubmissions linked to the jobOrder
-        for (let i = 0; i < jobOrderOpen.length; i++) {
-            let jobSubmission = yield call(getJobSubmissionsByJobOrderId, jobOrderOpen[i].id)
-            jobSubmissionsTab = [...jobSubmissionsTab, ...jobSubmission]
-        }
-
-        // Looking for any modification for this jobSubmission to WF Response
-        for (let i = 0; i < dates.length; i++) {
-            let labelWeek = getWeekLabel(i)
-            for (let j = 0; j < jobSubmissionsTab.length; j++) {
-                let isCvSent = yield call(getSubmissionStatusChangedCvSent, jobSubmissionsTab[j].id, dates[i].startTimestamp, dates[i].endTimestamp)
-                if (isCvSent) {
-                    cvSentObject[labelWeek]++;
-                    jobSubmissionsTab.slice(j, 1)
-                }
-            }
-        }
-        yield put(setCvSent(cvSentObject));
-        yield put(setCvSentIsLoadingWeek(false))
+        const jobOrdersOpen = yield call(getAllJobOrdersOpen, employeeId);
+        yield all(jobOrdersOpen.map(jobOrderOpen => put(getJobSubmissionsByJobOrderOpenAction(prop("id", jobOrderOpen), dates))));
     } catch (e) {
         //
     }
@@ -369,88 +364,63 @@ export function* calculateTotalNewVacancyYTD(idEmployee, todayDate, weekNumberOf
     return 0
 }
 
-
-
 export function* calculateTotalCvSentYTD(jobOrderOfTheYear, dateStartTimestamp, dateEndTimestamp) {
-    let jobSubmissionFromJobOrderYTD = [];
+    yield all(jobOrderOfTheYear.map(jobOrder => put(getJobSubmissionsByJobOrderIdAction(prop("id", jobOrder), dateStartTimestamp, dateEndTimestamp))));
+}
+
+export function* getJobSubmissionByJobOrderIdSaga(action) {
+    let id = action.payload.ID
+    let dateStartTimestamp = action.payload.DATE_START
+    let dateEndTimestamp = action.payload.DATE_END
 
     try {
-        while (jobOrderOfTheYear.length >= maxCall) {
-
-            const [jobSubmissionZero, jobSubmissionOne, jobSubmissionTwo, jobSubmissionThree, jobSubmissiobFour, jobSubmissionFive, jobSubmissionSix, jobSubmissionSeven, JobSubmissionEight, jobSubmissionNine] = yield all([
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[0].id, '/jobSubmissionZero'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[1].id, '/jobSubmissionOne'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[2].id, '/jobSubmissionTwo'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[3].id, '/jobSubmissionThree'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[4].id, '/jobSubmissiobFour'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[5].id, '/jobSubmissionFive'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[6].id, '/jobSubmissionSix'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[7].id, '/jobSubmissionSeven'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[8].id, '/JobSubmissionEight'),
-                call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[9].id, '/jobSubmissionNine'),
-            ])
-
-            jobSubmissionFromJobOrderYTD = [...jobSubmissionFromJobOrderYTD, ...jobSubmissionZero, ...jobSubmissionOne, ...jobSubmissionTwo, ...jobSubmissionThree, ...jobSubmissiobFour, ...jobSubmissionFive, ...jobSubmissionSix, ...jobSubmissionSeven, ...JobSubmissionEight, ...jobSubmissionNine]
-
-            jobOrderOfTheYear = jobOrderOfTheYear.slice(10, jobOrderOfTheYear.length)
-        }
-
-        if (jobOrderOfTheYear.length > 0) {
-            for (let i = 0; i < jobOrderOfTheYear.length; i++) {
-                let jobSubmissionRetrieved = yield call(getJobSubmissionsByJobOrderId, jobOrderOfTheYear[i].id, '/jobSubmissionZero')
-                jobSubmissionFromJobOrderYTD = [...jobSubmissionFromJobOrderYTD, ...jobSubmissionRetrieved]
-            }
-        }
-        yield call(getJobSubmissionStatusChangedToCVSent, jobSubmissionFromJobOrderYTD, dateStartTimestamp, dateEndTimestamp)
+        let jobSubmissions = yield call(getJobSubmissionsByJobOrderId, id)
+        yield all(jobSubmissions.map(jobSubmission => put(getJobSubmissionStatusChangedCVSentAction(prop("id", jobSubmission), dateStartTimestamp, dateEndTimestamp))));
     } catch (e) {
         //
     }
 }
 
-export function* getJobSubmissionStatusChangedToCVSent(jobSubmissionFromJobOrderYTD, dateStartTimestamp, dateEndTimestamp) {
-    let jobSubmissionWithStatusCVSentYTD = 0
-    let objectCVSentYTD = initialiserObjectCVSentYTD()
+export function* getJobSubmissionStatusChangedCVSentSaga(action) {
+    let id = action.payload.ID
+    let dateStartTimestamp = action.payload.DATE_START
+    let dateEndTimestamp = action.payload.DATE_END
     try {
-        while (jobSubmissionFromJobOrderYTD.length > maxCall) {
-            const [jobSubmissionFromJobOrderZero, jobSubmissionFromJobOrderOne, jobSubmissionFromJobOrderTwo, jobSubmissionFromJobOrderThree, jobSubmissionFromJobOrderFour,
-                jobSubmissionFromJobOrderFive, jobSubmissionFromJobOrderSix, jobSubmissionFromJobOrderSeven, JobSubmissionFromJobOrderEight, jobSubmissionFromJobOrderNine] = yield all([
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[0].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderZero'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[1].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderOne'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[2].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderTwo'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[3].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderThree'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[4].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderFour'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[5].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderFive'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[6].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderSix'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[7].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderSeven'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[8].id, dateStartTimestamp, dateEndTimestamp, '/JobSubmissionFromJobOrderEight'),
-                    call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[9].id, dateStartTimestamp, dateEndTimestamp, '/jobSubmissionFromJobOrderNine'),
-                ])
-
-            jobSubmissionWithStatusCVSentYTD = jobSubmissionWithStatusCVSentYTD + jobSubmissionFromJobOrderZero + jobSubmissionFromJobOrderOne + jobSubmissionFromJobOrderTwo + jobSubmissionFromJobOrderThree + jobSubmissionFromJobOrderFour +
-                jobSubmissionFromJobOrderFive + jobSubmissionFromJobOrderSix + jobSubmissionFromJobOrderSeven + JobSubmissionFromJobOrderEight + jobSubmissionFromJobOrderNine
-
-            jobSubmissionFromJobOrderYTD = jobSubmissionFromJobOrderYTD.slice(10, jobSubmissionFromJobOrderYTD.length)
-        }
-        // TODO: Retrieving the rest of the jobSubmissionStatus 
-
-        if (jobSubmissionFromJobOrderYTD.length > 0) {
-            for (let i = 0; i < jobSubmissionFromJobOrderYTD.length; i++) {
-                let result = yield call(getSubmissionStatusChangedCvSent, jobSubmissionFromJobOrderYTD[i].id, dateStartTimestamp, dateEndTimestamp)
-                jobSubmissionWithStatusCVSentYTD += result
-            }
-        }
-        let weekNumberOfTheYear = moment().format('w')
-        objectCVSentYTD.TOTAL_YTD.CV_SENT = jobSubmissionWithStatusCVSentYTD
-        objectCVSentYTD.AVERAGE.CV_SENT = calculateAverageYTDData(jobSubmissionWithStatusCVSentYTD, weekNumberOfTheYear)
-
-        yield put(setCVSentYTD(objectCVSentYTD))
-        yield put(setLoadingYTDCVSent(false))
-
-    } catch (error) {
+        let total = yield call(getSubmissionStatusChangedCvSent, id, dateStartTimestamp, dateEndTimestamp)
+        yield put(setCVSentYTD(total))
+    } catch (e) {
         //
     }
 }
 
+export function* getJobSubmissionByJobOrderOpenIdSaga(action) {
+    let id = action.payload.ID
+    let dates = action.payload.DATES
+    try {
+        let jobSubmissions = yield call(getJobSubmissionsByJobOrderId, id)
+        yield all(jobSubmissions.map(jobSubmission => put(getJobSbmissionsStatusFromJobsubmissionOpen(prop("id", jobSubmission), dates))));
+    } catch (e) {
+        //
+    }
+}
+
+export function* getJobSubmissionStatusByJobSubmissionOpenSaga(action) {
+    let id = action.payload.ID
+    let dates = action.payload.DATES
+    try {
+        let jobStatusChanged = yield call(getSubmissionStatusChangedCvSentById, id)
+        if(jobStatusChanged.count > 0){
+            let weekLabel = filterCvSentStatusForWeeks(jobStatusChanged, dates)
+            if(weekLabel !== "") {
+                yield put(setCvSent(weekLabel))
+            }
+        }
+        yield put(setJobSubmissionsStatusFromWeekRetrieved())
+    
+    } catch (e) {
+        //
+    }
+}
 
 const getWeekLabel = (index) => {
 
@@ -470,6 +440,10 @@ const getWeekLabel = (index) => {
 
 export default function kpiSagas() {
     return [
-        takeLatest(GET_EMPLOYEE_KPI, getKpiDataEmployee)
+        takeLatest(GET_EMPLOYEE_KPI, getKpiDataEmployee),
+        takeEvery(GET_JOBSUBMISSION_BY_JOBORDER_ID, getJobSubmissionByJobOrderIdSaga),
+        takeEvery(GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT, getJobSubmissionStatusChangedCVSentSaga),
+        takeEvery(GET_JOBSUBMISSION_BY_JOBORDER_OPEN_ID, getJobSubmissionByJobOrderOpenIdSaga),
+        takeEvery(GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN, getJobSubmissionStatusByJobSubmissionOpenSaga)
     ];
 }

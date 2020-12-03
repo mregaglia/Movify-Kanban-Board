@@ -1,6 +1,7 @@
 import React from "react";
 import BusinessManager from './BusinessManager'
 import TalentAcquisition from './TalentAcquisition'
+import GaugeScore from './GaugeScore'
 import { connect } from "react-redux";
 import { string, object } from "prop-types";
 import { pathOr } from "ramda";
@@ -12,7 +13,6 @@ import {
 } from '../../auth/user.sagas'
 
 const TableData = ({ occupation, dates }) => {
-
     return (
         <div>
             <Table>
@@ -29,11 +29,12 @@ const TableData = ({ occupation, dates }) => {
                     {
                         (occupation.includes(BUSINESS_MANAGER)) && <BusinessManager />
                     }
-
                     {
                         (occupation.includes(BUSINESS_MANAGER) || occupation.includes(SOURCING_OFFICER) || occupation.includes(TALENT_ACQUISITION)) && <TalentAcquisition />
                     }
-
+                    {
+                        (occupation.includes(BUSINESS_MANAGER) || occupation.includes(SOURCING_OFFICER) || occupation.includes(TALENT_ACQUISITION)) && <GaugeScore />
+                    }
                 </tbody>
             </Table>
         </div>

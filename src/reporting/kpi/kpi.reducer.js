@@ -1,4 +1,6 @@
+import { pathOr } from "ramda";
 import { bindReducer } from "../../utils/reducer";
+import { LABEL_CV_SENT } from '../../utils/reporting'
 
 import {
   SET_EMPLOYEE_KPI,
@@ -20,13 +22,28 @@ import {
   SET_CONVERSION_YTD_NEW_VACANCY,
   SET_LOADING_YTD_CONVERSION_NEW_VACANCY,
   SET_LOADING_YTD_CV_SENT,
-  SET_CV_SENT_YTD, 
+  SET_CV_SENT_YTD,
   SET_LOADING_YTD_CONVERSION_CV_SENT,
-  SET_CV_SENT_CONVERSION_YTD
+  SET_CV_SENT_CONVERSION_YTD,
+  GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT,
+  GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN,
+  SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED
 } from "./kpi.actions"
 
 export const initialState = {
-  dataEmployee: {},
+  cvSentLoadingYTDCounter: 0,
+  cvSentLoadingCounter: 0,
+  dataEmployee: {
+    datasBusinessManager: {
+      CV_SENT: {
+        TITLE: LABEL_CV_SENT,
+        FIRST_WEEK: 0,
+        SECOND_WEEK: 0,
+        THIRD_WEEK: 0,
+        FOURTH_WEEK: 0
+      }
+    }
+  },
   dataYTDEmployee: {
     CONVERSION_YTD_BM: {
       CALL: "-",
@@ -90,14 +107,25 @@ export const initialState = {
   isCvSentWeekLoading: false,
   isLoadingYTDNewVacancy: false,
   isLoadingYTDConversionNewVacancy: false,
-  isLoadingYTDCVSent: false,
   isLoadingYTDConversionCVSent: false
 }
 
 const kpi = {
   [SET_EMPLOYEE_KPI]: (state, payload) => ({
     ...state,
-    dataEmployee: payload
+    dataEmployee: {
+      dates: payload.dates,
+      datasRecruitment: payload.datasRecruitment,
+      datasBusinessManager: {
+        CALL: payload.datasBusinessManager.CALL,
+        PROSPECTION_MEETING_SCHEDULE: payload.datasBusinessManager.PROSPECTION_MEETING_SCHEDULE,
+        PROSPECTION_MEETING_DONE: payload.datasBusinessManager.PROSPECTION_MEETING_DONE,
+        NEW_VACANCY: payload.datasBusinessManager.NEW_VACANCY,
+        ...state.dataEmployee.datasBusinessManager,
+        INTAKE: payload.datasBusinessManager.INTAKE,
+        PROJECT_START: payload.datasBusinessManager.PROJECT_START
+      }
+    }
   }),
   [SET_OBJECT_YTD]: (state, payload) => ({
     ...state,
@@ -107,16 +135,20 @@ const kpi = {
     ...state,
     isLoadingKpi: payload
   }),
-  [SET_CV_SENT]: (state, payload) => ({
+  [SET_CV_SENT]: (state, payload) => {
+    return {
     ...state,
     dataEmployee: {
       ...state.dataEmployee,
       datasBusinessManager: {
         ...state.dataEmployee.datasBusinessManager,
-        CV_SENT: payload
+        CV_SENT: {
+          ...state.dataEmployee.datasBusinessManager.CV_SENT,
+          [payload]: state.dataEmployee.datasBusinessManager.CV_SENT[payload] + 1
+        }
       }
-    },
-  }),
+    }
+  }},
   [SET_YTD_TOTAL_BUSINESS_MANAGER]: (state, payload) => ({
     ...state,
     dataYTDEmployee: {
@@ -238,13 +270,11 @@ const kpi = {
       ...state.dataYTDEmployee,
       TOTAL_YTD_BM: {
         ...state.dataYTDEmployee.TOTAL_YTD_BM,
-        CV_SENT: payload.TOTAL_YTD.CV_SENT
-      },
-      AVERAGE_YTD_BM: {
-        ...state.dataYTDEmployee.AVERAGE_YTD_BM,
-        CV_SENT: payload.AVERAGE.CV_SENT
+        CV_SENT: state.dataYTDEmployee.TOTAL_YTD_BM.CV_SENT + payload
       }
-    }
+    },
+    cvSentLoadingYTDCounter: state.cvSentLoadingYTDCounter - 1,
+    isLoadingYTDCVSent: state.cvSentLoadingYTDCounter > 1
   }),
   [SET_LOADING_YTD_CV_SENT]: (state, payload) => ({
     ...state,
@@ -264,6 +294,20 @@ const kpi = {
       }
     }
   }),
+  [GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT]: (state) => ({
+    ...state,
+    cvSentLoadingYTDCounter: state.cvSentLoadingYTDCounter + 1
+  }),
+  [GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN]: (state) => ({
+    ...state,
+    cvSentLoadingCounter: state.cvSentLoadingCounter + 1
+  }),
+  [SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED]: (state) => {
+    return{
+    ...state,
+    cvSentLoadingCounter: state.cvSentLoadingCounter - 1,
+    isCvSentWeekLoading: state.cvSentLoadingCounter > 1
+  }},
 }
 
 export default (state, action) =>

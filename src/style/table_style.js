@@ -33,6 +33,13 @@ export const TableContentTdBold = styled.td(({ theme }) => ({
     fontWeight: "bold"
 }))
 
+export const TableContentTdBoldClickable = styled.td(({ theme }) => ({
+    padding: "12px 15px",
+    textAlign: "center", 
+    fontWeight: "bold",
+    cursor: "pointer"
+}))
+
 export const TableContentTdLabel = styled.td(({ theme }) => ({
     padding: "12px 15px",
     whiteSpace: "nowrap"
@@ -45,16 +52,10 @@ export const TableContentTdLabelBold = styled.td(({ theme }) => ({
     fontWeight: "bold"
 }))
 
-export const TableContentTdTitle = styled.td(({ theme }) => ({
-    padding: "13px 7px",
+export const TableContentTdTitle = styled.td(({ isBM }) => ({
+    padding: (isBM) ? "40px 7px 12px 10px" : "13px 7px",
     fontWeight: "bold",
-    fontSize: "1.3em"
-}))
-
-export const TableContentTdTitleForBM = styled.td(({ theme }) => ({
-    padding: "40px 7px 12px 10px",
-    fontWeight: "bold",
-    fontSize: "1.3em"
+    fontSize: "1.3em",
 }))
 
 export const TableContentTdTitleForBMEmpty = styled.td(({ theme }) => ({
@@ -68,7 +69,7 @@ export const TableContentTdTitleEmpty = styled.td(({ theme }) => ({
 }))
 
 export const TableContentTbodyTr = styled.tr(({ theme }) => ({
-    borderBottom: "1px solid #dddddd"
+    borderBottom: "1px solid #dddddd"  
 }))
 
 export const TableContentTbodyTrNoLine = styled.tr(({ theme }) => ({
