@@ -1,3 +1,4 @@
+import { pathOr } from 'ramda'
 import {
   BUSINESS_MANAGER,
   SOURCING_OFFICER,
@@ -186,7 +187,7 @@ export const initializeObjectByDates = () => {
 
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes;
-  
+
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
 
@@ -443,5 +444,20 @@ export const calculateConversionYTDRecruitment = (objectConversionYTDRecruitment
   objectConversionYTDRecruitment.CONVERSION_YTD.HIRED = (isNaN(hiredConversionYTD) || (hiredConversionYTD === Infinity)) ? "0 %" : hiredConversionYTD + " %";
 
   return objectConversionYTDRecruitment;
+}
+
+export const filterCvSentStatusForWeeks = (status, dates) => {
+  let dateAdded = pathOr(0, ['data', 0, 'dateAdded'], status)
+
+  if (dateAdded >= dates[0].startTimestamp && dateAdded <= dates[0].endTimestamp) {
+    return "FIRST_WEEK"
+  } else if (dateAdded >= dates[1].startTimestamp && dateAdded <= dates[1].endTimestamp) {
+    return "SECOND_WEEK"
+  } else if (dateAdded >= dates[2].startTimestamp && dateAdded <= dates[2].endTimestamp) {
+    return "THIRD_WEEK"
+  } else if (dateAdded >= dates[3].startTimestamp && dateAdded <= dates[3].endTimestamp) {
+    return "FOURTH_WEEK"
+  }
+  return ""
 }
 

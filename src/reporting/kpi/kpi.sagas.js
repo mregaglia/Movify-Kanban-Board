@@ -21,7 +21,8 @@ import {
     calculateAverageYTDData,
     initialiserObjectCVSentYTD,
     countNoteForRecruitment,
-    initializeObjectByDates
+    initializeObjectByDates,
+    filterCvSentStatusForWeeks
 } from '../../utils/reporting'
 import {
     GET_EMPLOYEE_KPI,
@@ -53,7 +54,8 @@ import {
     getJobSubmissionsByJobOrderOpenAction,
     GET_JOBSUBMISSION_BY_JOBORDER_OPEN_ID,
     getJobSbmissionsStatusFromJobsubmissionOpen,
-    GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN
+    GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN,
+    setJobSubmissionsStatusFromWeekRetrieved
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
@@ -119,8 +121,8 @@ export function* getLast4WeekData(idEmployee, dates, objectDateEmployee, objectD
     try {
         const [prospectionDone] = yield all([
             call(getLast4WeekKpiDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation, '/prospectionDone'),
-            call(getCvSent, idEmployee, dates),
         ])
+        yield call(getCvSent, idEmployee, dates)
         yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, prospectionDone)
         yield put(setCalculatingWeeklySpeed(false))
     } catch (e) {
@@ -262,8 +264,6 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
             const kpiNote = yield call(getKpiNoteSaga, employeeId, dates[i].start, dates[i].end)
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
             if(kpiNote.length !== 0){
-                
-
                 if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
                     let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
                     objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
@@ -284,9 +284,8 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
                     objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
                 }
             }
-           
         }
-
+        console.log(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager)
         yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
 
         yield put(setKpiLoading(false))
@@ -388,10 +387,8 @@ export function* getJobSubmissionStatusChangedCVSentSaga(action) {
     let dateStartTimestamp = action.payload.DATE_START
     let dateEndTimestamp = action.payload.DATE_END
     try {
-
         let total = yield call(getSubmissionStatusChangedCvSent, id, dateStartTimestamp, dateEndTimestamp)
         yield put(setCVSentYTD(total))
-
     } catch (e) {
         //
     }
@@ -411,10 +408,16 @@ export function* getJobSubmissionByJobOrderOpenIdSaga(action) {
 export function* getJobSubmissionStatusByJobSubmissionOpenSaga(action) {
     let id = action.payload.ID
     let dates = action.payload.DATES
-    console.log(dates)
     try {
         let jobStatusChanged = yield call(getSubmissionStatusChangedCvSentById, id)
-
+        if(jobStatusChanged.count > 0){
+            let weekLabel = filterCvSentStatusForWeeks(jobStatusChanged, dates)
+            if(weekLabel !== "") {
+                yield put(setCvSent(weekLabel))
+            }
+        }
+        yield put(setJobSubmissionsStatusFromWeekRetrieved())
+    
     } catch (e) {
         //
     }
