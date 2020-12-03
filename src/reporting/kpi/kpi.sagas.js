@@ -19,7 +19,6 @@ import {
     initializeObjectDataRecruitmentAndIds,
     initialiserObjectNewVacancyYTD,
     calculateAverageYTDData,
-    initialiserObjectCVSentYTD,
     countNoteForRecruitment,
     initializeObjectByDates,
     filterCvSentStatusForWeeks
@@ -38,12 +37,10 @@ import {
     setLoadingYTDTotal,
     setLoadingYTDAverage,
     setLoadingYTDConversion,
-    setCvSentIsLoadingWeek,
     setLoadingYTDNewVacancy,
     setNewVacancyYTD,
     setConversionYTDNewVacancy,
     setLoadingYTDConversionNewVacancy,
-    setLoadingYTDCVSent,
     setCVSentYTD,
     setLoadingYTDConversionCVSent,
     setConversionYTDCVSent,
@@ -282,6 +279,8 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
     
                     let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
                     objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
+                    
+                    objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] = objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] + objectDataBusinessManager.CALL[weekLabel]
                 }
             }
         }
