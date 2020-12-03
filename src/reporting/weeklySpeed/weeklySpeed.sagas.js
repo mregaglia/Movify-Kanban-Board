@@ -1,7 +1,7 @@
 import { takeLatest, select, put, call, all } from "redux-saga/effects"
 import { GET_GAUGE_LIMIT, setGaugeLimit, setWeeklySpeed, setCalculatingWeeklySpeed } from './weeklySpeed.action'
 import { getCandidateCategory } from './weeklySpeek.service'
-import { BUSINESS_MANAGER, TALENT_ACQUISITION } from '../../auth/user.sagas'
+import { BUSINESS_MANAGER, SOURCING_OFFICER, TALENT_ACQUISITION } from '../../auth/user.sagas'
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
 import gaugeCountData from '../gauge-count-data.json'
 import { getDateFrom365daysAgo } from '../../utils/date'
@@ -9,7 +9,9 @@ import { getNoteProspectionLastYear } from './weeklySpeek.service'
 import { FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK } from "../kpi/kpi.sagas"
 
 // Recrtuitment
-export const POINT_FOR_INTERVIEW_DONE = 5
+export const POINT_FOR_INTERVIEW_DONE = 3
+export const POINT_FOR_INTERVIEW_SCHEDULED_TA = 2
+export const POINT_FOR_INTERVIEW_SCHEDULED_SO = 3
 
 // Business Manager
 export const POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT = 2
@@ -21,6 +23,7 @@ export const POINT_INTAKE = 5
 export const getOccupationFromEmployeeSelected = (state) => state.employees.employeeSelected.occupation
 // Recruitment & Business Manager 
 export const getInterviewDone = (state, weekLabel) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE[weekLabel]
+export const getInterviewScheduled = (state, weekLabel) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_SCHEDULED[weekLabel]
 
 // Business Manager
 export const getIntake = (state, weekLabel) => state.kpi.dataEmployee.datasBusinessManager.INTAKE[weekLabel]
@@ -110,9 +113,16 @@ export function* calculateWeeklySpeedForRecruitment(categories, weekLabel, occup
             isAlreadyCounted = false
         }
 
+        let numberOfInterviewScheduled = yield select(getInterviewScheduled, weekLabel)
+
         if(occupation.includes(TALENT_ACQUISITION)) {
             let numberOfInterviewDone = yield call(getInterviewDoneSaga, weekLabel)
             if(numberOfInterviewDone > 0) weeklySpeed += (numberOfInterviewDone * POINT_FOR_INTERVIEW_DONE)
+            
+            if(numberOfInterviewScheduled > 0) weeklySpeed += (numberOfInterviewScheduled * POINT_FOR_INTERVIEW_SCHEDULED_TA)
+        } else if(occupation.includes(SOURCING_OFFICER)) {
+            if(numberOfInterviewScheduled > 0) weeklySpeed += (numberOfInterviewScheduled * POINT_FOR_INTERVIEW_SCHEDULED_SO)
+            console.log(numberOfInterviewScheduled)
         }
 
         yield put(setWeeklySpeed(weekLabel, weeklySpeed))
@@ -166,6 +176,7 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, date365daysA
             weeklySpeed += (hasAlreadyBeenContacted) ? POINT_PROSPECTION_MEETING_DONE_RE_PROSP : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
             hasAlreadyBeenContacted = false
         }
+        
         weeklySpeed += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
 
         yield put(setWeeklySpeed(weekLabel, weeklySpeed))
