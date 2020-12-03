@@ -33,17 +33,7 @@ import {
 export const initialState = {
   cvSentLoadingYTDCounter: 0,
   cvSentLoadingCounter: 0,
-  dataEmployee: {
-    datasBusinessManager: {
-      CV_SENT: {
-        TITLE: LABEL_CV_SENT,
-        FIRST_WEEK: 0,
-        SECOND_WEEK: 0,
-        THIRD_WEEK: 0,
-        FOURTH_WEEK: 0
-      }
-    }
-  },
+  dataEmployee: {},
   dataYTDEmployee: {
     CONVERSION_YTD_BM: {
       CALL: "-",
@@ -113,19 +103,8 @@ export const initialState = {
 const kpi = {
   [SET_EMPLOYEE_KPI]: (state, payload) => ({
     ...state,
-    dataEmployee: {
-      dates: payload.dates,
-      datasRecruitment: payload.datasRecruitment,
-      datasBusinessManager: {
-        CALL: payload.datasBusinessManager.CALL,
-        PROSPECTION_MEETING_SCHEDULE: payload.datasBusinessManager.PROSPECTION_MEETING_SCHEDULE,
-        PROSPECTION_MEETING_DONE: payload.datasBusinessManager.PROSPECTION_MEETING_DONE,
-        NEW_VACANCY: payload.datasBusinessManager.NEW_VACANCY,
-        ...state.dataEmployee.datasBusinessManager,
-        INTAKE: payload.datasBusinessManager.INTAKE,
-        PROJECT_START: payload.datasBusinessManager.PROJECT_START
-      }
-    }
+    dataEmployee: payload
+
   }),
   [SET_OBJECT_YTD]: (state, payload) => ({
     ...state,
@@ -137,18 +116,19 @@ const kpi = {
   }),
   [SET_CV_SENT]: (state, payload) => {
     return {
-    ...state,
-    dataEmployee: {
-      ...state.dataEmployee,
-      datasBusinessManager: {
-        ...state.dataEmployee.datasBusinessManager,
-        CV_SENT: {
-          ...state.dataEmployee.datasBusinessManager.CV_SENT,
-          [payload]: state.dataEmployee.datasBusinessManager.CV_SENT[payload] + 1
+      ...state,
+      dataEmployee: {
+        ...state.dataEmployee,
+        datasBusinessManager: {
+          ...state.dataEmployee.datasBusinessManager,
+          CV_SENT: {
+            ...state.dataEmployee.datasBusinessManager.CV_SENT,
+            [payload]: state.dataEmployee.datasBusinessManager.CV_SENT[payload] + 1
+          }
         }
       }
     }
-  }},
+  },
   [SET_YTD_TOTAL_BUSINESS_MANAGER]: (state, payload) => ({
     ...state,
     dataYTDEmployee: {
@@ -303,11 +283,12 @@ const kpi = {
     cvSentLoadingCounter: state.cvSentLoadingCounter + 1
   }),
   [SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED]: (state) => {
-    return{
-    ...state,
-    cvSentLoadingCounter: state.cvSentLoadingCounter - 1,
-    isCvSentWeekLoading: state.cvSentLoadingCounter > 1
-  }},
+    return {
+      ...state,
+      cvSentLoadingCounter: state.cvSentLoadingCounter - 1,
+      isCvSentWeekLoading: state.cvSentLoadingCounter > 1
+    }
+  },
 }
 
 export default (state, action) =>
