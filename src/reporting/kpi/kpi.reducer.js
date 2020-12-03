@@ -1,4 +1,5 @@
 import { bindReducer } from "../../utils/reducer";
+import { LABEL_CV_SENT } from '../../utils/reporting'
 
 import {
   SET_EMPLOYEE_KPI,
@@ -20,13 +21,25 @@ import {
   SET_CONVERSION_YTD_NEW_VACANCY,
   SET_LOADING_YTD_CONVERSION_NEW_VACANCY,
   SET_LOADING_YTD_CV_SENT,
-  SET_CV_SENT_YTD, 
+  SET_CV_SENT_YTD,
   SET_LOADING_YTD_CONVERSION_CV_SENT,
-  SET_CV_SENT_CONVERSION_YTD
+  SET_CV_SENT_CONVERSION_YTD,
+  GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT
 } from "./kpi.actions"
 
 export const initialState = {
-  dataEmployee: {},
+  cvSentLoadingCounter: 0,
+  dataEmployee: {
+    datasBusinessManager: {
+      datasBusinessManager: {
+        TITLE: LABEL_CV_SENT,
+        FIRST_WEEK: 0,
+        SECOND_WEEK: 0,
+        THIRD_WEEK: 0,
+        FOURTH_WEEK: 0
+      }
+    }
+  },
   dataYTDEmployee: {
     CONVERSION_YTD_BM: {
       CALL: "-",
@@ -90,7 +103,6 @@ export const initialState = {
   isCvSentWeekLoading: false,
   isLoadingYTDNewVacancy: false,
   isLoadingYTDConversionNewVacancy: false,
-  isLoadingYTDCVSent: false,
   isLoadingYTDConversionCVSent: false
 }
 
@@ -232,9 +244,7 @@ const kpi = {
     ...state,
     isLoadingYTDCVSent: payload
   }),
-  [SET_CV_SENT_YTD]: (state, payload) => {
-    console.log("a", payload)
-    return {
+  [SET_CV_SENT_YTD]: (state, payload) => ({
     ...state,
     dataYTDEmployee: {
       ...state.dataYTDEmployee,
@@ -242,8 +252,10 @@ const kpi = {
         ...state.dataYTDEmployee.TOTAL_YTD_BM,
         CV_SENT: state.dataYTDEmployee.TOTAL_YTD_BM.CV_SENT + payload
       }
-    }
-  }},
+    },
+    cvSentLoadingCounter: state.cvSentLoadingCounter - 1,
+    isLoadingYTDCVSent: state.cvSentLoadingCounter > 1
+  }),
   [SET_LOADING_YTD_CV_SENT]: (state, payload) => ({
     ...state,
     isLoadingYTDCVSent: payload
@@ -261,6 +273,10 @@ const kpi = {
         CV_SENT: payload
       }
     }
+  }),
+  [GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT]: (state) => ({
+    ...state,
+    cvSentLoadingCounter: state.cvSentLoadingCounter + 1
   }),
 }
 

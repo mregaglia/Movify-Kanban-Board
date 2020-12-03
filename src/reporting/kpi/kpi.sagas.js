@@ -9,7 +9,6 @@ import {
     initializeObjectConversionYTDRecruitment,
     countNoteForBusinessManager,
     initializeObjectDate,
-    initializeObjectCvSent,
     calculateConversionYTDBusinessManager,
     calculateConversionYTDRecruitment,
     calculateTotalYTDBusinessManager,
@@ -50,7 +49,11 @@ import {
     getJobSubmissionsByJobOrderIdAction,
     GET_JOBSUBMISSION_BY_JOBORDER_ID,
     getJobSubmissionStatusChangedCVSentAction,
-    GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT
+    GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT,
+    getJobSubmissionsByJobOrderOpenAction,
+    GET_JOBSUBMISSION_BY_JOBORDER_OPEN_ID,
+    getJobSbmissionsStatusFromJobsubmissionOpen,
+    GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
@@ -58,7 +61,8 @@ import {
     getAllJobOrdersOpen,
     getJobSubmissionsByJobOrderId,
     getSubmissionStatusChangedCvSent,
-    getJobOrdersForYTD
+    getJobOrdersForYTD,
+    getSubmissionStatusChangedCvSentById
 } from './kpi.service'
 import {
     BUSINESS_MANAGER,
@@ -80,6 +84,7 @@ export const THIRD_WEEK = "THIRD_WEEK"
 export const FOURTH_WEEK = "FOURTH_WEEK"
 const maxCall = 10
 
+
 export function* getKpiDataEmployee(action) {
     let weekNumberOfTheYear = moment().format('w')
 
@@ -100,7 +105,7 @@ export function* getKpiDataEmployee(action) {
     if (occupation.includes(BUSINESS_MANAGER)) {
         yield all([
             call(getLast4WeekData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
-            call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
+            call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp, dates)
         ])
     } else {
         yield all([
@@ -123,7 +128,7 @@ export function* getLast4WeekData(idEmployee, dates, objectDateEmployee, objectD
     }
 }
 
-export function* getYTDData(idEmployee, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dateEndTimestamp) {
+export function* getYTDData(idEmployee, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dateEndTimestamp, dates) {
     try {
         yield all([
             call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),
@@ -254,30 +259,32 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
     try {
         for (let i = 0; i < dates.length; i++) {
             let weekLabel = getWeekLabel(i)
-
             const kpiNote = yield call(getKpiNoteSaga, employeeId, dates[i].start, dates[i].end)
-
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
+            if(kpiNote.length !== 0){
+                
 
-            if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
-                let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
-                objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
-                objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
-
-                objectCategories[weekLabel] = yield call(getCandidatesCategory, objectDataRecruitmentAndSourcingIds.SOURCING_IDS)
-            } else {
-                objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
+                if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
+                    let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
+                    objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
+                    objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
+    
+                    objectCategories[weekLabel] = yield call(getCandidatesCategory, objectDataRecruitmentAndSourcingIds.SOURCING_IDS)
+                } else {
+                    objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
+                }
+    
+                if (occupation.includes(BUSINESS_MANAGER)) {
+                    let dataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
+    
+                    objectDataBusinessManager = dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER
+                    objectProspectionDone[weekLabel] = dataBusinessManager.PROSPECTIONS
+    
+                    let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
+                    objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
+                }
             }
-
-            if (occupation.includes(BUSINESS_MANAGER)) {
-                let dataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
-
-                objectDataBusinessManager = dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER
-                objectProspectionDone[weekLabel] = dataBusinessManager.PROSPECTIONS
-
-                let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
-                objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
-            }
+           
         }
 
         yield put(setEmployeeKpi(objectDateEmployee, objectDataRecruitment, objectDataBusinessManager))
@@ -295,32 +302,9 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
 }
 
 export function* getCvSent(employeeId, dates) {
-    let jobSubmissionsTab = []
-    const cvSentObject = initializeObjectCvSent()
-
     try {
-        // Retrieving all jobOrders open for employee
-        const jobOrderOpen = yield call(getAllJobOrdersOpen, employeeId);
-
-        // retrieving all jobsubmissions linked to the jobOrder
-        for (let i = 0; i < jobOrderOpen.length; i++) {
-            let jobSubmission = yield call(getJobSubmissionsByJobOrderId, jobOrderOpen[i].id)
-            jobSubmissionsTab = [...jobSubmissionsTab, ...jobSubmission]
-        }
-
-        // Looking for any modification for this jobSubmission to WF Response
-        for (let i = 0; i < dates.length; i++) {
-            let labelWeek = getWeekLabel(i)
-            for (let j = 0; j < jobSubmissionsTab.length; j++) {
-                let isCvSent = yield call(getSubmissionStatusChangedCvSent, jobSubmissionsTab[j].id, dates[i].startTimestamp, dates[i].endTimestamp)
-                if (isCvSent) {
-                    cvSentObject[labelWeek]++;
-                    jobSubmissionsTab.slice(j, 1)
-                }
-            }
-        }
-        yield put(setCvSent(cvSentObject));
-        yield put(setCvSentIsLoadingWeek(false))
+        const jobOrdersOpen = yield call(getAllJobOrdersOpen, employeeId);
+        yield all(jobOrdersOpen.map(jobOrderOpen => put(getJobSubmissionsByJobOrderOpenAction(prop("id", jobOrderOpen), dates))));
     } catch (e) {
         //
     }
@@ -382,12 +366,9 @@ export function* calculateTotalNewVacancyYTD(idEmployee, todayDate, weekNumberOf
     return 0
 }
 
-
-
 export function* calculateTotalCvSentYTD(jobOrderOfTheYear, dateStartTimestamp, dateEndTimestamp) {
     yield all(jobOrderOfTheYear.map(jobOrder => put(getJobSubmissionsByJobOrderIdAction(prop("id", jobOrder), dateStartTimestamp, dateEndTimestamp))));
 }
-
 
 export function* getJobSubmissionByJobOrderIdSaga(action) {
     let id = action.payload.ID
@@ -397,7 +378,6 @@ export function* getJobSubmissionByJobOrderIdSaga(action) {
     try {
         let jobSubmissions = yield call(getJobSubmissionsByJobOrderId, id)
         yield all(jobSubmissions.map(jobSubmission => put(getJobSubmissionStatusChangedCVSentAction(prop("id", jobSubmission), dateStartTimestamp, dateEndTimestamp))));
-
     } catch (e) {
         //
     }
@@ -407,10 +387,34 @@ export function* getJobSubmissionStatusChangedCVSentSaga(action) {
     let id = action.payload.ID
     let dateStartTimestamp = action.payload.DATE_START
     let dateEndTimestamp = action.payload.DATE_END
-
     try {
+
         let total = yield call(getSubmissionStatusChangedCvSent, id, dateStartTimestamp, dateEndTimestamp)
         yield put(setCVSentYTD(total))
+
+    } catch (e) {
+        //
+    }
+}
+
+export function* getJobSubmissionByJobOrderOpenIdSaga(action) {
+    let id = action.payload.ID
+    let dates = action.payload.DATES
+    try {
+        let jobSubmissions = yield call(getJobSubmissionsByJobOrderId, id)
+        yield all(jobSubmissions.map(jobSubmission => put(getJobSbmissionsStatusFromJobsubmissionOpen(prop("id", jobSubmission), dates))));
+    } catch (e) {
+        //
+    }
+}
+
+export function* getJobSubmissionStatusByJobSubmissionOpenSaga(action) {
+    let id = action.payload.ID
+    let dates = action.payload.DATES
+    console.log(dates)
+    try {
+        let jobStatusChanged = yield call(getSubmissionStatusChangedCvSentById, id)
+
     } catch (e) {
         //
     }
@@ -436,6 +440,8 @@ export default function kpiSagas() {
     return [
         takeLatest(GET_EMPLOYEE_KPI, getKpiDataEmployee),
         takeEvery(GET_JOBSUBMISSION_BY_JOBORDER_ID, getJobSubmissionByJobOrderIdSaga),
-        takeEvery(GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT, getJobSubmissionStatusChangedCVSentSaga)
+        takeEvery(GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT, getJobSubmissionStatusChangedCVSentSaga),
+        takeEvery(GET_JOBSUBMISSION_BY_JOBORDER_OPEN_ID, getJobSubmissionByJobOrderOpenIdSaga),
+        takeEvery(GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN, getJobSubmissionStatusByJobSubmissionOpenSaga)
     ];
 }
