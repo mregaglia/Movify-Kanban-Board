@@ -4,7 +4,6 @@ import { getCandidateCategory } from './weeklySpeek.service'
 import { BUSINESS_MANAGER, SOURCING_OFFICER, TALENT_ACQUISITION } from '../../auth/user.sagas'
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
 import gaugeCountData from '../gauge-count-data.json'
-import { getDateFrom365daysAgo } from '../../utils/date'
 import { getNoteProspectionLastYear } from './weeklySpeek.service'
 import { FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK } from "../kpi/kpi.sagas"
 import { isNil } from 'ramda'
@@ -164,7 +163,6 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, pro
             yield select(getCVSent, weekLabel, '/cvSent'),
         ])
 
-        console.log(interviewsDone, intake, cvSent)
         let prospectionMeetingDoneFromTheBeginning = yield call(getNoteProspectionLastYear, idEmployee, dateEnd)
         
         for (let i = 0; i < prospectionMeetingDoneFromLastWeek.length; i++) {
@@ -181,7 +179,6 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, pro
 
         weeklySpeed += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
 
-        console.log(weeklySpeed)
         yield put(setWeeklySpeed(weekLabel, weeklySpeed))
     } catch (e) {
         //

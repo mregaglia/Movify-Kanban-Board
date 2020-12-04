@@ -81,8 +81,6 @@ export const FIRST_WEEK = "FIRST_WEEK"
 export const SECOND_WEEK = "SECOND_WEEK"
 export const THIRD_WEEK = "THIRD_WEEK"
 export const FOURTH_WEEK = "FOURTH_WEEK"
-const maxCall = 10
-
 
 export function* getKpiDataEmployee(action) {
     let weekNumberOfTheYear = moment().format('w')
@@ -280,8 +278,6 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
 
                 if (occupation.includes(BUSINESS_MANAGER)) {
                     let dataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
-                    
-                    console.log(dates, weekLabel, dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER)
 
                     objectDataBusinessManager = dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER
                     objectProspectionDone[weekLabel] = dataBusinessManager.PROSPECTIONS

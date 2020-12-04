@@ -37,13 +37,13 @@ const Reporting = ({ setLoadingData, setCalculatingWeeklySpeed, getGaugeLimit, g
         } else {
             getEmployees();
         }
-    }, [])
+    }, [employeeIdAccess, getEmployeeAccessibleData,getEmployees,setEmployeeSelected, userConnectedId, userConnectedOccupation])
 
     useEffect(() => {
         setLoadingData(true)
         setCalculatingWeeklySpeed(true)
         getGaugeLimit()
-    }, [employeeSelected])
+    }, [employeeSelected, getGaugeLimit, setCalculatingWeeklySpeed, setLoadingData])
 
     return (
         <div>

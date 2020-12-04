@@ -6,7 +6,6 @@ import {
 } from '../auth/user.sagas'
 
 import GaugeLimitFile from '../reporting/gauge-limit.json'
-import { SECOND_WEEK } from '../reporting/kpi/kpi.sagas'
 
 export const PROSPECTION = "Prospection"
 export const CALL = "Call"
@@ -281,7 +280,6 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
 
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
 
-  console.log(labelWeek)
   let data = notes
   let prospections = []
   if (data.length === 0) return objectDataBusinessManager
@@ -297,7 +295,6 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         if (data[i].clientContacts.total) objectDataBusinessManager.INTAKE[labelWeek]++;
         break;
       case PROSPECTION:
-        if(labelWeek === SECOND_WEEK) console.log(data[i])
         objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
         prospections = [...prospections, data[i]]
         break;
