@@ -6,12 +6,12 @@ export const getCandidateCategory = candidateId =>
     fields: "categories"
   }).then(response => path(["data", "categories", "data"], response))
 
-export const getNoteProspectionLastYear = (idEmployee, dateStart, dateEnd) =>
+export const getNoteProspectionLastYear = (idEmployee, dateEnd) =>
   post(
     "search/Note",
     {
-      query: `action:"Prospection" AND commentingPerson:${idEmployee} AND dateAdded:[${dateStart} TO ${dateEnd}] `,
-      count: 400
+      query: `action:"Prospection" AND commentingPerson:${idEmployee} AND dateAdded:[* TO ${dateEnd}] `,
+      count: 1000
     },
     {
       fields: "clientContacts"
