@@ -156,7 +156,6 @@ export function* calculateAllWeeklySpeedForBusinessManager(idEmployee, dates, pr
 export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, prospectionMeetingDoneFromLastWeek, weekLabel) {
     let weeklySpeed = 0
     let hasAlreadyBeenContacted = false
-    let hasAlreadyBeenContactedCounting = 0
 
     try {
         const [interviewsDone, intake, cvSent] = yield all([
