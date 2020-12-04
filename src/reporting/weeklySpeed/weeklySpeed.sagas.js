@@ -164,6 +164,7 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, pro
             yield select(getCVSent, weekLabel, '/cvSent'),
         ])
 
+        console.log(interviewsDone, intake, cvSent)
         let prospectionMeetingDoneFromTheBeginning = yield call(getNoteProspectionLastYear, idEmployee, dateEnd)
         
         for (let i = 0; i < prospectionMeetingDoneFromLastWeek.length; i++) {
@@ -171,7 +172,6 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, pro
 
             for (let j = 0; j < prospectionMeetingDoneFromTheBeginning.length; j++) {
                 let idClientContactProspectionMeetingDone = prospectionMeetingDoneFromTheBeginning[j].clientContacts.data[0].id
-                
                 hasAlreadyBeenContacted = (idClientContact === idClientContactProspectionMeetingDone) ? true : false
                 if (hasAlreadyBeenContacted) break
             }
@@ -181,6 +181,7 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, pro
 
         weeklySpeed += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
 
+        console.log(weeklySpeed)
         yield put(setWeeklySpeed(weekLabel, weeklySpeed))
     } catch (e) {
         //
