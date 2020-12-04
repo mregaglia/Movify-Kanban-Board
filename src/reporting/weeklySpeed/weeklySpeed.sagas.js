@@ -84,7 +84,6 @@ export function* getCandidatesCategory(idsCandidate) {
 
 export function* calculateWeeklySpeedRecruitmentForAllWeeks(objectCategories, occupation) {
     try {
-        console.log("oiedz")
         yield all([
             call(calculateWeeklySpeedForRecruitment, objectCategories[FIRST_WEEK], FIRST_WEEK, occupation),
             call(calculateWeeklySpeedForRecruitment, objectCategories[SECOND_WEEK], SECOND_WEEK, occupation),
@@ -142,22 +141,23 @@ function* getInterviewDoneSaga(weekLabel) {
 }
 
 export function* calculateAllWeeklySpeedForBusinessManager(idEmployee, dates, prospectionDone) {
-    let date365daysAgoTimestamp = getDateFrom365daysAgo()
     try {
         yield all([
-            yield call(calculateWeeklySpeedForBusinessManager, idEmployee, date365daysAgoTimestamp, dates[0].end, prospectionDone.FIRST_WEEK, FIRST_WEEK),
-            yield call(calculateWeeklySpeedForBusinessManager, idEmployee, date365daysAgoTimestamp, dates[1].end, prospectionDone.SECOND_WEEK, SECOND_WEEK),
-            yield call(calculateWeeklySpeedForBusinessManager, idEmployee, date365daysAgoTimestamp, dates[2].end, prospectionDone.THIRD_WEEK, THIRD_WEEK),
-            yield call(calculateWeeklySpeedForBusinessManager, idEmployee, date365daysAgoTimestamp, dates[3].end, prospectionDone.FOURTH_WEEK, FOURTH_WEEK),
+            yield call(calculateWeeklySpeedForBusinessManager, idEmployee, dates[0].start, prospectionDone.FIRST_WEEK, FIRST_WEEK),
+            yield call(calculateWeeklySpeedForBusinessManager, idEmployee, dates[1].start, prospectionDone.SECOND_WEEK, SECOND_WEEK),
+            yield call(calculateWeeklySpeedForBusinessManager, idEmployee, dates[2].start, prospectionDone.THIRD_WEEK, THIRD_WEEK),
+            yield call(calculateWeeklySpeedForBusinessManager, idEmployee, dates[3].start, prospectionDone.FOURTH_WEEK, FOURTH_WEEK),
         ])
     } catch (e) {
         //
     }
 }
 
-export function* calculateWeeklySpeedForBusinessManager(idEmployee, date365daysAgoTimestamp, dateStart, prospectionMeetingDoneFromLastWeek, weekLabel) {
+export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, prospectionMeetingDoneFromLastWeek, weekLabel) {
     let weeklySpeed = 0
     let hasAlreadyBeenContacted = false
+    let hasAlreadyBeenContactedCounting = 0
+
     try {
         const [interviewsDone, intake, cvSent] = yield all([
             yield select(getInterviewDone, weekLabel, '/interviewsDone'),
@@ -165,13 +165,14 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, date365daysA
             yield select(getCVSent, weekLabel, '/cvSent'),
         ])
 
-        let prospectionMeetingDoneForTheYear = yield call(getNoteProspectionLastYear, idEmployee, date365daysAgoTimestamp, dateStart)
-
+        let prospectionMeetingDoneFromTheBeginning = yield call(getNoteProspectionLastYear, idEmployee, dateEnd)
+        
         for (let i = 0; i < prospectionMeetingDoneFromLastWeek.length; i++) {
             let idClientContact = prospectionMeetingDoneFromLastWeek[i].clientContacts.data[0].id
 
-            for (let j = 0; j < prospectionMeetingDoneForTheYear.length; j++) {
-                let idClientContactProspectionMeetingDone = prospectionMeetingDoneForTheYear[j].clientContacts.data[0].id
+            for (let j = 0; j < prospectionMeetingDoneFromTheBeginning.length; j++) {
+                let idClientContactProspectionMeetingDone = prospectionMeetingDoneFromTheBeginning[j].clientContacts.data[0].id
+                
                 hasAlreadyBeenContacted = (idClientContact === idClientContactProspectionMeetingDone) ? true : false
                 if (hasAlreadyBeenContacted) break
             }
