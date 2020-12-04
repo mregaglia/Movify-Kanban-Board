@@ -124,7 +124,6 @@ const kpi = {
     dataYTDEmployee: payload
   }),
   [SET_CV_SENT]: (state, payload) => {
-    console.log("declan1")
     return {
       ...state,
       dataEmployee: {
@@ -287,7 +286,6 @@ const kpi = {
     cvSentLoadingCounter: state.cvSentLoadingCounter + 1
   }),
   [SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED]: (state) => {
-    console.log("decl")
     return {
       ...state,
       cvSentLoadingCounter: state.cvSentLoadingCounter - 1,
