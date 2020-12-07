@@ -164,13 +164,6 @@ export const initializeObjectConversionYTDRecruitment = () => {
   }
 }
 
-export const initializeObjectDataRecruitmentAndIds = () => {
-  return {
-    OBJECT_DATA_RECRUITMENT: {},
-    SOURCING_IDS: []
-  }
-}
-
 export const initializeObjectDate = () => {
   return {
     DATES: { FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -237,10 +230,14 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
   }
 }
 
-export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDataRecruitment, objectDataRecruitmentAndSourcingIds) => {
-  let data = notes;
-  if (data.length === 0) return objectDataRecruitment
+export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDataRecruitment) => {
+  let data = notes
+  let sourcingIds = []
+  let interviewScheduled = []
+  let interviewsDone = []
 
+  if (data.length === 0) return objectDataRecruitment
+  
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
@@ -251,12 +248,15 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
         break;
       case INTERVIEW_DONE_1:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        interviewsDone = [...interviewsDone, data[i]]
         break;
       case INTERVIEW_DONE_2:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        interviewsDone = [...interviewsDone, data[i]]
         break;
       case INTERVIEW_DONE_3:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        interviewsDone = [...interviewsDone, data[i]]
         break;
       case CONTRACT_PROPOSED:
         objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++;
@@ -264,15 +264,18 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
       case CALL:
         if (data[i].candidates.total === 1) {
           objectDataRecruitment.CONTACTED_BY_PHONE[labelWeek]++;
-          objectDataRecruitmentAndSourcingIds.SOURCING_IDS = [...objectDataRecruitmentAndSourcingIds.SOURCING_IDS, data[i].candidates.data[0].id]
+          sourcingIds = [...sourcingIds, data[i].candidates.data[0].id]
         }
         break;
       case LINKED_INMAIL:
         objectDataRecruitment.CONTACTED_BY_INMAIL[labelWeek]++
-        objectDataRecruitmentAndSourcingIds.SOURCING_IDS = [...objectDataRecruitmentAndSourcingIds.SOURCING_IDS, data[i].candidates.data[0].id]
+        sourcingIds = [...sourcingIds, data[i].candidates.data[0].id]
         break;
       case INTERVIEW_SCHEDULED:
-        if (data[i].candidates.total === 1) objectDataRecruitment.INTERVIEW_SCHEDULED[labelWeek]++
+        if (data[i].candidates.total === 1){
+          objectDataRecruitment.INTERVIEW_SCHEDULED[labelWeek]++
+          interviewScheduled = [...interviewScheduled, data[i]]
+        } 
         break;
       case HIRED:
         objectDataRecruitment.HIRED[labelWeek]++
@@ -281,8 +284,13 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
         break;
     }
   }
-  objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT = objectDataRecruitment
-  return objectDataRecruitmentAndSourcingIds
+
+  return {
+    OBJECT_DATA_RECRUITMENT: objectDataRecruitment,
+    SOURCING_IDS: sourcingIds,
+    INTERVIEW_SCHEDULED: interviewScheduled,
+    INTERVIEWS_DONE: interviewsDone
+  }
 }
 
 export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusinessManager) => {
