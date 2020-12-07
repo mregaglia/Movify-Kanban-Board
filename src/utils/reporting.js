@@ -230,14 +230,15 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
   }
 }
 
-export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDataRecruitment) => {
+export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDataRecruitment, occupation) => {
   let data = notes
   let sourcingIds = []
   let interviewScheduled = []
   let interviewsDone = []
+  let linkedInMail = []
 
   if (data.length === 0) return objectDataRecruitment
-  
+
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
@@ -270,12 +271,13 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
       case LINKED_INMAIL:
         objectDataRecruitment.CONTACTED_BY_INMAIL[labelWeek]++
         sourcingIds = [...sourcingIds, data[i].candidates.data[0].id]
+        if (occupation.includes(SOURCING_OFFICER)) linkedInMail = [...linkedInMail, data[i]]
         break;
       case INTERVIEW_SCHEDULED:
-        if (data[i].candidates.total === 1){
+        if (data[i].candidates.total === 1) {
           objectDataRecruitment.INTERVIEW_SCHEDULED[labelWeek]++
           interviewScheduled = [...interviewScheduled, data[i]]
-        } 
+        }
         break;
       case HIRED:
         objectDataRecruitment.HIRED[labelWeek]++
@@ -289,7 +291,8 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
     OBJECT_DATA_RECRUITMENT: objectDataRecruitment,
     SOURCING_IDS: sourcingIds,
     INTERVIEW_SCHEDULED: interviewScheduled,
-    INTERVIEWS_DONE: interviewsDone
+    INTERVIEWS_DONE: interviewsDone,
+    LINKED_INMAIL: linkedInMail
   }
 }
 

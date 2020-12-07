@@ -103,7 +103,6 @@ export function* getKpiDataEmployee(action) {
         yield call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp, dates)
     } else {
         const datasRecruitment = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
-
         yield call(calculateWeeklySpeedRecruitmentForAllWeeks, datasRecruitment.CATEGORIES, occupation)
         yield call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear)
     }
@@ -112,7 +111,6 @@ export function* getKpiDataEmployee(action) {
 export function* getLast4WeekDataBusinessManager(idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
     try {
         const datasBM = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
-
         yield call(getCvSent, idEmployee, dates)
         yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, datasBM.PROSPECTIONS_DONE)
         yield put(setCalculatingWeeklySpeed(false))
@@ -245,7 +243,7 @@ export function* calculateAverageYTD(occupation, objectYTDBusinessManager, objec
 }
 
 export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
-    let dataRecruitment, objectProspectionDone, objectIntakes, objectInterviewsScheduled, objectCategories, objectInterviewsDone
+    let dataRecruitment, objectProspectionDone, objectIntakes, objectInterviewsScheduled, objectCategories, objectInterviewsDone, objectLinkedInMail
 
     // BUSINESS MANAGER DATA
     if ((occupation.includes(BUSINESS_MANAGER))) {
@@ -254,16 +252,19 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
     }
 
     // TALENT ACQUISITION DATA
-    if (occupation.includes(TALENT_ACQUISITION)) {
+    if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
         objectInterviewsScheduled = initializeObjectByDates()
         objectCategories = initializeObjectByDates()
     }
 
+    // SOURCING OFFICER DATA
+    if (occupation.includes(SOURCING_OFFICER)) objectLinkedInMail = initializeObjectByDates()
+
     // BUSINESS MANAGER AND TALENT ACQUISITION DATA
-    if (occupation.includes(BUSINESS_MANAGER) || occupation.includes(TALENT_ACQUISITION)) {
+    if (occupation.includes(BUSINESS_MANAGER) || occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
         objectInterviewsDone = initializeObjectByDates()
     }
-    
+
     try {
         for (let i = 0; i < dates.length; i++) {
 
@@ -275,13 +276,17 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
             if (kpiNote.length !== 0) {
 
                 if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
-                    dataRecruitment = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment)
-
+                    dataRecruitment = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, occupation)
+                    
                     objectDataRecruitment = dataRecruitment.OBJECT_DATA_RECRUITMENT
-
                     objectCategories[weekLabel] = yield call(getCandidatesCategory, dataRecruitment.SOURCING_IDS)
+                    
                     objectInterviewsScheduled[weekLabel] = dataRecruitment.INTERVIEW_SCHEDULED
                     objectInterviewsDone[weekLabel] = dataRecruitment.INTERVIEWS_DONE
+                    
+                    if (occupation.includes(SOURCING_OFFICER)) {
+                        objectLinkedInMail[weekLabel] = dataRecruitment.LINKED_INMAIL
+                    }
                 }
 
                 if (occupation.includes(BUSINESS_MANAGER)) {
@@ -312,11 +317,18 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
                 INTAKES: objectIntakes,
                 INTERVIEWS_DONE: objectInterviewsDone
             }
-        } else if(occupation.includes(TALENT_ACQUISITION)){
-            return {
+        } else if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
+            let objectRecruitment = {
                 INTERVIEW_SCHEDULED: objectInterviewsScheduled,
                 INTERVIEWS_DONE: objectInterviewsDone,
                 CATEGORIES: objectCategories
+            }
+
+            if (occupation.includes(TALENT_ACQUISITION)) {
+                return objectRecruitment
+            } else {
+                objectRecruitment.LINKED_INMAIL = objectLinkedInMail
+                return objectRecruitment
             }
         }
     } catch (e) {
