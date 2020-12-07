@@ -75,6 +75,9 @@ import {
     getCandidatesCategory,
     calculateAllWeeklySpeedForBusinessManager
 } from '../weeklySpeed/weeklySpeed.sagas'
+import {
+    getAllDataFromIdsForExpandView
+} from '../expandView/expandView.sagas'
 
 export const FIRST_WEEK = "FIRST_WEEK"
 export const SECOND_WEEK = "SECOND_WEEK"
@@ -105,15 +108,18 @@ export function* getKpiDataEmployee(action) {
         const datasRecruitment = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
         yield call(calculateWeeklySpeedRecruitmentForAllWeeks, datasRecruitment.CATEGORIES, occupation)
         yield call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear)
+        yield call(getAllDataFromIdsForExpandView, datasRecruitment)
     }
 }
 
 export function* getLast4WeekDataBusinessManager(idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
     try {
         const datasBM = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
+        
         yield call(getCvSent, idEmployee, dates)
         yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, datasBM.PROSPECTIONS_DONE)
         yield put(setCalculatingWeeklySpeed(false))
+        yield call(getAllDataFromIdsForExpandView, datasBM)
     } catch (e) {
         //
     }
