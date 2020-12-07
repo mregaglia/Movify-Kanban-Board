@@ -187,7 +187,8 @@ export const initializeObjectByDates = () => {
 }
 
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
-  let data = notes;
+  let data = notes
+  let interviewsDone = []
 
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
@@ -200,12 +201,15 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
         break;
       case INTERVIEW_DONE_1:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        interviewsDone = [...interviewsDone, data[i]]
         break;
       case INTERVIEW_DONE_2:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        interviewsDone = [...interviewsDone, data[i]]
         break;
       case INTERVIEW_DONE_3:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+        interviewsDone = [...interviewsDone, data[i]]
         break;
       case CONTRACT_PROPOSED:
         objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++;
@@ -227,7 +231,10 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
     }
   }
 
-  return objectDataRecruitment
+  return {
+    OBJECT_DATA_RECRUITMENT: objectDataRecruitment,
+    INTERVIEWS_DONE: interviewsDone
+  }
 }
 
 export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDataRecruitment, objectDataRecruitmentAndSourcingIds) => {
@@ -282,6 +289,8 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
 
   let data = notes
   let prospections = []
+  let intakes = []
+
   if (data.length === 0) return objectDataBusinessManager
   for (let i = 0; i < data.length; i++) {
 
@@ -289,10 +298,13 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
 
     switch (action) {
       case CALL:
-        if (data[i].clientContacts.total) objectDataBusinessManager.CALL[labelWeek]++;
+        if (data[i].clientContacts.total) objectDataBusinessManager.CALL[labelWeek]++
         break;
       case INTAKE:
-        if (data[i].clientContacts.total) objectDataBusinessManager.INTAKE[labelWeek]++;
+        if (data[i].clientContacts.total) {
+          objectDataBusinessManager.INTAKE[labelWeek]++
+          intakes = [...intakes, data[i]]
+        }
         break;
       case PROSPECTION:
         objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
@@ -310,7 +322,8 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
   }
   return {
     PROSPECTIONS: prospections,
-    OBJECT_DATA_BUSINESS_MANAGER: objectDataBusinessManager
+    OBJECT_DATA_BUSINESS_MANAGER: objectDataBusinessManager,
+    INTAKES: intakes
   }
 }
 

@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 export const Table = styled.table({
-    tableLayout: "fixed",
+    
     borderCollapse: "collapse",
     margin: "25px 25px 25px 25px",
     fontSize: "1.2em",
-    minWidth: "400px",
+    minWidth: "300px",
     borderRadius: "5px 5px 5px 5px",
     overflow: "hidden"
 })
@@ -17,36 +17,36 @@ export const TableTheadTr = styled.tr(({ theme }) => ({
     fontWeight: "bold"
 }))
 
-export const TableContentTh = styled.th(({ theme }) => ({
+export const TableContentTh = styled.th(() => ({
     padding: "12px 15px",
     whiteSpace: "nowrap"
 }))
 
-export const TableContentTd = styled.td(({ theme }) => ({
+export const TableContentTd = styled.td(() => ({
     padding: "12px 15px",
-    textAlign: "center", 
+    textAlign: "center",
 }))
 
-export const TableContentTdBold = styled.td(({ theme }) => ({
+export const TableContentTdBold = styled.td(() => ({
     padding: "12px 15px",
-    textAlign: "center", 
+    textAlign: "center",
     fontWeight: "bold"
 }))
 
-export const TableContentTdBoldClickable = styled.td(({ theme }) => ({
+export const TableContentTdBoldClickable = styled.td(() => ({
     padding: "12px 15px",
-    textAlign: "center", 
+    textAlign: "center",
     fontWeight: "bold",
     cursor: "pointer"
 }))
 
-export const TableContentTdLabel = styled.td(({ theme }) => ({
+export const TableContentTdLabel = styled.td(() => ({
     padding: "12px 15px",
     whiteSpace: "nowrap"
 }))
 
 
-export const TableContentTdLabelBold = styled.td(({ theme }) => ({
+export const TableContentTdLabelBold = styled.td(() => ({
     padding: "12px 15px",
     whiteSpace: "nowrap",
     fontWeight: "bold"
@@ -58,20 +58,20 @@ export const TableContentTdTitle = styled.td(({ isBM }) => ({
     fontSize: "1.3em",
 }))
 
-export const TableContentTdTitleForBMEmpty = styled.td(({ theme }) => ({
+export const TableContentTdTitleForBMEmpty = styled.td(() => ({
     padding: "67px 7px 12px 0px",
     fontWeight: "bold",
     fontSize: "1.3em"
 }))
 
-export const TableContentTdTitleEmpty = styled.td(({ theme }) => ({
+export const TableContentTdTitleEmpty = styled.td(() => ({
     padding: "27px"
 }))
 
-export const TableContentTbodyTr = styled.tr(({ theme }) => ({
-    borderBottom: "1px solid #dddddd"  
+export const TableContentTbodyTr = styled.tr(() => ({
+    borderBottom: "1px solid #dddddd"
 }))
 
-export const TableContentTbodyTrNoLine = styled.tr(({ theme }) => ({
+export const TableContentTbodyTrNoLine = styled.tr(() => ({
     borderBottom: "0px"
 }))
