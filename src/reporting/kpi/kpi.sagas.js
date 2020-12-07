@@ -232,10 +232,8 @@ export function* calculateAverageYTD(occupation, objectYTDBusinessManager, objec
             yield put(setAverageYTDRecruitment(objectYTDRecruitment.AVERAGE))
         } else {
             objectYTDRecruitment = calculateAverageYTDRecruitment(objectYTDRecruitment, weekNumberOfTheYear)
-
             yield put(setAverageYTDRecruitment(objectYTDRecruitment.AVERAGE))
         }
-
         yield put(setLoadingYTDAverage(false))
     } catch (e) {
         //
@@ -344,7 +342,6 @@ export function* getCvSent(employeeId, dates) {
         } else {
             yield put(setJobSubmissionsStatusFromWeekRetrieved())
         }
-
     } catch (e) {
         //
     }
