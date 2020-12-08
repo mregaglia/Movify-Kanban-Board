@@ -179,6 +179,15 @@ export const initializeObjectByDates = () => {
   }
 }
 
+export const initializeObjectByDatesTable = () => {
+  return {
+    FIRST_WEEK: [],
+    SECOND_WEEK: [],
+    THIRD_WEEK: [],
+    FOURTH_WEEK: []
+  }
+}
+
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
   let data = notes
   let interviewsDone = []

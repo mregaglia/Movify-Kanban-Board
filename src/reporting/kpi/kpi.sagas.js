@@ -68,9 +68,6 @@ import {
     SOURCING_OFFICER
 } from '../../auth/user.sagas'
 import {
-    setCalculatingWeeklySpeed
-} from '../weeklySpeed/weeklySpeed.action'
-import {
     calculateWeeklySpeedRecruitmentForAllWeeks,
     getCandidatesCategory,
     calculateAllWeeklySpeedForBusinessManager
@@ -103,12 +100,12 @@ export function* getKpiDataEmployee(action) {
 
     if (occupation.includes(BUSINESS_MANAGER)) {
         yield call(getLast4WeekDataBusinessManager, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
-        yield call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp, dates)
+        //yield call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp, dates)
     } else {
         const datasRecruitment = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
         yield call(calculateWeeklySpeedRecruitmentForAllWeeks, datasRecruitment.CATEGORIES, occupation)
         yield call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear)
-        yield call(getAllDataFromIdsForExpandView, datasRecruitment)
+        yield call(getAllDataFromIdsForExpandView, datasRecruitment, occupation)
     }
 }
 
@@ -117,9 +114,9 @@ export function* getLast4WeekDataBusinessManager(idEmployee, dates, objectDateEm
         const datasBM = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
         
         yield call(getCvSent, idEmployee, dates)
-        yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, datasBM.PROSPECTIONS_DONE)
+        //yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, datasBM.PROSPECTIONS_DONE)
         
-        yield call(getAllDataFromIdsForExpandView, datasBM)
+        yield call(getAllDataFromIdsForExpandView, datasBM, occupation)
     } catch (e) {
         //
     }

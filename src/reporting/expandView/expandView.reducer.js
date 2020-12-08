@@ -1,7 +1,8 @@
 import { bindReducer } from "../../utils/reducer";
-import { initializeObjectByDates } from '../../utils/reporting'
+import { initializeObjectByDatesTable } from '../../utils/reporting'
+import {SET_PROSPECTION_DONE} from './expandView.action'
 
-const objectByDates = initializeObjectByDates()
+const objectByDates = initializeObjectByDatesTable()
 
 export const initialState = {
   INTERVIEW_SCHEDULED: objectByDates,
@@ -12,7 +13,14 @@ export const initialState = {
 }
 
 const expandView = {
-    
+  [SET_PROSPECTION_DONE]: (state, payload) => (
+    {
+      ...state,
+      INTERVIEW_DONE: {
+        ...state.INTERVIEW_DONE,
+        [payload.WEEK_LABEL]: [...state.INTERVIEW_DONE[payload.WEEK_LABEL], payload.DETAIL_STRING]
+      }
+    }),
 }
 
 export default (state, action) =>

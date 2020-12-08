@@ -140,7 +140,6 @@ function* getInterviewDoneSaga(weekLabel) {
 
 export function* calculateAllWeeklySpeedForBusinessManager(idEmployee, dates, prospectionDone) {
     try {
-        console.log(dates)
         yield all([
             yield call(calculateWeeklySpeedForBusinessManager, idEmployee, dates[0].start, prospectionDone.FIRST_WEEK, FIRST_WEEK),
             yield call(calculateWeeklySpeedForBusinessManager, idEmployee, dates[1].start, prospectionDone.SECOND_WEEK, SECOND_WEEK),
@@ -180,7 +179,6 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, pro
             weeklySpeed += (hasAlreadyBeenContacted) ? POINT_PROSPECTION_MEETING_DONE_RE_PROSP : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
             hasAlreadyBeenContacted = false
         }
-        console.log("i", prospectionMeetingDoneFromTheBeginning)
 
         weeklySpeed += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
         yield put(setWeeklySpeed(weekLabel, weeklySpeed))
