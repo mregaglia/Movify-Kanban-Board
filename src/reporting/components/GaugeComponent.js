@@ -21,7 +21,7 @@ const GaugeDataDisplaying = styled.p`
   text-align: center;
 `
 
-const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd, weeklySpeedScore, isCalculatingWeeklySpeed }) => {
+const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd, weeklySpeedScore, hasCalculatedWeeklySpeed }) => {
 
     const endGreenGaugeConverted = 1;
     const startGreendGaugeConverted = (gaugeGreenStart / gaugeGreenEnd).toFixed(2)
@@ -35,8 +35,8 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
     const startRedGaugeConverted = (gaugeRedStart / gaugeGreenEnd).toFixed(2)
     const numberGapRed = endRedGaugeConverted - startRedGaugeConverted
 
-    let weeklySpeedGauge = (weeklySpeedScore.FOURTH_WEEK >= 0 && !isCalculatingWeeklySpeed) ? parseFloat((weeklySpeedScore.FOURTH_WEEK / gaugeGreenStart).toFixed(2)) : 0
-    let lastWeekScore = (!isCalculatingWeeklySpeed) ? weeklySpeedScore.FOURTH_WEEK : 0
+    let weeklySpeedGauge = (weeklySpeedScore.FOURTH_WEEK >= 0 && hasCalculatedWeeklySpeed) ? parseFloat((weeklySpeedScore.FOURTH_WEEK / gaugeGreenStart).toFixed(2)) : 0
+    let lastWeekScore = (hasCalculatedWeeklySpeed) ? weeklySpeedScore.FOURTH_WEEK : 0
     let weeklySpeedGaugeDisplayed = (weeklySpeedGauge > 1) ? 1 : weeklySpeedGauge
 
 
@@ -66,7 +66,7 @@ GaugeComponent.propTypes = {
     gaugeRedStart: number,
     gaugeRedEnd: number,
     weeklySpeedScore: object,
-    isCalculatingWeeklySpeed: bool
+    hasCalculatedWeeklySpeed: bool
 };
 
 export default connect(
@@ -78,7 +78,7 @@ export default connect(
         gaugeRedStart: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "START"], state),
         gaugeRedEnd: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "END"], state),
         weeklySpeedScore: path(["weeklySpeed", "weeklySpeedScores"], state),
-        isCalculatingWeeklySpeed: path(["weeklySpeed", "isCalculatingWeeklySpeed"], state),
+        hasCalculatedWeeklySpeed: path(["weeklySpeed", "hasCalculatedWeeklySpeed"], state),
     }),
     {}
 )(GaugeComponent);

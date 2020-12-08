@@ -12,7 +12,7 @@ import TablePercentage from './TablePercentage'
 import Loader from 'react-loader-spinner'
 import GaugeComponent from './GaugeComponent'
 import { initializeEmployeeSelected } from '../../utils/employees'
-import { getGaugeLimit, setCalculatingWeeklySpeed } from '../weeklySpeed/weeklySpeed.action'
+import { getGaugeLimit, initializeStateWeeklySpeedCalcul } from '../weeklySpeed/weeklySpeed.action'
 import {
     REPORTING_OWNER
 } from '../../auth/user.sagas'
@@ -23,7 +23,7 @@ const Container = styled.div({
     justifyContent: "center"
 })
 
-const Reporting = ({ setLoadingData, setCalculatingWeeklySpeed, getGaugeLimit, getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess }) => {
+const Reporting = ({ initializeStateWeeklySpeedCalcul, setLoadingData, getGaugeLimit, getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess }) => {
 
     useEffect(() => {
         if (!userConnectedOccupation.includes(REPORTING_OWNER)) {
@@ -41,9 +41,9 @@ const Reporting = ({ setLoadingData, setCalculatingWeeklySpeed, getGaugeLimit, g
 
     useEffect(() => {
         setLoadingData(true)
-        setCalculatingWeeklySpeed(true)
+        initializeStateWeeklySpeedCalcul()
         getGaugeLimit()
-    }, [employeeSelected, getGaugeLimit, setCalculatingWeeklySpeed, setLoadingData])
+    }, [employeeSelected, getGaugeLimit, setLoadingData])
 
     return (
         <div>
@@ -89,8 +89,8 @@ Reporting.propTypes = {
     employeeIdAccess: array,
     setEmployeeSelected: func,
     getGaugeLimit: func,
-    setCalculatingWeeklySpeed: func,
-    setLoadingData: func
+    setLoadingData: func,
+    initializeStateWeeklySpeedCalcul: func
 };
 
 export default connect(
@@ -101,5 +101,5 @@ export default connect(
         userConnectedId: path(["user", "accessToReportingTab", "userId"], state),
         employeeIdAccess: path(["user", "accessToReportingTab", "employeeIdAccess"], state),
     }),
-    { setCalculatingWeeklySpeed, getGaugeLimit, getEmployees, setEmployeeSelected, getEmployeeAccessibleData, setLoadingData }
+    { getGaugeLimit, getEmployees, setEmployeeSelected, getEmployeeAccessibleData, setLoadingData, initializeStateWeeklySpeedCalcul }
 )(Reporting);

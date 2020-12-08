@@ -12,7 +12,7 @@ export const initialState = {
 }
 
 const expandView = {
-
+    
 }
 
 export default (state, action) =>

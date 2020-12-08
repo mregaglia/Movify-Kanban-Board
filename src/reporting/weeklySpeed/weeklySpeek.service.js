@@ -14,6 +14,6 @@ export const getNoteProspectionLastYear = (idEmployee, dateEnd) =>
       count: 1000
     },
     {
-      fields: "clientContacts"
+      fields: "clientContacts, id, dateAdded"
     }
   ).then(response => path(["data"], response))

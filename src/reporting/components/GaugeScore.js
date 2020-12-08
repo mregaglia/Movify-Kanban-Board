@@ -9,7 +9,7 @@ import {
 } from '../../auth/user.sagas'
 
 
-const GaugeScore = ({ occupation, isCalculatingWeeklySpeed, weeklySpeedScore, gaugeGreenStart }) => {
+const GaugeScore = ({ occupation, hasCalculatedWeeklySpeed, weeklySpeedScore, gaugeGreenStart }) => {
 
     let percentageFirstWeek = ((weeklySpeedScore.FIRST_WEEK / gaugeGreenStart).toFixed(2) * 100)
     let percentageSecondWeek = ((weeklySpeedScore.SECOND_WEEK / gaugeGreenStart).toFixed(2) * 100)
@@ -26,7 +26,7 @@ const GaugeScore = ({ occupation, isCalculatingWeeklySpeed, weeklySpeedScore, ga
             <TableContentTbodyTr>
                 <TableContentTdLabel>Your percentage</TableContentTdLabel>
                 {
-                    (isCalculatingWeeklySpeed) && (
+                    (!hasCalculatedWeeklySpeed) && (
                         <>
                             <TableContentTdBold><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTdBold>
                             <TableContentTdBold><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTdBold>
@@ -36,7 +36,7 @@ const GaugeScore = ({ occupation, isCalculatingWeeklySpeed, weeklySpeedScore, ga
                     )
                 }
                 {
-                    (!isCalculatingWeeklySpeed) && (
+                    (hasCalculatedWeeklySpeed) && (
                         <>
                             <TableContentTd>{percentageFirstWeek} %</TableContentTd>
                             <TableContentTd>{percentageSecondWeek} %</TableContentTd>
@@ -50,7 +50,7 @@ const GaugeScore = ({ occupation, isCalculatingWeeklySpeed, weeklySpeedScore, ga
 
                 <TableContentTdLabelBold>Your score</TableContentTdLabelBold>
                 {
-                    (isCalculatingWeeklySpeed) && (
+                    (!hasCalculatedWeeklySpeed) && (
                         <>
                             <TableContentTdBold><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTdBold>
                             <TableContentTdBold><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTdBold>
@@ -60,7 +60,7 @@ const GaugeScore = ({ occupation, isCalculatingWeeklySpeed, weeklySpeedScore, ga
                     )
                 }
                 {
-                    (!isCalculatingWeeklySpeed) && (
+                    (hasCalculatedWeeklySpeed) && (
                         <>
                             <TableContentTdBold>{weeklySpeedScore.FIRST_WEEK}</TableContentTdBold>
                             <TableContentTdBold>{weeklySpeedScore.SECOND_WEEK}</TableContentTdBold>
@@ -76,7 +76,7 @@ const GaugeScore = ({ occupation, isCalculatingWeeklySpeed, weeklySpeedScore, ga
 
 GaugeScore.propTypes = {
     occupation: string,
-    isCalculatingWeeklySpeed: bool,
+    hasCalculatedWeeklySpeed: bool,
     weeklySpeedScore: object,
     gaugeGreenStart: number
 };
@@ -84,7 +84,7 @@ GaugeScore.propTypes = {
 export default connect(
     state => ({
         occupation: pathOr("", ["employees", "employeeSelected", "occupation"], state),
-        isCalculatingWeeklySpeed: pathOr(false, ["weeklySpeed", "isCalculatingWeeklySpeed"], state),
+        hasCalculatedWeeklySpeed: pathOr(false, ["weeklySpeed", "hasCalculatedWeeklySpeed"], state),
         weeklySpeedScore: pathOr({}, ["weeklySpeed", "weeklySpeedScores"], state),
         gaugeGreenStart: pathOr(0, ["weeklySpeed", "gaugeLimitForEmployeeSelected", "GREEN", "START"], state),
     }),

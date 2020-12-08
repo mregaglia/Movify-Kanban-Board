@@ -118,7 +118,7 @@ export function* getLast4WeekDataBusinessManager(idEmployee, dates, objectDateEm
         
         yield call(getCvSent, idEmployee, dates)
         yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, datasBM.PROSPECTIONS_DONE)
-        yield put(setCalculatingWeeklySpeed(false))
+        
         yield call(getAllDataFromIdsForExpandView, datasBM)
     } catch (e) {
         //
