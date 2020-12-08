@@ -54,9 +54,9 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                         return (
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
-                                <TableContentTdBold>{datas[key].FIRST_WEEK}</TableContentTdBold>
-                                <TableContentTdBold>{datas[key].SECOND_WEEK}</TableContentTdBold>
-                                <TableContentTdBold>{datas[key].THIRD_WEEK}</TableContentTdBold>
+                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].FIRST_WEEK}</TableContentTdBoldClickable>
+                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].SECOND_WEEK}</TableContentTdBoldClickable>
+                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].THIRD_WEEK}</TableContentTdBoldClickable>
                                 <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].FOURTH_WEEK}</TableContentTdBoldClickable>
                             </TableContentTbodyTr>
                         )

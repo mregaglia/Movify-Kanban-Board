@@ -20,7 +20,6 @@ const IS_CANDIDATE = "IS_CANDIDATE"
 const IS_CLIENT = "IS_CLIENT"
 
 export function* getAllDataFromIdsForExpandView(datas, occupation) {
-    console.log(datas)
     try {
         if (occupation === BUSINESS_MANAGER) {
 
@@ -82,7 +81,6 @@ export function* getDetailDataSaga(action) {
         } else if (clientOrCandidate === IS_CANDIDATE) {
             let candidatesCategories = yield call(getCandidateCategory, id)
             stringDetail = stringDetail + candidatesCategories[0].name
-            console.log(stringDetail)
         }
 
         yield put(setDataExpandView(type, weekLabel, stringDetail))
