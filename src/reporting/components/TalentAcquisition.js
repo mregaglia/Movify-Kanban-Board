@@ -29,7 +29,7 @@ const TalentAcquisition = ({ datas, occupation }) => {
                                 <TableContentTdBold>{datas[key].FOURTH_WEEK}</TableContentTdBold>
                             </TableContentTbodyTr>
                         )
-                    } else if (datas[key].TITLE === LABEL_INTERVIEW_DONE || (datas[key].TITLE === LABEL_INTERVIEW_SCHEDULE && !occupation.includes(BUSINESS_MANAGER))) {
+                    } else if ((datas[key].TITLE === LABEL_INTERVIEW_DONE && !occupation.includes(SOURCING_OFFICER)) || (datas[key].TITLE === LABEL_INTERVIEW_SCHEDULE && !occupation.includes(BUSINESS_MANAGER))) {
                         return (
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
