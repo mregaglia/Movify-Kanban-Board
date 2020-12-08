@@ -9,16 +9,16 @@ export const initialState = {
   INTERVIEW_DONE:objectByDates,
   LINKEDIN_MAIL:objectByDates,
   PROSPECTION_MEETING_DONE: objectByDates,
-  INTAKE: objectByDates
+  INTAKES: objectByDates
 }
 
 const expandView = {
   [SET_PROSPECTION_DONE]: (state, payload) => (
     {
       ...state,
-      INTERVIEW_DONE: {
-        ...state.INTERVIEW_DONE,
-        [payload.WEEK_LABEL]: [...state.INTERVIEW_DONE[payload.WEEK_LABEL], payload.DETAIL_STRING]
+      [payload.TYPE]: {
+        ...state[payload.TYPE],
+        [payload.WEEK_LABEL]: [...state[payload.TYPE][payload.WEEK_LABEL], payload.DETAIL_STRING]
       }
     }),
 }
