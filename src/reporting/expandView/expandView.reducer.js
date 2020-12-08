@@ -7,7 +7,7 @@ const objectByDates = initializeObjectByDatesTable()
 export const initialState = {
   INTERVIEW_SCHEDULED: objectByDates,
   INTERVIEW_DONE:objectByDates,
-  LINKEDIN_MAIL:objectByDates,
+  LINKED_INMAIL:objectByDates,
   PROSPECTION_MEETING_DONE: objectByDates,
   INTAKES: objectByDates
 }

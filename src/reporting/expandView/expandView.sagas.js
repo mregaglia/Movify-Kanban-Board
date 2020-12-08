@@ -12,7 +12,7 @@ import { getCandidateCategory } from '../weeklySpeed/weeklySpeek.service'
 
 const INTERVIEW_DONE = "INTERVIEW_DONE"
 const INTERVIEW_SCHEDULED = "INTERVIEW_SCHEDULED"
-const LINKEDIN_MAIL = "LINKEDIN_MAIL"
+const LINKED_INMAIL = "LINKED_INMAIL"
 const INTAKES = "INTAKES"
 const PROSPECTION_MEETING_DONE = "PROSPECTION_MEETING_DONE"
 
@@ -20,7 +20,7 @@ const IS_CANDIDATE = "IS_CANDIDATE"
 const IS_CLIENT = "IS_CLIENT"
 
 export function* getAllDataFromIdsForExpandView(datas, occupation) {
-    console.log(occupation)
+    console.log(datas)
     try {
         if (occupation === BUSINESS_MANAGER) {
 
@@ -34,7 +34,7 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
             yield all(datas.INTAKES.THIRD_WEEK.map(intake => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], intake), prop("clientContacts", intake), INTAKES, THIRD_WEEK, IS_CLIENT))))
             yield all(datas.INTAKES.FOURTH_WEEK.map(intake => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], intake), prop("clientContacts", intake), INTAKES, FOURTH_WEEK, IS_CLIENT))))
 
-        } else if (occupation === TALENT_ACQUISITION) {
+        } else if (occupation === TALENT_ACQUISITION || occupation === SOURCING_OFFICER) {
 
             yield all(datas.INTERVIEW_SCHEDULED.FIRST_WEEK.map(interviewScheduled => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewScheduled), prop("candidates", interviewScheduled), INTERVIEW_SCHEDULED, FIRST_WEEK, IS_CANDIDATE))))
             yield all(datas.INTERVIEW_SCHEDULED.SECOND_WEEK.map(interviewScheduled => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewScheduled), prop("candidates", interviewScheduled), INTERVIEW_SCHEDULED, SECOND_WEEK, IS_CANDIDATE))))
@@ -50,6 +50,13 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
             yield all(datas.INTERVIEWS_DONE.THIRD_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), INTERVIEW_DONE, THIRD_WEEK, IS_CANDIDATE))))
             yield all(datas.INTERVIEWS_DONE.FOURTH_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), INTERVIEW_DONE, FOURTH_WEEK, IS_CANDIDATE))))
         
+        }
+
+        if (occupation === SOURCING_OFFICER) {
+            yield all(datas.LINKED_INMAIL.FIRST_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), LINKED_INMAIL, FIRST_WEEK, IS_CANDIDATE))))
+            yield all(datas.LINKED_INMAIL.SECOND_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), LINKED_INMAIL, SECOND_WEEK, IS_CANDIDATE))))
+            yield all(datas.LINKED_INMAIL.THIRD_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), LINKED_INMAIL, THIRD_WEEK, IS_CANDIDATE))))
+            yield all(datas.LINKED_INMAIL.FOURTH_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), LINKED_INMAIL, FOURTH_WEEK, IS_CANDIDATE))))
         }
     } catch (e) {
         //
