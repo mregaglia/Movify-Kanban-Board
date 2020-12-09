@@ -16,7 +16,6 @@ import { getGaugeLimit, initializeStateWeeklySpeedCalcul } from '../weeklySpeed/
 import {
     REPORTING_OWNER
 } from '../../auth/user.sagas'
-import ReactTooltip from 'react-tooltip'
 
 const Container = styled.div({
     display: "flex",

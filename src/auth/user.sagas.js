@@ -9,9 +9,9 @@ import {
   getUserOccupation
 } from "./user.service"
 
-import {
-  getIdEmployeeAccessAndOccupation
-} from '../utils/employees'
+//import {
+//  getIdEmployeeAccessAndOccupation
+//} from '../utils/employees'
 
 export const REPORTING_OWNER = "Reporting Owner"
 export const BUSINESS_MANAGER = "Business Manager"

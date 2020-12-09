@@ -1,4 +1,4 @@
-import { call, pathOr, prop, flatten, last } from 'ramda'
+import { call, pathOr, prop, flatten } from 'ramda'
 import { FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK } from '../kpi/kpi.sagas'
 import { takeEvery, all, put } from 'redux-saga/effects'
 import { GET_DETAIL_DATA, getDetailData, setDataExpandView } from './expandView.action'
@@ -80,8 +80,6 @@ export function* getDetailDataSaga(action) {
     let firstName = pathOr("", ["payload", "DATA", "data", 0, "firstName"], action).trim()
 
     try {
-        let stringDetail = firstName + " " + lastName + " @"
-
         if (clientOrCandidate === IS_CLIENT) {
             let clientCorporationName = yield call(getCompagnyNameByClientContactId, id)
             yield put(setDataExpandView(type, weekLabel, { ID: id, LASTNAME: lastName, FIRSTNAME: firstName, COMPANY: clientCorporationName }))
