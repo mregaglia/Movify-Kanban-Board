@@ -39,7 +39,7 @@ const TalentAcquisition = ({ datas, occupation }) => {
                                     tableWeek.map((week) =>
                                         <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
                                             <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
-                                                <ExpandViewDetailCandidates week={week} title={LINKED_INMAIL}></ExpandViewDetailCandidates>
+                                                <ExpandViewDetailCandidates week={week} title={LINKED_INMAIL}/>
                                             </ReactTooltip>
                                         </TableContentTdBoldClickable>
                                     )
