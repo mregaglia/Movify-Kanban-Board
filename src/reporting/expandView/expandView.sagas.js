@@ -1,4 +1,4 @@
-import { call, pathOr, prop } from 'ramda'
+import { call, pathOr, prop, flatten, last } from 'ramda'
 import { FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK } from '../kpi/kpi.sagas'
 import { takeEvery, all, put } from 'redux-saga/effects'
 import { GET_DETAIL_DATA, getDetailData, setDataExpandView } from './expandView.action'
@@ -9,24 +9,31 @@ import {
     SOURCING_OFFICER
 } from '../../auth/user.sagas'
 import { getCandidateCategory } from '../weeklySpeed/weeklySpeek.service'
-
-const INTERVIEW_DONE = "INTERVIEW_DONE"
-const INTERVIEW_SCHEDULED = "INTERVIEW_SCHEDULED"
-const LINKED_INMAIL = "LINKED_INMAIL"
-const INTAKES = "INTAKES"
-const PROSPECTION_MEETING_DONE = "PROSPECTION_MEETING_DONE"
+import { path } from 'ramda'
+export const INTERVIEW_DONE = "INTERVIEW_DONE"
+export const INTERVIEW_SCHEDULED = "INTERVIEW_SCHEDULED"
+export const LINKED_INMAIL = "LINKED_INMAIL"
+export const INTAKES = "INTAKES"
+export const PROSPECTION_MEETING_DONE = "PROSPECTION_MEETING_DONE"
 
 const IS_CANDIDATE = "IS_CANDIDATE"
 const IS_CLIENT = "IS_CLIENT"
 
+const tableWeek = [FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK]
 export function* getAllDataFromIdsForExpandView(datas, occupation) {
     try {
         if (occupation === BUSINESS_MANAGER) {
 
-            yield all(datas.PROSPECTIONS_DONE.FIRST_WEEK.map(prospectionDone => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone), prop("clientContacts", prospectionDone), PROSPECTION_MEETING_DONE, FIRST_WEEK, IS_CLIENT))))
-            yield all(datas.PROSPECTIONS_DONE.SECOND_WEEK.map(prospectionDone => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone), prop("clientContacts", prospectionDone), PROSPECTION_MEETING_DONE, SECOND_WEEK, IS_CLIENT))))
-            yield all(datas.PROSPECTIONS_DONE.THIRD_WEEK.map(prospectionDone => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone), prop("clientContacts", prospectionDone), PROSPECTION_MEETING_DONE, THIRD_WEEK, IS_CLIENT))))
-            yield all(datas.PROSPECTIONS_DONE.FOURTH_WEEK.map(prospectionDone => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone), prop("clientContacts", prospectionDone), PROSPECTION_MEETING_DONE, FOURTH_WEEK, IS_CLIENT))))
+            yield all(flatten(tableWeek.map((week) => (
+                datas.PROSPECTIONS_DONE[week].map(
+                    prospectionDone =>
+                        put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone),
+                            prop("clientContacts", prospectionDone),
+                            PROSPECTION_MEETING_DONE,
+                            FIRST_WEEK,
+                            IS_CLIENT)
+                        ))))))
+
 
             yield all(datas.INTAKES.FIRST_WEEK.map(intake => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], intake), prop("clientContacts", intake), INTAKES, FIRST_WEEK, IS_CLIENT))))
             yield all(datas.INTAKES.SECOND_WEEK.map(intake => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], intake), prop("clientContacts", intake), INTAKES, SECOND_WEEK, IS_CLIENT))))
@@ -39,16 +46,16 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
             yield all(datas.INTERVIEW_SCHEDULED.SECOND_WEEK.map(interviewScheduled => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewScheduled), prop("candidates", interviewScheduled), INTERVIEW_SCHEDULED, SECOND_WEEK, IS_CANDIDATE))))
             yield all(datas.INTERVIEW_SCHEDULED.THIRD_WEEK.map(interviewScheduled => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewScheduled), prop("candidates", interviewScheduled), INTERVIEW_SCHEDULED, THIRD_WEEK, IS_CANDIDATE))))
             yield all(datas.INTERVIEW_SCHEDULED.FOURTH_WEEK.map(interviewScheduled => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewScheduled), prop("candidates", interviewScheduled), INTERVIEW_SCHEDULED, FOURTH_WEEK, IS_CANDIDATE))))
-        
+
         }
-        
+
         if (occupation === BUSINESS_MANAGER || occupation === TALENT_ACQUISITION) {
-            
+
             yield all(datas.INTERVIEWS_DONE.FIRST_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), INTERVIEW_DONE, FIRST_WEEK, IS_CANDIDATE))))
             yield all(datas.INTERVIEWS_DONE.SECOND_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), INTERVIEW_DONE, SECOND_WEEK, IS_CANDIDATE))))
             yield all(datas.INTERVIEWS_DONE.THIRD_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), INTERVIEW_DONE, THIRD_WEEK, IS_CANDIDATE))))
             yield all(datas.INTERVIEWS_DONE.FOURTH_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), INTERVIEW_DONE, FOURTH_WEEK, IS_CANDIDATE))))
-        
+
         }
 
         if (occupation === SOURCING_OFFICER) {
@@ -77,13 +84,11 @@ export function* getDetailDataSaga(action) {
 
         if (clientOrCandidate === IS_CLIENT) {
             let clientCorporationName = yield call(getCompagnyNameByClientContactId, id)
-            stringDetail = stringDetail + clientCorporationName
+            yield put(setDataExpandView(type, weekLabel, { ID: id, LASTNAME: lastName, FIRSTNAME: firstName, COMPANY: clientCorporationName }))
         } else if (clientOrCandidate === IS_CANDIDATE) {
             let candidatesCategories = yield call(getCandidateCategory, id)
-            stringDetail = stringDetail + candidatesCategories[0].name
+            yield put(setDataExpandView(type, weekLabel, { ID: id, LASTNAME: lastName, FIRSTNAME: firstName, CATEGORY: path([0, "name"], candidatesCategories) }))
         }
-
-        yield put(setDataExpandView(type, weekLabel, stringDetail))
     } catch (e) {
         //
     }

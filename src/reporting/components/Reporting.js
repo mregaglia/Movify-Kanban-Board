@@ -16,6 +16,7 @@ import { getGaugeLimit, initializeStateWeeklySpeedCalcul } from '../weeklySpeed/
 import {
     REPORTING_OWNER
 } from '../../auth/user.sagas'
+import ReactTooltip from 'react-tooltip'
 
 const Container = styled.div({
     display: "flex",
@@ -37,7 +38,7 @@ const Reporting = ({ initializeStateWeeklySpeedCalcul, setLoadingData, getGaugeL
         } else {
             getEmployees();
         }
-    }, [employeeIdAccess, getEmployeeAccessibleData,getEmployees,setEmployeeSelected, userConnectedId, userConnectedOccupation])
+    }, [employeeIdAccess, getEmployeeAccessibleData, getEmployees, setEmployeeSelected, userConnectedId, userConnectedOccupation])
 
     useEffect(() => {
         setLoadingData(true)

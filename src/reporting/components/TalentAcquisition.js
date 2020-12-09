@@ -8,11 +8,19 @@ import {
     BUSINESS_MANAGER,
     SOURCING_OFFICER
 } from '../../auth/user.sagas'
+import {
+    LINKED_INMAIL
+} from '../expandView/expandView.sagas'
+import {
+    FIRST_WEEK, SECOND_WEEK, FOURTH_WEEK, THIRD_WEEK
+} from '../kpi/kpi.sagas'
+import ReactTooltip from 'react-tooltip'
+import  ExpandViewDetailCandidates  from './ExpandViewDetailCandidates'
+
+const tableWeek = [FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK]
 
 const TalentAcquisition = ({ datas, occupation }) => {
-    function onClickBusinessManagerData(e) {
-        
-    }
+
     return (
         <>
             <TableContentTbodyTrNoLine>
@@ -24,22 +32,29 @@ const TalentAcquisition = ({ datas, occupation }) => {
 
                     if (datas[key].TITLE === LABEL_CONTACTED_BY_INMAIL && occupation.includes(SOURCING_OFFICER)) {
                         return (
+
                             <TableContentTbodyTr key={i}>
-                                <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].FIRST_WEEK}</TableContentTdBoldClickable>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].SECOND_WEEK}</TableContentTdBoldClickable>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].THIRD_WEEK}</TableContentTdBoldClickable>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].FOURTH_WEEK}</TableContentTdBoldClickable>
+                                <TableContentTdLabelBold >{datas[key].TITLE}</TableContentTdLabelBold>
+                                {
+                                    tableWeek.map((week) =>
+                                        <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click focus" data-tip>{datas[key][week]}
+                                            <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                <ExpandViewDetailCandidates week={week} title={LINKED_INMAIL}></ExpandViewDetailCandidates>
+                                            </ReactTooltip>
+                                        </TableContentTdBoldClickable>
+                                    )
+                                }
+
                             </TableContentTbodyTr>
                         )
                     } else if ((datas[key].TITLE === LABEL_INTERVIEW_DONE && !occupation.includes(SOURCING_OFFICER)) || (datas[key].TITLE === LABEL_INTERVIEW_SCHEDULE && !occupation.includes(BUSINESS_MANAGER))) {
                         return (
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].FIRST_WEEK}</TableContentTdBoldClickable>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].SECOND_WEEK}</TableContentTdBoldClickable>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].THIRD_WEEK}</TableContentTdBoldClickable>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].FOURTH_WEEK}</TableContentTdBoldClickable>
+                                <TableContentTdBoldClickable>{datas[key].FIRST_WEEK}</TableContentTdBoldClickable>
+                                <TableContentTdBoldClickable>{datas[key].SECOND_WEEK}</TableContentTdBoldClickable>
+                                <TableContentTdBoldClickable>{datas[key].THIRD_WEEK}</TableContentTdBoldClickable>
+                                <TableContentTdBoldClickable>{datas[key].FOURTH_WEEK}</TableContentTdBoldClickable>
                             </TableContentTbodyTr>
                         )
                     } else if (datas[key].TITLE === LABEL_HIRED) {
