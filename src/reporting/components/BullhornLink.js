@@ -15,7 +15,9 @@ const SquareContainer = styled.div(({ theme }) => ({
     backgroundColor: theme.colors.bullhorn,
     height: 20,
     width: 20,
-    borderRadius: theme.dimensions.borderRadius
+    borderRadius: theme.dimensions.borderRadius,
+    marginRight: 4,
+    marginLeft: 4
 }));
 
 const LinkContainer = styled.a({
@@ -28,7 +30,7 @@ const BullhornLink = ({ candidateId }) => (
     <LinkContainer href={getBullhornUrl({ id: candidateId })} target="_blank" rel="noopener noreferrer">
         <SquareContainer>
             <Img alt="bh" src={require("../../assets/bullhorn.png")} />
-        `</SquareContainer>
+        </SquareContainer>
     </LinkContainer >
 );
 

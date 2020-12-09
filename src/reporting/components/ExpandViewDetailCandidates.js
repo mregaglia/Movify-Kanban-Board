@@ -4,10 +4,11 @@ import { pathOr, propOr, prop } from 'ramda'
 import { array } from 'prop-types'
 import styled from 'styled-components'
 import BullhornLink from './BullhornLink'
+import LinkedinLink from './LinkedinLink'
 
 const Paragraph = styled.p({
     textAlign: "left",
-    marginRight: 8
+    marginRight: 4
 });
 
 const Row = styled.div({
@@ -23,6 +24,7 @@ const ExpandViewDetailCandidates = ({ week, title, dataToDisplay }) => {
             <Row key={i}>
                 <Paragraph >{propOr("", 'FIRSTNAME', data).trim() + ' ' + propOr("", 'LASTNAME', data).trim() + ' @' + propOr("", 'CATEGORY', data).trim()}</Paragraph>
                 <BullhornLink candidateId={prop('ID', data)} />
+                <LinkedinLink firstName={propOr("", 'FIRSTNAME', data).trim()} lastName={propOr("", 'LASTNAME', data).trim()} />
             </Row>
         ))
     )
