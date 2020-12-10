@@ -5,11 +5,19 @@ import { path, pathOr } from 'ramda'
 import { object, bool } from "prop-types"
 import Loader from 'react-loader-spinner'
 import { LABEL_PROJECT_START, LABEL_CV_SENT, LABEL_MEETING_DONE, LABEL_INTAKE } from '../../utils/reporting'
+import {
+    INTAKES,
+    PROSPECTION_MEETING_DONE
+} from '../expandView/expandView.sagas'
+import ExpandViewDetailClient from './ExpandViewDetailClient'
+import ReactTooltip from 'react-tooltip'
+import {
+    FIRST_WEEK, SECOND_WEEK, FOURTH_WEEK, THIRD_WEEK
+} from '../kpi/kpi.sagas'
+
+const tableWeek = [FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK]
 
 const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
-    function onClickBusinessManagerData(e) {
-        
-    }
     return (
         <>
             <TableContentTbodyTrNoLine>
@@ -50,17 +58,39 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                 <TableContentTd>{datas[key].FOURTH_WEEK}</TableContentTd>
                             </tr>
                         )
-                    } else if (datas[key].TITLE === LABEL_INTAKE || datas[key].TITLE === LABEL_MEETING_DONE) {
+                    } else if (datas[key].TITLE === LABEL_INTAKE ) {
                         return (
                             <TableContentTbodyTr key={i}>
-                                <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].FIRST_WEEK}</TableContentTdBoldClickable>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].SECOND_WEEK}</TableContentTdBoldClickable>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].THIRD_WEEK}</TableContentTdBoldClickable>
-                                <TableContentTdBoldClickable onClick={onClickBusinessManagerData}>{datas[key].FOURTH_WEEK}</TableContentTdBoldClickable>
+                                <TableContentTdLabelBold >{datas[key].TITLE}</TableContentTdLabelBold>
+                                {
+                                    tableWeek.map((week) =>
+                                        <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
+                                            <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                <ExpandViewDetailClient week={week} title={INTAKES} />
+                                            </ReactTooltip>
+                                        </TableContentTdBoldClickable>
+                                    )
+                                }
+
                             </TableContentTbodyTr>
                         )
-                    } else {
+                    } else if(datas[key].TITLE === LABEL_MEETING_DONE) {
+                        return (
+                            <TableContentTbodyTr key={i}>
+                                <TableContentTdLabelBold >{datas[key].TITLE}</TableContentTdLabelBold>
+                                {
+                                    tableWeek.map((week) =>
+                                        <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
+                                            <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                <ExpandViewDetailClient week={week} title={PROSPECTION_MEETING_DONE} />
+                                            </ReactTooltip>
+                                        </TableContentTdBoldClickable>
+                                    )
+                                }
+
+                            </TableContentTbodyTr>
+                        )
+                    }else {
                         return (
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>

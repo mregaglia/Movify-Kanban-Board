@@ -30,7 +30,7 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
                         put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone),
                             prop("clientContacts", prospectionDone),
                             PROSPECTION_MEETING_DONE,
-                            FIRST_WEEK,
+                            week,
                             IS_CLIENT)
                         ))))))
 
