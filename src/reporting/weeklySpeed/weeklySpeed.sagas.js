@@ -1,10 +1,9 @@
 import { takeLatest, select, put, call, all } from "redux-saga/effects"
-import { GET_GAUGE_LIMIT, setGaugeLimit, setWeeklySpeed, setCalculatingWeeklySpeed } from './weeklySpeed.action'
+import { GET_GAUGE_LIMIT, setGaugeLimit, setWeeklySpeed } from './weeklySpeed.action'
 import { getCandidateCategory } from './weeklySpeek.service'
 import { BUSINESS_MANAGER, SOURCING_OFFICER, TALENT_ACQUISITION } from '../../auth/user.sagas'
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
 import gaugeCountData from '../gauge-count-data.json'
-import { getDateFrom365daysAgo } from '../../utils/date'
 import { getNoteProspectionLastYear } from './weeklySpeek.service'
 import { FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK } from "../kpi/kpi.sagas"
 import { isNil } from 'ramda'
@@ -90,7 +89,6 @@ export function* calculateWeeklySpeedRecruitmentForAllWeeks(objectCategories, oc
             call(calculateWeeklySpeedForRecruitment, objectCategories[THIRD_WEEK], THIRD_WEEK, occupation),
             call(calculateWeeklySpeedForRecruitment, objectCategories[FOURTH_WEEK], FOURTH_WEEK, occupation),
         ])
-        yield put(setCalculatingWeeklySpeed(false))
     } catch (e) {
         //
     }
@@ -157,6 +155,7 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, pro
     let weeklySpeed = 0
     let hasAlreadyBeenContacted = false
 
+
     try {
         const [interviewsDone, intake, cvSent] = yield all([
             yield select(getInterviewDone, weekLabel, '/interviewsDone'),
@@ -164,24 +163,24 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, pro
             yield select(getCVSent, weekLabel, '/cvSent'),
         ])
 
-        console.log(interviewsDone, intake, cvSent)
         let prospectionMeetingDoneFromTheBeginning = yield call(getNoteProspectionLastYear, idEmployee, dateEnd)
-        
+
         for (let i = 0; i < prospectionMeetingDoneFromLastWeek.length; i++) {
+            if (prospectionMeetingDoneFromLastWeek[i].clientContacts.data.length === 0) break
             let idClientContact = prospectionMeetingDoneFromLastWeek[i].clientContacts.data[0].id
 
             for (let j = 0; j < prospectionMeetingDoneFromTheBeginning.length; j++) {
+                if (prospectionMeetingDoneFromTheBeginning[j].clientContacts.data.length === 0) break
                 let idClientContactProspectionMeetingDone = prospectionMeetingDoneFromTheBeginning[j].clientContacts.data[0].id
                 hasAlreadyBeenContacted = (idClientContact === idClientContactProspectionMeetingDone) ? true : false
                 if (hasAlreadyBeenContacted) break
             }
+
             weeklySpeed += (hasAlreadyBeenContacted) ? POINT_PROSPECTION_MEETING_DONE_RE_PROSP : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
             hasAlreadyBeenContacted = false
         }
 
         weeklySpeed += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
-
-        console.log(weeklySpeed)
         yield put(setWeeklySpeed(weekLabel, weeklySpeed))
     } catch (e) {
         //

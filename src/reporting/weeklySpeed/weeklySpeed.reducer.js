@@ -1,10 +1,9 @@
 import { bindReducer } from "../../utils/reducer";
 
-import { SET_GAUGE_LIMIT, SET_WEEKLY_SPEED, SET_CALCULATING_WEEKLYSPEED } from './weeklySpeed.action'
+import { SET_GAUGE_LIMIT, SET_WEEKLY_SPEED, INITIALIZE_STATE_WEEKLY_SPEED_CALCUL } from './weeklySpeed.action'
 
 export const initialState = {
   gaugeLimitForEmployeeSelected: {},
-  isCalculatingWeeklySpeed: false,
   weeklySpeedScores: {
     FIRST_WEEK: 0,
     SECOND_WEEK: 0,
@@ -25,13 +24,16 @@ const weeklySpeed = {
       weeklySpeedScores: {
         ...state.weeklySpeedScores,
         [payload.WEEK_LABEL]: payload.SCORE
-      }
+      },
+      numberOfWeeklySpeedCalculated: state.numberOfWeeklySpeedCalculated + 1,
+      hasCalculatedWeeklySpeed: state.numberOfWeeklySpeedCalculated >= 3
     }),
-  [SET_CALCULATING_WEEKLYSPEED]: (state, payload) => (
-    {
-      ...state,
-      isCalculatingWeeklySpeed: payload
-    })
+    [INITIALIZE_STATE_WEEKLY_SPEED_CALCUL]: (state) => (
+      {
+        ...state,
+        hasCalculatedWeeklySpeed: false,
+        numberOfWeeklySpeedCalculated: 0
+      }),
 }
 
 export default (state, action) =>

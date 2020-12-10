@@ -9,7 +9,7 @@ import userSaga from "../auth/user.sagas"
 import employeeSagas from "../reporting/employees/employees.sagas"
 import kpiSagas from "../reporting/kpi/kpi.sagas"
 import weeklySpeedSagas from "../reporting/weeklySpeed/weeklySpeed.sagas"
-
+import expandViewSagas from '../reporting/expandView/expandView.sagas'
 
 export default function* rootSaga() {
   yield all([
@@ -22,6 +22,7 @@ export default function* rootSaga() {
     ...userSaga(),
     ...employeeSagas(),
     ...kpiSagas(), 
-    ...weeklySpeedSagas()
+    ...weeklySpeedSagas(),
+    ...expandViewSagas()
   ]);
 }

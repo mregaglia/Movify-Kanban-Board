@@ -11,7 +11,7 @@ export const getBusinessManagerSourcingOfficerAndTalentAcquisition = (start = 0)
         start: 0
     });
 
-    export const getUserById = (id) => 
+export const getUserById = (id) =>
     get("query/CorporateUser", {
         fields: "id,firstName,lastName,occupation,primaryDepartment",
         where: `id=${id} AND isDeleted=false`,

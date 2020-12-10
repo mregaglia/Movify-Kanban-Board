@@ -10,6 +10,7 @@ import user from '../auth/user.reducer';
 import employees from '../reporting/employees/employees.reducer';
 import kpi from '../reporting/kpi/kpi.reducer'
 import weeklySpeed from '../reporting/weeklySpeed/weeklySpeed.reducer'
+import expandView from '../reporting/expandView/expandView.reducer'
 
 export default combineReducers({
   form,
@@ -22,5 +23,6 @@ export default combineReducers({
   user,
   employees,
   kpi,
-  weeklySpeed
+  weeklySpeed,
+  expandView
 });

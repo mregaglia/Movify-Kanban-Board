@@ -16,7 +16,6 @@ import {
     calculateAverageYTDRecruitment,
     calculateAverageYTDBusinessManager,
     countNoteForRecruitmentAndIdsSourcing,
-    initializeObjectDataRecruitmentAndIds,
     initialiserObjectNewVacancyYTD,
     calculateAverageYTDData,
     countNoteForRecruitment,
@@ -69,20 +68,18 @@ import {
     SOURCING_OFFICER
 } from '../../auth/user.sagas'
 import {
-    setCalculatingWeeklySpeed
-} from '../weeklySpeed/weeklySpeed.action'
-import {
     calculateWeeklySpeedRecruitmentForAllWeeks,
     getCandidatesCategory,
     calculateAllWeeklySpeedForBusinessManager
 } from '../weeklySpeed/weeklySpeed.sagas'
+import {
+    getAllDataFromIdsForExpandView
+} from '../expandView/expandView.sagas'
 
 export const FIRST_WEEK = "FIRST_WEEK"
 export const SECOND_WEEK = "SECOND_WEEK"
 export const THIRD_WEEK = "THIRD_WEEK"
 export const FOURTH_WEEK = "FOURTH_WEEK"
-const maxCall = 10
-
 
 export function* getKpiDataEmployee(action) {
     let weekNumberOfTheYear = moment().format('w')
@@ -102,28 +99,25 @@ export function* getKpiDataEmployee(action) {
     let objectYTDRecruitment = initializeObjectConversionYTDRecruitment();
 
     if (occupation.includes(BUSINESS_MANAGER)) {
-        yield all([
-            call(getLast4WeekData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
-
-        ])
+        yield call(getLast4WeekDataBusinessManager, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
         yield call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp, dates)
     } else {
-        yield all([
-            call(getLast4WeekKpiDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation),
-
-        ])
+        const datasRecruitment = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
+        yield call(calculateWeeklySpeedRecruitmentForAllWeeks, datasRecruitment.CATEGORIES, occupation)
+        yield call(getAllDataFromIdsForExpandView, datasRecruitment, occupation)
         yield call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear)
+
     }
 }
 
-export function* getLast4WeekData(idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
+export function* getLast4WeekDataBusinessManager(idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
     try {
-        const [prospectionDone] = yield all([
-            call(getLast4WeekKpiDataSaga, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation, '/prospectionDone'),
-        ])
+        const datasBM = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
+
         yield call(getCvSent, idEmployee, dates)
-        yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, prospectionDone)
-        yield put(setCalculatingWeeklySpeed(false))
+        yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, datasBM.PROSPECTIONS_DONE)
+
+        yield call(getAllDataFromIdsForExpandView, datasBM, occupation)
     } catch (e) {
         //
     }
@@ -242,21 +236,36 @@ export function* calculateAverageYTD(occupation, objectYTDBusinessManager, objec
             yield put(setAverageYTDRecruitment(objectYTDRecruitment.AVERAGE))
         } else {
             objectYTDRecruitment = calculateAverageYTDRecruitment(objectYTDRecruitment, weekNumberOfTheYear)
-
             yield put(setAverageYTDRecruitment(objectYTDRecruitment.AVERAGE))
         }
-
         yield put(setLoadingYTDAverage(false))
     } catch (e) {
         //
     }
 }
 
-export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
+export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
+    let dataRecruitment, objectProspectionDone, objectIntakes, objectInterviewsScheduled, objectCategories, objectInterviewsDone, objectLinkedInMail
 
+    // BUSINESS MANAGER DATA
+    if ((occupation.includes(BUSINESS_MANAGER))) {
+        objectProspectionDone = initializeObjectByDates()
+        objectIntakes = initializeObjectByDates()
+    }
 
-    let objectProspectionDone = (occupation.includes(BUSINESS_MANAGER)) ? initializeObjectByDates() : {};
-    let objectCategories = (occupation.includes(TALENT_ACQUISITION)) ? initializeObjectByDates() : {};
+    // TALENT ACQUISITION DATA
+    if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
+        objectInterviewsScheduled = initializeObjectByDates()
+        objectCategories = initializeObjectByDates()
+    }
+
+    // SOURCING OFFICER DATA
+    if (occupation.includes(SOURCING_OFFICER)) objectLinkedInMail = initializeObjectByDates()
+
+    // BUSINESS MANAGER AND TALENT ACQUISITION DATA
+    if (occupation.includes(BUSINESS_MANAGER) || occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
+        objectInterviewsDone = initializeObjectByDates()
+    }
 
     try {
         for (let i = 0; i < dates.length; i++) {
@@ -264,27 +273,35 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
             let weekLabel = getWeekLabel(i)
 
             const kpiNote = yield call(getKpiNoteSaga, employeeId, dates[i].start, dates[i].end)
+            objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start)
 
-            objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start);
             if (kpiNote.length !== 0) {
-
+                
                 if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
-                    let objectDataRecruitmentAndSourcingIds = initializeObjectDataRecruitmentAndIds()
-                    objectDataRecruitmentAndSourcingIds = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, objectDataRecruitmentAndSourcingIds)
-                    objectDataRecruitment = objectDataRecruitmentAndSourcingIds.OBJECT_DATA_RECRUITMENT
+                    dataRecruitment = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, occupation)
 
-                    objectCategories[weekLabel] = yield call(getCandidatesCategory, objectDataRecruitmentAndSourcingIds.SOURCING_IDS)
-                } else {
-                    objectDataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
+                    objectDataRecruitment = dataRecruitment.OBJECT_DATA_RECRUITMENT
+                    objectCategories[weekLabel] = yield call(getCandidatesCategory, dataRecruitment.SOURCING_IDS)
+
+                    objectInterviewsScheduled[weekLabel] = dataRecruitment.INTERVIEW_SCHEDULED
+                    objectInterviewsDone[weekLabel] = dataRecruitment.INTERVIEWS_DONE
+
+                    if (occupation.includes(SOURCING_OFFICER)) {
+                        objectLinkedInMail[weekLabel] = dataRecruitment.LINKED_INMAIL
+                    }
                 }
 
                 if (occupation.includes(BUSINESS_MANAGER)) {
+                    dataRecruitment = countNoteForRecruitment(weekLabel, kpiNote, objectDataRecruitment)
+
+                    objectDataRecruitment = dataRecruitment.OBJECT_DATA_RECRUITMENT
+                    objectInterviewsDone[weekLabel] = dataRecruitment.INTERVIEWS_DONE
+
                     let dataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
-                    
-                    console.log(dates, weekLabel, dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER)
 
                     objectDataBusinessManager = dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER
                     objectProspectionDone[weekLabel] = dataBusinessManager.PROSPECTIONS
+                    objectIntakes[weekLabel] = dataBusinessManager.INTAKES
 
                     let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
                     objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
@@ -297,9 +314,24 @@ export function* getLast4WeekKpiDataSaga(employeeId, dates, objectDateEmployee, 
         yield put(setKpiLoading(false))
 
         if (occupation.includes(BUSINESS_MANAGER)) {
-            return objectProspectionDone
-        } else {
-            yield call(calculateWeeklySpeedRecruitmentForAllWeeks, objectCategories, occupation)
+            return {
+                PROSPECTIONS_DONE: objectProspectionDone,
+                INTAKES: objectIntakes,
+                INTERVIEWS_DONE: objectInterviewsDone
+            }
+        } else if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
+            let objectRecruitment = {
+                INTERVIEW_SCHEDULED: objectInterviewsScheduled,
+                INTERVIEWS_DONE: objectInterviewsDone,
+                CATEGORIES: objectCategories
+            }
+
+            if (occupation.includes(TALENT_ACQUISITION)) {
+                return objectRecruitment
+            } else {
+                objectRecruitment.LINKED_INMAIL = objectLinkedInMail
+                return objectRecruitment
+            }
         }
     } catch (e) {
         //
@@ -314,7 +346,6 @@ export function* getCvSent(employeeId, dates) {
         } else {
             yield put(setJobSubmissionsStatusFromWeekRetrieved())
         }
-
     } catch (e) {
         //
     }
@@ -427,19 +458,13 @@ export function* getJobSubmissionStatusByJobSubmissionOpenSaga(action) {
             if (weekLabel !== "") {
                 yield put(setCvSent(weekLabel))
             }
-        } else {
-
         }
-
-
-
     } catch (e) {
         //
     }
 }
 
 const getWeekLabel = (index) => {
-
     switch (index) {
         case 0:
             return FIRST_WEEK;
