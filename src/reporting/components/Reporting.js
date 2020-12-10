@@ -16,6 +16,7 @@ import { getGaugeLimit, initializeStateWeeklySpeedCalcul } from '../weeklySpeed/
 import {
     REPORTING_OWNER
 } from '../../auth/user.sagas'
+import { initializeExpandView } from '../expandView/expandView.action'
 
 const Container = styled.div({
     display: "flex",
@@ -23,7 +24,7 @@ const Container = styled.div({
     justifyContent: "center"
 })
 
-const Reporting = ({ initializeStateWeeklySpeedCalcul, setLoadingData, getGaugeLimit, getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess }) => {
+const Reporting = ({ initializeExpandView, initializeStateWeeklySpeedCalcul, setLoadingData, getGaugeLimit, getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess }) => {
 
     useEffect(() => {
         if (!userConnectedOccupation.includes(REPORTING_OWNER)) {
@@ -43,6 +44,7 @@ const Reporting = ({ initializeStateWeeklySpeedCalcul, setLoadingData, getGaugeL
         setLoadingData(true)
         initializeStateWeeklySpeedCalcul()
         getGaugeLimit()
+        initializeExpandView()
     }, [employeeSelected, getGaugeLimit, setLoadingData])
 
     return (
@@ -90,7 +92,8 @@ Reporting.propTypes = {
     setEmployeeSelected: func,
     getGaugeLimit: func,
     setLoadingData: func,
-    initializeStateWeeklySpeedCalcul: func
+    initializeStateWeeklySpeedCalcul: func,
+    initializeExpandView: func
 };
 
 export default connect(
@@ -101,5 +104,5 @@ export default connect(
         userConnectedId: path(["user", "accessToReportingTab", "userId"], state),
         employeeIdAccess: path(["user", "accessToReportingTab", "employeeIdAccess"], state),
     }),
-    { getGaugeLimit, getEmployees, setEmployeeSelected, getEmployeeAccessibleData, setLoadingData, initializeStateWeeklySpeedCalcul }
+    { getGaugeLimit, getEmployees, setEmployeeSelected, getEmployeeAccessibleData, setLoadingData, initializeStateWeeklySpeedCalcul, initializeExpandView }
 )(Reporting);

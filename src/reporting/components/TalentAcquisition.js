@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from "react-redux";
-import { TableContentTd, TableContentTbodyTr, TableContentTdTitle, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdBoldClickable, TableContentTdLabelBold } from "../../style/table_style"
+import { TableContentTd, TableContentTbodyTr, TableContentTdTitle, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdBoldClickable, TableContentTdLabelBold, TableContentTdBold } from "../../style/table_style"
 import { pathOr } from 'ramda'
 import { object, string } from "prop-types"
 import { LABEL_HIRED, LABEL_INTERVIEW_DONE, LABEL_INTERVIEW_SCHEDULE, LABEL_CONTACTED_BY_INMAIL } from '../../utils/reporting'
@@ -38,12 +38,21 @@ const TalentAcquisition = ({ datas, occupation }) => {
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabelBold >{datas[key].TITLE}</TableContentTdLabelBold>
                                 {
-                                    tableWeek.map((week) =>
-                                        <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                            <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
-                                                <ExpandViewDetailCandidates week={week} title={LINKED_INMAIL} />
-                                            </ReactTooltip>
-                                        </TableContentTdBoldClickable>
+                                    tableWeek.map((week) => {
+                                        if (datas[key][week] === 0) {
+                                            return (<TableContentTdBold id={key + week}>0</TableContentTdBold>)
+                                        } else {
+                                            return (
+                                                <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                        <ExpandViewDetailCandidates week={week} title={LINKED_INMAIL} />
+                                                    </ReactTooltip>
+                                                </TableContentTdBoldClickable>
+                                            )
+                                        }
+                                    }
+
+
                                     )
                                 }
 
@@ -54,12 +63,19 @@ const TalentAcquisition = ({ datas, occupation }) => {
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabelBold >{datas[key].TITLE}</TableContentTdLabelBold>
                                 {
-                                    tableWeek.map((week) =>
-                                        <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                            <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
-                                                <ExpandViewDetailCandidates week={week} title={INTERVIEW_DONE} />
-                                            </ReactTooltip>
-                                        </TableContentTdBoldClickable>
+                                    tableWeek.map((week) => {
+                                        if (datas[key][week] === 0) {
+                                            return (<TableContentTdBold id={key + week}>0</TableContentTdBold>)
+                                        } else {
+                                            return (
+                                                <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                        <ExpandViewDetailCandidates week={week} title={INTERVIEW_DONE} />
+                                                    </ReactTooltip>
+                                                </TableContentTdBoldClickable>
+                                            )
+                                        }
+                                    }
                                     )
                                 }
 
@@ -70,13 +86,21 @@ const TalentAcquisition = ({ datas, occupation }) => {
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabelBold >{datas[key].TITLE}</TableContentTdLabelBold>
                                 {
-                                    tableWeek.map((week) =>
-                                        <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                            <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
-                                                <ExpandViewDetailCandidates week={week} title={INTERVIEW_SCHEDULED} />
-                                            </ReactTooltip>
-                                        </TableContentTdBoldClickable>
+                                    tableWeek.map((week) => {
+                                        if (datas[key][week] === 0) {
+                                            return (<TableContentTdBold id={key + week}>0</TableContentTdBold>)
+                                        } else {
+                                            return (
+                                                <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                        <ExpandViewDetailCandidates week={week} title={INTERVIEW_SCHEDULED} />
+                                                    </ReactTooltip>
+                                                </TableContentTdBoldClickable>
+                                            )
+                                        }
+                                    }
                                     )
+                                    
                                 }
 
                             </TableContentTbodyTr>

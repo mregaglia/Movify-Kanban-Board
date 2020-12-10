@@ -17,7 +17,6 @@ const Row = styled.div({
 });
 
 const ExpandViewDetailCandidates = ({ week, title, dataToDisplay }) => {
-    console.log(week, title)
 
     return (
         <>
