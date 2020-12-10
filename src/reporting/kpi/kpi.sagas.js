@@ -106,17 +106,17 @@ export function* getKpiDataEmployee(action) {
         yield call(calculateWeeklySpeedRecruitmentForAllWeeks, datasRecruitment.CATEGORIES, occupation)
         yield call(getAllDataFromIdsForExpandView, datasRecruitment, occupation)
         yield call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear)
-        
+
     }
 }
 
 export function* getLast4WeekDataBusinessManager(idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
     try {
         const datasBM = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
-        
+
         yield call(getCvSent, idEmployee, dates)
-    yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, datasBM.PROSPECTIONS_DONE)
-        
+        yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, datasBM.PROSPECTIONS_DONE)
+
         yield call(getAllDataFromIdsForExpandView, datasBM, occupation)
     } catch (e) {
         //
@@ -276,16 +276,16 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start)
 
             if (kpiNote.length !== 0) {
-
+                
                 if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
                     dataRecruitment = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, occupation)
-                    
+
                     objectDataRecruitment = dataRecruitment.OBJECT_DATA_RECRUITMENT
                     objectCategories[weekLabel] = yield call(getCandidatesCategory, dataRecruitment.SOURCING_IDS)
-                    
+
                     objectInterviewsScheduled[weekLabel] = dataRecruitment.INTERVIEW_SCHEDULED
                     objectInterviewsDone[weekLabel] = dataRecruitment.INTERVIEWS_DONE
-                    
+
                     if (occupation.includes(SOURCING_OFFICER)) {
                         objectLinkedInMail[weekLabel] = dataRecruitment.LINKED_INMAIL
                     }

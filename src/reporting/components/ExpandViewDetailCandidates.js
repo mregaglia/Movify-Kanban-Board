@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from "react-redux"
 import { pathOr, propOr, prop } from 'ramda'
 import { array } from 'prop-types'
@@ -6,10 +6,9 @@ import styled from 'styled-components'
 import BullhornLink from './BullhornLink'
 import LinkedinLink from './LinkedinLink'
 
-const Paragraph = styled.p({
-    textAlign: "left",
-    marginRight: 4
-});
+const Paragraph = styled.p`
+    text-align: left
+`
 
 const Row = styled.div({
     display: "flex",
@@ -18,16 +17,23 @@ const Row = styled.div({
 });
 
 const ExpandViewDetailCandidates = ({ week, title, dataToDisplay }) => {
+    console.log(week, title)
 
     return (
-        dataToDisplay.map((data, i) => (
-            <Row key={i}>
-                <Paragraph >{propOr("", 'FIRSTNAME', data).trim() + ' ' + propOr("", 'LASTNAME', data).trim() + ' @' + propOr("", 'CATEGORY', data).trim()}</Paragraph>
-                <BullhornLink candidateId={prop('ID', data)} />
-                <LinkedinLink firstName={propOr("", 'FIRSTNAME', data).trim()} lastName={propOr("", 'LASTNAME', data).trim()} />
-            </Row>
-        ))
+        <>
+            {
+                dataToDisplay.map((data, i) => (
+                    <Row key={i}>
+                        <Paragraph >{propOr("", 'FIRSTNAME', data).trim() + ' ' + propOr("", 'LASTNAME', data).trim() + ' @' + propOr("", 'CATEGORY', data).trim()}</Paragraph>
+                        <BullhornLink candidateId={prop('ID', data)} />
+                        <LinkedinLink firstName={propOr("", 'FIRSTNAME', data).trim()} lastName={propOr("", 'LASTNAME', data).trim()} />
+                    </Row>
+                ))
+            }
+        </>
+
     )
+
 }
 
 ExpandViewDetailCandidates.propTypes = {
@@ -37,5 +43,6 @@ ExpandViewDetailCandidates.propTypes = {
 export default connect(
     (state, { week, title }) => ({
         dataToDisplay: pathOr([], ["expandView", title, week], state),
-    })
+    }),
+    {}
 )(ExpandViewDetailCandidates);
