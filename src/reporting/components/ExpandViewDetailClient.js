@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { connect } from "react-redux"
 import { pathOr, propOr, prop } from 'ramda'
 import { array } from 'prop-types'
@@ -23,8 +23,8 @@ const ExpandViewDetailClient= ({ week, title, dataToDisplay }) => {
             {
                 dataToDisplay.map((data, i) => (
                     <Row key={i}>
-                        <Paragraph >{propOr("", 'FIRSTNAME', data).trim() + ' ' + propOr("", 'LASTNAME', data).trim() + ' @' + propOr("", 'COMPANY', data).trim()}</Paragraph>
-                        <BullhornLink candidateId={prop('ID', data)} />
+                        <Paragraph >{propOr("", 'FIRSTNAME', data).trim() + ' ' + propOr("", 'LASTNAME', data).trim() + ' @ ' + propOr("", 'COMPANY', data).trim()}</Paragraph>
+                        <BullhornLink candidateId={prop('ID', data)} isClient={true} />
                         <LinkedinLink firstName={propOr("", 'FIRSTNAME', data).trim()} lastName={propOr("", 'LASTNAME', data).trim()} />
                     </Row>
                 ))

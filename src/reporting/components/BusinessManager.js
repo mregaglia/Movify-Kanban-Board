@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { TableContentTd, TableContentTdTitle, TableContentTbodyTr, TableContentTdBold, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdLabelBold, TableContentTdBoldClickable } from "../../style/table_style"
-import { isNil, path, pathOr } from 'ramda'
+import { path, pathOr } from 'ramda'
 import { object, bool } from "prop-types"
 import Loader from 'react-loader-spinner'
 import { LABEL_PROJECT_START, LABEL_CV_SENT, LABEL_MEETING_DONE, LABEL_INTAKE } from '../../utils/reporting'
@@ -65,11 +65,11 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                 {
                                     tableWeek.map((week) => {
                                         if (datas[key][week] === 0) {
-                                            return (<TableContentTdBold id={key + week}>0</TableContentTdBold>)
+                                            return (<TableContentTdBold key={i + week}>0</TableContentTdBold>)
                                         } else {
                                             return (
                                                 <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                    <ReactTooltip key={i + week} globalEventOff='click' place="right" clickable={true}>
                                                         <ExpandViewDetailClient week={week} title={INTAKES} />
                                                     </ReactTooltip>
                                                 </TableContentTdBoldClickable>

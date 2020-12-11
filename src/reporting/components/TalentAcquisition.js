@@ -22,7 +22,6 @@ import ExpandViewDetailCandidates from './ExpandViewDetailCandidates'
 const tableWeek = [FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK]
 
 const TalentAcquisition = ({ datas, occupation }) => {
-
     return (
         <>
             <TableContentTbodyTrNoLine>
@@ -92,7 +91,7 @@ const TalentAcquisition = ({ datas, occupation }) => {
                                         } else {
                                             return (
                                                 <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff="click" place="right" clickable={true } >
                                                         <ExpandViewDetailCandidates week={week} title={INTERVIEW_SCHEDULED} />
                                                     </ReactTooltip>
                                                 </TableContentTdBoldClickable>

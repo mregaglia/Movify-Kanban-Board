@@ -25,8 +25,8 @@ const LinkContainer = styled.a({
     textDecoration: "none"
 })
 
-const BullhornLink = ({ candidateId }) => (
-
+const BullhornLink = ({ candidateId, isClient }) => (
+    
     <LinkContainer href={getBullhornUrl({ id: candidateId })} target="_blank" rel="noopener noreferrer">
         <SquareContainer>
             <Img alt="bh" src={require("../../assets/bullhorn.png")} />
