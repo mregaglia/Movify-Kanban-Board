@@ -45,7 +45,7 @@ const Reporting = ({ initializeExpandView, initializeStateWeeklySpeedCalcul, set
         initializeStateWeeklySpeedCalcul()
         getGaugeLimit()
         initializeExpandView()
-    }, [employeeSelected, getGaugeLimit, setLoadingData])
+    }, [employeeSelected, getGaugeLimit, setLoadingData, initializeExpandView, initializeStateWeeklySpeedCalcul])
 
     return (
         <div>
