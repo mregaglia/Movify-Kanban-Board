@@ -196,7 +196,6 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
 
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
-    console.log(labelWeek + " " + data[i].action)
     let action = data[i].action
 
     switch (action) {

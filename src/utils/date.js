@@ -13,7 +13,6 @@ export const isOverDiff = (timestamp, diff) => {
 
 export const getLast4weeksDate = () => {
   let day = moment().day()
-  console.log(day)
   let tableWeek = []
   if (day >= 1 && day <= 3) {
     tableWeek = [4, 3, 2, 1]
