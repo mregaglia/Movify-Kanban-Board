@@ -65,11 +65,11 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                 {
                                     tableWeek.map((week) => {
                                         if (datas[key][week] === 0) {
-                                            return (<TableContentTdBold key={i + week}>0</TableContentTdBold>)
+                                            return (<TableContentTdBold key={week}>0</TableContentTdBold>)
                                         } else {
                                             return (
                                                 <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip key={i + week} globalEventOff='click' place="right" clickable={true}>
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
                                                         <ExpandViewDetailClient week={week} title={INTAKES} />
                                                     </ReactTooltip>
                                                 </TableContentTdBoldClickable>
@@ -88,7 +88,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                 {
                                     tableWeek.map((week) => {
                                         if (datas[key][week] === 0) {
-                                            return (<TableContentTdBold id={key + week}>0</TableContentTdBold>)
+                                            return (<TableContentTdBold key={week}>0</TableContentTdBold>)
                                         } else {
                                             return (
                                                 <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}

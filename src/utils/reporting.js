@@ -12,7 +12,7 @@ export const CALL = "Call"
 export const CALL_RECRUITMENT = "Contacted by phone"
 export const INTAKE = "Intake"
 export const LINKED_INMAIL = "LinkedIn InMail"
-export const NO_SHOW = "No show"
+export const NO_SHOW = "No Show"
 export const INTERVIEW_DONE_1 = "Interview 1"
 export const INTERVIEW_DONE_2 = "Interview 2"
 export const INTERVIEW_DONE_3 = "Interview 3"
@@ -189,12 +189,14 @@ export const initializeObjectByDatesTable = () => {
 }
 
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
+  
+
   let data = notes
   let interviewsDone = []
 
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
-
+    console.log(labelWeek + " " + data[i].action)
     let action = data[i].action
 
     switch (action) {
