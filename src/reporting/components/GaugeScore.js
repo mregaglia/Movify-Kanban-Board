@@ -8,19 +8,20 @@ import {
     BUSINESS_MANAGER
 } from '../../auth/user.sagas'
 
+const calculatePercentage = (weeklySpeedScore, gaugeGreenStart) => ((weeklySpeedScore / gaugeGreenStart) * 100).toFixed(0)
 
 const GaugeScore = ({ occupation, hasCalculatedWeeklySpeed, weeklySpeedScore, gaugeGreenStart }) => {
 
-    let percentageFirstWeek = ((weeklySpeedScore.FIRST_WEEK / gaugeGreenStart).toFixed(2) * 100)
-    let percentageSecondWeek = ((weeklySpeedScore.SECOND_WEEK / gaugeGreenStart).toFixed(2) * 100)
-    let percentageThirdWeek = ((weeklySpeedScore.THIRD_WEEK / gaugeGreenStart).toFixed(2) * 100)
-    let percentageFourthWeek = ((weeklySpeedScore.FOURTH_WEEK / gaugeGreenStart).toFixed(2) * 100)
+    const percentageFirstWeek = calculatePercentage(weeklySpeedScore.FIRST_WEEK, gaugeGreenStart)
+    const percentageSecondWeek = calculatePercentage(weeklySpeedScore.SECOND_WEEK, gaugeGreenStart)
+    const percentageThirdWeek = calculatePercentage(weeklySpeedScore.THIRD_WEEK, gaugeGreenStart)
+    const percentageFourthWeek = calculatePercentage(weeklySpeedScore.FOURTH_WEEK, gaugeGreenStart)
 
     return (
 
         <>
             <TableContentTbodyTrNoLine>
-                <TableContentTdTitle isBM={occupation.includes(BUSINESS_MANAGER)}>WeeklySpeed</TableContentTdTitle>
+                <TableContentTdTitle isBM={occupation.includes(BUSINESS_MANAGER)}>Weekly Speed</TableContentTdTitle>
             </TableContentTbodyTrNoLine>
 
             <TableContentTbodyTr>
