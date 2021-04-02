@@ -2,7 +2,7 @@ import { call, pathOr, prop, flatten } from 'ramda'
 import { FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK } from '../kpi/kpi.sagas'
 import { takeEvery, all, put } from 'redux-saga/effects'
 import { GET_DETAIL_DATA, getDetailData, setDataExpandView } from './expandView.action'
-import { getCompagnyNameByClientContactId } from './expandView.service'
+import { getCompanyNameByClientContactId } from './expandView.service'
 import {
     BUSINESS_MANAGER,
     TALENT_ACQUISITION,
@@ -34,11 +34,10 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
                             IS_CLIENT)
                         ))))))
 
-
-            yield all(datas.INTAKES.FIRST_WEEK.map(intake => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], intake), prop("clientContacts", intake), INTAKES, FIRST_WEEK, IS_CLIENT))))
-            yield all(datas.INTAKES.SECOND_WEEK.map(intake => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], intake), prop("clientContacts", intake), INTAKES, SECOND_WEEK, IS_CLIENT))))
-            yield all(datas.INTAKES.THIRD_WEEK.map(intake => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], intake), prop("clientContacts", intake), INTAKES, THIRD_WEEK, IS_CLIENT))))
-            yield all(datas.INTAKES.FOURTH_WEEK.map(intake => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], intake), prop("clientContacts", intake), INTAKES, FOURTH_WEEK, IS_CLIENT))))
+            yield all(datas.INTAKES.FIRST_WEEK.map(intake => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], intake), prop("candidates", intake), INTAKES, FIRST_WEEK, IS_CANDIDATE, pathOr(0, ["clientContacts", "data", 0, "id"], intake)))))
+            yield all(datas.INTAKES.SECOND_WEEK.map(intake => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], intake), prop("candidates", intake), INTAKES, SECOND_WEEK, IS_CANDIDATE, pathOr(0, ["clientContacts", "data", 0, "id"], intake)))))
+            yield all(datas.INTAKES.THIRD_WEEK.map(intake => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], intake), prop("candidates", intake), INTAKES, THIRD_WEEK, IS_CANDIDATE, pathOr(0, ["clientContacts", "data", 0, "id"], intake)))))
+            yield all(datas.INTAKES.FOURTH_WEEK.map(intake => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], intake), prop("candidates", intake), INTAKES, FOURTH_WEEK, IS_CANDIDATE, pathOr(0, ["clientContacts", "data", 0, "id"], intake)))))
 
         } else if (occupation === TALENT_ACQUISITION || occupation === SOURCING_OFFICER) {
 
@@ -70,7 +69,6 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
 }
 
 export function* getDetailDataSaga(action) {
-
     let id = pathOr(0, ["payload", "ID"], action)
     let weekLabel = pathOr("", ["payload", "WEEK_LABEL"], action)
     let type = pathOr("", ["payload", "TYPE"], action)
@@ -80,12 +78,19 @@ export function* getDetailDataSaga(action) {
     let firstName = pathOr("", ["payload", "DATA", "data", 0, "firstName"], action).trim()
 
     try {
+        let clientCorporationName
         if (clientOrCandidate === IS_CLIENT) {
-            let clientCorporationName = yield call(getCompagnyNameByClientContactId, id)
+            clientCorporationName = yield call(getCompanyNameByClientContactId, id)
             yield put(setDataExpandView(type, weekLabel, { ID: id, LASTNAME: lastName, FIRSTNAME: firstName, COMPANY: clientCorporationName }))
         } else if (clientOrCandidate === IS_CANDIDATE) {
             let candidatesCategories = yield call(getCandidateCategory, id)
-            yield put(setDataExpandView(type, weekLabel, { ID: id, LASTNAME: lastName, FIRSTNAME: firstName, CATEGORY: path([0, "name"], candidatesCategories) }))
+            let details = { ID: id, LASTNAME: lastName, FIRSTNAME: firstName, CATEGORY: path([0, "name"], candidatesCategories) }
+            if (type === "INTAKES") {
+                const clientId = pathOr(0, ["payload", "CLIENT_ID"], action)
+                clientCorporationName = yield call(getCompanyNameByClientContactId, clientId)
+                details = { ...details, COMPANY: clientCorporationName }
+            }
+            yield put(setDataExpandView(type, weekLabel, details))
         }
     } catch (e) {
         //

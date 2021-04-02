@@ -1,7 +1,7 @@
 import { get } from "../../utils/api";
 import { pathOr } from "ramda"
 
-export const getCompagnyNameByClientContactId = (id) =>
+export const getCompanyNameByClientContactId = (id) =>
     get("query/ClientContact", {
         fields: "clientCorporation",
         where: `id=${id}`

@@ -16,13 +16,19 @@ const Row = styled.div({
     alignItems: "center"
 });
 
-const ExpandViewDetailClient= ({ week, title, dataToDisplay }) => {
+const ExpandViewDetailClient = ({ week, title, dataToDisplay }) => {
+    const filteredData = dataToDisplay?.reduce((accumulator, current) => {
+        if(!accumulator.some(item => item.ID === current.ID)) {
+            accumulator.push(current);
+        }
+        return accumulator;
+    }, [])
 
     return (
         <>
             {
-                dataToDisplay.map((data, i) => (
-                    <Row key={i}>
+                filteredData.map((data) => (
+                    <Row key={data.ID}>
                         <Paragraph >{propOr("", 'FIRSTNAME', data).trim() + ' ' + propOr("", 'LASTNAME', data).trim() + ' @ ' + propOr("", 'COMPANY', data).trim()}</Paragraph>
                         <BullhornLink candidateId={prop('ID', data)} isClient={true} />
                         <LinkedinLink firstName={propOr("", 'FIRSTNAME', data).trim()} lastName={propOr("", 'LASTNAME', data).trim()} />

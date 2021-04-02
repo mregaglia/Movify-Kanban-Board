@@ -17,12 +17,18 @@ const Row = styled.div({
 });
 
 const ExpandViewDetailCandidates = ({ week, title, dataToDisplay }) => {
+    const filteredData = dataToDisplay?.reduce((accumulator, current) => {
+        if(!accumulator.some(item => item.ID === current.ID)) {
+            accumulator.push(current);
+        }
+        return accumulator;
+    }, [])
 
     return (
         <>
             {
-                dataToDisplay.map((data, i) => (
-                    <Row key={i}>
+                filteredData.map((data) => (
+                    <Row key={data.ID}>
                         <Paragraph >{propOr("", 'FIRSTNAME', data).trim() + ' ' + propOr("", 'LASTNAME', data).trim() + ' @ ' + propOr("", 'CATEGORY', data).trim()}</Paragraph>
                         <BullhornLink candidateId={prop('ID', data)} isClient={false} />
                         <LinkedinLink firstName={propOr("", 'FIRSTNAME', data).trim()} lastName={propOr("", 'LASTNAME', data).trim()} />
