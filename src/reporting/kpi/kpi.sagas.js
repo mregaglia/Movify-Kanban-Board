@@ -20,7 +20,8 @@ import {
     calculateAverageYTDData,
     countNoteForRecruitment,
     initializeObjectByDates,
-    filterCvSentStatusForWeeks
+    filterCvSentStatusForWeeks,
+    initializeObjectByDatesTable
 } from '../../utils/reporting'
 import {
     GET_EMPLOYEE_KPI,
@@ -249,8 +250,8 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
 
     // BUSINESS MANAGER DATA
     if ((occupation.includes(BUSINESS_MANAGER))) {
-        objectProspectionDone = initializeObjectByDates()
-        objectIntakes = initializeObjectByDates()
+        objectProspectionDone = initializeObjectByDatesTable()
+        objectIntakes = initializeObjectByDatesTable()
     }
 
     // TALENT ACQUISITION DATA
@@ -264,7 +265,7 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
 
     // BUSINESS MANAGER AND TALENT ACQUISITION DATA
     if (occupation.includes(BUSINESS_MANAGER) || occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
-        objectInterviewsDone = initializeObjectByDates()
+        objectInterviewsDone = initializeObjectByDatesTable()
     }
 
     try {
@@ -298,7 +299,7 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
                     objectInterviewsDone[weekLabel] = dataRecruitment.INTERVIEWS_DONE
 
                     let dataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
-
+                    
                     objectDataBusinessManager = dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER
                     objectProspectionDone[weekLabel] = dataBusinessManager.PROSPECTIONS
                     objectIntakes[weekLabel] = dataBusinessManager.INTAKES
