@@ -15,6 +15,8 @@ export const INTERVIEW_SCHEDULED = "INTERVIEW_SCHEDULED"
 export const LINKED_INMAIL = "LINKED_INMAIL"
 export const INTAKES = "INTAKES"
 export const PROSPECTION_MEETING_DONE = "PROSPECTION_MEETING_DONE"
+export const PROSPECTION_MEETING_SCHEDULED = "PROSPECTION_MEETING_SCHEDULED"
+export const NEW_VACANCY = "NEW_VACANCY"
 
 const IS_CANDIDATE = "IS_CANDIDATE"
 const IS_CLIENT = "IS_CLIENT"
@@ -38,6 +40,11 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
             yield all(datas.INTAKES.SECOND_WEEK.map(intake => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], intake), prop("candidates", intake), INTAKES, SECOND_WEEK, IS_CANDIDATE, pathOr(0, ["clientContacts", "data", 0, "id"], intake)))))
             yield all(datas.INTAKES.THIRD_WEEK.map(intake => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], intake), prop("candidates", intake), INTAKES, THIRD_WEEK, IS_CANDIDATE, pathOr(0, ["clientContacts", "data", 0, "id"], intake)))))
             yield all(datas.INTAKES.FOURTH_WEEK.map(intake => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], intake), prop("candidates", intake), INTAKES, FOURTH_WEEK, IS_CANDIDATE, pathOr(0, ["clientContacts", "data", 0, "id"], intake)))))
+
+            yield all(datas.PROSPECTIONS_SCHEDULED.FIRST_WEEK.map(prospectionDone => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone), prop("clientContacts", prospectionDone), PROSPECTION_MEETING_SCHEDULED, FIRST_WEEK, IS_CLIENT))))
+            yield all(datas.PROSPECTIONS_SCHEDULED.SECOND_WEEK.map(prospectionDone => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone), prop("clientContacts", prospectionDone), PROSPECTION_MEETING_SCHEDULED, SECOND_WEEK, IS_CLIENT))))
+            yield all(datas.PROSPECTIONS_SCHEDULED.THIRD_WEEK.map(prospectionDone => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone), prop("clientContacts", prospectionDone), PROSPECTION_MEETING_SCHEDULED, THIRD_WEEK, IS_CLIENT))))
+            yield all(datas.PROSPECTIONS_SCHEDULED.FOURTH_WEEK.map(prospectionDone => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone), prop("clientContacts", prospectionDone), PROSPECTION_MEETING_SCHEDULED, FOURTH_WEEK, IS_CLIENT))))
 
         } else if (occupation === TALENT_ACQUISITION || occupation === SOURCING_OFFICER) {
 

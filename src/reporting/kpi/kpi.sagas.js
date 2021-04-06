@@ -246,25 +246,26 @@ export function* calculateAverageYTD(occupation, objectYTDBusinessManager, objec
 }
 
 export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
-    let dataRecruitment, objectProspectionDone, objectIntakes, objectInterviewsScheduled, objectCategories, objectInterviewsDone, objectLinkedInMail
+    let dataRecruitment, objectProspectionDone, objectIntakes, objectInterviewsScheduled, objectCategories, objectInterviewsDone, objectLinkedInMail, objectProspectionsScheduled
 
     // BUSINESS MANAGER DATA
     if ((occupation.includes(BUSINESS_MANAGER))) {
         objectProspectionDone = initializeObjectByDatesTable()
         objectIntakes = initializeObjectByDatesTable()
+        objectProspectionsScheduled = initializeObjectByDatesTable()
     }
 
-    // TALENT ACQUISITION DATA
-    if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
-        objectInterviewsScheduled = initializeObjectByDates()
+    // TALENT ACQUISITION AND SOURCING OFFICER DATA
+    if ([TALENT_ACQUISITION, SOURCING_OFFICER].includes(occupation)) {
         objectCategories = initializeObjectByDates()
     }
-
+    
     // SOURCING OFFICER DATA
     if (occupation.includes(SOURCING_OFFICER)) objectLinkedInMail = initializeObjectByDates()
-
-    // BUSINESS MANAGER AND TALENT ACQUISITION DATA
-    if (occupation.includes(BUSINESS_MANAGER) || occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
+    
+    // BUSINESS MANAGER, SOURCING OFFICER AND TALENT ACQUISITION DATA
+    if ([BUSINESS_MANAGER, TALENT_ACQUISITION, SOURCING_OFFICER].includes(occupation)) {
+        objectInterviewsScheduled = initializeObjectByDates()
         objectInterviewsDone = initializeObjectByDatesTable()
     }
 
@@ -303,6 +304,7 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
                     objectDataBusinessManager = dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER
                     objectProspectionDone[weekLabel] = dataBusinessManager.PROSPECTIONS
                     objectIntakes[weekLabel] = dataBusinessManager.INTAKES
+                    objectProspectionsScheduled[weekLabel] = dataBusinessManager.PROSPECTIONS_SCHEDULED
 
                     let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
                     objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
@@ -316,6 +318,7 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
 
         if (occupation.includes(BUSINESS_MANAGER)) {
             return {
+                PROSPECTIONS_SCHEDULED: objectProspectionsScheduled,
                 PROSPECTIONS_DONE: objectProspectionDone,
                 INTAKES: objectIntakes,
                 INTERVIEWS_DONE: objectInterviewsDone

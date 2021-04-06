@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { TableContentTd, TableContentTbodyTr, TableContentTdTitle, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdBoldClickable, TableContentTdLabelBold, TableContentTdBold } from "../../style/table_style"
 import { pathOr } from 'ramda'
 import { object, string } from "prop-types"
-import { LABEL_HIRED, LABEL_INTERVIEW_DONE, LABEL_INTERVIEW_SCHEDULE, LABEL_CONTACTED_BY_INMAIL } from '../../utils/reporting'
+import { LABEL_HIRED, LABEL_INTERVIEW_DONE, LABEL_INTERVIEW_SCHEDULED, LABEL_CONTACTED_BY_INMAIL } from '../../utils/reporting'
 import {
     BUSINESS_MANAGER,
     SOURCING_OFFICER
@@ -80,7 +80,7 @@ const TalentAcquisition = ({ datas, occupation }) => {
 
                             </TableContentTbodyTr>
                         )
-                    } else if ((datas[key].TITLE === LABEL_INTERVIEW_SCHEDULE && !occupation.includes(BUSINESS_MANAGER))) {
+                    } else if ((datas[key].TITLE === LABEL_INTERVIEW_SCHEDULED && !occupation.includes(BUSINESS_MANAGER))) {
                         return (
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabelBold >{datas[key].TITLE}</TableContentTdLabelBold>
