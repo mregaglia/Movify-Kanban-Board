@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import GaugeChart from 'react-gauge-chart'
 import theme from '../../style/theme'
 import { number, object, bool } from 'prop-types'
 import { path } from 'ramda'
 import styled from 'styled-components'
+import debounce from "../../utils/debounce";
 
 const BoxGauge = styled.div(() => ({
     width: "410px",
@@ -22,6 +23,7 @@ const GaugeDataDisplaying = styled.p`
 `
 
 const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd, weeklySpeedScore, hasCalculatedWeeklySpeed }) => {
+    const [key, setKey] = useState(new Date())
 
     const endGreenGaugeConverted = 1;
     const startGreendGaugeConverted = (gaugeGreenStart / gaugeGreenEnd).toFixed(2)
@@ -39,8 +41,29 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
     let lastWeekScore = (hasCalculatedWeeklySpeed) ? weeklySpeedScore.FOURTH_WEEK : 0
     let weeklySpeedGaugeDisplayed = (weeklySpeedGauge > 1) ? 1 : weeklySpeedGauge
 
+    useEffect(() => {
+        // Changing the key on resize forces the component to re-render
+        // Which will prevent the bug were the needle reverts back to its default value
+        // Issue: https://github.com/Martin36/react-gauge-chart/issues/35
+        // Once this PR is merged (https://github.com/Martin36/react-gauge-chart/pull/59),
+        // the issue should be resolved and we can remove all this logic
+        // The library seems rather dead though 🥲
+        const handleResize = () => {
+            setKey(new Date())
+        }
+
+        // Debounce to improve performance
+        const debouncedHandleResize = debounce(handleResize, 1000)
+
+        // Subscribe to the event
+        window.addEventListener('resize', debouncedHandleResize)
+
+        // Unsubscribe from the event
+        return () => window.removeEventListener('resize', handleResize)
+    })
+
     return (
-        <BoxGauge>
+        <BoxGauge key={key}>
             <GaugeChart
                 id="gauge-chart5"
                 nrOfLevels={420}

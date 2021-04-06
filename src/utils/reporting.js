@@ -34,7 +34,7 @@ export const LABEL_PROJECT_START = "Project Start"
 
 export const LABEL_CONTACTED_BY_INMAIL = "Contacted by InMail"
 export const LABEL_CONTACTED_BY_PHONE = "Contacted by phone"
-export const LABEL_INTERVIEW_SCHEDULE = "Interview scheduled"
+export const LABEL_INTERVIEW_SCHEDULED = "Interview scheduled"
 export const LABEL_NO_SHOW = "No Show"
 export const LABEL_INTERVIEW_DONE = "Interview done"
 export const LABEL_CONTRACT_PROPOSED = "Contract proposed"
@@ -92,7 +92,7 @@ export const initalizeObjectRecruitment = () => {
   return {
     CONTACTED_BY_INMAIL: { TITLE: LABEL_CONTACTED_BY_INMAIL, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     CONTACTED_BY_PHONE: { TITLE: LABEL_CONTACTED_BY_PHONE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
-    INTERVIEW_SCHEDULED: { TITLE: LABEL_INTERVIEW_SCHEDULE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+    INTERVIEW_SCHEDULED: { TITLE: LABEL_INTERVIEW_SCHEDULED, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     NO_SHOW: { TITLE: LABEL_NO_SHOW, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     INTERVIEW_DONE: { TITLE: LABEL_INTERVIEW_DONE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     CONTRACT_PROPOSED: { TITLE: LABEL_CONTRACT_PROPOSED, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -312,6 +312,7 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
   let prospectionsDone = []
   let intakes = []
   let prospectionsScheduled = []
+  // let newVacancies = []
 
   if (data.length === 0) return objectDataBusinessManager
   for (let i = 0; i < data.length; i++) {
