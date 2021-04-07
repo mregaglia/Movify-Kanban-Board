@@ -11,10 +11,10 @@ import {
     TALENT_ACQUISITION
 } from '../../auth/user.sagas'
 
-const TablePercentage = ({ occupation }) => {
+const TablePercentage = ({ occupation, className }) => {
 
     return (
-        <div>
+        <div className={className}>
             {
                 <Table>
                     <thead>
@@ -39,7 +39,8 @@ const TablePercentage = ({ occupation }) => {
 }
 
 TablePercentage.propTypes = {
-    occupation: string
+    occupation: string,
+    className: string,
 };
 
 export default connect(

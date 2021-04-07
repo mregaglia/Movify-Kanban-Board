@@ -39,6 +39,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected, employeeSelected }) =
             query.delete('employee')
         }
         history.push({ search: query.toString() })
+        // eslint-disable-next-line
     }, [employeeSelected, history, onChangeEmployee])
 
     return (

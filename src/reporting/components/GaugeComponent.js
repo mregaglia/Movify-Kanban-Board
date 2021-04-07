@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import GaugeChart from 'react-gauge-chart'
 import theme from '../../style/theme'
-import { number, object, bool } from 'prop-types'
+import { number, object, bool, string } from 'prop-types'
 import { path } from 'ramda'
 import styled from 'styled-components'
 import debounce from "../../utils/debounce";
 
-const BoxGauge = styled.div(() => ({
-    width: "410px",
-    paddingTop: "35px"
-}));
+const BoxGauge = styled.div`
+    width: 410px;
+    padding-top: 35px;
+`
 
 const Paragraph = styled.p`
   font-size: 35px;
@@ -22,7 +22,7 @@ const GaugeDataDisplaying = styled.p`
   text-align: center;
 `
 
-const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd, weeklySpeedScore, hasCalculatedWeeklySpeed }) => {
+const GaugeComponent = ({ className, gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd, weeklySpeedScore, hasCalculatedWeeklySpeed }) => {
     const [key, setKey] = useState(new Date())
 
     const endGreenGaugeConverted = 1;
@@ -63,7 +63,7 @@ const GaugeComponent = ({ gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaug
     })
 
     return (
-        <BoxGauge key={key}>
+        <BoxGauge key={key} className={className}>
             <GaugeChart
                 id="gauge-chart5"
                 nrOfLevels={420}
@@ -88,7 +88,8 @@ GaugeComponent.propTypes = {
     gaugeRedStart: number,
     gaugeRedEnd: number,
     weeklySpeedScore: object,
-    hasCalculatedWeeklySpeed: bool
+    hasCalculatedWeeklySpeed: bool,
+    className: string
 };
 
 export default connect(

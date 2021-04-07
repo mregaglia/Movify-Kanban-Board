@@ -12,9 +12,9 @@ import {
     TALENT_ACQUISITION
 } from '../../auth/user.sagas'
 
-const TableData = ({ occupation, dates }) => {
+const TableData = ({ occupation, dates, className }) => {
     return (
-        <div>
+        <div className={className}>
             <Table>
                 <thead>
                     <TableTheadTr>
@@ -43,6 +43,7 @@ const TableData = ({ occupation, dates }) => {
 
 TableData.propTypes = {
     occupation: string,
+    className: string,
     dates: object
 };
 

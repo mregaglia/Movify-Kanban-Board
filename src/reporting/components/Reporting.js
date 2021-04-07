@@ -18,11 +18,39 @@ import {
 } from '../../auth/user.sagas'
 import { initializeExpandView } from '../expandView/expandView.action'
 
-const Container = styled.div({
-    display: "flex",
-    margin: "60px",
-    justifyContent: "center"
-})
+const Container = styled.div`
+    padding-top: 60px;
+    display: flex;
+    justify-content: center;
+    @media only screen and (max-width: 1500px) {
+        display: grid;
+        grid-auto-flow: column;
+    }
+`
+
+const StyledTableData = styled(TableData)`
+    @media only screen and (max-width: 1500px) {
+        grid-row: 1;
+        grid-column: 1;
+    }
+`
+
+const StyledTablePercentage = styled(TablePercentage)`
+    @media only screen and (max-width: 1500px) {
+        grid-row: 1;
+    }
+`
+
+const StyledGauge = styled(GaugeComponent)`
+    @media only screen and (max-width: 1500px) {
+        justify-self: end;
+        grid-column: span 2;
+        margin-top: -11.25rem;
+        margin-right: 3rem;
+        grid-row: 2;
+        width: auto;
+    }
+`
 
 const Reporting = ({ initializeExpandView, initializeStateWeeklySpeedCalcul, setLoadingData, getGaugeLimit, getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess }) => {
 
@@ -69,9 +97,9 @@ const Reporting = ({ initializeExpandView, initializeStateWeeklySpeedCalcul, set
                 {
                     (!isEmpty(employeeSelected) && !isLoadingKpi) && (
                         <>
-                            <GaugeComponent />
-                            <TableData />
-                            <TablePercentage />
+                            <StyledGauge />
+                            <StyledTableData />
+                            <StyledTablePercentage />
                         </>
                     )
                 }
