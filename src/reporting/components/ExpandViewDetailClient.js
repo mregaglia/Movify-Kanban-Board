@@ -17,7 +17,7 @@ const Row = styled.div({
 });
 
 const ExpandViewDetailClient = ({ week, title, dataToDisplay }) => {
-    
+
     const filteredData = dataToDisplay?.reduce((accumulator, current) => {
         if(!accumulator.some(item => item.ID === current.ID)) {
             accumulator.push(current);
@@ -38,7 +38,7 @@ const ExpandViewDetailClient = ({ week, title, dataToDisplay }) => {
                 filteredData.map((data) => (
                     <Row key={data.ID}>
                         <Paragraph>{paragraph(data)}</Paragraph>
-                        <BullhornLink candidateId={data.ID} isClient />
+                        <BullhornLink candidateId={data.ID} isClient={title !== "INTAKES"} />
                         <LinkedinLink firstName={data.FIRSTNAME} lastName={data.LASTNAME} />
                     </Row>
                 ))

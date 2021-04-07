@@ -26,8 +26,7 @@ const LinkContainer = styled.a({
 })
 
 const BullhornLink = ({ candidateId, isClient }) => {
-    
-    let bullhornUrl = (isClient) ? getBullhornUrlClientContact({ id: candidateId }): getBullhornUrl({ id: candidateId })
+    const bullhornUrl = isClient ? getBullhornUrlClientContact({ id: candidateId }): getBullhornUrl({ id: candidateId })
     
     return (
         <LinkContainer href={bullhornUrl} target="_blank" rel="noopener noreferrer">
