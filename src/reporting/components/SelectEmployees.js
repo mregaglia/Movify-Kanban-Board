@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import Select from 'react-select'
 import { useHistory } from "react-router-dom";
 import { setEmployeeSelected } from '../employees/employees.actions'
@@ -23,11 +23,11 @@ const SelectEmployees = ({ employees, setEmployeeSelected, employeeSelected }) =
     const options = getValuesFromEmployees(employees)
     const defaultValue = options.find(({ value }) => Number(value) === employeeSelected?.id)
 
-    const onChangeEmployee = (newlySelectedEmployee) => {
+    const onChangeEmployee = useCallback((newlySelectedEmployee) => {
         const newlySelectedEmployeeId = typeof newlySelectedEmployee === 'number' ? newlySelectedEmployee : parseInt(newlySelectedEmployee.value)
         const newEmployee = employees.find(({ id }) => id === newlySelectedEmployeeId)
         setEmployeeSelected(newEmployee)
-    }
+    }, [employees, setEmployeeSelected])
 
     useEffect(() => {
         const employeeId = employeeSelected?.id;
@@ -39,7 +39,7 @@ const SelectEmployees = ({ employees, setEmployeeSelected, employeeSelected }) =
             query.delete('employee')
         }
         history.push({ search: query.toString() })
-    }, [employeeSelected?.id, history])
+    }, [employeeSelected, history, onChangeEmployee])
 
     return (
         <>
