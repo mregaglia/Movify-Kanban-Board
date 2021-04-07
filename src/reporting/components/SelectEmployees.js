@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Select from 'react-select'
+import { useHistory } from "react-router-dom";
 import { setEmployeeSelected } from '../employees/employees.actions'
 
 import { connect } from "react-redux";
-import { pathOr } from "ramda";
+import { pathOr, path } from "ramda";
 import { array } from "prop-types";
 import styled from "styled-components"
 import { getValuesFromEmployees } from '../../utils/employees'
+import { useQuery } from '../../utils/hooks'
 
 const Container = styled.div({
     width: "17%",
@@ -15,25 +17,37 @@ const Container = styled.div({
     zIndex: "1"
 })
 
-const SelectEmployees = ({ employees, setEmployeeSelected }) => {
-
+const SelectEmployees = ({ employees, setEmployeeSelected, employeeSelected }) => {
+    const history = useHistory()
+    const query = useQuery()
     const options = getValuesFromEmployees(employees)
+    const defaultValue = options.find(({ value }) => Number(value) === employeeSelected?.id)
 
-    const onChangeInput = (employeeSelected) => {
-        for (let i = 0; i < employees.length; i++) {
-            if (parseInt(employeeSelected.value) === employees[i].id) {
-                setEmployeeSelected(employees[i]);
-                break;
-            }
-        }
+    const onChangeEmployee = (newlySelectedEmployee) => {
+        const newlySelectedEmployeeId = typeof newlySelectedEmployee === 'number' ? newlySelectedEmployee : parseInt(newlySelectedEmployee.value)
+        const newEmployee = employees.find(({ id }) => id === newlySelectedEmployeeId)
+        setEmployeeSelected(newEmployee)
     }
+
+    useEffect(() => {
+        const employeeId = employeeSelected?.id;
+
+        if (employeeId) {
+            query.set('employee', employeeId)
+            onChangeEmployee(employeeId)
+        } else {
+            query.delete('employee')
+        }
+        history.push({ search: query.toString() })
+    }, [employeeSelected?.id, history])
 
     return (
         <>
             <Container>
                 <Select
                     options={options}
-                    onChange={onChangeInput}
+                    onChange={onChangeEmployee}
+                    defaultValue={defaultValue}
                 />
             </Container>
         </>
@@ -49,6 +63,7 @@ SelectEmployees.propTypes = {
 export default connect(
     state => ({
         employees: pathOr([], ["employees", "employeesToSet"], state),
+        employeeSelected: path(["employees", "employeeSelected"], state),
     }),
     { setEmployeeSelected,  }
 )(SelectEmployees);
