@@ -43,7 +43,7 @@ const TalentAcquisition = ({ datas, occupation }) => {
                                         } else {
                                             return (
                                                 <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
                                                         <ExpandViewDetailCandidates week={week} title={LINKED_INMAIL} />
                                                     </ReactTooltip>
                                                 </TableContentTdBoldClickable>
@@ -68,7 +68,7 @@ const TalentAcquisition = ({ datas, occupation }) => {
                                         } else {
                                             return (
                                                 <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
                                                         <ExpandViewDetailCandidates week={week} title={INTERVIEW_DONE} />
                                                     </ReactTooltip>
                                                 </TableContentTdBoldClickable>
@@ -91,7 +91,7 @@ const TalentAcquisition = ({ datas, occupation }) => {
                                         } else {
                                             return (
                                                 <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff="click" place="right" clickable={true } >
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff="click" place="right" clickable isCapture >
                                                         <ExpandViewDetailCandidates week={week} title={INTERVIEW_SCHEDULED} />
                                                     </ReactTooltip>
                                                 </TableContentTdBoldClickable>

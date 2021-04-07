@@ -79,7 +79,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                         } else {
                                             return (
                                                 <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
                                                         <ExpandViewDetailClient week={week} title={INTAKES} />
                                                     </ReactTooltip>
                                                 </TableContentTdBoldClickable>
@@ -102,7 +102,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                         } else {
                                             return (
                                                 <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
                                                         <ExpandViewDetailClient week={week} title={PROSPECTION_MEETING_DONE} />
                                                     </ReactTooltip>
                                                 </TableContentTdBoldClickable>
@@ -125,7 +125,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                         } else {
                                             return (
                                                 <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
                                                         <ExpandViewDetailClient week={week} title={PROSPECTION_MEETING_SCHEDULED} />
                                                     </ReactTooltip>
                                                 </TableContentTdBoldClickable>
@@ -148,7 +148,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                         } else {
                                             return (
                                                 <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
                                                         <ExpandViewDetailClient week={week} title={INTERVIEW_SCHEDULED} />
                                                     </ReactTooltip>
                                                 </TableContentTdBoldClickable>
@@ -171,7 +171,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                     //                     } else {
                     //                         return (
                     //                             <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                    //                                 <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable={true}>
+                    //                                 <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
                     //                                     <ExpandViewDetailClient week={week} title={NEW_VACANCY} />
                     //                                 </ReactTooltip>
                     //                             </TableContentTdBoldClickable>
