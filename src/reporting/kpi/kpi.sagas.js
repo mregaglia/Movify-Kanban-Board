@@ -246,13 +246,22 @@ export function* calculateAverageYTD(occupation, objectYTDBusinessManager, objec
 }
 
 export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
-    let dataRecruitment, objectProspectionDone, objectIntakes, objectInterviewsScheduled, objectCategories, objectInterviewsDone, objectLinkedInMail, objectProspectionsScheduled
+    let dataRecruitment,
+        objectProspectionDone,
+        objectIntakes,
+        objectInterviewsScheduled,
+        objectCategories,
+        objectInterviewsDone,
+        objectLinkedInMail,
+        objectProspectionsScheduled,
+        objectNewVacancy
 
     // BUSINESS MANAGER DATA
     if ((occupation.includes(BUSINESS_MANAGER))) {
         objectProspectionDone = initializeObjectByDatesTable()
         objectIntakes = initializeObjectByDatesTable()
         objectProspectionsScheduled = initializeObjectByDatesTable()
+        objectNewVacancy = initializeObjectByDatesTable()
     }
 
     // TALENT ACQUISITION AND SOURCING OFFICER DATA
@@ -309,6 +318,8 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
                     let kpiJobOrder = yield call(getJobOrders, employeeId, dates[i].startTimestamp, dates[i].endTimestamp)
                     objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count
 
+                    objectNewVacancy[weekLabel] = kpiJobOrder.data
+
                     objectDataBusinessManager.CALL[weekLabel] = objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] + objectDataBusinessManager.CALL[weekLabel]
                 }
             }
@@ -321,7 +332,8 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
                 PROSPECTIONS_SCHEDULED: objectProspectionsScheduled,
                 PROSPECTIONS_DONE: objectProspectionDone,
                 INTAKES: objectIntakes,
-                INTERVIEWS_DONE: objectInterviewsDone
+                INTERVIEWS_DONE: objectInterviewsDone,
+                NEW_VACANCY: objectNewVacancy,
             }
         } else if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
             let objectRecruitment = {

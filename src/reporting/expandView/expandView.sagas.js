@@ -36,6 +36,11 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
                             IS_CLIENT)
                         ))))))
 
+            yield all(datas.NEW_VACANCY.FIRST_WEEK.map(newVacancy => put(getDetailData(pathOr(0, ["clientContact", "id"], newVacancy), newVacancy, NEW_VACANCY, FIRST_WEEK, IS_CLIENT))))
+            yield all(datas.NEW_VACANCY.SECOND_WEEK.map(newVacancy => put(getDetailData(pathOr(0, ["clientContact", "id"], newVacancy), newVacancy, NEW_VACANCY, SECOND_WEEK, IS_CLIENT))))
+            yield all(datas.NEW_VACANCY.THIRD_WEEK.map(newVacancy => put(getDetailData(pathOr(0, ["clientContact", "id"], newVacancy), newVacancy, NEW_VACANCY, THIRD_WEEK, IS_CLIENT))))
+            yield all(datas.NEW_VACANCY.FOURTH_WEEK.map(newVacancy => put(getDetailData(pathOr(0, ["clientContact", "id"], newVacancy), newVacancy, NEW_VACANCY, FOURTH_WEEK, IS_CLIENT))))
+
             yield all(datas.INTAKES.FIRST_WEEK.map(intake => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], intake), prop("candidates", intake), INTAKES, FIRST_WEEK, IS_CANDIDATE, pathOr(0, ["clientContacts", "data", 0, "id"], intake)))))
             yield all(datas.INTAKES.SECOND_WEEK.map(intake => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], intake), prop("candidates", intake), INTAKES, SECOND_WEEK, IS_CANDIDATE, pathOr(0, ["clientContacts", "data", 0, "id"], intake)))))
             yield all(datas.INTAKES.THIRD_WEEK.map(intake => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], intake), prop("candidates", intake), INTAKES, THIRD_WEEK, IS_CANDIDATE, pathOr(0, ["clientContacts", "data", 0, "id"], intake)))))
@@ -81,17 +86,31 @@ export function* getDetailDataSaga(action) {
     let type = pathOr("", ["payload", "TYPE"], action)
     let clientOrCandidate = pathOr("", ["payload", "CLIENT_OR_CANDIDATE"], action)
 
-    let lastName = pathOr("", ["payload", "DATA", "data", 0, "lastName"], action).trim()
-    let firstName = pathOr("", ["payload", "DATA", "data", 0, "firstName"], action).trim()
+    let lastName = type === NEW_VACANCY ? pathOr("", ["payload", "DATA", "clientContact", "lastName"], action).trim() : pathOr("", ["payload", "DATA", "data", 0, "lastName"], action).trim()
+    let firstName = type === NEW_VACANCY ? pathOr("", ["payload", "DATA", "clientContact", "firstName"], action).trim() : pathOr("", ["payload", "DATA", "data", 0, "firstName"], action).trim()
 
     try {
         let clientCorporationName
+
         if (clientOrCandidate === IS_CLIENT) {
-            clientCorporationName = yield call(getCompanyNameByClientContactId, id)
-            yield put(setDataExpandView(type, weekLabel, { ID: id, LASTNAME: lastName, FIRSTNAME: firstName, COMPANY: clientCorporationName }))
+            let details = { ID: id, LASTNAME: lastName, FIRSTNAME: firstName }
+
+            if (type === NEW_VACANCY) {
+                clientCorporationName = pathOr("", ["payload", "DATA", "clientCorporation", "name"], action).trim()
+                const jobTitle = pathOr("", ["payload", "DATA", "title"], action)
+                details = { ...details, JOB_TITLE: jobTitle }
+            } else {
+                clientCorporationName = yield call(getCompanyNameByClientContactId, id)
+            }
+
+            details = { ...details, COMPANY: clientCorporationName }
+
+            yield put(setDataExpandView(type, weekLabel, details))
+
         } else if (clientOrCandidate === IS_CANDIDATE) {
             let candidatesCategories = yield call(getCandidateCategory, id)
             let details = { ID: id, LASTNAME: lastName, FIRSTNAME: firstName, CATEGORY: path([0, "name"], candidatesCategories) }
+
             if (type === "INTAKES") {
                 const clientId = pathOr(0, ["payload", "CLIENT_ID"], action)
                 clientCorporationName = yield call(getCompanyNameByClientContactId, clientId)

@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from "react-redux"
-import { pathOr, propOr, prop } from 'ramda'
+import { pathOr } from 'ramda'
 import { array } from 'prop-types'
 import styled from 'styled-components'
 import BullhornLink from './BullhornLink'
@@ -17,21 +17,29 @@ const Row = styled.div({
 });
 
 const ExpandViewDetailClient = ({ week, title, dataToDisplay }) => {
+    
     const filteredData = dataToDisplay?.reduce((accumulator, current) => {
         if(!accumulator.some(item => item.ID === current.ID)) {
             accumulator.push(current);
         }
         return accumulator;
     }, [])
+    
+    const paragraph = (data) => {
+        const companyName = data.COMPANY
+        const name = title === "NEW_VACANCY" ? data.JOB_TITLE : `${data.FIRSTNAME} ${data.LASTNAME}`
+
+        return `${name} @ ${companyName}`
+    }
 
     return (
         <>
             {
                 filteredData.map((data) => (
                     <Row key={data.ID}>
-                        <Paragraph >{propOr("", 'FIRSTNAME', data).trim() + ' ' + propOr("", 'LASTNAME', data).trim() + ' @ ' + propOr("", 'COMPANY', data).trim()}</Paragraph>
-                        <BullhornLink candidateId={prop('ID', data)} isClient={true} />
-                        <LinkedinLink firstName={propOr("", 'FIRSTNAME', data).trim()} lastName={propOr("", 'LASTNAME', data).trim()} />
+                        <Paragraph>{paragraph(data)}</Paragraph>
+                        <BullhornLink candidateId={data.ID} isClient />
+                        <LinkedinLink firstName={data.FIRSTNAME} lastName={data.LASTNAME} />
                     </Row>
                 ))
             }

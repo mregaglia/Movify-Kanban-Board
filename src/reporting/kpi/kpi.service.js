@@ -36,7 +36,7 @@ export const getSubmissionStatusChangedProjectStart = (idEmployee, dateStartTime
 
 export const getJobOrders = (idEmployee, dateStartTimestamp, dateEndTimestamp) =>
     get("query/JobOrder", {
-        fields: "id",
+        fields: "id, clientCorporation, title, clientContact",
         where: `owner.id=${idEmployee} AND isDeleted=false AND dateAdded>${dateStartTimestamp} AND dateAdded<=${dateEndTimestamp}`,
         count: "50"
     })
