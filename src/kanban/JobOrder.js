@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { connect } from "react-redux";
 import { pathOr, prop, propOr } from "ramda";
 import { func, number, object, string } from "prop-types";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import ReactTooltip from "react-tooltip";
 import { AVAILABLE_STATUSES } from "../utils/kanban";
 import PriorityBadge from "../components/PriorityBadge";
@@ -56,23 +56,32 @@ const AddButton = styled.div(({ color, theme }) => ({
 }));
 
 const Tooltip = styled(ReactTooltip)`
-  font-family: ${({ theme }) => theme.fonts.fontFamily};
-  font-size: ${({ theme }) => `${theme.textDimensions.regular}px !important`};
-  background-color: ${({ theme }) =>
-    `${theme.colors.tooltipShadow} !important`};
-
-  &.place-right {
-    &:after {
-      border-right-color: ${({ theme }) =>
-    `${theme.colors.tooltipShadow} !important`};
-      border-right-style: solid !important;
-      border-right-width: 6px !important;
+  ${({ theme: { fonts, textDimensions, colors } }) => css`
+    font-family: ${fonts.fontFamily};
+    font-size: ${textDimensions.regular}px !important;
+    background-color: ${colors.tooltipShadow} !important;
+    max-height: 70vh;
+    max-width: 70vw;
+    overflow: scroll;
+    pointer-events: auto !important;
+    &:hover {
+      visibility: visible !important;
+      opacity: 1 !important;
     }
-  }
+    &.place-right {
+      &:after {
+        border-right-color: ${colors.tooltipShadow} !important;
+        border-right-style: solid !important;
+        border-right-width: 6px !important;
+      }
+    }
+  `}
 `;
 
-const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
+// eslint-disable-next-line react/display-name
+const JobOrder = React.memo(({ color, createJobSubmission, jobOrder }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const infoTooltipRef = useRef(null)
 
   const onAddCandidate = values =>
     createJobSubmission(
@@ -94,6 +103,29 @@ const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
             place="right"
             html
             effect="solid"
+            delayHide={1000}
+            ref={infoTooltipRef}
+            afterShow={() => {
+              // We check to see whether the tooltip overflows outside the window
+              // If so we override the position
+              // Issue: https://github.com/wwayne/react-tooltip/issues/599
+
+              const { tooltipRef } = infoTooltipRef?.current
+
+              if (!tooltipRef) return
+
+              const tooltipRectangle = tooltipRef.getBoundingClientRect()
+              const overflownTop = tooltipRectangle.top < 0
+              const overflownBottom = tooltipRectangle.bottom > window.innerHeight
+
+              if (overflownTop) {
+                tooltipRef.style.top = '10vh'
+                tooltipRef.style.bottom = 'auto'
+              } else if (overflownBottom) {
+                tooltipRef.style.top = 'auto'
+                tooltipRef.style.bottom = '10vh'
+              }
+            }}
           />
         </Row>
         <Row>
@@ -131,7 +163,9 @@ const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
       />
     </Row>
   );
-};
+}, (prevProps, nextProps) => {
+    return prevProps?.joId === nextProps?.joId
+});
 
 JobOrder.propTypes = {
   color: string,
