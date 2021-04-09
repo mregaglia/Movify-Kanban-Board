@@ -60,7 +60,6 @@ const Tooltip = styled(ReactTooltip)`
     font-family: ${fonts.fontFamily};
     font-size: ${textDimensions.regular}px !important;
     background-color: ${colors.tooltipShadow} !important;
-    height: calc(100% - 4rem) !important;
     max-height: 70vh;
     max-width: 70vw;
     overflow: scroll;
