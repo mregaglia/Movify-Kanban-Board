@@ -78,8 +78,7 @@ const Tooltip = styled(ReactTooltip)`
   `}
 `;
 
-// eslint-disable-next-line react/display-name
-const JobOrder = React.memo(({ color, createJobSubmission, jobOrder }) => {
+const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const infoTooltipRef = useRef(null)
 
@@ -163,9 +162,7 @@ const JobOrder = React.memo(({ color, createJobSubmission, jobOrder }) => {
       />
     </Row>
   );
-}, (prevProps, nextProps) => {
-    return prevProps?.joId === nextProps?.joId
-});
+};
 
 JobOrder.propTypes = {
   color: string,
