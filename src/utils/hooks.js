@@ -73,7 +73,7 @@ export const useHover = () => {
                 };
             }
         },
-      [ref.current] // Recall only if ref changes
+      []
     );
     return [ref, value];
 }
