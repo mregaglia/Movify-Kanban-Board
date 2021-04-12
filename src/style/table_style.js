@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 export const Table = styled.table({
-    
+
     borderCollapse: "collapse",
     margin: "25px 25px 25px 25px",
     fontSize: "1.2em",
@@ -22,10 +22,11 @@ export const TableContentTh = styled.th(() => ({
     whiteSpace: "nowrap"
 }))
 
-export const TableContentTd = styled.td(() => ({
-    padding: "12px 15px",
-    textAlign: "center",
-}))
+export const TableContentTd = styled.td`
+    padding: 12px 15px;
+    text-align: center;
+    ${({ clickable }) => clickable && 'cursor: pointer;'}
+`
 
 export const TableContentTdBold = styled.td(() => ({
     padding: "12px 15px",

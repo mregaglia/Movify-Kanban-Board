@@ -52,7 +52,8 @@ import {
     GET_JOBSUBMISSION_BY_JOBORDER_OPEN_ID,
     getJobSbmissionsStatusFromJobsubmissionOpen,
     GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN,
-    setJobSubmissionsStatusFromWeekRetrieved
+    setJobSubmissionsStatusFromWeekRetrieved,
+    setCvSentExpandedView,
 } from './kpi.actions'
 import {
     getNoteFromEmployee,
@@ -61,7 +62,8 @@ import {
     getJobSubmissionsByJobOrderId,
     getSubmissionStatusChangedCvSent,
     getJobOrdersForYTD,
-    getSubmissionStatusChangedCvSentById
+    getSubmissionStatusChangedCvSentById,
+    getJobSubmissionById
 } from './kpi.service'
 import {
     BUSINESS_MANAGER,
@@ -114,7 +116,6 @@ export function* getKpiDataEmployee(action) {
 export function* getLast4WeekDataBusinessManager(idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation) {
     try {
         const datasBM = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
-
         yield call(getCvSent, idEmployee, dates)
         yield call(calculateAllWeeklySpeedForBusinessManager, idEmployee, dates, datasBM.PROSPECTIONS_DONE)
 
@@ -254,7 +255,8 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
         objectInterviewsDone,
         objectLinkedInMail,
         objectProspectionsScheduled,
-        objectNewVacancy
+        objectNewVacancy,
+        objectCvSent
 
     // BUSINESS MANAGER DATA
     if ((occupation.includes(BUSINESS_MANAGER))) {
@@ -262,16 +264,17 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
         objectIntakes = initializeObjectByDatesTable()
         objectProspectionsScheduled = initializeObjectByDatesTable()
         objectNewVacancy = initializeObjectByDatesTable()
+        objectCvSent = initializeObjectByDatesTable()
     }
 
     // TALENT ACQUISITION AND SOURCING OFFICER DATA
     if ([TALENT_ACQUISITION, SOURCING_OFFICER].includes(occupation)) {
         objectCategories = initializeObjectByDates()
     }
-    
+
     // SOURCING OFFICER DATA
     if (occupation.includes(SOURCING_OFFICER)) objectLinkedInMail = initializeObjectByDates()
-    
+
     // BUSINESS MANAGER, SOURCING OFFICER AND TALENT ACQUISITION DATA
     if ([BUSINESS_MANAGER, TALENT_ACQUISITION, SOURCING_OFFICER].includes(occupation)) {
         objectInterviewsScheduled = initializeObjectByDates()
@@ -287,7 +290,7 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
             objectDateEmployee.DATES[weekLabel] = getDateString(dates[i].start)
 
             if (kpiNote.length !== 0) {
-                
+
                 if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
                     dataRecruitment = countNoteForRecruitmentAndIdsSourcing(weekLabel, kpiNote, objectDataRecruitment, occupation)
 
@@ -309,7 +312,7 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
                     objectInterviewsDone[weekLabel] = dataRecruitment.INTERVIEWS_DONE
 
                     let dataBusinessManager = countNoteForBusinessManager(weekLabel, kpiNote, objectDataBusinessManager)
-                    
+
                     objectDataBusinessManager = dataBusinessManager.OBJECT_DATA_BUSINESS_MANAGER
                     objectProspectionDone[weekLabel] = dataBusinessManager.PROSPECTIONS
                     objectIntakes[weekLabel] = dataBusinessManager.INTAKES
@@ -334,6 +337,7 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
                 INTAKES: objectIntakes,
                 INTERVIEWS_DONE: objectInterviewsDone,
                 NEW_VACANCY: objectNewVacancy,
+                CV_SENT: objectCvSent,
             }
         } else if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
             let objectRecruitment = {
@@ -463,16 +467,19 @@ export function* getJobSubmissionByJobOrderOpenIdSaga(action) {
     }
 }
 export function* getJobSubmissionStatusByJobSubmissionOpenSaga(action) {
-    let id = action.payload.ID
-    let dates = action.payload.DATES
+    const id = action.payload.ID
+    const dates = action.payload.DATES
+
     try {
-        let jobStatusChanged = yield call(getSubmissionStatusChangedCvSentById, id)
+        const jobStatusChanged = yield call(getSubmissionStatusChangedCvSentById, id)
         yield put(setJobSubmissionsStatusFromWeekRetrieved())
 
         if (jobStatusChanged.count > 0) {
-            let weekLabel = filterCvSentStatusForWeeks(jobStatusChanged, dates)
+            const jobSubmissions = yield call(getJobSubmissionById, id)
+            const weekLabel = filterCvSentStatusForWeeks(jobStatusChanged, dates)
             if (weekLabel !== "") {
                 yield put(setCvSent(weekLabel))
+                yield put(setCvSentExpandedView({ data: jobSubmissions?.data?.[0], weekLabel }))
             }
         }
     } catch (e) {

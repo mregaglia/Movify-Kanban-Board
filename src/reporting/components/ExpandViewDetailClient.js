@@ -5,15 +5,17 @@ import { array } from 'prop-types'
 import styled from 'styled-components'
 import BullhornLink from './BullhornLink'
 import LinkedinLink from './LinkedinLink'
+import { CV_SENT, INTAKES, NEW_VACANCY } from '../expandView/expandView.sagas'
 
 const Paragraph = styled.p`
-    text-align: left
+    text-align: left;
+    font-weight: bold;
 `
 
 const Row = styled.div({
     display: "flex",
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
 });
 
 const ExpandViewDetailClient = ({ week, title, dataToDisplay }) => {
@@ -24,12 +26,12 @@ const ExpandViewDetailClient = ({ week, title, dataToDisplay }) => {
         }
         return accumulator;
     }, [])
-    
-    const paragraph = (data) => {
-        const companyName = data.COMPANY
-        const name = title === "NEW_VACANCY" ? data.JOB_TITLE : `${data.FIRSTNAME} ${data.LASTNAME}`
 
-        return `${name} @ ${companyName}`
+    const paragraph = (data) => {
+        const companyNameOrJobTitle = title === CV_SENT ? data?.JOB_TITLE : data.COMPANY
+        const name = title === NEW_VACANCY ? data.JOB_TITLE : `${data.FIRSTNAME} ${data.LASTNAME}`
+
+        return `${name} @ ${companyNameOrJobTitle}`
     }
 
     return (
@@ -38,7 +40,7 @@ const ExpandViewDetailClient = ({ week, title, dataToDisplay }) => {
                 filteredData.map((data) => (
                     <Row key={data.ID}>
                         <Paragraph>{paragraph(data)}</Paragraph>
-                        <BullhornLink candidateId={data.ID} isClient={title !== "INTAKES"} />
+                        <BullhornLink candidateId={data.ID} isClient={![INTAKES, CV_SENT].includes(title)} />
                         <LinkedinLink firstName={data.FIRSTNAME} lastName={data.LASTNAME} />
                     </Row>
                 ))

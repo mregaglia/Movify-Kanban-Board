@@ -54,6 +54,7 @@ export const initalizeObjectBusinessManager = (occupation) => {
       CV_SENT: { TITLE: LABEL_CV_SENT, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       INTAKE: { TITLE: LABEL_INTAKE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       PROJECT_START: { TITLE: LABEL_PROJECT_START, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+      CV_SENT_EXPANDED_VIEW: { FIRST_WEEK: [], SECOND_WEEK: [], THIRD_WEEK: [], FOURTH_WEEK: [] },
     }
   } else {
     return {}
@@ -189,7 +190,7 @@ export const initializeObjectByDatesTable = () => {
 }
 
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
-  
+
 
   let data = notes
   let interviewsDone = []
@@ -312,7 +313,6 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
   let prospectionsDone = []
   let intakes = []
   let prospectionsScheduled = []
-  // let newVacancies = []
 
   if (data.length === 0) return objectDataBusinessManager
   for (let i = 0; i < data.length; i++) {

@@ -1,6 +1,6 @@
 import { call, pathOr, prop, flatten } from 'ramda'
 import { FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK } from '../kpi/kpi.sagas'
-import { takeEvery, all, put } from 'redux-saga/effects'
+import { takeEvery, all, put, select } from 'redux-saga/effects'
 import { GET_DETAIL_DATA, getDetailData, setDataExpandView } from './expandView.action'
 import { getCompanyNameByClientContactId } from './expandView.service'
 import {
@@ -17,14 +17,21 @@ export const INTAKES = "INTAKES"
 export const PROSPECTION_MEETING_DONE = "PROSPECTION_MEETING_DONE"
 export const PROSPECTION_MEETING_SCHEDULED = "PROSPECTION_MEETING_SCHEDULED"
 export const NEW_VACANCY = "NEW_VACANCY"
+export const CV_SENT = "CV_SENT"
 
 const IS_CANDIDATE = "IS_CANDIDATE"
 const IS_CLIENT = "IS_CLIENT"
 
+export const getExpandedViewDataCvSent = (state) => state.kpi.dataEmployee.datasBusinessManager.CV_SENT_EXPANDED_VIEW
+
 const tableWeek = [FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK]
+
 export function* getAllDataFromIdsForExpandView(datas, occupation) {
     try {
+
         if (occupation === BUSINESS_MANAGER) {
+
+            const dataCvSent = yield select(getExpandedViewDataCvSent)
 
             yield all(flatten(tableWeek.map((week) => (
                 datas.PROSPECTIONS_DONE[week].map(
@@ -35,6 +42,11 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
                             week,
                             IS_CLIENT)
                         ))))))
+
+            yield all(dataCvSent.FIRST_WEEK.map(cvSent => put(getDetailData(pathOr(0, ["candidate", "id"], cvSent), cvSent, CV_SENT, FIRST_WEEK, IS_CANDIDATE))))
+            yield all(dataCvSent.SECOND_WEEK.map(cvSent => put(getDetailData(pathOr(0, ["candidate", "id"], cvSent), cvSent, CV_SENT, SECOND_WEEK, IS_CANDIDATE))))
+            yield all(dataCvSent.THIRD_WEEK.map(cvSent => put(getDetailData(pathOr(0, ["candidate", "id"], cvSent), cvSent, CV_SENT, THIRD_WEEK, IS_CANDIDATE))))
+            yield all(dataCvSent.FOURTH_WEEK.map(cvSent => put(getDetailData(pathOr(0, ["candidate", "id"], cvSent), cvSent, CV_SENT, FOURTH_WEEK, IS_CANDIDATE))))
 
             yield all(datas.NEW_VACANCY.FIRST_WEEK.map(newVacancy => put(getDetailData(pathOr(0, ["clientContact", "id"], newVacancy), newVacancy, NEW_VACANCY, FIRST_WEEK, IS_CLIENT))))
             yield all(datas.NEW_VACANCY.SECOND_WEEK.map(newVacancy => put(getDetailData(pathOr(0, ["clientContact", "id"], newVacancy), newVacancy, NEW_VACANCY, SECOND_WEEK, IS_CLIENT))))
@@ -86,8 +98,8 @@ export function* getDetailDataSaga(action) {
     let type = pathOr("", ["payload", "TYPE"], action)
     let clientOrCandidate = pathOr("", ["payload", "CLIENT_OR_CANDIDATE"], action)
 
-    let lastName = type === NEW_VACANCY ? pathOr("", ["payload", "DATA", "clientContact", "lastName"], action).trim() : pathOr("", ["payload", "DATA", "data", 0, "lastName"], action).trim()
-    let firstName = type === NEW_VACANCY ? pathOr("", ["payload", "DATA", "clientContact", "firstName"], action).trim() : pathOr("", ["payload", "DATA", "data", 0, "firstName"], action).trim()
+    let lastName = type === NEW_VACANCY ? pathOr("", ["payload", "DATA", "clientContact", "lastName"], action).trim() : type === CV_SENT ? action?.payload?.DATA?.candidate?.lastName ?? "" : pathOr("", ["payload", "DATA", "data", 0, "lastName"], action).trim()
+    let firstName = type === NEW_VACANCY ? pathOr("", ["payload", "DATA", "clientContact", "firstName"], action).trim() : type === CV_SENT ? action?.payload?.DATA?.candidate?.firstName ?? "" : pathOr("", ["payload", "DATA", "data", 0, "firstName"], action).trim()
 
     try {
         let clientCorporationName
@@ -111,11 +123,14 @@ export function* getDetailDataSaga(action) {
             let candidatesCategories = yield call(getCandidateCategory, id)
             let details = { ID: id, LASTNAME: lastName, FIRSTNAME: firstName, CATEGORY: path([0, "name"], candidatesCategories) }
 
-            if (type === "INTAKES") {
+            if (type === INTAKES) {
                 const clientId = pathOr(0, ["payload", "CLIENT_ID"], action)
                 clientCorporationName = yield call(getCompanyNameByClientContactId, clientId)
                 details = { ...details, COMPANY: clientCorporationName }
+            } else if (type === CV_SENT) {
+                details = { ...details, JOB_TITLE: action?.payload?.DATA?.jobOrder?.title ?? "" }
             }
+
             yield put(setDataExpandView(type, weekLabel, details))
         }
     } catch (e) {

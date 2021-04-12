@@ -26,6 +26,7 @@ const expandView = {
       INTAKES: objectByDates,
       PROSPECTION_MEETING_SCHEDULED: objectByDates,
       NEW_VACANCY: objectByDates,
+      CV_SENT: objectByDates,
     }),
 
 }

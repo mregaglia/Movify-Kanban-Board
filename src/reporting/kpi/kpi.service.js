@@ -74,7 +74,13 @@ export const getSubmissionStatusChangedCvSentById = (idJobSubmission) =>
         where: `targetEntity.id=${idJobSubmission} AND fieldChanges.columnName='status' AND fieldChanges.newValue='WF Response'`
     })
 
+export const getJobSubmissionById = (id) =>
+    get("query/JobSubmission", {
+        fields: "id, candidate, jobOrder",
+        where: `id=${id}`
+    })
+
 export const countCVSentForWeek = (response, dateStartTimestamp, dateEndTimestamp) => {
     let dateAdded = pathOr(0, ['data', 0, 'dateAdded'], response)
     return (dateAdded >= dateStartTimestamp && dateAdded <= dateEndTimestamp) ? 1 : 0
-} 
+}

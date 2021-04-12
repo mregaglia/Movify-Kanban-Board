@@ -25,7 +25,8 @@ import {
   GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT,
   GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN,
   SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED,
-  SET_LOADING_DATA
+  SET_LOADING_DATA,
+  SET_CV_SENT_EXPANDED_VIEW
 } from "./kpi.actions"
 
 export const initialState = {
@@ -123,23 +124,38 @@ const kpi = {
     ...state,
     dataYTDEmployee: payload
   }),
-  [SET_CV_SENT]: (state, payload) => {
+  [SET_CV_SENT_EXPANDED_VIEW]: (state, { data, weekLabel }) => {
+    const oldState = state?.dataEmployee?.datasBusinessManager?.CV_SENT_EXPANDED_VIEW?.[weekLabel]
+    const updatedState = oldState ? [...oldState, data] : [data]
     return {
       ...state,
       dataEmployee: {
         ...state.dataEmployee,
         datasBusinessManager: {
           ...state.dataEmployee.datasBusinessManager,
-          CV_SENT: {
-            ...state.dataEmployee.datasBusinessManager.CV_SENT,
-            [payload]: state.dataEmployee.datasBusinessManager.CV_SENT[payload] + 1
+          CV_SENT_EXPANDED_VIEW: {
+            ...state.dataEmployee.datasBusinessManager.CV_SENT_EXPANDED_VIEW,
+            [weekLabel]: updatedState,
           }
         }
-      },
-      cvSentLoadingCounter: state.cvSentLoadingCounter - 1,
-      isCvSentWeekLoading: state.cvSentLoadingCounter > 1
+      }
     }
   },
+  [SET_CV_SENT]: (state, payload) => ({
+    ...state,
+    dataEmployee: {
+      ...state.dataEmployee,
+      datasBusinessManager: {
+        ...state.dataEmployee.datasBusinessManager,
+        CV_SENT: {
+          ...state.dataEmployee.datasBusinessManager.CV_SENT,
+          [payload]: state.dataEmployee.datasBusinessManager.CV_SENT[payload] + 1
+        }
+      }
+    },
+    cvSentLoadingCounter: state.cvSentLoadingCounter - 1,
+    isCvSentWeekLoading: state.cvSentLoadingCounter > 1
+  }),
   [SET_YTD_TOTAL_BUSINESS_MANAGER]: (state, payload) => ({
     ...state,
     dataYTDEmployee: {

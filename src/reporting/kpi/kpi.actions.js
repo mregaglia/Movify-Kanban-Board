@@ -15,6 +15,7 @@ export const SET_AVERAGE_YTD_BUSINESS_MANAGER = "SET_AVERAGE_YTD_BUSINESS_MANAGE
 export const SET_AVERAGE_YTD_RECRUITMENT = "SET_AVERAGE_YTD_RECRUITMENT"
 export const SET_CONVERSION_YTD_BUSINESS_MANAGER = "SET_CONVERSION_YTD_BUSINESS_MANAGER"
 export const SET_CONVERSION_YTD_RECRUITMENT = "SET_CONVERSION_YTD_RECRUITMENT"
+export const SET_CV_SENT_EXPANDED_VIEW = "SET_CV_SENT_EXPANDED_VIEW"
 
 export const SET_LOADING_YTD_TOTAL = "SET_LOADING_YTD_TOTAL"
 export const SET_LOADING_YTD_NEW_VACANCY = "SET_LOADING_YTD_NEW_VACANCY"
@@ -42,6 +43,7 @@ export const setObjectYTD = (objectConversionYTDRecruitment, objectConvertionYTD
 export const setKpiLoading = (isLoadingKpi) => ({ type: SET_LOADING_KPI, payload: isLoadingKpi });
 
 export const setCvSent = (weekLabel) => ({ type: SET_CV_SENT, payload: weekLabel })
+export const setCvSentExpandedView = ({ data, weekLabel }) => ({ type: SET_CV_SENT_EXPANDED_VIEW, payload: { data, weekLabel } })
 export const setYTDTotalBusinessManager = (ytdTotalBusinessManager) => ({ type: SET_YTD_TOTAL_BUSINESS_MANAGER, payload: ytdTotalBusinessManager })
 export const setYTDTotalRecruitment = (ytdTotalRecruitment) => ({ type: SET_YTD_TOTAL_RECRUITMENT, payload: ytdTotalRecruitment })
 export const setNewVacancyYTD = (newVacancyYTD) => ({ type: SET_NEW_VACANCY_YTD, payload: newVacancyYTD })

@@ -19,6 +19,7 @@ import {
     PROSPECTION_MEETING_SCHEDULED,
     INTERVIEW_SCHEDULED,
     NEW_VACANCY,
+    CV_SENT,
 } from '../expandView/expandView.sagas'
 import ExpandViewDetailClient from './ExpandViewDetailClient'
 import ReactTooltip from 'react-tooltip'
@@ -51,10 +52,22 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                             return (
                                 <TableContentTbodyTr key={i}>
                                     <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
-                                    <TableContentTd>{datas[key].FIRST_WEEK}</TableContentTd>
-                                    <TableContentTd>{datas[key].SECOND_WEEK}</TableContentTd>
-                                    <TableContentTd>{datas[key].THIRD_WEEK}</TableContentTd>
-                                    <TableContentTd>{datas[key].FOURTH_WEEK}</TableContentTd>
+                                    {
+                                        tableWeek.map((week) => {
+                                            if (datas[key][week] === 0) {
+                                                return (<TableContentTd key={week}>0</TableContentTd>)
+                                            } else {
+                                                return (
+                                                    <TableContentTd key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip clickable>{datas[key][week]}
+                                                        <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
+                                                            <ExpandViewDetailClient week={week} title={CV_SENT} />
+                                                        </ReactTooltip>
+                                                    </TableContentTd>
+                                                )
+                                            }
+                                        }
+                                        )
+                                    }
                                 </TableContentTbodyTr>
                             )
                         }
@@ -117,18 +130,18 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                     } else if (datas[key].TITLE === LABEL_PROSPECTION_MEETING_SCHEDULE) {
                         return (
                             <TableContentTbodyTr key={i}>
-                                <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
+                                <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
                                 {
                                     tableWeek.map((week) => {
                                         if (datas[key][week] === 0) {
-                                            return (<TableContentTdBold key={week}>0</TableContentTdBold>)
+                                            return (<TableContentTd key={week}>0</TableContentTd>)
                                         } else {
                                             return (
-                                                <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
+                                                <TableContentTd key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip clickable>{datas[key][week]}
                                                     <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
                                                         <ExpandViewDetailClient week={week} title={PROSPECTION_MEETING_SCHEDULED} />
                                                     </ReactTooltip>
-                                                </TableContentTdBoldClickable>
+                                                </TableContentTd>
                                             )
                                         }
                                     }
@@ -163,18 +176,18 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                     } else if (datas[key].TITLE === LABEL_NEW_VACANCY) {
                         return (
                             <TableContentTbodyTr key={i}>
-                                <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
+                                <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
                                 {
                                     tableWeek.map((week) => {
                                         if (datas[key][week] === 0) {
-                                            return (<TableContentTdBold key={week}>0</TableContentTdBold>)
+                                            return (<TableContentTd key={week}>0</TableContentTd>)
                                         } else {
                                             return (
-                                                <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
+                                                <TableContentTd key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip clickable>{datas[key][week]}
                                                     <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
                                                         <ExpandViewDetailClient week={week} title={NEW_VACANCY} />
                                                     </ReactTooltip>
-                                                </TableContentTdBoldClickable>
+                                                </TableContentTd>
                                             )
                                         }
                                     }
@@ -184,6 +197,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                             </TableContentTbodyTr>
                         )
                     } else {
+                        if (!datas[key].TITLE) return null
                         return (
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>

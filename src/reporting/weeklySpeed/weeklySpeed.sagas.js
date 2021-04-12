@@ -8,7 +8,7 @@ import { getNoteProspectionLastYear } from './weeklySpeek.service'
 import { FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK } from "../kpi/kpi.sagas"
 import { isNil } from 'ramda'
 
-// Recrtuitment
+// Recruitment
 export const POINT_FOR_INTERVIEW_DONE = 3
 export const POINT_FOR_INTERVIEW_SCHEDULED_TA = 2
 export const POINT_FOR_INTERVIEW_SCHEDULED_SO = 3
@@ -21,7 +21,7 @@ export const POINT_CV_SENT = 2
 export const POINT_INTAKE = 5
 
 export const getOccupationFromEmployeeSelected = (state) => state.employees.employeeSelected.occupation
-// Recruitment & Business Manager 
+// Recruitment & Business Manager
 export const getInterviewDone = (state, weekLabel) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE[weekLabel]
 export const getInterviewScheduled = (state, weekLabel) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_SCHEDULED[weekLabel]
 
@@ -163,21 +163,24 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, pro
             yield select(getCVSent, weekLabel, '/cvSent'),
         ])
 
-        let prospectionMeetingDoneFromTheBeginning = yield call(getNoteProspectionLastYear, idEmployee, dateEnd)
+        const prospectionMeetingsDoneFromTheBeginning = yield call(getNoteProspectionLastYear, idEmployee, dateEnd)
 
         for (let i = 0; i < prospectionMeetingDoneFromLastWeek.length; i++) {
-            if (prospectionMeetingDoneFromLastWeek[i].clientContacts.data.length === 0) break
-            let idClientContact = prospectionMeetingDoneFromLastWeek[i].clientContacts.data[0].id
+            if (prospectionMeetingDoneFromLastWeek[i].clientContacts.data.length) {
+                let idClientContact = prospectionMeetingDoneFromLastWeek[i].clientContacts.data[0].id
 
-            for (let j = 0; j < prospectionMeetingDoneFromTheBeginning.length; j++) {
-                if (prospectionMeetingDoneFromTheBeginning[j].clientContacts.data.length === 0) break
-                let idClientContactProspectionMeetingDone = prospectionMeetingDoneFromTheBeginning[j].clientContacts.data[0].id
-                hasAlreadyBeenContacted = (idClientContact === idClientContactProspectionMeetingDone) ? true : false
-                if (hasAlreadyBeenContacted) break
+                for (let j = 0; j < prospectionMeetingsDoneFromTheBeginning.length; j++) {
+                    if (prospectionMeetingsDoneFromTheBeginning[j].clientContacts.data.length) {
+                        const idClientContactProspectionMeetingDone = prospectionMeetingsDoneFromTheBeginning[j].clientContacts.data[0].id
+                        hasAlreadyBeenContacted = idClientContact === idClientContactProspectionMeetingDone
+
+                        if (hasAlreadyBeenContacted) break
+                    }
+                }
+
+                weeklySpeed += (hasAlreadyBeenContacted) ? POINT_PROSPECTION_MEETING_DONE_RE_PROSP : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
+                hasAlreadyBeenContacted = false
             }
-
-            weeklySpeed += (hasAlreadyBeenContacted) ? POINT_PROSPECTION_MEETING_DONE_RE_PROSP : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
-            hasAlreadyBeenContacted = false
         }
 
         weeklySpeed += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
