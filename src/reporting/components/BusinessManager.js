@@ -41,7 +41,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                         if (isCvSentWeekLoading) {
                             return (
                                 <TableContentTbodyTr key={i}>
-                                    <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
+                                    <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
                                     <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
                                     <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
                                     <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
@@ -51,18 +51,18 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                         } else {
                             return (
                                 <TableContentTbodyTr key={i}>
-                                    <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
+                                    <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
                                     {
                                         tableWeek.map((week) => {
                                             if (datas[key][week] === 0) {
-                                                return (<TableContentTd key={week}>0</TableContentTd>)
+                                                return (<TableContentTdBold key={week}>0</TableContentTdBold>)
                                             } else {
                                                 return (
-                                                    <TableContentTd key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip clickable>{datas[key][week]}
+                                                    <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
                                                         <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
                                                             <ExpandViewDetailClient week={week} title={CV_SENT} />
                                                         </ReactTooltip>
-                                                    </TableContentTd>
+                                                    </TableContentTdBoldClickable>
                                                 )
                                             }
                                         }
