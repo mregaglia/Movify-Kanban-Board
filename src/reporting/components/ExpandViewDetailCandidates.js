@@ -1,4 +1,5 @@
 import React from 'react'
+import { v4 as uuid } from 'uuid'
 import { connect } from "react-redux"
 import { pathOr, propOr, prop } from 'ramda'
 import { array } from 'prop-types'
@@ -30,7 +31,7 @@ const ExpandViewDetailCandidates = ({ week, title, dataToDisplay }) => {
         <>
             {
                 filteredData.map((data) => (
-                    <Row key={data.ID}>
+                    <Row key={uuid()}>
                         <Paragraph >{propOr("", 'FIRSTNAME', data).trim() + ' ' + propOr("", 'LASTNAME', data).trim() + ' @ ' + propOr("", 'CATEGORY', data).trim()}</Paragraph>
                         <BullhornLink candidateId={prop('ID', data)} isClient={false} />
                         <LinkedinLink firstName={propOr("", 'FIRSTNAME', data).trim()} lastName={propOr("", 'LASTNAME', data).trim()} />
