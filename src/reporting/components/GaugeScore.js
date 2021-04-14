@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { connect } from "react-redux";
 import { TableContentTdTitle, TableContentTbodyTrNoLine, TableContentTdLabelBold, TableContentTdBold, TableContentTd, TableContentTdLabel, TableContentTbodyTr } from "../../style/table_style"
 import { string, bool, object, number } from "prop-types"
@@ -7,21 +7,43 @@ import Loader from 'react-loader-spinner'
 import {
     BUSINESS_MANAGER
 } from '../../auth/user.sagas'
+import { POINT_CV_SENT } from "../weeklySpeed/weeklySpeed.sagas";
 
 const calculatePercentage = (weeklySpeedScore, gaugeGreenStart) => ((weeklySpeedScore / gaugeGreenStart) * 100).toFixed(0)
 
-const GaugeScore = ({ occupation, hasCalculatedWeeklySpeed, weeklySpeedScore, gaugeGreenStart }) => {
+const GaugeScore = ({ occupation, hasCalculatedWeeklySpeed, weeklySpeedScore, gaugeGreenStart, cvsSent }) => {
 
-    const percentageFirstWeek = calculatePercentage(weeklySpeedScore.FIRST_WEEK, gaugeGreenStart)
-    const percentageSecondWeek = calculatePercentage(weeklySpeedScore.SECOND_WEEK, gaugeGreenStart)
-    const percentageThirdWeek = calculatePercentage(weeklySpeedScore.THIRD_WEEK, gaugeGreenStart)
-    const percentageFourthWeek = calculatePercentage(weeklySpeedScore.FOURTH_WEEK, gaugeGreenStart)
+    const scores = useMemo(() => {
+        const firstWeekScore = weeklySpeedScore.FIRST_WEEK + (POINT_CV_SENT * cvsSent.FIRST_WEEK)
+        const secondWeekScore = weeklySpeedScore.SECOND_WEEK + (POINT_CV_SENT * cvsSent.SECOND_WEEK)
+        const thirdWeekScore = weeklySpeedScore.THIRD_WEEK + (POINT_CV_SENT * cvsSent.THIRD_WEEK)
+        const fourthWeekScore = weeklySpeedScore.FOURTH_WEEK + (POINT_CV_SENT * cvsSent.FOURTH_WEEK)
+
+        return {
+            FIRST_WEEK: {
+                percentage: calculatePercentage(firstWeekScore, gaugeGreenStart),
+                value: firstWeekScore,
+            },
+            SECOND_WEEK: {
+                percentage: calculatePercentage(secondWeekScore, gaugeGreenStart),
+                value: secondWeekScore,
+            },
+            THIRD_WEEK: {
+                percentage: calculatePercentage(thirdWeekScore, gaugeGreenStart),
+                value: thirdWeekScore,
+            },
+            FOURTH_WEEK: {
+                percentage: calculatePercentage(fourthWeekScore, gaugeGreenStart),
+                value: fourthWeekScore,
+            },
+        }
+    }, [weeklySpeedScore, gaugeGreenStart, cvsSent])
 
     return (
 
         <>
             <TableContentTbodyTrNoLine>
-                <TableContentTdTitle isBM={occupation.includes(BUSINESS_MANAGER)}>Weekly Speed</TableContentTdTitle>
+                <TableContentTdTitle isBM={[BUSINESS_MANAGER].includes(occupation)}>Weekly Speed</TableContentTdTitle>
             </TableContentTbodyTrNoLine>
 
             <TableContentTbodyTr>
@@ -39,10 +61,10 @@ const GaugeScore = ({ occupation, hasCalculatedWeeklySpeed, weeklySpeedScore, ga
                 {
                     (hasCalculatedWeeklySpeed) && (
                         <>
-                            <TableContentTd>{percentageFirstWeek} %</TableContentTd>
-                            <TableContentTd>{percentageSecondWeek} %</TableContentTd>
-                            <TableContentTd>{percentageThirdWeek} %</TableContentTd>
-                            <TableContentTd>{percentageFourthWeek} %</TableContentTd>
+                            <TableContentTd>{scores.FIRST_WEEK.percentage} %</TableContentTd>
+                            <TableContentTd>{scores.SECOND_WEEK.percentage} %</TableContentTd>
+                            <TableContentTd>{scores.THIRD_WEEK.percentage} %</TableContentTd>
+                            <TableContentTd>{scores.FOURTH_WEEK.percentage} %</TableContentTd>
                         </>
                     )
                 }
@@ -63,10 +85,10 @@ const GaugeScore = ({ occupation, hasCalculatedWeeklySpeed, weeklySpeedScore, ga
                 {
                     (hasCalculatedWeeklySpeed) && (
                         <>
-                            <TableContentTdBold>{weeklySpeedScore.FIRST_WEEK}</TableContentTdBold>
-                            <TableContentTdBold>{weeklySpeedScore.SECOND_WEEK}</TableContentTdBold>
-                            <TableContentTdBold>{weeklySpeedScore.THIRD_WEEK}</TableContentTdBold>
-                            <TableContentTdBold>{weeklySpeedScore.FOURTH_WEEK}</TableContentTdBold>
+                            <TableContentTdBold>{scores.FIRST_WEEK.value}</TableContentTdBold>
+                            <TableContentTdBold>{scores.SECOND_WEEK.value}</TableContentTdBold>
+                            <TableContentTdBold>{scores.THIRD_WEEK.value}</TableContentTdBold>
+                            <TableContentTdBold>{scores.FOURTH_WEEK.value}</TableContentTdBold>
                         </>
                     )
                 }
@@ -79,6 +101,7 @@ GaugeScore.propTypes = {
     occupation: string,
     hasCalculatedWeeklySpeed: bool,
     weeklySpeedScore: object,
+    cvsSent: object,
     gaugeGreenStart: number
 };
 
@@ -88,6 +111,7 @@ export default connect(
         hasCalculatedWeeklySpeed: pathOr(false, ["weeklySpeed", "hasCalculatedWeeklySpeed"], state),
         weeklySpeedScore: pathOr({}, ["weeklySpeed", "weeklySpeedScores"], state),
         gaugeGreenStart: pathOr(0, ["weeklySpeed", "gaugeLimitForEmployeeSelected", "GREEN", "START"], state),
+        cvsSent: state?.kpi?.dataEmployee?.datasBusinessManager?.CV_SENT,
     }),
     {}
 )(GaugeScore);

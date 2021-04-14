@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
-import GaugeChart from 'react-gauge-chart'
-import theme from '../../style/theme'
-import { number, object, bool, string } from 'prop-types'
-import { path } from 'ramda'
-import styled from 'styled-components'
-import debounce from "../../utils/debounce";
+import React, { useEffect, useState } from "react"
+import { connect } from "react-redux"
+import GaugeChart from "react-gauge-chart"
+import theme from "../../style/theme"
+import { number, object, bool, string } from "prop-types"
+import { path } from "ramda"
+import styled from "styled-components"
+import debounce from "../../utils/debounce"
+import { POINT_CV_SENT } from "../weeklySpeed/weeklySpeed.sagas"
 
 const BoxGauge = styled.div`
-    width: 410px;
-    padding-top: 35px;
+  width: 410px;
+  padding-top: 35px;
 `
 
 const Paragraph = styled.p`
@@ -22,86 +23,128 @@ const GaugeDataDisplaying = styled.p`
   text-align: center;
 `
 
-const GaugeComponent = ({ className, gaugeGreenStart, gaugeGreenEnd, gaugeOrangeStart, gaugeOrangeEnd, gaugeRedStart, gaugeRedEnd, weeklySpeedScore, hasCalculatedWeeklySpeed }) => {
-    const [key, setKey] = useState(new Date())
+const GaugeComponent = ({
+  className,
+  gaugeGreenStart,
+  gaugeGreenEnd,
+  gaugeOrangeStart,
+  gaugeOrangeEnd,
+  gaugeRedStart,
+  gaugeRedEnd,
+  weeklySpeedScore,
+  hasCalculatedWeeklySpeed,
+  cvsSent,
+}) => {
+  const [key, setKey] = useState(new Date())
 
-    const endGreenGaugeConverted = 1;
-    const startGreendGaugeConverted = (gaugeGreenStart / gaugeGreenEnd).toFixed(2)
-    const numberGapGreen = endGreenGaugeConverted - startGreendGaugeConverted
+  const endGreenGaugeConverted = 1
+  const startGreenGaugeConverted = (gaugeGreenStart / gaugeGreenEnd).toFixed(2)
+  const numberGapGreen = endGreenGaugeConverted - startGreenGaugeConverted
 
-    const endOrangeGaugeConverted = (gaugeOrangeEnd / gaugeGreenEnd).toFixed(2)
-    const startOrangeGaugeConverted = (gaugeOrangeStart / gaugeGreenEnd).toFixed(2)
-    const numberGapOrange = endOrangeGaugeConverted - startOrangeGaugeConverted
+  const endOrangeGaugeConverted = (gaugeOrangeEnd / gaugeGreenEnd).toFixed(2)
+  const startOrangeGaugeConverted = (gaugeOrangeStart / gaugeGreenEnd).toFixed(
+    2
+  )
+  const numberGapOrange = endOrangeGaugeConverted - startOrangeGaugeConverted
 
-    const endRedGaugeConverted = (gaugeRedEnd / gaugeGreenEnd).toFixed(2)
-    const startRedGaugeConverted = (gaugeRedStart / gaugeGreenEnd).toFixed(2)
-    const numberGapRed = endRedGaugeConverted - startRedGaugeConverted
+  const endRedGaugeConverted = (gaugeRedEnd / gaugeGreenEnd).toFixed(2)
+  const startRedGaugeConverted = (gaugeRedStart / gaugeGreenEnd).toFixed(2)
+  const numberGapRed = endRedGaugeConverted - startRedGaugeConverted
 
-    let weeklySpeedGauge = (weeklySpeedScore.FOURTH_WEEK >= 0 && hasCalculatedWeeklySpeed) ? parseFloat((weeklySpeedScore.FOURTH_WEEK / gaugeGreenStart).toFixed(2)) : 0
-    let lastWeekScore = (hasCalculatedWeeklySpeed) ? weeklySpeedScore.FOURTH_WEEK : 0
-    let weeklySpeedGaugeDisplayed = (weeklySpeedGauge > 1) ? 1 : weeklySpeedGauge
+  const weeklySpeedScoreWeek4 =
+    weeklySpeedScore.FOURTH_WEEK + cvsSent.FOURTH_WEEK * POINT_CV_SENT
 
-    useEffect(() => {
-        // Changing the key on resize forces the component to re-render
-        // Which will prevent the bug were the needle reverts back to its default value
-        // Issue: https://github.com/Martin36/react-gauge-chart/issues/35
-        // Once this PR is merged (https://github.com/Martin36/react-gauge-chart/pull/59),
-        // the issue should be resolved and we can remove all this logic
-        // The library seems rather dead though 🥲
-        const handleResize = () => {
-            setKey(new Date())
-        }
+  const weeklySpeedGauge =
+    weeklySpeedScoreWeek4 >= 0 && hasCalculatedWeeklySpeed
+      ? parseFloat((weeklySpeedScoreWeek4 / gaugeGreenStart).toFixed(2))
+      : 0
+  const lastWeekScore = hasCalculatedWeeklySpeed ? weeklySpeedScoreWeek4 : 0
+  const weeklySpeedGaugeDisplayed = weeklySpeedGauge > 1 ? 1 : weeklySpeedGauge
 
-        // Debounce to improve performance
-        const debouncedHandleResize = debounce(handleResize, 1000)
+  useEffect(() => {
+    // Changing the key on resize forces the component to re-render
+    // Which will prevent the bug were the needle reverts back to its default value
+    // Issue: https://github.com/Martin36/react-gauge-chart/issues/35
+    // Once this PR is merged (https://github.com/Martin36/react-gauge-chart/pull/59),
+    // the issue should be resolved and we can remove all this logic
+    // The library seems rather dead though 🥲
+    const handleResize = () => {
+      setKey(new Date())
+    }
 
-        // Subscribe to the event
-        window.addEventListener('resize', debouncedHandleResize)
+    // Debounce to improve performance
+    const debouncedHandleResize = debounce(handleResize, 1000)
 
-        // Unsubscribe from the event
-        return () => window.removeEventListener('resize', handleResize)
-    })
+    // Subscribe to the event
+    window.addEventListener("resize", debouncedHandleResize)
 
-    return (
-        <BoxGauge key={key} className={className}>
-            <GaugeChart
-                id="gauge-chart5"
-                nrOfLevels={420}
-                arcsLength={[numberGapRed, numberGapOrange, numberGapGreen]}
-                colors={[theme.bmColors[0], theme.colors.yellow, theme.bmColors[8]]}
-                percent={weeklySpeedGaugeDisplayed}
-                arcPadding={0.02}
-                textColor="#000000"
-            />
-            <Paragraph>Weekly Speed</Paragraph>
-            <GaugeDataDisplaying>The target : {gaugeGreenStart}</GaugeDataDisplaying>
-            <GaugeDataDisplaying>Your score : {lastWeekScore}</GaugeDataDisplaying>
-        </BoxGauge>
-    )
+    // Unsubscribe from the event
+    return () => window.removeEventListener("resize", handleResize)
+  })
+
+  return (
+    <BoxGauge key={key} className={className}>
+      <GaugeChart
+        id="gauge-chart5"
+        nrOfLevels={420}
+        arcsLength={[numberGapRed, numberGapOrange, numberGapGreen]}
+        colors={[theme.bmColors[0], theme.colors.yellow, theme.bmColors[8]]}
+        percent={weeklySpeedGaugeDisplayed}
+        arcPadding={0.02}
+        textColor="#000000"
+      />
+      <Paragraph>Weekly Speed</Paragraph>
+      <GaugeDataDisplaying>The target : {gaugeGreenStart}</GaugeDataDisplaying>
+      <GaugeDataDisplaying>Your score : {lastWeekScore}</GaugeDataDisplaying>
+    </BoxGauge>
+  )
 }
 
 GaugeComponent.propTypes = {
-    gaugeGreenStart: number,
-    gaugeGreenEnd: number,
-    gaugeOrangeStart: number,
-    gaugeOrangeEnd: number,
-    gaugeRedStart: number,
-    gaugeRedEnd: number,
-    weeklySpeedScore: object,
-    hasCalculatedWeeklySpeed: bool,
-    className: string
-};
+  gaugeGreenStart: number,
+  gaugeGreenEnd: number,
+  gaugeOrangeStart: number,
+  gaugeOrangeEnd: number,
+  gaugeRedStart: number,
+  gaugeRedEnd: number,
+  weeklySpeedScore: object,
+  cvsSent: object,
+  hasCalculatedWeeklySpeed: bool,
+  className: string,
+}
 
 export default connect(
-    state => ({
-        gaugeGreenStart: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "GREEN", "START"], state),
-        gaugeGreenEnd: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "GREEN", "END"], state),
-        gaugeOrangeStart: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "ORANGE", "START"], state),
-        gaugeOrangeEnd: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "ORANGE", "END"], state),
-        gaugeRedStart: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "START"], state),
-        gaugeRedEnd: path(["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "END"], state),
-        weeklySpeedScore: path(["weeklySpeed", "weeklySpeedScores"], state),
-        hasCalculatedWeeklySpeed: path(["weeklySpeed", "hasCalculatedWeeklySpeed"], state),
-    }),
-    {}
-)(GaugeComponent);
+  (state) => ({
+    gaugeGreenStart: path(
+      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "GREEN", "START"],
+      state
+    ),
+    gaugeGreenEnd: path(
+      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "GREEN", "END"],
+      state
+    ),
+    gaugeOrangeStart: path(
+      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "ORANGE", "START"],
+      state
+    ),
+    gaugeOrangeEnd: path(
+      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "ORANGE", "END"],
+      state
+    ),
+    gaugeRedStart: path(
+      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "START"],
+      state
+    ),
+    gaugeRedEnd: path(
+      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "END"],
+      state
+    ),
+    weeklySpeedScore: path(["weeklySpeed", "weeklySpeedScores"], state),
+    hasCalculatedWeeklySpeed: path(
+      ["weeklySpeed", "hasCalculatedWeeklySpeed"],
+      state
+    ),
+    cvsSent: state?.kpi?.dataEmployee?.datasBusinessManager?.CV_SENT,
+  }),
+  {}
+)(GaugeComponent)

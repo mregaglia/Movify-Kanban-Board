@@ -101,7 +101,7 @@ export function* getKpiDataEmployee(action) {
     let objectYTDBusinessManager = initializeObjectConversionYTDBusinessManager();
     let objectYTDRecruitment = initializeObjectConversionYTDRecruitment();
 
-    if (occupation.includes(BUSINESS_MANAGER)) {
+    if (occupation === BUSINESS_MANAGER) {
         yield call(getLast4WeekDataBusinessManager, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
         yield call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp, dates)
     } else {
@@ -477,7 +477,7 @@ export function* getJobSubmissionStatusByJobSubmissionOpenSaga(action) {
         if (jobStatusChanged.count > 0) {
             const jobSubmissions = yield call(getJobSubmissionById, id)
             const weekLabel = filterCvSentStatusForWeeks(jobStatusChanged, dates)
-            if (weekLabel !== "") {
+            if (weekLabel) {
                 yield put(setCvSent(weekLabel))
                 yield put(setCvSentExpandedView({ data: jobSubmissions?.data?.[0], weekLabel }))
             }

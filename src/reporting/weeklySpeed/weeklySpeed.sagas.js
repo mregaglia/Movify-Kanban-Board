@@ -15,12 +15,13 @@ export const POINT_FOR_INTERVIEW_SCHEDULED_SO = 3
 
 // Business Manager
 export const POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT = 2
-export const POINT_PROSPECTION_MEETING_DONE_RE_PROSP = 1
+export const POINT_PROSPECTION_MEETING_DONE_RE_PROSPECTION = 1
 export const POINT_INTERVIEW_DONE = 1
 export const POINT_CV_SENT = 2
 export const POINT_INTAKE = 5
 
 export const getOccupationFromEmployeeSelected = (state) => state.employees.employeeSelected.occupation
+
 // Recruitment & Business Manager
 export const getInterviewDone = (state, weekLabel) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_DONE[weekLabel]
 export const getInterviewScheduled = (state, weekLabel) => state.kpi.dataEmployee.datasRecruitment.INTERVIEW_SCHEDULED[weekLabel]
@@ -151,40 +152,37 @@ export function* calculateAllWeeklySpeedForBusinessManager(idEmployee, dates, pr
     }
 }
 
-export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, prospectionMeetingDoneFromLastWeek, weekLabel) {
-    let weeklySpeed = 0
-    let hasAlreadyBeenContacted = false
-
+export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, prospectionMeetingsDoneFromLastWeek, weekLabel) {
+    let weeklySpeedWithoutCvSent = 0
 
     try {
-        const [interviewsDone, intake, cvSent] = yield all([
+        const [interviewsDone, intake] = yield all([
             yield select(getInterviewDone, weekLabel, '/interviewsDone'),
             yield select(getIntake, weekLabel, '/intake'),
-            yield select(getCVSent, weekLabel, '/cvSent'),
         ])
 
         const prospectionMeetingsDoneFromTheBeginning = yield call(getNoteProspectionLastYear, idEmployee, dateEnd)
 
-        for (let i = 0; i < prospectionMeetingDoneFromLastWeek.length; i++) {
-            if (prospectionMeetingDoneFromLastWeek[i].clientContacts.data.length) {
-                let idClientContact = prospectionMeetingDoneFromLastWeek[i].clientContacts.data[0].id
+        prospectionMeetingsDoneFromLastWeek.forEach((currentMeeting) => {
+            if (currentMeeting?.clientContacts?.data?.length > 0) {
+                const idClientContact = currentMeeting?.clientContacts?.data?.[0]?.id;
 
-                for (let j = 0; j < prospectionMeetingsDoneFromTheBeginning.length; j++) {
-                    if (prospectionMeetingsDoneFromTheBeginning[j].clientContacts.data.length) {
-                        const idClientContactProspectionMeetingDone = prospectionMeetingsDoneFromTheBeginning[j].clientContacts.data[0].id
-                        hasAlreadyBeenContacted = idClientContact === idClientContactProspectionMeetingDone
+                let hasAlreadyBeenContacted = prospectionMeetingsDoneFromTheBeginning?.some((doneMeeting) => {
+                    if (doneMeeting?.clientContacts?.data?.length) {
+                        const idClientContactProspectionMeetingDone = doneMeeting?.clientContacts?.data?.[0]?.id
 
-                        if (hasAlreadyBeenContacted) break
+                        return idClientContact === idClientContactProspectionMeetingDone
                     }
-                }
+                    return false
+                });
 
-                weeklySpeed += (hasAlreadyBeenContacted) ? POINT_PROSPECTION_MEETING_DONE_RE_PROSP : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
+                weeklySpeedWithoutCvSent += hasAlreadyBeenContacted ? POINT_PROSPECTION_MEETING_DONE_RE_PROSPECTION : POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT
                 hasAlreadyBeenContacted = false
             }
-        }
+        })
 
-        weeklySpeed += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE) + (cvSent * POINT_CV_SENT)
-        yield put(setWeeklySpeed(weekLabel, weeklySpeed))
+        weeklySpeedWithoutCvSent += (interviewsDone * POINT_INTERVIEW_DONE) + (intake * POINT_INTAKE)
+        yield put(setWeeklySpeed(weekLabel, weeklySpeedWithoutCvSent))
     } catch (e) {
         //
     }
@@ -192,6 +190,6 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, pro
 
 export default function weeklySpeedSagas() {
     return [
-        takeLatest(GET_GAUGE_LIMIT, getGaugeLimit)
+        takeLatest(GET_GAUGE_LIMIT, getGaugeLimit),
     ];
 }
