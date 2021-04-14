@@ -95,7 +95,7 @@ export function* getKpiDataEmployee(action) {
     let occupation = path(["payload", "occupation"], action);
 
     let objectDataBusinessManager = initalizeObjectBusinessManager(occupation);
-    let objectDataRecruitment = initalizeObjectRecruitment()
+    let objectDataRecruitment = initalizeObjectRecruitment(occupation)
     let objectDateEmployee = initializeObjectDate();
 
     let objectYTDBusinessManager = initializeObjectConversionYTDBusinessManager();

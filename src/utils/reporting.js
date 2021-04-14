@@ -21,6 +21,7 @@ export const INTERVIEW_SCHEDULED = "Interview Scheduled"
 export const PROSPECTION_SCHEDULED = "Prospection scheduled"
 export const PROJECT_START = "Kick Off Meeting"
 export const HIRED = "Hired"
+export const PEOPLE_MANAGEMENT_ACTIVITIES = "People Mgmt"
 
 export const LABEL_DATES = "DATES"
 
@@ -39,6 +40,7 @@ export const LABEL_NO_SHOW = "No Show"
 export const LABEL_INTERVIEW_DONE = "Interview done"
 export const LABEL_CONTRACT_PROPOSED = "Contract proposed"
 export const LABEL_HIRED = "Hired"
+export const LABEL_PEOPLE_MANAGEMENT_ACTIVITIES = "People management activities"
 
 export const CONVERSION_YTD = "CONVERSION_YTD"
 export const TOTAL_YTD = "TOTAL_YTD"
@@ -89,16 +91,24 @@ export const initialiserObjectCVSentYTD = () => {
   }
 }
 
-export const initalizeObjectRecruitment = () => {
-  return {
+export const initalizeObjectRecruitment = (occupation) => {
+  let dataObject = {
     CONTACTED_BY_INMAIL: { TITLE: LABEL_CONTACTED_BY_INMAIL, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     CONTACTED_BY_PHONE: { TITLE: LABEL_CONTACTED_BY_PHONE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     INTERVIEW_SCHEDULED: { TITLE: LABEL_INTERVIEW_SCHEDULED, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     NO_SHOW: { TITLE: LABEL_NO_SHOW, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     INTERVIEW_DONE: { TITLE: LABEL_INTERVIEW_DONE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     CONTRACT_PROPOSED: { TITLE: LABEL_CONTRACT_PROPOSED, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
-    HIRED: { TITLE: LABEL_HIRED, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 }
+    HIRED: { TITLE: LABEL_HIRED, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
   }
+
+  if (occupation === BUSINESS_MANAGER) {
+    dataObject = {
+      ...dataObject,
+      PEOPLE_MANAGEMENT_ACTIVITIES: { TITLE: LABEL_PEOPLE_MANAGEMENT_ACTIVITIES, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
+    }
+  }
+  return dataObject
 }
 
 export const initializeObjectConversionYTDBusinessManager = () => {
@@ -200,6 +210,9 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
     let action = data[i].action
 
     switch (action) {
+      case PEOPLE_MANAGEMENT_ACTIVITIES:
+        objectDataRecruitment.PEOPLE_MANAGEMENT_ACTIVITIES[labelWeek]++
+        break
       case NO_SHOW:
         objectDataRecruitment.NO_SHOW[labelWeek]++
         break;
