@@ -17,8 +17,10 @@ const Row = styled.div({
 });
 
 const ExpandViewDetailCandidates = ({ week, title, dataToDisplay }) => {
+
     const filteredData = dataToDisplay?.reduce((accumulator, current) => {
-        if(!accumulator.some(item => item.ID === current.ID)) {
+        const isEqual = accumulator.some(item => ((item.ID === current.ID) && (item.ID !== 0 && current.ID !== 0)))
+        if (!isEqual) {
             accumulator.push(current);
         }
         return accumulator;

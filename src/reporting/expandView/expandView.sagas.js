@@ -120,8 +120,12 @@ export function* getDetailDataSaga(action) {
             yield put(setDataExpandView(type, weekLabel, details))
 
         } else if (clientOrCandidate === IS_CANDIDATE) {
-            let candidatesCategories = yield call(getCandidateCategory, id)
-            let details = { ID: id, LASTNAME: lastName, FIRSTNAME: firstName, CATEGORY: path([0, "name"], candidatesCategories) }
+            let details = { ID: id, LASTNAME: lastName, FIRSTNAME: firstName }
+
+            if (type !== INTAKES) {
+                const candidatesCategories = yield call(getCandidateCategory, id)
+                details = { ...details, CATEGORY: candidatesCategories?.[0]?.name }
+            }
 
             if (type === INTAKES) {
                 const clientId = pathOr(0, ["payload", "CLIENT_ID"], action)
