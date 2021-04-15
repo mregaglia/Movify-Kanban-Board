@@ -14,10 +14,10 @@ const calculatePercentage = (weeklySpeedScore, gaugeGreenStart) => ((weeklySpeed
 const GaugeScore = ({ occupation, hasCalculatedWeeklySpeed, weeklySpeedScore, gaugeGreenStart, cvsSent }) => {
 
     const scores = useMemo(() => {
-        const firstWeekScore = weeklySpeedScore.FIRST_WEEK + (POINT_CV_SENT * cvsSent.FIRST_WEEK)
-        const secondWeekScore = weeklySpeedScore.SECOND_WEEK + (POINT_CV_SENT * cvsSent.SECOND_WEEK)
-        const thirdWeekScore = weeklySpeedScore.THIRD_WEEK + (POINT_CV_SENT * cvsSent.THIRD_WEEK)
-        const fourthWeekScore = weeklySpeedScore.FOURTH_WEEK + (POINT_CV_SENT * cvsSent.FOURTH_WEEK)
+        const firstWeekScore = cvsSent?.FIRST_WEEK ? weeklySpeedScore.FIRST_WEEK + (POINT_CV_SENT * cvsSent.FIRST_WEEK) : weeklySpeedScore.FIRST_WEEK
+        const secondWeekScore = cvsSent?.SECOND_WEEK ? weeklySpeedScore.SECOND_WEEK + (POINT_CV_SENT * cvsSent.SECOND_WEEK) : weeklySpeedScore.SECOND_WEEK
+        const thirdWeekScore = cvsSent?.THIRD_WEEK ? weeklySpeedScore.THIRD_WEEK + (POINT_CV_SENT * cvsSent.THIRD_WEEK) : weeklySpeedScore.THIRD_WEEK
+        const fourthWeekScore = cvsSent?.FOURTH_WEEK ? weeklySpeedScore.FOURTH_WEEK + (POINT_CV_SENT * cvsSent.FOURTH_WEEK) : weeklySpeedScore.FOURTH_WEEK
 
         return {
             FIRST_WEEK: {

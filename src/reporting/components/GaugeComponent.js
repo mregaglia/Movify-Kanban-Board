@@ -51,8 +51,9 @@ const GaugeComponent = ({
   const startRedGaugeConverted = (gaugeRedStart / gaugeGreenEnd).toFixed(2)
   const numberGapRed = endRedGaugeConverted - startRedGaugeConverted
 
-  const weeklySpeedScoreWeek4 =
-    weeklySpeedScore.FOURTH_WEEK + cvsSent.FOURTH_WEEK * POINT_CV_SENT
+  const weeklySpeedScoreWeek4 = cvsSent?.FOURTH_WEEK
+    ? weeklySpeedScore.FOURTH_WEEK + cvsSent.FOURTH_WEEK * POINT_CV_SENT
+    : weeklySpeedScore.FOURTH_WEEK
 
   const weeklySpeedGauge =
     weeklySpeedScoreWeek4 >= 0 && hasCalculatedWeeklySpeed
