@@ -45,7 +45,7 @@ const TalentAcquisition = () => {
                                 {
                                     tableWeek.map((week) => {
                                         if (datas[key][week] === 0) {
-                                            return (<TableContentTdBold id={key + week}>0</TableContentTdBold>)
+                                            return (<TableContentTdBold key={uuid()} id={key + week}>0</TableContentTdBold>)
                                         } else {
                                             return (
                                                 <TableCellWithTooltip key={uuid()} week={week} title={LINKED_INMAIL} text={datas[key][week]} type={CANDIDATE}  />
@@ -66,7 +66,7 @@ const TalentAcquisition = () => {
                                 {
                                     tableWeek.map((week) => {
                                         if (datas[key][week] === 0) {
-                                            return (<TableContentTdBold id={key + week}>0</TableContentTdBold>)
+                                            return (<TableContentTdBold key={uuid()} id={key + week}>0</TableContentTdBold>)
                                         } else {
                                             return (
                                                 <TableCellWithTooltip key={uuid()} week={week} title={INTERVIEW_DONE} text={datas[key][week]} type={CANDIDATE}  />
@@ -85,7 +85,7 @@ const TalentAcquisition = () => {
                                 {
                                     tableWeek.map((week) => {
                                         if (datas[key][week] === 0) {
-                                            return (<TableContentTdBold id={key + week}>0</TableContentTdBold>)
+                                            return (<TableContentTdBold key={uuid()} id={key + week}>0</TableContentTdBold>)
                                         } else {
                                             return (
                                                 <TableCellWithTooltip key={uuid()} week={week} title={INTERVIEW_SCHEDULED} text={datas[key][week]} type={CANDIDATE}  />
