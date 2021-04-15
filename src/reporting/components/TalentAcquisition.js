@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector } from "react-redux";
-import { TableContentTd, TableContentTbodyTr, TableContentTdTitle, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdBoldClickable, TableContentTdLabelBold, TableContentTdBold } from "../../style/table_style"
+import { TableContentTd, TableContentTbodyTr, TableContentTdTitle, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdLabelBold, TableContentTdBold } from "../../style/table_style"
 import { v4 as uuid } from 'uuid'
 import { LABEL_INTERVIEW_DONE, LABEL_INTERVIEW_SCHEDULED, LABEL_CONTACTED_BY_INMAIL, LABEL_PEOPLE_MANAGEMENT_ACTIVITIES, HIRED } from '../../utils/reporting'
 import {
@@ -15,8 +15,7 @@ import {
 import {
     FIRST_WEEK, SECOND_WEEK, FOURTH_WEEK, THIRD_WEEK
 } from '../kpi/kpi.sagas'
-import ReactTooltip from 'react-tooltip'
-import ExpandViewDetailCandidates from './ExpandViewDetailCandidates'
+import TableCellWithTooltip, { CANDIDATE } from './TableCellWithTooltip'
 
 const tableWeek = [FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK]
 
@@ -36,7 +35,7 @@ const TalentAcquisition = () => {
             </TableContentTbodyTrNoLine>
 
             {
-                Object.keys(datas).map((key, i) => {
+                Object.keys(datas).map((key) => {
                     const title = datas[key].TITLE
                     if (title === LABEL_CONTACTED_BY_INMAIL && occupation.includes(SOURCING_OFFICER)) {
                         return (
@@ -49,11 +48,7 @@ const TalentAcquisition = () => {
                                             return (<TableContentTdBold id={key + week}>0</TableContentTdBold>)
                                         } else {
                                             return (
-                                                <TableContentTdBoldClickable key={uuid()} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
-                                                        <ExpandViewDetailCandidates week={week} title={LINKED_INMAIL} />
-                                                    </ReactTooltip>
-                                                </TableContentTdBoldClickable>
+                                                <TableCellWithTooltip key={uuid()} week={week} title={LINKED_INMAIL} text={datas[key][week]} type={CANDIDATE}  />
                                             )
                                         }
                                     }
@@ -74,11 +69,7 @@ const TalentAcquisition = () => {
                                             return (<TableContentTdBold id={key + week}>0</TableContentTdBold>)
                                         } else {
                                             return (
-                                                <TableContentTdBoldClickable key={uuid()} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
-                                                        <ExpandViewDetailCandidates week={week} title={INTERVIEW_DONE} />
-                                                    </ReactTooltip>
-                                                </TableContentTdBoldClickable>
+                                                <TableCellWithTooltip key={uuid()} week={week} title={INTERVIEW_DONE} text={datas[key][week]} type={CANDIDATE}  />
                                             )
                                         }
                                     }
@@ -97,11 +88,7 @@ const TalentAcquisition = () => {
                                             return (<TableContentTdBold id={key + week}>0</TableContentTdBold>)
                                         } else {
                                             return (
-                                                <TableContentTdBoldClickable key={uuid()} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff="click" place="right" clickable isCapture >
-                                                        <ExpandViewDetailCandidates week={week} title={INTERVIEW_SCHEDULED} />
-                                                    </ReactTooltip>
-                                                </TableContentTdBoldClickable>
+                                                <TableCellWithTooltip key={uuid()} week={week} title={INTERVIEW_SCHEDULED} text={datas[key][week]} type={CANDIDATE}  />
                                             )
                                         }
                                     }
@@ -112,7 +99,7 @@ const TalentAcquisition = () => {
                         )
                     } else if ((title === LABEL_PEOPLE_MANAGEMENT_ACTIVITIES && occupation === BUSINESS_MANAGER) || (title === HIRED && occupation !== BUSINESS_MANAGER)) {
                         return (
-                            <tr>
+                            <tr key={uuid()}>
                                 <TableContentTdLabel>{title}</TableContentTdLabel>
                                 <TableContentTd>{datas[key].FIRST_WEEK}</TableContentTd>
                                 <TableContentTd>{datas[key].SECOND_WEEK}</TableContentTd>

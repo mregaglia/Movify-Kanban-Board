@@ -9,7 +9,6 @@ import {
     SOURCING_OFFICER
 } from '../../auth/user.sagas'
 import { getCandidateCategory } from '../weeklySpeed/weeklySpeek.service'
-import { path } from 'ramda'
 export const INTERVIEW_DONE = "INTERVIEW_DONE"
 export const INTERVIEW_SCHEDULED = "INTERVIEW_SCHEDULED"
 export const LINKED_INMAIL = "LINKED_INMAIL"

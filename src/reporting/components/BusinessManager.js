@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import { TableContentTd, TableContentTdTitle, TableContentTbodyTr, TableContentTdBold, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdLabelBold, TableContentTdBoldClickable } from "../../style/table_style"
+import { TableContentTd, TableContentTdTitle, TableContentTbodyTr, TableContentTdBold, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdLabelBold } from "../../style/table_style"
 import { path, pathOr } from 'ramda'
 import { object, bool } from "prop-types"
 import Loader from 'react-loader-spinner'
@@ -21,8 +21,7 @@ import {
     NEW_VACANCY,
     CV_SENT,
 } from '../expandView/expandView.sagas'
-import ExpandViewDetailClient from './ExpandViewDetailClient'
-import ReactTooltip from 'react-tooltip'
+import TableCellWithTooltip, { REGULAR } from './TableCellWithTooltip'
 import {
     FIRST_WEEK, SECOND_WEEK, FOURTH_WEEK, THIRD_WEEK
 } from '../kpi/kpi.sagas'
@@ -58,11 +57,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                                 return (<TableContentTdBold key={week}>0</TableContentTdBold>)
                                             } else {
                                                 return (
-                                                    <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                        <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
-                                                            <ExpandViewDetailClient week={week} title={CV_SENT} />
-                                                        </ReactTooltip>
-                                                    </TableContentTdBoldClickable>
+                                                    <TableCellWithTooltip key={week} week={week} title={CV_SENT} text={datas[key][week]} />
                                                 )
                                             }
                                         }
@@ -91,11 +86,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                             return (<TableContentTdBold key={week}>0</TableContentTdBold>)
                                         } else {
                                             return (
-                                                <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
-                                                        <ExpandViewDetailClient week={week} title={INTAKES} />
-                                                    </ReactTooltip>
-                                                </TableContentTdBoldClickable>
+                                                <TableCellWithTooltip key={week} week={week} title={INTAKES} text={datas[key][week]} />
                                             )
                                         }
                                     }
@@ -114,11 +105,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                             return (<TableContentTdBold key={week}>0</TableContentTdBold>)
                                         } else {
                                             return (
-                                                <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
-                                                        <ExpandViewDetailClient week={week} title={PROSPECTION_MEETING_DONE} />
-                                                    </ReactTooltip>
-                                                </TableContentTdBoldClickable>
+                                                <TableCellWithTooltip key={week} week={week} title={PROSPECTION_MEETING_DONE} text={datas[key][week]} />
                                             )
                                         }
                                     }
@@ -137,11 +124,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                             return (<TableContentTd key={week}>0</TableContentTd>)
                                         } else {
                                             return (
-                                                <TableContentTd key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip clickable>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
-                                                        <ExpandViewDetailClient week={week} title={PROSPECTION_MEETING_SCHEDULED} />
-                                                    </ReactTooltip>
-                                                </TableContentTd>
+                                                <TableCellWithTooltip fontWeight={REGULAR} key={week} week={week} title={PROSPECTION_MEETING_SCHEDULED} text={datas[key][week]} />
                                             )
                                         }
                                     }
@@ -160,11 +143,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                             return (<TableContentTdBold key={week}>0</TableContentTdBold>)
                                         } else {
                                             return (
-                                                <TableContentTdBoldClickable key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
-                                                        <ExpandViewDetailClient week={week} title={INTERVIEW_SCHEDULED} />
-                                                    </ReactTooltip>
-                                                </TableContentTdBoldClickable>
+                                                <TableCellWithTooltip key={week} week={week} title={INTERVIEW_SCHEDULED} text={datas[key][week]} />
                                             )
                                         }
                                     }
@@ -183,11 +162,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                             return (<TableContentTd key={week}>0</TableContentTd>)
                                         } else {
                                             return (
-                                                <TableContentTd key={week} data-for={i + '' + key + '' + week} data-event="click" data-tip clickable>{datas[key][week]}
-                                                    <ReactTooltip id={i + '' + key + '' + week} globalEventOff='click' place="right" clickable isCapture>
-                                                        <ExpandViewDetailClient week={week} title={NEW_VACANCY} />
-                                                    </ReactTooltip>
-                                                </TableContentTd>
+                                                <TableCellWithTooltip fontWeight={REGULAR} key={week} week={week} title={NEW_VACANCY} text={datas[key][week]} />
                                             )
                                         }
                                     }
