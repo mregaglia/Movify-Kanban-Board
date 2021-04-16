@@ -208,7 +208,6 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
   if (data.length === 0) return objectDataRecruitment
   for (let i = 0; i < data.length; i++) {
     let action = data[i].action
-
     switch (action) {
       case PEOPLE_MANAGEMENT_ACTIVITIES:
         objectDataRecruitment.PEOPLE_MANAGEMENT_ACTIVITIES[labelWeek]++
@@ -435,7 +434,11 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
 
 export const calculateAverageYTDBusinessManager = (objectYTDBusinessManager, weekNumberOfTheYear) => {
   Object.entries(objectYTDBusinessManager.AVERAGE).forEach(([key, value]) => {
-    objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(objectYTDBusinessManager.TOTAL_YTD[key], weekNumberOfTheYear)
+    if (key === 'CALL') {
+      objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(objectYTDBusinessManager.TOTAL_YTD[key] + objectYTDBusinessManager.TOTAL_YTD['PROSPECTION_MEETING_SCHEDULE'], weekNumberOfTheYear)
+    } else {
+      objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(objectYTDBusinessManager.TOTAL_YTD[key], weekNumberOfTheYear)
+    }
   })
 
   return objectYTDBusinessManager
@@ -450,7 +453,7 @@ export const calculateAverageYTDRecruitment = (objectYTDRecruitment, weekNumberO
 }
 
 export const calculateAverageYTDData = (totalYTD, weekNumberOfTheYear) => {
-  return Math.floor(totalYTD / weekNumberOfTheYear)
+  return Math.round(totalYTD / weekNumberOfTheYear)
 }
 
 export const getGaugeLimitFromFile = (occupation) => {
