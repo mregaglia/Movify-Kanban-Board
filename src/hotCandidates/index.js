@@ -1,27 +1,74 @@
 import React, { useMemo, useState } from "react"
+import Dexie from "dexie"
+import { isPast, isToday, intlFormat } from "date-fns"
+import { useLiveQuery } from "dexie-react-hooks"
 import styled from "styled-components"
 import { useTable } from "react-table"
 import Select from "react-select"
-import useFindCandidate from "../hooks/useFindCandidate"
-import useDebounce from "../hooks/useDebounce"
+import {
+  useFindCandidate,
+  useDebounce,
+  useHotCandidates,
+  useJobSubmissions,
+  useJobOrders,
+} from "../hooks"
+import TableHead from "./TableHead"
+import TableBody from "./TableBody"
+
+const db = new Dexie("hot-candidates")
+
+db.version(1).stores({ users: "++id,referenceId,name" })
 
 const Main = styled.main`
   display: grid;
   gap: 2rem;
 `
 
-const generateOptions = (data) =>
+const Table = styled.table`
+  border-collapse: collapse;
+  border: 1px solid black;
+`
+
+const generateOptions = (data = []) =>
   data.map((user) => ({
-    label: `${user?.title} - ${user.byLine}`,
+    label: user.title,
     value: user?.entityId,
   }))
 
+const statusKeys = new Map([
+  ["To Send", "toSend"],
+  ["WF Response", "wfResponse"],
+  ["Intake", "intake"],
+  ["WF Feedback", "wfFeedback"],
+])
+
+const getMapValue = (map, key) => map.get(key) ?? "other"
+
+// #17b978
+// #46c3db
+// #dee1ec
+
 const HotCandidatesPage = () => {
   const [query, setQuery] = useState("")
+  const hotCandidates = useLiveQuery(() => db.users.toArray(), [])
 
   const debouncedQuery = useDebounce(query, 500)
 
   const { data: users } = useFindCandidate(debouncedQuery)
+
+  // Should return an array, buggy
+  const { data: candidates } = useHotCandidates(
+    hotCandidates?.map((candidate) => candidate?.referenceId)
+  )
+
+  const { data: jobSubmissions } = useJobSubmissions(
+    candidates?.data?.submissions?.data?.map((submission) => submission.id) ??
+      []
+  )
+
+  const { data: jobOrders } = useJobOrders(
+    jobSubmissions?.data?.map((jobSubmission) => jobSubmission.jobOrder.id)
+  )
 
   const columns = useMemo(
     () => [
@@ -31,7 +78,7 @@ const HotCandidatesPage = () => {
       },
       {
         Header: "Date Available",
-        accessor: "date-available",
+        accessor: "dateAvailable",
       },
       {
         Header: "Function",
@@ -43,11 +90,11 @@ const HotCandidatesPage = () => {
       },
       {
         Header: "To Send",
-        accessor: "to-send",
+        accessor: "toSend",
       },
       {
         Header: "WF Response",
-        accessor: "wf-response",
+        accessor: "wfResponse",
       },
       {
         Header: "Intake",
@@ -55,20 +102,81 @@ const HotCandidatesPage = () => {
       },
       {
         Header: "WF Feedback",
-        accessor: "wf-feedback",
+        accessor: "wfFeedback",
       },
     ],
     []
   )
 
   const data = useMemo(() => {
-    return []
-  }, [])
+    const mappedData = [candidates?.data]?.map((candidate) => {
+      let statusObject = {
+        toSend: [],
+        wfResponse: [],
+        intake: [],
+        wfFeedback: [],
+        other: [],
+      }
+
+      for (const submission of candidate?.submissions?.data ?? []) {
+        const submissionWithDetails = jobSubmissions?.data?.find(
+          ({ id }) => id === submission.id
+        )
+        const jobOrderSubmissionTitle = submissionWithDetails?.jobOrder?.title
+        const referencedJobOrderId = submissionWithDetails?.jobOrder?.id
+
+        if (referencedJobOrderId) {
+          const currentStatusKey = getMapValue(
+            statusKeys,
+            submissionWithDetails.status
+          )
+          const company =
+            jobOrders?.data?.find(
+              (jobOrder) => jobOrder.id === referencedJobOrderId
+            )?.clientCorporation?.name ?? ""
+
+          statusObject = {
+            ...statusObject,
+            [currentStatusKey]: [
+              ...statusObject[currentStatusKey],
+              {
+                jobTitle: jobOrderSubmissionTitle,
+                company,
+                title: `${jobOrderSubmissionTitle} @ ${company}`,
+              },
+            ],
+          }
+        }
+      }
+
+      const dateAvailable = !candidate?.dateAvailable ? "NA" : isPast(candidate.dateAvailable) || isToday(candidate.dateAvailable) ? "NOW" : intlFormat(candidate.dateAvailable, {
+        month: 'numeric',
+        day: 'numeric',
+        year: 'numeric',
+      }, {
+        locale: 'nl-BE'
+      })
+
+      return {
+        name:
+          candidate?.firstName && candidate?.lastName
+            ? `${candidate?.firstName} ${candidate?.lastName}`
+            : "",
+        dateAvailable,
+        function: candidate?.occupation || "",
+        identified: "",
+        ...statusObject,
+      }
+    })
+    return mappedData ?? []
+  }, [candidates, jobSubmissions, jobOrders])
 
   const tableInstance = useTable({ columns, data })
 
-  const handleChange = () => {
-
+  const handleChange = async (user) => {
+    if (user?.label && user?.value) {
+      await db.users.add({ name: user.label, referenceId: user.value })
+    }
   }
 
   const handleInputChange = (value) => {
@@ -100,48 +208,15 @@ const HotCandidatesPage = () => {
         placeholder="Search user"
         isClearable
         noOptionsMessage={() => "No users found"}
-
       />
-      <table {...getTableProps()}>
-        <thead>
-          {headerGroups.map((headerGroup) => {
-            const {
-              key: headerGroupKey,
-              ...headerGroupProps
-            } = headerGroup.getHeaderGroupProps()
-            return (
-              <tr key={headerGroupKey} {...headerGroupProps}>
-                {headerGroup.headers.map((column) => {
-                  const { key, ...headerProps } = column.getHeaderProps()
-                  return (
-                    <th key={key} {...headerProps}>
-                      {column.render("Header")}
-                    </th>
-                  )
-                })}
-              </tr>
-            )
-          })}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
-            prepareRow(row)
-            const { key: rowKey, ...rowProps } = row.getRowProps()
-            return (
-              <tr key={rowKey} {...rowProps}>
-                {row.cells.map((cell) => {
-                  const { key, ...cellProps } = cell.getCellProps()
-                  return (
-                    <td key={key} {...cellProps}>
-                      {cell.render("Cell")}
-                    </td>
-                  )
-                })}
-              </tr>
-            )
-          })}
-        </tbody>
-      </table>
+      <Table {...getTableProps()}>
+        <TableHead headerGroups={headerGroups} />
+        <TableBody
+          getTableBodyProps={getTableBodyProps}
+          prepareRow={prepareRow}
+          rows={rows}
+        />
+      </Table>
     </Main>
   )
 }

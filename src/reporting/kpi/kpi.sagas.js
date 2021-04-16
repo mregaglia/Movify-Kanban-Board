@@ -85,7 +85,7 @@ export const THIRD_WEEK = "THIRD_WEEK"
 export const FOURTH_WEEK = "FOURTH_WEEK"
 
 export function* getKpiDataEmployee(action) {
-    let weekNumberOfTheYear = moment().format('w')
+    let weekNumberOfTheYear = moment().isoWeek()
 
     let dates = getLast4weeksDate();
     let dateStartOfThisYear = getStartDateOfYear()
