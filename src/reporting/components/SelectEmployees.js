@@ -8,7 +8,7 @@ import { pathOr, path } from "ramda";
 import { array } from "prop-types";
 import styled from "styled-components"
 import { getValuesFromEmployees } from '../../utils/employees'
-import { useQuery } from '../../utils/hooks'
+import useQuery from '../../hooks/useQuery'
 
 const Container = styled.div({
     width: "17%",
@@ -58,7 +58,6 @@ const SelectEmployees = ({ employees, setEmployeeSelected, employeeSelected }) =
 
 SelectEmployees.propTypes = {
     employees: array,
-    
 };
 
 export default connect(
