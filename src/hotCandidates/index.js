@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react"
 import Dexie from "dexie"
 import { isPast, isToday, intlFormat } from "date-fns"
 import { useLiveQuery } from "dexie-react-hooks"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { useTable } from "react-table"
 import Select from "react-select"
 import {
@@ -25,8 +25,12 @@ const Main = styled.main`
 `
 
 const Table = styled.table`
-  border-collapse: collapse;
-  border: 1px solid black;
+  ${({ theme: { colors, dimensions } }) => css`
+    border: none;
+    border-spacing: 1rem;
+    border-radius: ${dimensions.borderRadius}px;
+    background-color: ${colors.lightGrey};
+  `}
 `
 
 const generateOptions = (data = []) =>

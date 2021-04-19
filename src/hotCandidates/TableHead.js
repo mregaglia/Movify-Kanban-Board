@@ -1,10 +1,15 @@
 import React from "react"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { array } from "prop-types"
 import { tableStyles } from "./styles"
 
 const TableHeadCell = styled.th`
-  ${tableStyles}
+  ${({ theme: { fonts, textDimensions } }) => css`
+    ${tableStyles}
+    font-family: ${fonts.fontFamily};
+    font-size: ${textDimensions.medium}px;
+    font-weight: normal;
+  `}
 `
 
 const TableHead = ({ headerGroups }) => {

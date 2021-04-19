@@ -1,8 +1,6 @@
 import { css } from "styled-components"
 
 export const tableStyles = css`
-  border: 1px solid black;
-  padding: 1rem;
   &:nth-child(1) {
     width: 13%;
   }

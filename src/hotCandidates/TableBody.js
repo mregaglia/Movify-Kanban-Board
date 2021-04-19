@@ -1,21 +1,51 @@
 import React from "react"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { array, func } from "prop-types"
 import { tableStyles } from "./styles"
 
 const TableDataCell = styled.td`
-  ${tableStyles}
+  ${({ theme: { dimensions } }) => css`
+    ${tableStyles}
+    position: relative;
+    z-index: 10;
+    padding: 1rem 0;
+    &::before {
+      content: '';
+      position: absolute;
+      background-color: white;
+      width: 100%;
+      height: 100%;
+      border-radius: ${dimensions.borderRadius}px;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  `}
 `
 
 const List = styled.ul`
   margin: 0;
-  padding: 0;
+  padding 0 0.5rem;
   list-style: none;
   display: grid;
-  row-gap: 0.5rem;
+  row-gap: 0.8rem;
+`
+
+const textStyles = css`
+  ${({ theme: { textDimensions, fonts } }) => css`
+    font-family: ${fonts.fontFamily};
+    font-size: ${textDimensions.regular}px;
+  `}
 `
 
 const ListItem = styled.li`
+  ${textStyles}
+`
+
+const Paragraph = styled.p`
+  ${textStyles}
+  margin: 0;
+  padding 0 0.5rem;
 `
 
 const TableBody = ({ rows, getTableBodyProps, prepareRow }) => {
@@ -40,7 +70,7 @@ const TableBody = ({ rows, getTableBodyProps, prepareRow }) => {
                         </List>
                       )
                     } else {
-                      return single.cell.value
+                      return <Paragraph>{single.cell.value}</Paragraph>
                     }
                   })}
                 </TableDataCell>
