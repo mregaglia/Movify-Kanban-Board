@@ -54,7 +54,7 @@ const Title = styled.div(({ theme }) => ({
 
 const getStatusLabel = new Map([
   [STATUS_ITV1, 'Backlog'],
-  [STATUS_ITV2, STATUS_ITV2],
+  [STATUS_ITV2, 'ITVBM'],
   [STATUS_TO_SEND, STATUS_TO_SEND],
   [STATUS_WF_RESPONSE, STATUS_WF_RESPONSE],
   [STATUS_INTAKE, STATUS_INTAKE],
