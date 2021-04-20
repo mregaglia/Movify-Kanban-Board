@@ -10,6 +10,7 @@ import {
   STATUS_WF_RESPONSE,
   STATUS_INTAKE,
   STATUS_WF_FEEDBACK,
+  STATUS_OFFER,
 } from "../../utils/kanban"
 import Candidates from "./Candidates"
 
@@ -59,6 +60,7 @@ const getStatusLabel = new Map([
   [STATUS_INTAKE, STATUS_INTAKE],
   [STATUS_WF_FEEDBACK, STATUS_WF_FEEDBACK],
   [STATUS_NO_GO, STATUS_NO_GO],
+  [STATUS_OFFER, STATUS_OFFER],
 ])
 
 const Column = ({ board, columnId, columnWidth, jobSubmissions, status }) => {
