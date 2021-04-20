@@ -1,9 +1,7 @@
 import React, { useMemo, useState } from "react"
-import Dexie from "dexie"
 import { isPast, isToday, intlFormat } from "date-fns"
 import { useLiveQuery } from "dexie-react-hooks"
-import styled, { css } from "styled-components"
-import { useTable } from "react-table"
+import styled from "styled-components"
 import Select from "react-select"
 import {
   useFindCandidate,
@@ -12,25 +10,12 @@ import {
   useJobSubmissions,
   useJobOrders,
 } from "../hooks"
-import TableHead from "./TableHead"
-import TableBody from "./TableBody"
-
-const db = new Dexie("hot-candidates")
-
-db.version(1).stores({ users: "++id,referenceId,name" })
+import theme from "../style/theme"
+import { useIndexedDb } from "../hooks"
 
 const Main = styled.main`
   display: grid;
   gap: 2rem;
-`
-
-const Table = styled.table`
-  ${({ theme: { colors, dimensions } }) => css`
-    border: none;
-    border-spacing: 1rem;
-    border-radius: ${dimensions.borderRadius}px;
-    background-color: ${colors.lightGrey};
-  `}
 `
 
 const generateOptions = (data = []) =>
@@ -48,72 +33,37 @@ const statusKeys = new Map([
 
 const getMapValue = (map, key) => map.get(key) ?? "other"
 
-// #17b978
-// #46c3db
-// #dee1ec
-
+// Default show date available but allow reordering
 const HotCandidatesPage = () => {
   const [query, setQuery] = useState("")
+  const db = useIndexedDb()
   const hotCandidates = useLiveQuery(() => db.users.toArray(), [])
 
   const debouncedQuery = useDebounce(query, 500)
 
   const { data: users } = useFindCandidate(debouncedQuery)
 
-  // Should return an array, buggy
-  const { data: candidates } = useHotCandidates(
+  let { data: candidates } = useHotCandidates(
     hotCandidates?.map((candidate) => candidate?.referenceId)
   )
 
+  // Fix for bug API, if only one user was found, it will return an object while it should always return an array
+  // If we have no length we wrap the object in an array
+  candidates = candidates?.data?.length ? candidates.data : candidates?.data ? [candidates.data] : []
+
+  const jobSubmissionIds = [...new Set(candidates?.map((candidate) => candidate?.submissions?.data?.map((submission) => submission?.id)).flat())]
+
   const { data: jobSubmissions } = useJobSubmissions(
-    candidates?.data?.submissions?.data?.map((submission) => submission.id) ??
-      []
+    // Loop over each candidate
+    jobSubmissionIds ?? []
   )
 
   const { data: jobOrders } = useJobOrders(
     jobSubmissions?.data?.map((jobSubmission) => jobSubmission.jobOrder.id)
   )
 
-  const columns = useMemo(
-    () => [
-      {
-        Header: "Name",
-        accessor: "name",
-      },
-      {
-        Header: "Date Available",
-        accessor: "dateAvailable",
-      },
-      {
-        Header: "Function",
-        accessor: "function",
-      },
-      {
-        Header: "Identified",
-        accessor: "identified",
-      },
-      {
-        Header: "To Send",
-        accessor: "toSend",
-      },
-      {
-        Header: "WF Response",
-        accessor: "wfResponse",
-      },
-      {
-        Header: "Intake",
-        accessor: "intake",
-      },
-      {
-        Header: "WF Feedback",
-        accessor: "wfFeedback",
-      },
-    ],
-    []
-  )
-
   const data = useMemo(() => {
-    const mappedData = [candidates?.data]?.map((candidate) => {
+    const mappedData = candidates?.map((candidate) => {
       let statusObject = {
         toSend: [],
         wfResponse: [],
@@ -168,32 +118,24 @@ const HotCandidatesPage = () => {
             : "",
         dateAvailable,
         function: candidate?.occupation || "",
-        identified: "",
+        identified: [],
         ...statusObject,
       }
     })
-    return mappedData ?? []
+    const toReturn = mappedData?.length > 0 ? mappedData : []
+    return toReturn
   }, [candidates, jobSubmissions, jobOrders])
-
-  const tableInstance = useTable({ columns, data })
 
   const handleChange = async (user) => {
     if (user?.label && user?.value) {
-      await db.users.add({ name: user.label, referenceId: user.value })
+      // We should also check if the user is not already present
+      await db.users.add({ name: user.label, referenceId: user.value, color: theme.colors.grey  })
     }
   }
 
   const handleInputChange = (value) => {
     setQuery(value)
   }
-
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    rows,
-    prepareRow,
-  } = tableInstance
 
   const selectOptions = useMemo(() => {
     let options = []
@@ -213,14 +155,6 @@ const HotCandidatesPage = () => {
         isClearable
         noOptionsMessage={() => "No users found"}
       />
-      <Table {...getTableProps()}>
-        <TableHead headerGroups={headerGroups} />
-        <TableBody
-          getTableBodyProps={getTableBodyProps}
-          prepareRow={prepareRow}
-          rows={rows}
-        />
-      </Table>
     </Main>
   )
 }

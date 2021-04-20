@@ -71,11 +71,16 @@ export default {
     "#C2ABE8",
     "#f34d3d",
     "#FCAD56",
-    "#17B79B", 
+    "#17B79B",
     "#F7E06B",
     "#246EB9",
     "#84DCCF",
     "#60C659",
     "#7758B3"
-  ]
+  ],
+  hotCandidateStatusColors: {
+    green: '#17b978',
+    blue: '#46c3db',
+    grey: '#dee1ec',
+  }
 };

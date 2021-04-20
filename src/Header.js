@@ -77,7 +77,7 @@ const Header = ({ authenticated, board, hasReportingAccess }) => {
           <nav>
             <HeaderLink label="Business" to="/kanban" />
             <HeaderLink label="Recruitment" to="/recruitment" />
-            {/* <HeaderLink label="Hot candidates" to="/hot-candidates" /> */}
+            <HeaderLink label="Hot candidates" to="/hot-candidates" />
             {
               hasReportingAccess && <HeaderLink label="Reporting" to="/reporting" />
             }
