@@ -19,7 +19,7 @@ import { updateJobSubmission as updateRecruitmentJobSubmission } from "./recruit
 import { addCandidate } from "./transition/transition.actions";
 import Header from "./Header";
 import Reporting from './reporting/components/Reporting'
-import HotCandidates from "./hotCandidates";
+// import HotCandidates from "./hotCandidates";
 
 const Container = styled.div({
     paddingLeft: 25,
@@ -152,11 +152,11 @@ const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecru
                     onCloseModal={onCloseRecruitmentModal}
                 />
 
-                <AuthenticatedRoute
+                {/* <AuthenticatedRoute
                     exact
                     path="/hot-candidates"
                     component={HotCandidates}
-                />
+                /> */}
 
                 <AuthenticatedRoute
                     exact
