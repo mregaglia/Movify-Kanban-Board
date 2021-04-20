@@ -40,7 +40,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                         if (isCvSentWeekLoading) {
                             return (
                                 <TableContentTbodyTr key={i}>
-                                    <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
+                                    <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
                                     <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
                                     <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
                                     <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
@@ -50,14 +50,14 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                         } else {
                             return (
                                 <TableContentTbodyTr key={i}>
-                                    <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
+                                    <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
                                     {
                                         tableWeek.map((week) => {
                                             if (datas[key][week] === 0) {
-                                                return (<TableContentTdBold key={week}>0</TableContentTdBold>)
+                                                return (<TableContentTd key={week}>0</TableContentTd>)
                                             } else {
                                                 return (
-                                                    <TableCellWithTooltip key={week} week={week} title={CV_SENT} text={datas[key][week]} />
+                                                    <TableCellWithTooltip fontWeight={REGULAR} key={week} week={week} title={CV_SENT} text={datas[key][week]} />
                                                 )
                                             }
                                         }

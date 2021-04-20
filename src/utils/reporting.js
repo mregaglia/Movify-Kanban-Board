@@ -40,7 +40,7 @@ export const LABEL_NO_SHOW = "No Show"
 export const LABEL_INTERVIEW_DONE = "Interview done"
 export const LABEL_CONTRACT_PROPOSED = "Contract proposed"
 export const LABEL_HIRED = "Hired"
-export const LABEL_PEOPLE_MANAGEMENT_ACTIVITIES = "People management activities"
+export const LABEL_PEOPLE_MANAGEMENT_ACTIVITIES = "People Management"
 
 export const CONVERSION_YTD = "CONVERSION_YTD"
 export const TOTAL_YTD = "TOTAL_YTD"
