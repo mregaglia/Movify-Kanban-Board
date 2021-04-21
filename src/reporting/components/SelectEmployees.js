@@ -5,7 +5,7 @@ import { setEmployeeSelected } from '../employees/employees.actions'
 
 import { connect } from "react-redux";
 import { pathOr, path } from "ramda";
-import { array } from "prop-types";
+import { array, func, object } from "prop-types";
 import styled from "styled-components"
 import { getValuesFromEmployees } from '../../utils/employees'
 import useQuery from '../../hooks/useQuery'
@@ -58,6 +58,8 @@ const SelectEmployees = ({ employees, setEmployeeSelected, employeeSelected }) =
 
 SelectEmployees.propTypes = {
     employees: array,
+    setEmployeeSelected: func,
+    employeeSelected: object,
 };
 
 export default connect(
