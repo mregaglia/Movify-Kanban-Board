@@ -4,15 +4,9 @@ import styled from "styled-components"
 import { Droppable } from "react-beautiful-dnd"
 import {
   STATUS_NO_GO,
-  STATUS_ITV1,
-  STATUS_ITV2,
-  STATUS_TO_SEND,
-  STATUS_WF_RESPONSE,
-  STATUS_INTAKE,
-  STATUS_WF_FEEDBACK,
-  STATUS_OFFER,
 } from "../../utils/kanban"
 import Candidates from "./Candidates"
+import { statusLabels } from "../../utils/statusLabels"
 
 const getBackgroundColor = (isNoGo, snapshot, theme) => {
   if (snapshot.isDraggingOver) return theme.colors.transparentRed
@@ -52,21 +46,10 @@ const Title = styled.div(({ theme }) => ({
   overflow: "hidden",
 }))
 
-const getStatusLabel = new Map([
-  [STATUS_ITV1, 'Backlog'],
-  [STATUS_ITV2, 'ITVBM'],
-  [STATUS_TO_SEND, STATUS_TO_SEND],
-  [STATUS_WF_RESPONSE, STATUS_WF_RESPONSE],
-  [STATUS_INTAKE, STATUS_INTAKE],
-  [STATUS_WF_FEEDBACK, STATUS_WF_FEEDBACK],
-  [STATUS_NO_GO, STATUS_NO_GO],
-  [STATUS_OFFER, STATUS_OFFER],
-])
-
 const Column = ({ board, columnId, columnWidth, jobSubmissions, status }) => {
   return (
     <Container columnWidth={columnWidth}>
-      <Title>{getStatusLabel.get(status)}</Title>
+      <Title>{statusLabels.get(status)}</Title>
       <Droppable droppableId={columnId}>
         {(provided, snapshot) => (
           <Content snapshot={snapshot} isNoGo={status === STATUS_NO_GO}>

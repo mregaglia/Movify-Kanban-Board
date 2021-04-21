@@ -5,6 +5,7 @@ import { isRequired } from "../utils/validate";
 import { Action, Row } from "../components/modal";
 import { Select } from "../components/form";
 import CandidateInput from "./CandidateInput";
+import { statusLabels } from "../utils/statusLabels";
 
 const AddCandidateForm = ({ handleSubmit, onClose, statuses, valid }) => (
   <form onSubmit={handleSubmit}>
@@ -17,7 +18,7 @@ const AddCandidateForm = ({ handleSubmit, onClose, statuses, valid }) => (
       renderOptions={() =>
         statuses.map(option => (
           <option key={option} value={option}>
-            {option}
+            {statusLabels.get(option)}
           </option>
         ))
       }
