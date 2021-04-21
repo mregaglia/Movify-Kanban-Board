@@ -51,16 +51,25 @@ const HotCandidatesPage = () => {
   // If we have no length we wrap the object in an array
   candidates = candidates?.data?.length ? candidates.data : candidates?.data ? [candidates.data] : []
 
-  const jobSubmissionIds = [...new Set(candidates?.map((candidate) => candidate?.submissions?.data?.map((submission) => submission?.id)).flat())]
+  const maxNumberOfPossibleJobSubmissions = candidates?.reduce((accumulator, current) => accumulator + current?.submissions?.total, 0)
+  const candidateIds = [...new Set(candidates?.map((candidate) => candidate?.id))]
 
-  const { data: jobSubmissions } = useJobSubmissions(
-    // Loop over each candidate
-    jobSubmissionIds ?? []
+  let { data: jobSubmissions } = useJobSubmissions(
+    candidateIds ?? [],
+    maxNumberOfPossibleJobSubmissions,
   )
 
-  const { data: jobOrders } = useJobOrders(
-    jobSubmissions?.data?.map((jobSubmission) => jobSubmission.jobOrder.id)
+  jobSubmissions = jobSubmissions?.data ?? []
+
+  const jobOrderIds = [...new Set(jobSubmissions?.map((jobSubmission) => jobSubmission.jobOrder.id))] ?? []
+  const maxNumberOfPossibleJobOrders = jobOrderIds?.length
+
+  let { data: jobOrders } = useJobOrders(
+    jobOrderIds,
+    maxNumberOfPossibleJobOrders,
   )
+
+  jobOrders = jobOrders?.data ?? []
 
   const data = useMemo(() => {
     const mappedData = candidates?.map((candidate) => {
@@ -72,33 +81,24 @@ const HotCandidatesPage = () => {
         other: [],
       }
 
-      for (const submission of candidate?.submissions?.data ?? []) {
-        const submissionWithDetails = jobSubmissions?.data?.find(
-          ({ id }) => id === submission.id
-        )
-        const jobOrderSubmissionTitle = submissionWithDetails?.jobOrder?.title
-        const referencedJobOrderId = submissionWithDetails?.jobOrder?.id
+      for (const jobSubmission of jobSubmissions) {
+        const jobSubmissionFromCurrentCandidate = jobSubmission.candidate.id === candidate.id
+        if (jobSubmissionFromCurrentCandidate) {
+          const currentStatusKey = getMapValue(statusKeys, jobSubmission.status)
 
-        if (referencedJobOrderId) {
-          const currentStatusKey = getMapValue(
-            statusKeys,
-            submissionWithDetails.status
-          )
-          const company =
-            jobOrders?.data?.find(
-              (jobOrder) => jobOrder.id === referencedJobOrderId
-            )?.clientCorporation?.name ?? ""
+          const jobTitle = jobSubmission?.jobOrder?.title ?? ''
+          const company = jobOrders?.find((jobOrder) => jobOrder?.id === jobSubmission?.jobOrder?.id) ?? ''
 
           statusObject = {
             ...statusObject,
             [currentStatusKey]: [
               ...statusObject[currentStatusKey],
               {
-                jobTitle: jobOrderSubmissionTitle,
+                jobTitle,
                 company,
-                title: `${jobOrderSubmissionTitle} @ ${company}`,
-              },
-            ],
+                title: `${jobTitle} @${company}`
+              }
+            ]
           }
         }
       }

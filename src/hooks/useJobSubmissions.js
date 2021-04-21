@@ -1,17 +1,19 @@
 import { useQuery } from "react-query"
 import { get } from "../utils/api"
 
-const useJobSubmissions = (jobSubmissions) =>
-  useQuery(
-    ["find-candidate-job-submissions", jobSubmissions?.join()],
+const useJobSubmissions = (candidateIds, maxNumberOfPossibleJobSubmissions) => {
+  return useQuery(
+    ["find-candidate-job-submissions", candidateIds.join()],
     () =>
-      get(`entity/JobSubmission/${jobSubmissions?.join()}`, {
-        fields: "id,jobOrder,status",
+      get(`query/JobSubmission`, {
+        fields: "id,jobOrder,status,candidate",
+        where: `candidate.id IN (${candidateIds?.join()}) AND status IN ('WF Response', 'To Send', 'Intake', 'WF Feedback') AND isDeleted=false`,
+        count: maxNumberOfPossibleJobSubmissions
       }),
     {
-      // Enable once we have jobSubmissions
-      enabled: !!jobSubmissions?.length,
+      enabled: !!(candidateIds?.length && maxNumberOfPossibleJobSubmissions),
     }
   )
+}
 
 export default useJobSubmissions
