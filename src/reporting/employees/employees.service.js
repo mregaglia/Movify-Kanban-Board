@@ -1,12 +1,10 @@
 import { get } from "../../utils/api";
 import { prop } from "ramda"
 
-export const getBusinessManagerSourcingOfficerAndTalentAcquisition = (start = 0) =>
+export const getBusinessManagerSourcingOfficerAndTalentAcquisition = () =>
     get("query/CorporateUser", {
         fields: "id,firstName,lastName,occupation,primaryDepartment",
-        where: "occupation IN ('Reporting Owner %26 Business Manager','Business Manager %26 Reporting Owner',"
-            + "'Reporting Owner %26 Sourcing Officer','Sourcing Officer %26 Reporting Owner','Talent Acquisition %26 Reporting Owner',"
-            + "'Reporting Owner %26 Talent Acquisition','Business Manager','Sourcing Officer','Talent Acquisition') AND isDeleted=false",
+        where: "id NOT IN (1, 2, 3, 2403, 3978, 10146) AND occupation IS NOT NULL AND isDeleted=false",
         orderBy: "firstName,primaryDepartment.name",
         start: 0
     });

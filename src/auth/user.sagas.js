@@ -26,14 +26,11 @@ export function* getReportingAccess() {
   try {
     const userId = yield call(getUserId)
     const occupation = yield call(getUserOccupation, userId)
-
-    const mich = 'Business Manager & Reporting Owner@louis.verdonck+john.casse'
-
-    const usernamesToWhichLoggedInUserHasAccessString = mich.split('@').pop()
+    const usernamesToWhichLoggedInUserHasAccessString = occupation.split('@').pop()
 
     let usersToWhichLoggedInUserHasAccess = []
 
-    if (mich.includes('@')) {
+    if (occupation.includes('@')) {
       usersToWhichLoggedInUserHasAccess = usernamesToWhichLoggedInUserHasAccessString.split('+')
     }
 
@@ -52,9 +49,10 @@ export function* getReportingAccess() {
 
     let employeeIdAccess = []
 
-    const hasAccess = roleToAccessReporting.some(role => occupation.includes(role))
+    const cleanOccupation = occupation.split('@')[0]
+    const hasAccess = roleToAccessReporting.some(role => cleanOccupation.includes(role))
 
-    yield put(updateReportingAccess(hasAccess, occupation, userId, employeeIdAccess, usersToWhichLoggedInUserHasAccess))
+    yield put(updateReportingAccess(hasAccess, cleanOccupation, userId, employeeIdAccess, usersToWhichLoggedInUserHasAccess))
   } catch (e) {
     //
   }
