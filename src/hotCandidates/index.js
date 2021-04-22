@@ -128,8 +128,10 @@ const HotCandidatesPage = () => {
 
   const handleChange = async (user) => {
     if (user?.label && user?.value) {
-      // We should also check if the user is not already present
-      await db.users.add({ name: user.label, referenceId: user.value, color: theme.colors.grey  })
+      const alreadyAdded = await db.users.get({ 'referenceId': user.value })
+      if (!alreadyAdded) {
+        await db.users.add({ name: user.label, referenceId: user.value, color: theme.colors.grey  })
+      }
     }
   }
 
