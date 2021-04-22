@@ -3,7 +3,7 @@ import { call, put, takeLatest } from "redux-saga/effects";
 import { prop } from 'ramda'
 import {
     getBusinessManagerSourcingOfficerAndTalentAcquisition,
-    getUserById
+    getUserById,
 } from "./employees.service"
 import {
     getEmployeeKpi

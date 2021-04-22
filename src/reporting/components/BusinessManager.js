@@ -5,13 +5,13 @@ import { path, pathOr } from 'ramda'
 import { object, bool } from "prop-types"
 import Loader from 'react-loader-spinner'
 import {
-    LABEL_PROJECT_START,
     LABEL_CV_SENT,
     LABEL_MEETING_DONE,
     LABEL_INTAKE,
     LABEL_PROSPECTION_MEETING_SCHEDULE,
     LABEL_INTERVIEW_SCHEDULED,
     LABEL_NEW_VACANCY,
+    LABEL_NO_SHOW,
 } from "../../utils/reporting";
 import {
     INTAKES,
@@ -28,7 +28,7 @@ import {
 
 const tableWeek = [FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK]
 
-const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
+const BusinessManager = ({ datas, isCvSentWeekLoading, noShow }) => {
     return (
         <>
             <TableContentTbodyTrNoLine>
@@ -66,16 +66,6 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                 </TableContentTbodyTr>
                             )
                         }
-                    } else if (datas[key].TITLE === LABEL_PROJECT_START) {
-                        return (
-                            <tr key={i}>
-                                <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
-                                <TableContentTd>{datas[key].FIRST_WEEK}</TableContentTd>
-                                <TableContentTd>{datas[key].SECOND_WEEK}</TableContentTd>
-                                <TableContentTd>{datas[key].THIRD_WEEK}</TableContentTd>
-                                <TableContentTd>{datas[key].FOURTH_WEEK}</TableContentTd>
-                            </tr>
-                        )
                     } else if (datas[key].TITLE === LABEL_INTAKE) {
                         return (
                             <TableContentTbodyTr key={i}>
@@ -185,18 +175,28 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                     }
                 })
             }
+            <tr>
+                <TableContentTdLabel>{LABEL_NO_SHOW}</TableContentTdLabel>
+                <TableContentTd>{noShow.FIRST_WEEK}</TableContentTd>
+                <TableContentTd>{noShow.SECOND_WEEK}</TableContentTd>
+                <TableContentTd>{noShow.THIRD_WEEK}</TableContentTd>
+                <TableContentTd>{noShow.FOURTH_WEEK}</TableContentTd>
+            </tr>
         </>
     )
 }
 
 BusinessManager.propTypes = {
     datas: object,
+    noShow: object,
     isCvSentWeekLoading: bool
 };
 
 export default connect(
     state => ({
         datas: pathOr({}, ["kpi", "dataEmployee", "datasBusinessManager"], state),
+        // TODO make sure this data is in datasBusinessManager io datasRecruitment
+        noShow: state?.kpi?.dataEmployee?.datasRecruitment?.NO_SHOW,
         isCvSentWeekLoading: path(["kpi", "isCvSentWeekLoading"], state)
     }),
     {}
