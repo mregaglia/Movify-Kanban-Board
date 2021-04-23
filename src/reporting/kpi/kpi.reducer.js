@@ -68,7 +68,8 @@ export const initialState = {
       NO_SHOW: 0,
       INTERVIEW_DONE: 0,
       CONTRACT_PROPOSED: 0,
-      HIRED: 0
+      HIRED: 0,
+      PEOPLE_MANAGEMENT: 0,
     },
     AVERAGE_YTD_RE: {
       CONTACTED_BY_INMAIL: 0,
@@ -77,7 +78,8 @@ export const initialState = {
       NO_SHOW: 0,
       INTERVIEW_DONE: 0,
       CONTRACT_PROPOSED: 0,
-      HIRED: 0
+      HIRED: 0,
+      PEOPLE_MANAGEMENT: 0,
     },
     CONVERSION_YTD_RE: {
       CONTACTED_BY_INMAIL: "-",
@@ -86,7 +88,8 @@ export const initialState = {
       NO_SHOW: 0,
       INTERVIEW_DONE: 0,
       CONTRACT_PROPOSED: 0,
-      HIRED: 0
+      HIRED: 0,
+      PEOPLE_MANAGEMENT: "-",
     }
   },
   isLoadingKpi: false,
@@ -170,13 +173,6 @@ const kpi = {
       }
     }
   }),
-  [SET_YTD_TOTAL_RECRUITMENT]: (state, payload) => ({
-    ...state,
-    dataYTDEmployee: {
-      ...state.dataYTDEmployee,
-      TOTAL_YTD_RE: payload
-    }
-  }),
   [SET_AVERAGE_YTD_BUSINESS_MANAGER]: (state, payload) => ({
     ...state,
     dataYTDEmployee: {
@@ -189,13 +185,6 @@ const kpi = {
         INTAKE: payload.INTAKE,
         PROJECT_START: payload.PROJECT_START
       }
-    }
-  }),
-  [SET_AVERAGE_YTD_RECRUITMENT]: (state, payload) => ({
-    ...state,
-    dataYTDEmployee: {
-      ...state.dataYTDEmployee,
-      AVERAGE_YTD_RE: payload
     }
   }),
   [SET_CONVERSION_YTD_BUSINESS_MANAGER]: (state, payload) => ({
@@ -217,6 +206,20 @@ const kpi = {
     dataYTDEmployee: {
       ...state.dataYTDEmployee,
       CONVERSION_YTD_RE: payload
+    }
+  }),
+  [SET_AVERAGE_YTD_RECRUITMENT]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      AVERAGE_YTD_RE: payload
+    }
+  }),
+  [SET_YTD_TOTAL_RECRUITMENT]: (state, payload) => ({
+    ...state,
+    dataYTDEmployee: {
+      ...state.dataYTDEmployee,
+      TOTAL_YTD_RE: payload
     }
   }),
   [SET_LOADING_YTD_TOTAL]: (state, payload) => ({

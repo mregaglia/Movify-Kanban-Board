@@ -152,7 +152,8 @@ export const initializeObjectConversionYTDRecruitment = () => {
       NO_SHOW: 0,
       INTERVIEW_DONE: 0,
       CONTRACT_PROPOSED: 0,
-      HIRED: 0
+      HIRED: 0,
+      PEOPLE_MANAGEMENT: 0,
     },
     AVERAGE: {
       CONTACTED_BY_INMAIL: 0,
@@ -161,7 +162,8 @@ export const initializeObjectConversionYTDRecruitment = () => {
       NO_SHOW: 0,
       INTERVIEW_DONE: 0,
       CONTRACT_PROPOSED: 0,
-      HIRED: 0
+      HIRED: 0,
+      PEOPLE_MANAGEMENT: 0,
     },
     CONVERSION_YTD: {
       CONTACTED_BY_INMAIL: "-",
@@ -170,7 +172,8 @@ export const initializeObjectConversionYTDRecruitment = () => {
       NO_SHOW: 0,
       INTERVIEW_DONE: 0,
       CONTRACT_PROPOSED: 0,
-      HIRED: 0
+      HIRED: 0,
+      PEOPLE_MANAGEMENT: "-",
     }
   }
 }
@@ -366,7 +369,6 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
 }
 
 export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) => {
-
   if (notesOfyear.length === 0) return objectYTDRecruitment
 
   for (let i = 0; i < notesOfyear.length; i++) {
@@ -393,6 +395,9 @@ export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) 
         break;
       case HIRED:
         objectYTDRecruitment.TOTAL_YTD.HIRED++
+        break;
+      case PEOPLE_MANAGEMENT_ACTIVITIES:
+        objectYTDRecruitment.TOTAL_YTD.PEOPLE_MANAGEMENT++
         break;
       default:
         break;
@@ -441,18 +446,19 @@ export const calculateAverageYTDBusinessManager = (
   weekNumberOfTheYear
 ) => {
   Object.keys(objectYTDBusinessManager.AVERAGE).forEach(
-    (key) =>
-      (objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(
+    (key) => {
+      objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(
         objectYTDBusinessManager.TOTAL_YTD[key],
         weekNumberOfTheYear
-      ))
+      )
+    }
   )
 
   return objectYTDBusinessManager
 }
 
 export const calculateAverageYTDRecruitment = (objectYTDRecruitment, weekNumberOfTheYear) => {
-  Object.entries(objectYTDRecruitment.AVERAGE).forEach(([key, value]) => {
+  Object.keys(objectYTDRecruitment.AVERAGE).forEach((key) => {
     objectYTDRecruitment.AVERAGE[key] = calculateAverageYTDData(objectYTDRecruitment.TOTAL_YTD[key], weekNumberOfTheYear)
   })
 
@@ -492,20 +498,50 @@ export const calculateConversionYTDBusinessManager = (objectConversionYTDBusines
 
 export const calculateConversionYTDRecruitment = (objectConversionYTDRecruitment) => {
 
-  let interviewScheduleConversionYTD = Math.round(objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE / (objectConversionYTDRecruitment.TOTAL_YTD.CONTACTED_BY_INMAIL + objectConversionYTDRecruitment.TOTAL_YTD.CONTACTED_BY_PHONE) * 100)
-  objectConversionYTDRecruitment.CONVERSION_YTD.INTERVIEW_SCHEDULED = (isNaN(interviewScheduleConversionYTD) || (interviewScheduleConversionYTD === Infinity)) ? "0 %" : interviewScheduleConversionYTD + " %";
 
-  let noShowConversionYTD = Math.round(objectConversionYTDRecruitment.TOTAL_YTD.NO_SHOW / objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE * 100)
-  objectConversionYTDRecruitment.CONVERSION_YTD.NO_SHOW = (isNaN(noShowConversionYTD) || (noShowConversionYTD === Infinity)) ? "0 %" : noShowConversionYTD + " %";
+  let interviewScheduleConversionYTD = Math.round(
+    (objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE /
+      (objectConversionYTDRecruitment.TOTAL_YTD.CONTACTED_BY_INMAIL +
+        objectConversionYTDRecruitment.TOTAL_YTD.CONTACTED_BY_PHONE)) *
+      100
+  )
+  objectConversionYTDRecruitment.CONVERSION_YTD.INTERVIEW_SCHEDULED =
+    isNaN(interviewScheduleConversionYTD) || interviewScheduleConversionYTD === Infinity
+      ? "0 %"
+      : interviewScheduleConversionYTD + " %"
 
-  let interviewDoneConversionYTD = Math.round(objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_DONE / objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE * 100)
-  objectConversionYTDRecruitment.CONVERSION_YTD.INTERVIEW_DONE = (isNaN(interviewDoneConversionYTD) || (interviewDoneConversionYTD === Infinity)) ? "0 %" : interviewDoneConversionYTD + " %";
+  let noShowConversionYTD = Math.round(
+    (objectConversionYTDRecruitment.TOTAL_YTD.NO_SHOW / objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE) *
+      100
+  )
+  objectConversionYTDRecruitment.CONVERSION_YTD.NO_SHOW =
+    isNaN(noShowConversionYTD) || noShowConversionYTD === Infinity ? "0 %" : noShowConversionYTD + " %"
 
-  let contactProposedConversionYTD = Math.round(objectConversionYTDRecruitment.TOTAL_YTD.CONTRACT_PROPOSED / objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_DONE * 100)
-  objectConversionYTDRecruitment.CONVERSION_YTD.CONTRACT_PROPOSED = (isNaN(contactProposedConversionYTD) || (contactProposedConversionYTD === Infinity)) ? "0 %" : contactProposedConversionYTD + " %";
+  let interviewDoneConversionYTD = Math.round(
+    (objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_DONE /
+      objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE) *
+      100
+  )
+  objectConversionYTDRecruitment.CONVERSION_YTD.INTERVIEW_DONE =
+    isNaN(interviewDoneConversionYTD) || interviewDoneConversionYTD === Infinity
+      ? "0 %"
+      : interviewDoneConversionYTD + " %"
 
-  let hiredConversionYTD = Math.round(objectConversionYTDRecruitment.TOTAL_YTD.HIRED / objectConversionYTDRecruitment.TOTAL_YTD.CONTRACT_PROPOSED * 100)
-  objectConversionYTDRecruitment.CONVERSION_YTD.HIRED = (isNaN(hiredConversionYTD) || (hiredConversionYTD === Infinity)) ? "0 %" : hiredConversionYTD + " %";
+  let contactProposedConversionYTD = Math.round(
+    (objectConversionYTDRecruitment.TOTAL_YTD.CONTRACT_PROPOSED /
+      objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_DONE) *
+      100
+  )
+  objectConversionYTDRecruitment.CONVERSION_YTD.CONTRACT_PROPOSED =
+    isNaN(contactProposedConversionYTD) || contactProposedConversionYTD === Infinity
+      ? "0 %"
+      : contactProposedConversionYTD + " %"
+
+  let hiredConversionYTD = Math.round(
+    (objectConversionYTDRecruitment.TOTAL_YTD.HIRED / objectConversionYTDRecruitment.TOTAL_YTD.CONTRACT_PROPOSED) * 100
+  )
+  objectConversionYTDRecruitment.CONVERSION_YTD.HIRED =
+    isNaN(hiredConversionYTD) || hiredConversionYTD === Infinity ? "0 %" : hiredConversionYTD + " %"
 
   return objectConversionYTDRecruitment;
 }
