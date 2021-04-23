@@ -407,14 +407,15 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
 
   for (let i = 0; i < notesOfyear.length; i++) {
 
-    let action = notesOfyear[i].action
+    const action = notesOfyear[i].action
+    const numberOfClientContacts = notesOfyear[i].clientContacts.total
+
     switch (action) {
       case CALL:
-        if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.CALL++
-        if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.CALL++
+        if (numberOfClientContacts >= 1) objectYTDBusinessManager.TOTAL_YTD.CALL++
         break
       case INTAKE:
-        if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.INTAKE++
+        if (numberOfClientContacts >= 1) objectYTDBusinessManager.TOTAL_YTD.INTAKE++
         break
       case PROSPECTION:
         objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE++
@@ -423,7 +424,10 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
         objectYTDBusinessManager.TOTAL_YTD.PROJECT_START++
         break
       case PROSPECTION_SCHEDULED:
-        if (notesOfyear[i].clientContacts.total === 1) objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE++
+        if (numberOfClientContacts === 1) {
+          objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE++
+          objectYTDBusinessManager.TOTAL_YTD.CALL++
+        }
         break
       default:
         break
@@ -432,14 +436,17 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
   return objectYTDBusinessManager
 }
 
-export const calculateAverageYTDBusinessManager = (objectYTDBusinessManager, weekNumberOfTheYear) => {
-  Object.entries(objectYTDBusinessManager.AVERAGE).forEach(([key, value]) => {
-    if (key === 'CALL') {
-      objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(objectYTDBusinessManager.TOTAL_YTD[key] + objectYTDBusinessManager.TOTAL_YTD['PROSPECTION_MEETING_SCHEDULE'], weekNumberOfTheYear)
-    } else {
-      objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(objectYTDBusinessManager.TOTAL_YTD[key], weekNumberOfTheYear)
-    }
-  })
+export const calculateAverageYTDBusinessManager = (
+  objectYTDBusinessManager,
+  weekNumberOfTheYear
+) => {
+  Object.keys(objectYTDBusinessManager.AVERAGE).forEach(
+    (key) =>
+      (objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(
+        objectYTDBusinessManager.TOTAL_YTD[key],
+        weekNumberOfTheYear
+      ))
+  )
 
   return objectYTDBusinessManager
 }
