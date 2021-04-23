@@ -162,7 +162,7 @@ const kpi = {
       ...state.dataYTDEmployee,
       TOTAL_YTD_BM: {
         ...state.dataYTDEmployee.TOTAL_YTD_BM,
-        CALL: payload.CALL + payload.PROSPECTION_MEETING_SCHEDULE,
+        CALL: payload.CALL,
         PROSPECTION_MEETING_SCHEDULE: payload.PROSPECTION_MEETING_SCHEDULE,
         PROSPECTION_MEETING_DONE: payload.PROSPECTION_MEETING_DONE,
         INTAKE: payload.INTAKE,
