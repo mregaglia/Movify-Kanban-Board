@@ -7,7 +7,7 @@ import {
   TableContentTdTitleEmpty,
 } from "../../style/table_style"
 import { pathOr } from "ramda"
-import { object, bool, string, number, oneOfType } from "prop-types"
+import { object, bool } from "prop-types"
 import Loader from "react-loader-spinner"
 
 const TablePercentageBusinessManager = ({
@@ -21,9 +21,6 @@ const TablePercentageBusinessManager = ({
   isLoadingAverageYTD,
   isLoadingYTDNewVacancy,
   isLoadingYTDConversionNewVacancy,
-  noShowTotalYTD,
-  averageNoShowYTD,
-  conversionNoShowYTD,
 }) => {
   return (
     <>
@@ -103,6 +100,32 @@ const TablePercentageBusinessManager = ({
               )
             }
           }
+        } else if (key === "NO_SHOW") {
+          return (
+            <tr key={i}>
+              <TableContentTd>
+                {!isLoadingConversionYTD ? (
+                  dataConversionYTD[key]
+                ) : (
+                  <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+                )}
+              </TableContentTd>
+              <TableContentTd>
+                {!isLoadingTotalYTD ? (
+                  dataTotalYTD[key]
+                ) : (
+                  <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+                )}
+              </TableContentTd>
+              <TableContentTd>
+                {!isLoadingAverageYTD ? (
+                  dataAverageYTD[key]
+                ) : (
+                  <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
+                )}
+              </TableContentTd>
+            </tr>
+          )
         } else {
           return (
             <TableContentTbodyTr key={i}>
@@ -131,21 +154,6 @@ const TablePercentageBusinessManager = ({
           )
         }
       })}
-      <tr>
-        <TableContentTd>
-          {!isLoadingConversionYTD ? (
-            conversionNoShowYTD
-          ) : (
-            <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />
-          )}
-        </TableContentTd>
-        <TableContentTd>
-          {!isLoadingTotalYTD ? noShowTotalYTD : <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />}
-        </TableContentTd>
-        <TableContentTd>
-          {!isLoadingAverageYTD ? averageNoShowYTD : <Loader type="ThreeDots" height={15} width={20} color="#6BD7DA" />}
-        </TableContentTd>
-      </tr>
     </>
   )
 }
@@ -161,16 +169,10 @@ TablePercentageBusinessManager.propTypes = {
   isLoadingYTDConversionNewVacancy: bool,
   isLoadingYTDCVSent: bool,
   isLoadingYTDConversionCVSent: bool,
-  noShowTotalYTD: number,
-  averageNoShowYTD: number,
-  conversionNoShowYTD: oneOfType([string, number]),
 }
 
 export default connect(
   (state) => ({
-    noShowTotalYTD: state?.kpi?.dataYTDEmployee?.TOTAL_YTD_RE?.NO_SHOW,
-    averageNoShowYTD: state?.kpi?.dataYTDEmployee?.AVERAGE_YTD_RE?.NO_SHOW,
-    conversionNoShowYTD: state?.kpi?.dataYTDEmployee?.CONVERSION_YTD_RE?.NO_SHOW,
     dataConversionYTD: pathOr({}, ["kpi", "dataYTDEmployee", "CONVERSION_YTD_BM"], state),
     dataTotalYTD: pathOr({}, ["kpi", "dataYTDEmployee", "TOTAL_YTD_BM"], state),
     dataAverageYTD: pathOr({}, ["kpi", "dataYTDEmployee", "AVERAGE_YTD_BM"], state),

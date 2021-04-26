@@ -41,7 +41,8 @@ export const initialState = {
       NEW_VACANCY: 0,
       CV_SENT: 0,
       INTAKE: 0,
-      PROJECT_START: 0
+      PROJECT_START: 0,
+      NO_SHOW: 0,
     },
     TOTAL_YTD_BM: {
       CALL: 0,
@@ -50,7 +51,8 @@ export const initialState = {
       NEW_VACANCY: 0,
       CV_SENT: 0,
       INTAKE: 0,
-      PROJECT_START: 0
+      PROJECT_START: 0,
+      NO_SHOW: 0,
     },
     AVERAGE_YTD_BM: {
       CALL: 0,
@@ -59,7 +61,8 @@ export const initialState = {
       NEW_VACANCY: 0,
       CV_SENT: 0,
       INTAKE: 0,
-      PROJECT_START: 0
+      PROJECT_START: 0,
+      NO_SHOW: 0,
     },
     TOTAL_YTD_RE: {
       CONTACTED_BY_INMAIL: 0,
@@ -169,7 +172,8 @@ const kpi = {
         PROSPECTION_MEETING_SCHEDULE: payload.PROSPECTION_MEETING_SCHEDULE,
         PROSPECTION_MEETING_DONE: payload.PROSPECTION_MEETING_DONE,
         INTAKE: payload.INTAKE,
-        PROJECT_START: payload.PROJECT_START
+        PROJECT_START: payload.PROJECT_START,
+        NO_SHOW: payload.NO_SHOW
       }
     }
   }),
@@ -183,7 +187,8 @@ const kpi = {
         PROSPECTION_MEETING_SCHEDULE: payload.PROSPECTION_MEETING_SCHEDULE,
         PROSPECTION_MEETING_DONE: payload.PROSPECTION_MEETING_DONE,
         INTAKE: payload.INTAKE,
-        PROJECT_START: payload.PROJECT_START
+        PROJECT_START: payload.PROJECT_START,
+        NO_SHOW: payload.NO_SHOW
       }
     }
   }),
@@ -197,7 +202,8 @@ const kpi = {
         PROSPECTION_MEETING_SCHEDULE: payload.PROSPECTION_MEETING_SCHEDULE,
         PROSPECTION_MEETING_DONE: payload.PROSPECTION_MEETING_DONE,
         INTAKE: payload.INTAKE,
-        PROJECT_START: payload.PROJECT_START
+        PROJECT_START: payload.PROJECT_START,
+        NO_SHOW: payload.NO_SHOW
       }
     }
   }),

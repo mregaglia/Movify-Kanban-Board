@@ -57,6 +57,7 @@ export const initalizeObjectBusinessManager = (occupation) => {
       INTAKE: { TITLE: LABEL_INTAKE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       PROJECT_START: { TITLE: LABEL_PROJECT_START, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       CV_SENT_EXPANDED_VIEW: { FIRST_WEEK: [], SECOND_WEEK: [], THIRD_WEEK: [], FOURTH_WEEK: [] },
+      NO_SHOW: { TITLE: LABEL_NO_SHOW, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     }
   } else {
     return {}
@@ -120,7 +121,8 @@ export const initializeObjectConversionYTDBusinessManager = () => {
       NEW_VACANCY: 0,
       CV_SENT: 0,
       INTAKE: 0,
-      PROJECT_START: 0
+      PROJECT_START: 0,
+      NO_SHOW: 0,
     },
     TOTAL_YTD: {
       CALL: 0,
@@ -129,7 +131,8 @@ export const initializeObjectConversionYTDBusinessManager = () => {
       NEW_VACANCY: 0,
       CV_SENT: 0,
       INTAKE: 0,
-      PROJECT_START: 0
+      PROJECT_START: 0,
+      NO_SHOW: 0,
     },
     AVERAGE: {
       CALL: 0,
@@ -138,7 +141,8 @@ export const initializeObjectConversionYTDBusinessManager = () => {
       NEW_VACANCY: 0,
       CV_SENT: 0,
       INTAKE: 0,
-      PROJECT_START: 0
+      PROJECT_START: 0,
+      NO_SHOW: 0,
     }
   }
 }
@@ -202,6 +206,13 @@ export const initializeObjectByDatesTable = () => {
   }
 }
 
+const findTypeOfPersonWhiDidNotShowUp = (data) => {
+  const typeOfPersonWhoDidNotShowUp = data.candidates.total >= 1 ?
+    'CANDIDATE' : data.clientContacts.total >= 1 ? 'CLIENT' : 'UNKNOWN'
+
+  return typeOfPersonWhoDidNotShowUp
+}
+
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
 
 
@@ -215,9 +226,13 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
       case PEOPLE_MANAGEMENT_ACTIVITIES:
         objectDataRecruitment.PEOPLE_MANAGEMENT_ACTIVITIES[labelWeek]++
         break
-      case NO_SHOW:
-        objectDataRecruitment.NO_SHOW[labelWeek]++
+      case NO_SHOW: {
+        const typeOfPersonWhoDidNotShowUp = findTypeOfPersonWhiDidNotShowUp(data[i])
+        if (typeOfPersonWhoDidNotShowUp === 'CANDIDATE') {
+          objectDataRecruitment.NO_SHOW[labelWeek]++
+        }
         break;
+      }
       case INTERVIEW_DONE_1:
         objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
         interviewsDone = [...interviewsDone, data[i]]
@@ -338,6 +353,13 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
       case CALL:
         if (data[i].clientContacts.total) objectDataBusinessManager.CALL[labelWeek]++
         break;
+      case NO_SHOW: {
+        const typeOfPersonWhoDidNotShowUp = findTypeOfPersonWhiDidNotShowUp(data[i])
+        if (typeOfPersonWhoDidNotShowUp === 'CLIENT') {
+          objectDataBusinessManager.NO_SHOW[labelWeek]++
+        }
+        break;
+      }
       case INTAKE:
         if (data[i].clientContacts.total) {
           objectDataBusinessManager.INTAKE[labelWeek]++
@@ -375,9 +397,13 @@ export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) 
 
     let action = notesOfyear[i].action
     switch (action) {
-      case NO_SHOW:
-        objectYTDRecruitment.TOTAL_YTD.NO_SHOW++
+      case NO_SHOW: {
+        const typeOfPersonWhoDidNotShowUp = findTypeOfPersonWhiDidNotShowUp(notesOfyear[i])
+        if (typeOfPersonWhoDidNotShowUp === 'CANDIDATE') {
+          objectYTDRecruitment.TOTAL_YTD.NO_SHOW++
+        }
         break;
+      }
       case INTERVIEW_DONE_1 || INTERVIEW_DONE_2 || INTERVIEW_DONE_3:
         objectYTDRecruitment.TOTAL_YTD.INTERVIEW_DONE++
         break;
@@ -416,6 +442,13 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
     const numberOfClientContacts = notesOfyear[i].clientContacts.total
 
     switch (action) {
+      case NO_SHOW: {
+        const typeOfPersonWhoDidNotShowUp = findTypeOfPersonWhiDidNotShowUp(notesOfyear[i])
+        if (typeOfPersonWhoDidNotShowUp === 'CLIENT') {
+          objectYTDBusinessManager.TOTAL_YTD.NO_SHOW++
+        }
+        break;
+      }
       case CALL:
         if (numberOfClientContacts >= 1) objectYTDBusinessManager.TOTAL_YTD.CALL++
         break
@@ -480,6 +513,13 @@ export const getGaugeLimitFromFile = (occupation) => {
 }
 
 export const calculateConversionYTDBusinessManager = (objectConversionYTDBusinessManager) => {
+
+  const noShowConversionYTD = Math.round(
+    (objectConversionYTDBusinessManager.TOTAL_YTD.NO_SHOW / objectConversionYTDBusinessManager.TOTAL_YTD.INTERVIEW_SCHEDULE) *
+      100
+  )
+  objectConversionYTDBusinessManager.CONVERSION_YTD.NO_SHOW =
+    isNaN(noShowConversionYTD) || noShowConversionYTD === Infinity ? "0 %" : noShowConversionYTD + " %"
 
   let prospectionMeetingScheduleConversionYTD = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE / (objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE + objectConversionYTDBusinessManager.TOTAL_YTD.CALL)) * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.PROSPECTION_MEETING_SCHEDULE = (isNaN(prospectionMeetingScheduleConversionYTD) || (prospectionMeetingScheduleConversionYTD === Infinity)) ? "0 %" : prospectionMeetingScheduleConversionYTD + " %";

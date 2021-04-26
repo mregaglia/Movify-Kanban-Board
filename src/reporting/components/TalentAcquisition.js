@@ -2,7 +2,7 @@ import React from 'react'
 import { useSelector } from "react-redux";
 import { TableContentTd, TableContentTbodyTr, TableContentTdTitle, TableContentTbodyTrNoLine, TableContentTdLabel, TableContentTdLabelBold, TableContentTdBold } from "../../style/table_style"
 import { v4 as uuid } from 'uuid'
-import { LABEL_INTERVIEW_DONE, LABEL_INTERVIEW_SCHEDULED, LABEL_CONTACTED_BY_INMAIL, LABEL_PEOPLE_MANAGEMENT_ACTIVITIES, HIRED, LABEL_NO_SHOW } from '../../utils/reporting'
+import { LABEL_INTERVIEW_DONE, LABEL_INTERVIEW_SCHEDULED, LABEL_CONTACTED_BY_INMAIL, LABEL_PEOPLE_MANAGEMENT_ACTIVITIES, HIRED } from '../../utils/reporting'
 import {
     BUSINESS_MANAGER,
     SOURCING_OFFICER
@@ -37,7 +37,6 @@ const TalentAcquisition = () => {
             {
                 Object.keys(datas).map((key) => {
                     const title = datas[key].TITLE
-                    if (title === LABEL_NO_SHOW) return null;
                     if (title === LABEL_CONTACTED_BY_INMAIL && occupation.includes(SOURCING_OFFICER)) {
                         return (
 

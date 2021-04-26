@@ -28,7 +28,7 @@ import {
 
 const tableWeek = [FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK]
 
-const BusinessManager = ({ datas, isCvSentWeekLoading, noShow }) => {
+const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
     return (
         <>
             <TableContentTbodyTrNoLine>
@@ -36,6 +36,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading, noShow }) => {
             </TableContentTbodyTrNoLine>
             {
                 Object.keys(datas).map((key, i) => {
+                    if (!datas[key].TITLE) return null
                     if (datas[key].TITLE === LABEL_CV_SENT) {
                         if (isCvSentWeekLoading) {
                             return (
@@ -161,8 +162,17 @@ const BusinessManager = ({ datas, isCvSentWeekLoading, noShow }) => {
 
                             </TableContentTbodyTr>
                         )
+                    } else if (datas[key].TITLE === LABEL_NO_SHOW) {
+                        return (
+                            <tr key={i}>
+                                <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
+                                <TableContentTd>{datas[key].FIRST_WEEK}</TableContentTd>
+                                <TableContentTd>{datas[key].SECOND_WEEK}</TableContentTd>
+                                <TableContentTd>{datas[key].THIRD_WEEK}</TableContentTd>
+                                <TableContentTd>{datas[key].FOURTH_WEEK}</TableContentTd>
+                            </tr>
+                        )
                     } else {
-                        if (!datas[key].TITLE) return null
                         return (
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
@@ -175,28 +185,18 @@ const BusinessManager = ({ datas, isCvSentWeekLoading, noShow }) => {
                     }
                 })
             }
-            <tr>
-                <TableContentTdLabel>{LABEL_NO_SHOW}</TableContentTdLabel>
-                <TableContentTd>{noShow.FIRST_WEEK}</TableContentTd>
-                <TableContentTd>{noShow.SECOND_WEEK}</TableContentTd>
-                <TableContentTd>{noShow.THIRD_WEEK}</TableContentTd>
-                <TableContentTd>{noShow.FOURTH_WEEK}</TableContentTd>
-            </tr>
         </>
     )
 }
 
 BusinessManager.propTypes = {
     datas: object,
-    noShow: object,
     isCvSentWeekLoading: bool
 };
 
 export default connect(
     state => ({
         datas: pathOr({}, ["kpi", "dataEmployee", "datasBusinessManager"], state),
-        // TODO make sure this data is in datasBusinessManager io datasRecruitment
-        noShow: state?.kpi?.dataEmployee?.datasRecruitment?.NO_SHOW,
         isCvSentWeekLoading: path(["kpi", "isCvSentWeekLoading"], state)
     }),
     {}

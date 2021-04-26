@@ -34,7 +34,7 @@ const TablePercentageTalentAcquisition = ({
         </TableContentTbodyTrNoLine>
       )}
       {Object.keys(dataConversionYTD).map((key, i) => {
-        const shouldNotRender = key === "NO_SHOW" || (key === "PEOPLE_MANAGEMENT" && !occupation.includes(BUSINESS_MANAGER))
+        const shouldNotRender = (key === "PEOPLE_MANAGEMENT" && !occupation.includes(BUSINESS_MANAGER))
         if (shouldNotRender) {
           return null
         } else if (key === "PEOPLE_MANAGEMENT" || (key === "HIRED" && !occupation.includes(BUSINESS_MANAGER))) {
