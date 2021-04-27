@@ -52,61 +52,78 @@ const StyledGauge = styled(GaugeComponent)`
     }
 `
 
-const Reporting = ({ initializeExpandView, initializeStateWeeklySpeedCalcul, setLoadingData, getGaugeLimit, getEmployees, employeeSelected, isLoadingKpi, setEmployeeSelected, userConnectedId, userConnectedOccupation, getEmployeeAccessibleData, employeeIdAccess }) => {
+const Reporting = ({
+  initializeExpandView,
+  initializeStateWeeklySpeedCalcul,
+  setLoadingData,
+  getGaugeLimit,
+  getEmployees,
+  employeeSelected,
+  isLoadingKpi,
+  setEmployeeSelected,
+  userConnectedId,
+  userConnectedOccupation,
+  getEmployeeAccessibleData,
+  employeeIdAccess,
+}) => {
+  useEffect(() => {
+    if (!userConnectedOccupation.includes(REPORTING_OWNER)) {
+      let initializedEmployeeConnected = initializeEmployeeSelected(
+        userConnectedId,
+        userConnectedOccupation
+      )
 
-    useEffect(() => {
-        if (!userConnectedOccupation.includes(REPORTING_OWNER)) {
-            let initializedEmployeeConnected = initializeEmployeeSelected(userConnectedId, userConnectedOccupation)
+      setEmployeeSelected(initializedEmployeeConnected)
 
-            setEmployeeSelected(initializedEmployeeConnected);
+      if (!isEmpty(employeeIdAccess)) {
+        getEmployeeAccessibleData(employeeIdAccess)
+      }
+    } else {
+      getEmployees()
+    }
+  }, [
+    employeeIdAccess,
+    getEmployeeAccessibleData,
+    getEmployees,
+    setEmployeeSelected,
+    userConnectedId,
+    userConnectedOccupation,
+  ])
 
-            if (!isEmpty(employeeIdAccess)) {
-                getEmployeeAccessibleData(employeeIdAccess)
-            }
-        } else {
-            getEmployees();
-        }
-    }, [employeeIdAccess, getEmployeeAccessibleData, getEmployees, setEmployeeSelected, userConnectedId, userConnectedOccupation])
+  useEffect(() => {
+    setLoadingData(true)
+    initializeStateWeeklySpeedCalcul()
+    getGaugeLimit()
+    initializeExpandView()
+  }, [
+    employeeSelected,
+    getGaugeLimit,
+    setLoadingData,
+    initializeExpandView,
+    initializeStateWeeklySpeedCalcul,
+  ])
 
-    useEffect(() => {
-        setLoadingData(true)
-        initializeStateWeeklySpeedCalcul()
-        getGaugeLimit()
-        initializeExpandView()
-    }, [employeeSelected, getGaugeLimit, setLoadingData, initializeExpandView, initializeStateWeeklySpeedCalcul])
+  return (
+    <div>
+      {(userConnectedOccupation.includes(REPORTING_OWNER) ||
+        !isEmpty(employeeIdAccess)) && <SelectEmployees />}
 
-    return (
-        <div>
-            {
-                (userConnectedOccupation.includes(REPORTING_OWNER) || !isEmpty(employeeIdAccess)) && <SelectEmployees />
-            }
-
-            <Container>
-                {
-                    (!isEmpty(employeeSelected) && isLoadingKpi) && (
-                        <div>
-                            <Loader
-                                type="Rings"
-                                color="#6BD7DA"
-                                height={100}
-                                width={100}
-                            />
-                        </div>
-                    )
-                }
-                {
-                    (!isEmpty(employeeSelected) && !isLoadingKpi) && (
-                        <>
-                            <StyledGauge />
-                            <StyledTableData />
-                            <StyledTablePercentage />
-                        </>
-                    )
-                }
-            </Container>
-
-        </div >
-    )
+      <Container>
+        {!isEmpty(employeeSelected) && isLoadingKpi && (
+          <div>
+            <Loader type="Rings" color="#6BD7DA" height={100} width={100} />
+          </div>
+        )}
+        {!isEmpty(employeeSelected) && !isLoadingKpi && (
+          <>
+            <StyledGauge />
+            <StyledTableData />
+            <StyledTablePercentage />
+          </>
+        )}
+      </Container>
+    </div>
+  )
 }
 
 Reporting.propTypes = {

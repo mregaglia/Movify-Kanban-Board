@@ -5,13 +5,13 @@ import { path, pathOr } from 'ramda'
 import { object, bool } from "prop-types"
 import Loader from 'react-loader-spinner'
 import {
-    LABEL_PROJECT_START,
     LABEL_CV_SENT,
     LABEL_MEETING_DONE,
     LABEL_INTAKE,
     LABEL_PROSPECTION_MEETING_SCHEDULE,
     LABEL_INTERVIEW_SCHEDULED,
     LABEL_NEW_VACANCY,
+    LABEL_NO_SHOW,
 } from "../../utils/reporting";
 import {
     INTAKES,
@@ -36,6 +36,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
             </TableContentTbodyTrNoLine>
             {
                 Object.keys(datas).map((key, i) => {
+                    if (!datas[key].TITLE) return null
                     if (datas[key].TITLE === LABEL_CV_SENT) {
                         if (isCvSentWeekLoading) {
                             return (
@@ -66,16 +67,6 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                                 </TableContentTbodyTr>
                             )
                         }
-                    } else if (datas[key].TITLE === LABEL_PROJECT_START) {
-                        return (
-                            <tr key={i}>
-                                <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
-                                <TableContentTd>{datas[key].FIRST_WEEK}</TableContentTd>
-                                <TableContentTd>{datas[key].SECOND_WEEK}</TableContentTd>
-                                <TableContentTd>{datas[key].THIRD_WEEK}</TableContentTd>
-                                <TableContentTd>{datas[key].FOURTH_WEEK}</TableContentTd>
-                            </tr>
-                        )
                     } else if (datas[key].TITLE === LABEL_INTAKE) {
                         return (
                             <TableContentTbodyTr key={i}>
@@ -171,8 +162,17 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
 
                             </TableContentTbodyTr>
                         )
+                    } else if (datas[key].TITLE === LABEL_NO_SHOW) {
+                        return (
+                            <tr key={i}>
+                                <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
+                                <TableContentTd>{datas[key].FIRST_WEEK}</TableContentTd>
+                                <TableContentTd>{datas[key].SECOND_WEEK}</TableContentTd>
+                                <TableContentTd>{datas[key].THIRD_WEEK}</TableContentTd>
+                                <TableContentTd>{datas[key].FOURTH_WEEK}</TableContentTd>
+                            </tr>
+                        )
                     } else {
-                        if (!datas[key].TITLE) return null
                         return (
                             <TableContentTbodyTr key={i}>
                                 <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>

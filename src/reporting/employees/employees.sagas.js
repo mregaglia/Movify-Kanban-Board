@@ -1,9 +1,9 @@
 
-import { call, put, takeLatest } from "redux-saga/effects";
+import { call, put, select, takeLatest } from "redux-saga/effects";
 import { prop } from 'ramda'
 import {
     getBusinessManagerSourcingOfficerAndTalentAcquisition,
-    getUserById
+    getUserById,
 } from "./employees.service"
 import {
     getEmployeeKpi
@@ -20,7 +20,12 @@ import {
 
 export function* getEmployees() {
     try {
-        const employees = yield call(getBusinessManagerSourcingOfficerAndTalentAcquisition);
+        const currentUser = yield select((state) => state.user)
+        const usersToWhichLoggedInUserHasAccess = currentUser?.accessToReportingTab?.usersToWhichLoggedInUserHasAccess
+        const currentUserId = currentUser?.accessToReportingTab?.userId
+        // We escape these values to make sure we have a valid where clause
+        const userNames = usersToWhichLoggedInUserHasAccess?.map((user) => `'${user?.raw}'`)?.join(',')
+        const employees = yield call(getBusinessManagerSourcingOfficerAndTalentAcquisition, currentUserId, userNames)
         const sortedEmployees = sortTableEmployee(employees.data)
         yield put(setEmployees(sortedEmployees))
     } catch (e) {

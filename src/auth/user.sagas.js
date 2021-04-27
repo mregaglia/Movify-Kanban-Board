@@ -9,10 +9,6 @@ import {
   getUserOccupation
 } from "./user.service"
 
-//import {
-//  getIdEmployeeAccessAndOccupation
-//} from '../utils/employees'
-
 export const REPORTING_OWNER = "Reporting Owner"
 export const BUSINESS_MANAGER = "Business Manager"
 export const TALENT_ACQUISITION = "Talent Acquisition"
@@ -28,29 +24,35 @@ const roleToAccessReporting = [
 
 export function* getReportingAccess() {
   try {
-     //const userId = 13034
-    // const jacquelineOccupation = "Talent Acquisition"
-
-    //const userId = 11579
-    //const occupation = "Business Manager"
-
     const userId = yield call(getUserId)
     const occupation = yield call(getUserOccupation, userId)
+    const usernamesToWhichLoggedInUserHasAccessString = occupation.split('@').pop()
+
+    let usersToWhichLoggedInUserHasAccess = []
+
+    if (occupation.includes('@')) {
+      usersToWhichLoggedInUserHasAccess = usernamesToWhichLoggedInUserHasAccessString.split('+')
+    }
+
+    usersToWhichLoggedInUserHasAccess = usersToWhichLoggedInUserHasAccess?.map((user) => {
+      let firstName = user.split('.')[0]
+      firstName = firstName?.replace(/^./, firstName[0]?.toUpperCase()) ?? ''
+      let lastName = user.split('.')[1]
+      lastName = lastName?.replace(/^./, lastName[0]?.toUpperCase()) ?? ''
+      return {
+        raw: user,
+        firstName,
+        lastName,
+        fullName: `${firstName} ${lastName}`
+      }
+    })
 
     let employeeIdAccess = []
 
-    let hasAccess = roleToAccessReporting.some(role => occupation.includes(role))
+    const cleanOccupation = occupation.split('@')[0]
+    const hasAccess = roleToAccessReporting.some(role => cleanOccupation.includes(role))
 
-    // if (!occupation.includes(REPORTING_OWNER)) {
-    //   let dataEmployeeFiltered = getIdEmployeeAccessAndOccupation(occupation)
-    //   console.log("1")
-    //   employeeIdAccess = dataEmployeeFiltered.tabEmployeesIdsAccessibleByUserConnected
-    //   console.log("2")
-    //   occupation = dataEmployeeFiltered.userConnectedOccupation
-    //   console.log("3")
-    // }
-
-    yield put(updateReportingAccess(hasAccess, occupation, userId, employeeIdAccess))
+    yield put(updateReportingAccess(hasAccess, cleanOccupation, userId, employeeIdAccess, usersToWhichLoggedInUserHasAccess))
   } catch (e) {
     //
   }

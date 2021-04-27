@@ -1,7 +1,7 @@
 import { bindReducer } from "../utils/reducer"
 
 import {
-    UPDATE_REPORTONG_ACCESS
+    UPDATE_REPORTING_ACCESS
 } from "./user.actions"
 
 export const initialState = {
@@ -9,8 +9,8 @@ export const initialState = {
 }
 
 const user = {
-    [UPDATE_REPORTONG_ACCESS]: (state, payload) => ({
-        ...state, 
+    [UPDATE_REPORTING_ACCESS]: (state, payload) => ({
+        ...state,
         accessToReportingTab: payload
     })
 }

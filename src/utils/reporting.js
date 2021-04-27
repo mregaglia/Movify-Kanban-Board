@@ -57,6 +57,7 @@ export const initalizeObjectBusinessManager = (occupation) => {
       INTAKE: { TITLE: LABEL_INTAKE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       PROJECT_START: { TITLE: LABEL_PROJECT_START, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       CV_SENT_EXPANDED_VIEW: { FIRST_WEEK: [], SECOND_WEEK: [], THIRD_WEEK: [], FOURTH_WEEK: [] },
+      NO_SHOW: { TITLE: LABEL_NO_SHOW, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
     }
   } else {
     return {}
@@ -120,7 +121,8 @@ export const initializeObjectConversionYTDBusinessManager = () => {
       NEW_VACANCY: 0,
       CV_SENT: 0,
       INTAKE: 0,
-      PROJECT_START: 0
+      PROJECT_START: 0,
+      NO_SHOW: 0,
     },
     TOTAL_YTD: {
       CALL: 0,
@@ -129,7 +131,8 @@ export const initializeObjectConversionYTDBusinessManager = () => {
       NEW_VACANCY: 0,
       CV_SENT: 0,
       INTAKE: 0,
-      PROJECT_START: 0
+      PROJECT_START: 0,
+      NO_SHOW: 0,
     },
     AVERAGE: {
       CALL: 0,
@@ -138,7 +141,8 @@ export const initializeObjectConversionYTDBusinessManager = () => {
       NEW_VACANCY: 0,
       CV_SENT: 0,
       INTAKE: 0,
-      PROJECT_START: 0
+      PROJECT_START: 0,
+      NO_SHOW: 0,
     }
   }
 }
@@ -152,7 +156,8 @@ export const initializeObjectConversionYTDRecruitment = () => {
       NO_SHOW: 0,
       INTERVIEW_DONE: 0,
       CONTRACT_PROPOSED: 0,
-      HIRED: 0
+      HIRED: 0,
+      PEOPLE_MANAGEMENT: 0,
     },
     AVERAGE: {
       CONTACTED_BY_INMAIL: 0,
@@ -161,7 +166,8 @@ export const initializeObjectConversionYTDRecruitment = () => {
       NO_SHOW: 0,
       INTERVIEW_DONE: 0,
       CONTRACT_PROPOSED: 0,
-      HIRED: 0
+      HIRED: 0,
+      PEOPLE_MANAGEMENT: 0,
     },
     CONVERSION_YTD: {
       CONTACTED_BY_INMAIL: "-",
@@ -170,7 +176,8 @@ export const initializeObjectConversionYTDRecruitment = () => {
       NO_SHOW: 0,
       INTERVIEW_DONE: 0,
       CONTRACT_PROPOSED: 0,
-      HIRED: 0
+      HIRED: 0,
+      PEOPLE_MANAGEMENT: "-",
     }
   }
 }
@@ -199,6 +206,29 @@ export const initializeObjectByDatesTable = () => {
   }
 }
 
+const findTypeOfPersonWhiDidNotShowUp = (data) => {
+  const typeOfPersonWhoDidNotShowUp = data.candidates.total >= 1 ?
+    'CANDIDATE' : data.clientContacts.total >= 1 ? 'CLIENT' : 'UNKNOWN'
+
+  return typeOfPersonWhoDidNotShowUp
+}
+
+const checkForDuplicateClientContactsOrCandidates = (dataToCheck, newEntry, typeOfPerson = 'clientContacts') => {
+  let isDuplicate = false
+  const contactIds = newEntry[typeOfPerson].data?.map(({ id }) => id) ?? []
+
+  for (const singleEntry of dataToCheck) {
+    isDuplicate = singleEntry?.[typeOfPerson]?.data?.some((contact) => {
+      return contactIds.includes(contact.id)
+    })
+    if (isDuplicate) {
+      break
+    }
+  }
+
+  return isDuplicate
+}
+
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
 
 
@@ -212,21 +242,40 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
       case PEOPLE_MANAGEMENT_ACTIVITIES:
         objectDataRecruitment.PEOPLE_MANAGEMENT_ACTIVITIES[labelWeek]++
         break
-      case NO_SHOW:
-        objectDataRecruitment.NO_SHOW[labelWeek]++
+      case NO_SHOW: {
+        const typeOfPersonWhoDidNotShowUp = findTypeOfPersonWhiDidNotShowUp(data[i])
+        if (typeOfPersonWhoDidNotShowUp === 'CANDIDATE') {
+          objectDataRecruitment.NO_SHOW[labelWeek]++
+        }
         break;
-      case INTERVIEW_DONE_1:
-        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
-        interviewsDone = [...interviewsDone, data[i]]
+      }
+      case INTERVIEW_DONE_1: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(interviewsDone, data[i], 'candidates')
+
+        if (!isDuplicate) {
+          objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+          interviewsDone = [...interviewsDone, data[i]]
+        }
         break;
-      case INTERVIEW_DONE_2:
-        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
-        interviewsDone = [...interviewsDone, data[i]]
+      }
+      case INTERVIEW_DONE_2: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(interviewsDone, data[i], 'candidates')
+
+        if (!isDuplicate) {
+          objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+          interviewsDone = [...interviewsDone, data[i]]
+        }
         break;
-      case INTERVIEW_DONE_3:
-        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
-        interviewsDone = [...interviewsDone, data[i]]
+      }
+      case INTERVIEW_DONE_3: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(interviewsDone, data[i], 'candidates')
+
+        if (!isDuplicate) {
+          objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+          interviewsDone = [...interviewsDone, data[i]]
+        }
         break;
+      }
       case CONTRACT_PROPOSED:
         objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++;
         break;
@@ -335,27 +384,47 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
       case CALL:
         if (data[i].clientContacts.total) objectDataBusinessManager.CALL[labelWeek]++
         break;
-      case INTAKE:
-        if (data[i].clientContacts.total) {
+      case NO_SHOW: {
+        const typeOfPersonWhoDidNotShowUp = findTypeOfPersonWhiDidNotShowUp(data[i])
+        if (typeOfPersonWhoDidNotShowUp === 'CLIENT') {
+          objectDataBusinessManager.NO_SHOW[labelWeek]++
+        }
+        break;
+      }
+      case INTAKE: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(intakes, data[i], 'candidates')
+
+        if (!isDuplicate && data[i].clientContacts.total) {
           objectDataBusinessManager.INTAKE[labelWeek]++
           intakes = [...intakes, data[i]]
         }
         break;
-      case PROSPECTION:
-        objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
-        prospectionsDone = [...prospectionsDone, data[i]]
+      }
+      case PROSPECTION: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(prospectionsDone, data[i])
+
+        if (!isDuplicate) {
+          objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
+          prospectionsDone = [...prospectionsDone, data[i]]
+        }
         break;
+      }
       case PROJECT_START:
         objectDataBusinessManager.PROJECT_START[labelWeek]++
         break;
-      case PROSPECTION_SCHEDULED:
-        objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[labelWeek]++
-        prospectionsScheduled = [...prospectionsScheduled, data[i]]
-        break;
-        default:
-          break;
+      case PROSPECTION_SCHEDULED: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(prospectionsScheduled, data[i])
+
+        if (!isDuplicate) {
+          objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[labelWeek]++
+          prospectionsScheduled = [...prospectionsScheduled, data[i]]
         }
+        break;
       }
+      default:
+        break;
+    }
+  }
 
   return {
     PROSPECTIONS: prospectionsDone,
@@ -366,16 +435,19 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
 }
 
 export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) => {
-
   if (notesOfyear.length === 0) return objectYTDRecruitment
 
   for (let i = 0; i < notesOfyear.length; i++) {
 
     let action = notesOfyear[i].action
     switch (action) {
-      case NO_SHOW:
-        objectYTDRecruitment.TOTAL_YTD.NO_SHOW++
+      case NO_SHOW: {
+        const typeOfPersonWhoDidNotShowUp = findTypeOfPersonWhiDidNotShowUp(notesOfyear[i])
+        if (typeOfPersonWhoDidNotShowUp === 'CANDIDATE') {
+          objectYTDRecruitment.TOTAL_YTD.NO_SHOW++
+        }
         break;
+      }
       case INTERVIEW_DONE_1 || INTERVIEW_DONE_2 || INTERVIEW_DONE_3:
         objectYTDRecruitment.TOTAL_YTD.INTERVIEW_DONE++
         break;
@@ -394,6 +466,9 @@ export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) 
       case HIRED:
         objectYTDRecruitment.TOTAL_YTD.HIRED++
         break;
+      case PEOPLE_MANAGEMENT_ACTIVITIES:
+        objectYTDRecruitment.TOTAL_YTD.PEOPLE_MANAGEMENT++
+        break;
       default:
         break;
     }
@@ -407,14 +482,22 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
 
   for (let i = 0; i < notesOfyear.length; i++) {
 
-    let action = notesOfyear[i].action
+    const action = notesOfyear[i].action
+    const numberOfClientContacts = notesOfyear[i].clientContacts.total
+
     switch (action) {
+      case NO_SHOW: {
+        const typeOfPersonWhoDidNotShowUp = findTypeOfPersonWhiDidNotShowUp(notesOfyear[i])
+        if (typeOfPersonWhoDidNotShowUp === 'CLIENT') {
+          objectYTDBusinessManager.TOTAL_YTD.NO_SHOW++
+        }
+        break;
+      }
       case CALL:
-        if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.CALL++
-        if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.CALL++
+        if (numberOfClientContacts >= 1) objectYTDBusinessManager.TOTAL_YTD.CALL++
         break
       case INTAKE:
-        if (notesOfyear[i].clientContacts.total >= 1) objectYTDBusinessManager.TOTAL_YTD.INTAKE++
+        if (numberOfClientContacts >= 1) objectYTDBusinessManager.TOTAL_YTD.INTAKE++
         break
       case PROSPECTION:
         objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_DONE++
@@ -423,7 +506,10 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
         objectYTDBusinessManager.TOTAL_YTD.PROJECT_START++
         break
       case PROSPECTION_SCHEDULED:
-        if (notesOfyear[i].clientContacts.total === 1) objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE++
+        if (numberOfClientContacts === 1) {
+          objectYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE++
+          objectYTDBusinessManager.TOTAL_YTD.CALL++
+        }
         break
       default:
         break
@@ -432,20 +518,24 @@ export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessM
   return objectYTDBusinessManager
 }
 
-export const calculateAverageYTDBusinessManager = (objectYTDBusinessManager, weekNumberOfTheYear) => {
-  Object.entries(objectYTDBusinessManager.AVERAGE).forEach(([key, value]) => {
-    if (key === 'CALL') {
-      objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(objectYTDBusinessManager.TOTAL_YTD[key] + objectYTDBusinessManager.TOTAL_YTD['PROSPECTION_MEETING_SCHEDULE'], weekNumberOfTheYear)
-    } else {
-      objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(objectYTDBusinessManager.TOTAL_YTD[key], weekNumberOfTheYear)
+export const calculateAverageYTDBusinessManager = (
+  objectYTDBusinessManager,
+  weekNumberOfTheYear
+) => {
+  Object.keys(objectYTDBusinessManager.AVERAGE).forEach(
+    (key) => {
+      objectYTDBusinessManager.AVERAGE[key] = calculateAverageYTDData(
+        objectYTDBusinessManager.TOTAL_YTD[key],
+        weekNumberOfTheYear
+      )
     }
-  })
+  )
 
   return objectYTDBusinessManager
 }
 
 export const calculateAverageYTDRecruitment = (objectYTDRecruitment, weekNumberOfTheYear) => {
-  Object.entries(objectYTDRecruitment.AVERAGE).forEach(([key, value]) => {
+  Object.keys(objectYTDRecruitment.AVERAGE).forEach((key) => {
     objectYTDRecruitment.AVERAGE[key] = calculateAverageYTDData(objectYTDRecruitment.TOTAL_YTD[key], weekNumberOfTheYear)
   })
 
@@ -468,6 +558,13 @@ export const getGaugeLimitFromFile = (occupation) => {
 
 export const calculateConversionYTDBusinessManager = (objectConversionYTDBusinessManager) => {
 
+  const noShowConversionYTD = Math.round(
+    (objectConversionYTDBusinessManager.TOTAL_YTD.NO_SHOW / objectConversionYTDBusinessManager.TOTAL_YTD.INTERVIEW_SCHEDULE) *
+      100
+  )
+  objectConversionYTDBusinessManager.CONVERSION_YTD.NO_SHOW =
+    isNaN(noShowConversionYTD) || noShowConversionYTD === Infinity ? "0 %" : noShowConversionYTD + " %"
+
   let prospectionMeetingScheduleConversionYTD = Math.round((objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE / (objectConversionYTDBusinessManager.TOTAL_YTD.PROSPECTION_MEETING_SCHEDULE + objectConversionYTDBusinessManager.TOTAL_YTD.CALL)) * 100)
   objectConversionYTDBusinessManager.CONVERSION_YTD.PROSPECTION_MEETING_SCHEDULE = (isNaN(prospectionMeetingScheduleConversionYTD) || (prospectionMeetingScheduleConversionYTD === Infinity)) ? "0 %" : prospectionMeetingScheduleConversionYTD + " %";
 
@@ -485,20 +582,50 @@ export const calculateConversionYTDBusinessManager = (objectConversionYTDBusines
 
 export const calculateConversionYTDRecruitment = (objectConversionYTDRecruitment) => {
 
-  let interviewScheduleConversionYTD = Math.round(objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE / (objectConversionYTDRecruitment.TOTAL_YTD.CONTACTED_BY_INMAIL + objectConversionYTDRecruitment.TOTAL_YTD.CONTACTED_BY_PHONE) * 100)
-  objectConversionYTDRecruitment.CONVERSION_YTD.INTERVIEW_SCHEDULED = (isNaN(interviewScheduleConversionYTD) || (interviewScheduleConversionYTD === Infinity)) ? "0 %" : interviewScheduleConversionYTD + " %";
 
-  let noShowConversionYTD = Math.round(objectConversionYTDRecruitment.TOTAL_YTD.NO_SHOW / objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE * 100)
-  objectConversionYTDRecruitment.CONVERSION_YTD.NO_SHOW = (isNaN(noShowConversionYTD) || (noShowConversionYTD === Infinity)) ? "0 %" : noShowConversionYTD + " %";
+  let interviewScheduleConversionYTD = Math.round(
+    (objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE /
+      (objectConversionYTDRecruitment.TOTAL_YTD.CONTACTED_BY_INMAIL +
+        objectConversionYTDRecruitment.TOTAL_YTD.CONTACTED_BY_PHONE)) *
+      100
+  )
+  objectConversionYTDRecruitment.CONVERSION_YTD.INTERVIEW_SCHEDULED =
+    isNaN(interviewScheduleConversionYTD) || interviewScheduleConversionYTD === Infinity
+      ? "0 %"
+      : interviewScheduleConversionYTD + " %"
 
-  let interviewDoneConversionYTD = Math.round(objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_DONE / objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE * 100)
-  objectConversionYTDRecruitment.CONVERSION_YTD.INTERVIEW_DONE = (isNaN(interviewDoneConversionYTD) || (interviewDoneConversionYTD === Infinity)) ? "0 %" : interviewDoneConversionYTD + " %";
+  let noShowConversionYTD = Math.round(
+    (objectConversionYTDRecruitment.TOTAL_YTD.NO_SHOW / objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE) *
+      100
+  )
+  objectConversionYTDRecruitment.CONVERSION_YTD.NO_SHOW =
+    isNaN(noShowConversionYTD) || noShowConversionYTD === Infinity ? "0 %" : noShowConversionYTD + " %"
 
-  let contactProposedConversionYTD = Math.round(objectConversionYTDRecruitment.TOTAL_YTD.CONTRACT_PROPOSED / objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_DONE * 100)
-  objectConversionYTDRecruitment.CONVERSION_YTD.CONTRACT_PROPOSED = (isNaN(contactProposedConversionYTD) || (contactProposedConversionYTD === Infinity)) ? "0 %" : contactProposedConversionYTD + " %";
+  let interviewDoneConversionYTD = Math.round(
+    (objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_DONE /
+      objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_SCHEDULE) *
+      100
+  )
+  objectConversionYTDRecruitment.CONVERSION_YTD.INTERVIEW_DONE =
+    isNaN(interviewDoneConversionYTD) || interviewDoneConversionYTD === Infinity
+      ? "0 %"
+      : interviewDoneConversionYTD + " %"
 
-  let hiredConversionYTD = Math.round(objectConversionYTDRecruitment.TOTAL_YTD.HIRED / objectConversionYTDRecruitment.TOTAL_YTD.CONTRACT_PROPOSED * 100)
-  objectConversionYTDRecruitment.CONVERSION_YTD.HIRED = (isNaN(hiredConversionYTD) || (hiredConversionYTD === Infinity)) ? "0 %" : hiredConversionYTD + " %";
+  let contactProposedConversionYTD = Math.round(
+    (objectConversionYTDRecruitment.TOTAL_YTD.CONTRACT_PROPOSED /
+      objectConversionYTDRecruitment.TOTAL_YTD.INTERVIEW_DONE) *
+      100
+  )
+  objectConversionYTDRecruitment.CONVERSION_YTD.CONTRACT_PROPOSED =
+    isNaN(contactProposedConversionYTD) || contactProposedConversionYTD === Infinity
+      ? "0 %"
+      : contactProposedConversionYTD + " %"
+
+  let hiredConversionYTD = Math.round(
+    (objectConversionYTDRecruitment.TOTAL_YTD.HIRED / objectConversionYTDRecruitment.TOTAL_YTD.CONTRACT_PROPOSED) * 100
+  )
+  objectConversionYTDRecruitment.CONVERSION_YTD.HIRED =
+    isNaN(hiredConversionYTD) || hiredConversionYTD === Infinity ? "0 %" : hiredConversionYTD + " %"
 
   return objectConversionYTDRecruitment;
 }
