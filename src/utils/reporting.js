@@ -213,6 +213,22 @@ const findTypeOfPersonWhiDidNotShowUp = (data) => {
   return typeOfPersonWhoDidNotShowUp
 }
 
+const checkForDuplicateClientContactsOrCandidates = (dataToCheck, newEntry, typeOfPerson = 'clientContacts') => {
+  let isDuplicate = false
+  const contactIds = newEntry[typeOfPerson].data?.map(({ id }) => id) ?? []
+
+  for (const singleEntry of dataToCheck) {
+    isDuplicate = singleEntry?.[typeOfPerson]?.data?.some((contact) => {
+      return contactIds.includes(contact.id)
+    })
+    if (isDuplicate) {
+      break
+    }
+  }
+
+  return isDuplicate
+}
+
 export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment) => {
 
 
@@ -233,18 +249,33 @@ export const countNoteForRecruitment = (labelWeek, notes, objectDataRecruitment)
         }
         break;
       }
-      case INTERVIEW_DONE_1:
-        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
-        interviewsDone = [...interviewsDone, data[i]]
+      case INTERVIEW_DONE_1: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(interviewsDone, data[i], 'candidates')
+
+        if (!isDuplicate) {
+          objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+          interviewsDone = [...interviewsDone, data[i]]
+        }
         break;
-      case INTERVIEW_DONE_2:
-        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
-        interviewsDone = [...interviewsDone, data[i]]
+      }
+      case INTERVIEW_DONE_2: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(interviewsDone, data[i], 'candidates')
+
+        if (!isDuplicate) {
+          objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+          interviewsDone = [...interviewsDone, data[i]]
+        }
         break;
-      case INTERVIEW_DONE_3:
-        objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
-        interviewsDone = [...interviewsDone, data[i]]
+      }
+      case INTERVIEW_DONE_3: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(interviewsDone, data[i], 'candidates')
+
+        if (!isDuplicate) {
+          objectDataRecruitment.INTERVIEW_DONE[labelWeek]++
+          interviewsDone = [...interviewsDone, data[i]]
+        }
         break;
+      }
       case CONTRACT_PROPOSED:
         objectDataRecruitment.CONTRACT_PROPOSED[labelWeek]++;
         break;
@@ -360,27 +391,40 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
         }
         break;
       }
-      case INTAKE:
-        if (data[i].clientContacts.total) {
+      case INTAKE: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(intakes, data[i], 'candidates')
+
+        if (!isDuplicate && data[i].clientContacts.total) {
           objectDataBusinessManager.INTAKE[labelWeek]++
           intakes = [...intakes, data[i]]
         }
         break;
-      case PROSPECTION:
-        objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
-        prospectionsDone = [...prospectionsDone, data[i]]
+      }
+      case PROSPECTION: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(prospectionsDone, data[i])
+
+        if (!isDuplicate) {
+          objectDataBusinessManager.PROSPECTION_MEETING_DONE[labelWeek]++
+          prospectionsDone = [...prospectionsDone, data[i]]
+        }
         break;
+      }
       case PROJECT_START:
         objectDataBusinessManager.PROJECT_START[labelWeek]++
         break;
-      case PROSPECTION_SCHEDULED:
-        objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[labelWeek]++
-        prospectionsScheduled = [...prospectionsScheduled, data[i]]
-        break;
-        default:
-          break;
+      case PROSPECTION_SCHEDULED: {
+        const isDuplicate = checkForDuplicateClientContactsOrCandidates(prospectionsScheduled, data[i])
+
+        if (!isDuplicate) {
+          objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[labelWeek]++
+          prospectionsScheduled = [...prospectionsScheduled, data[i]]
         }
+        break;
       }
+      default:
+        break;
+    }
+  }
 
   return {
     PROSPECTIONS: prospectionsDone,

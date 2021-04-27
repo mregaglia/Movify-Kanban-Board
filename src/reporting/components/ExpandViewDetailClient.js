@@ -22,8 +22,8 @@ const Row = styled.div({
 const ExpandViewDetailClient = ({ week, title, dataToDisplay }) => {
 
     const filteredData = dataToDisplay?.reduce((accumulator, current) => {
-        const isEqual = accumulator.some(item => ((item.ID === current.ID) && (item.ID !== 0 && current.ID !== 0)))
-        if (!isEqual) {
+        const isEqual = accumulator.some((item) => (item.ID === current.ID) && (item.ID !== 0 && current.ID !== 0))
+        if (!isEqual || title === NEW_VACANCY) {
             accumulator.push(current);
         }
         return accumulator;
