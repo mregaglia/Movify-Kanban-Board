@@ -1,31 +1,107 @@
 import React from "react";
+import { v4 as uuid } from "uuid"
 import { connect } from "react-redux";
-import { pathOr, prop, propOr } from "ramda";
-import { number, object, string } from "prop-types";
+import { pathOr } from "ramda";
+import { number, object, string, oneOf, array, func } from "prop-types";
+import styled, { css } from "styled-components";
 import { formatBmName } from "../utils/kanban";
 import { ColorColumnText, Column, Row } from "../components";
 import ClientCorporation from "./ClientCorporation";
+import { Add } from "../components/svgs";
+import { ADD, DELETE } from "../hotCandidates/utils";
 
-const Bm = ({ bm, color }) => (
-  <Row style={{ marginBottom: 6 }}>
-    <ColorColumnText color={color}>{formatBmName(bm || {})}</ColorColumnText>
-    <Column>
-      {propOr([], "clientCorporations", bm).map(ccId => (
-        <ClientCorporation
-          key={`${prop("id", bm)}.${ccId}`}
-          bmId={prop("id", bm)}
-          ccId={ccId}
-          color={color}
-        />
-      ))}
-    </Column>
-  </Row>
-);
+export const HOT_CANDIDATES = 'HOT_CANDIDATES'
+export const BUSINESS = 'BUSINESS'
+
+export const KANBAN_TYPES = [HOT_CANDIDATES, BUSINESS]
+
+const AddButton = styled.button`
+  ${({ color }) => css`
+    background-color: ${color};
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.75rem;
+    grid-column: 2;
+    grid-row: 1;
+    margin-left: calc(4px + 1rem);
+    align-self: end;
+    font-size: 0;
+    &:hover {
+      cursor: pointer;
+    }
+  `}
+`
+
+const StyledRow = styled(Row)`
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: 4.125rem 1fr;
+  justify-content: start;
+  margin-bottom: 6px;
+`
+
+const StyledColorColumnText = styled(ColorColumnText)`
+  grid-row: 1;
+`
+
+const StyledColumn = styled(Column)`
+  grid-row: 1;
+  grid-column: 2;
+`
+
+const Bm = ({ bm, color, title, data, kanbanType = BUSINESS, onOpenModal }) => {
+  const dataToRender = kanbanType === BUSINESS ? bm?.clientCorporations?.map((ccId) => ({
+    ccId,
+    color,
+    bmId: bm?.id,
+  })) : data
+
+  const handleClickAddButton = () => {
+    onOpenModal(title, ADD)
+  }
+
+  const handleClickDeleteButton = (candidateIdToDelete) => {
+    onOpenModal(title, DELETE, candidateIdToDelete)
+  }
+
+  return (
+    <StyledRow>
+      <StyledColorColumnText color={color} title={title}>
+        {title || formatBmName(bm || {})}
+      </StyledColorColumnText>
+      <StyledColumn>
+        {dataToRender?.map((single, index) => (
+          <ClientCorporation
+            key={uuid()}
+            bmId={single?.bmId}
+            ccId={single?.ccId}
+            color={color}
+            kanbanType={kanbanType}
+            data={kanbanType === HOT_CANDIDATES ? single : null}
+            index={index}
+            onOpenDeleteModal={handleClickDeleteButton}
+          />
+        ))}
+      </StyledColumn>
+      {kanbanType === HOT_CANDIDATES ? (
+        <AddButton color={color} onClick={handleClickAddButton}>
+          <Add color="white" />
+        </AddButton>
+      ) : null}
+    </StyledRow>
+  )}
 
 Bm.propTypes = {
   bm: object,
   bmId: number,
-  color: string
+  color: string,
+  title: string,
+  data: array,
+  kanbanType: oneOf(['HOT_CANDIDATES', 'BUSINESS']),
+  onOpenModal: func,
 };
 
 export default connect((state, { bmId }) => ({

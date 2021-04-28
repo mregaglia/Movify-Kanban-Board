@@ -24,7 +24,17 @@ export const STATUS_WF_RESPONSE = "WF Response";
 export const STATUS_OFFER = "Offer";
 export const STATUS_INTAKE = "Intake";
 export const STATUS_WF_FEEDBACK = "WFF";
+export const STATUS_WF_FEEDBACK_2 = "WF Feedback";
 export const STATUS_NO_GO = "NO GO";
+export const STATUS_IDENTIFIED = "Identified"
+
+export const HOT_CANDIDATE_STATUSES = [
+  STATUS_TO_SEND,
+  STATUS_WF_FEEDBACK_2,
+  STATUS_INTAKE,
+  STATUS_WF_RESPONSE,
+  STATUS_IDENTIFIED,
+]
 
 export const AVAILABLE_STATUSES = [
   STATUS_ITV1,

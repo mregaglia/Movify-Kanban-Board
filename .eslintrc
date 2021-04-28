@@ -17,5 +17,7 @@
     "jest": true
   },
   "extends": ["eslint:recommended", "plugin:react/recommended"],
-  "rules": {}
+  "rules": {
+    "react/display-name": 0
+  }
 }

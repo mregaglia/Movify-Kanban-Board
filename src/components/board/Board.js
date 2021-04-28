@@ -1,20 +1,23 @@
-import React from "react";
-import { propOr } from "ramda";
-import { array, number, object, string } from "prop-types";
-import styled from "styled-components";
-import { createColumnId, getColumnWidth } from "../../utils/kanban";
-import Column from "./Column";
+import React from "react"
+import { propOr } from "ramda"
+import { array, number, object, string } from "prop-types"
+import styled, { css } from "styled-components"
+import { createColumnId } from "../../utils/kanban"
+import Column from "./Column"
+import { getMapValue, hotCandidatesStatusKeys } from "../../hotCandidates"
 
-const Container = styled.div(({ theme }) => ({
-  display: "flex",
-  flexDirection: "row",
-  flex: 1,
-  marginTop: 4,
-  marginBottom: 4,
-  backgroundColor: theme.colors.lightGrey,
-  borderRadius: theme.dimensions.borderRadius,
-  padding: 8
-}));
+const Container = styled.div`
+  ${({ theme: { colors, dimensions } }) => css`
+    display: grid;
+    padding: 0.5rem;
+    border-radius: ${dimensions.borderRadius}px;
+    background-color: ${colors.lightGrey};
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    width: 100%;
+    column-gap: 0.5rem;
+    box-sizing: border-box;
+  `}
+`
 
 const Board = ({
   bmId,
@@ -22,29 +25,41 @@ const Board = ({
   clientCorporationId,
   jobOrderId,
   jobSubmissions,
-  statuses
-}) => (
-    <Container>
-      {statuses.map(status => (
+  statuses,
+  className,
+  statusesData,
+}) => {
+  return (
+    <Container className={className}>
+      {statuses.map((status) => {
+        return (
         <Column
           board={board}
           key={status}
           status={status}
-          columnWidth={getColumnWidth(propOr(1, "length", statuses))}
           jobSubmissions={propOr([], status, jobSubmissions)}
-          columnId={createColumnId(bmId, clientCorporationId, jobOrderId, status)}
+          statusData={statusesData?.[getMapValue(hotCandidatesStatusKeys, status)]}
+          columnId={createColumnId(
+            bmId,
+            clientCorporationId,
+            jobOrderId,
+            status
+          )}
         />
-      ))}
+      )})}
     </Container>
-  );
+  )
+}
 
 Board.propTypes = {
   bmId: number,
   board: string,
+  className: string,
   clientCorporationId: number,
   jobOrderId: number,
   jobSubmissions: object,
-  statuses: array
-};
+  statuses: array,
+  statusesData: object,
+}
 
-export default Board;
+export default Board

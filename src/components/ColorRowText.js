@@ -13,7 +13,7 @@ export const ColorRowText = styled.div(({ color, theme }) => ({
   padding: 12,
   textOverflow: "ellipsis",
   overflow: "hidden",
-  paddingLeft: 16
+  paddingLeft: 16,
 }));
 
 export default ColorRowText;

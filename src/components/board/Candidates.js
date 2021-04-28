@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 import { array, string } from "prop-types";
 import CandidateCard from "./CandidateCard";
 
@@ -17,4 +17,4 @@ Candidates.propTypes = {
   jobSubmissions: array
 };
 
-export default memo(Candidates);
+export default Candidates;
