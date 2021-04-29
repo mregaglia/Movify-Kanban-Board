@@ -11,7 +11,7 @@ import {
 
 export const statusLabels = new Map([
   [STATUS_ITV1, 'Backlog'],
-  [STATUS_ITV2, 'ITVBM'],
+  [STATUS_ITV2, 'ITV check'],
   [STATUS_TO_SEND, STATUS_TO_SEND],
   [STATUS_WF_RESPONSE, STATUS_WF_RESPONSE],
   [STATUS_INTAKE, STATUS_INTAKE],
