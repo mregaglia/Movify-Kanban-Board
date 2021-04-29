@@ -8,7 +8,7 @@ import {
 } from "../hooks"
 import theme from "../style/theme"
 import { useIndexedDb } from "../hooks"
-import Bm from "../kanban/Bm"
+import Bm from "../kanban/BmHotCandidates"
 import { STATUS_IDENTIFIED, STATUS_INTAKE, STATUS_TO_SEND, STATUS_WF_FEEDBACK_2, STATUS_WF_RESPONSE } from "../utils/kanban"
 import AddCandidateModal from "./AddCandidateModal"
 import DeleteCandidateModal from "./DeleteCandidateModal"
@@ -150,7 +150,7 @@ const HotCandidatesPage = () => {
       projectRotations,
       wfp,
     }
-  }, [candidates, jobSubmissions, jobOrders])
+  }, [candidates, jobSubmissions, jobOrders, candidatesIdb])
 
   const handleCloseModal = () => {
     setModalState(initialModalState)

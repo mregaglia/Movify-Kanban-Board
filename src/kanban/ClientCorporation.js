@@ -13,11 +13,9 @@ const ClientCorporation = ({
   color,
   kanbanType,
   data,
-  index,
   onOpenDeleteModal,
 }) => {
-  const shouldRenderHeader =
-    (kanbanType === HOT_CANDIDATES && index === 0) || kanbanType === BUSINESS
+  const shouldRenderHeader = kanbanType === BUSINESS
   return (
     <div>
       {shouldRenderHeader && (
@@ -25,7 +23,7 @@ const ClientCorporation = ({
           {clientCorporation?.name ?? ""}
         </ColorRowText>
       )}
-      <Row style={{ paddingLeft: 4, paddingTop: 10, paddingBottom: 10 }}>
+      <Row>
         <Column>
           {kanbanType === HOT_CANDIDATES
             ? <HotCandidate hotCandidate={data} onOpenDeleteModal={onOpenDeleteModal} />

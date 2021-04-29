@@ -4,10 +4,8 @@ import styled from 'styled-components'
 import Board from './board/Board'
 import { HOT_CANDIDATE_STATUSES } from '../utils/kanban'
 import { Trash } from './svgs'
-import { DELETE } from '../hotCandidates/utils'
 
 const Container = styled.div`
-  padding: 0.75rem 0.25rem 0.75rem 1rem;
   display: grid;
   gap: 0.5rem;
   grid-template-columns: 1fr 6fr;
