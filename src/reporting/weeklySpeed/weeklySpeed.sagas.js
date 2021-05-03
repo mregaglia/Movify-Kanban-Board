@@ -192,7 +192,9 @@ export function* calculateWeeklySpeedForBusinessManager(idEmployee, dateEnd, pro
             yield select(getIntake, weekLabel, '/intake'),
         ])
 
-        const prospectionMeetingsDoneFromTheBeginning = yield call(getNoteProspectionLastYear, idEmployee, dateEnd)
+        let prospectionMeetingsDoneFromTheBeginning = yield call(getNoteProspectionLastYear, idEmployee, dateEnd)
+        // Manually filter out Notes with other actions, API also includes Notes with action type "Prospection scheduled"
+        prospectionMeetingsDoneFromTheBeginning = prospectionMeetingsDoneFromTheBeginning?.filter((single) => single.action === "Prospection")
 
         prospectionMeetingsDoneFromLastWeek.forEach((currentMeeting) => {
             if (currentMeeting?.clientContacts?.data?.length > 0) {
