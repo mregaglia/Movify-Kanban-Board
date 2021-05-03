@@ -3,15 +3,15 @@ import { GET_GAUGE_LIMIT, setGaugeLimit, setWeeklySpeed } from './weeklySpeed.ac
 import { getCandidateCategory } from './weeklySpeek.service'
 import { BUSINESS_MANAGER, SOURCING_OFFICER, TALENT_ACQUISITION } from '../../auth/user.sagas'
 import gaugeLimitFromJSONObject from '../gauge-limit.json'
-import gaugeCountData from '../gauge-count-data.json'
 import { getNoteProspectionLastYear } from './weeklySpeek.service'
 import { FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK } from "../kpi/kpi.sagas"
 import { isNil } from 'ramda'
 
 // Recruitment
-export const POINT_FOR_INTERVIEW_DONE = 3
+export const POINT_FOR_INTERVIEW_DONE = 2
 export const POINT_FOR_INTERVIEW_SCHEDULED_TA = 2
 export const POINT_FOR_INTERVIEW_SCHEDULED_SO = 3
+export const POINT_CALL = 1
 
 // Business Manager
 export const POINT_PROSPECTION_MEETING_DONE_NEW_CONTACT = 2
@@ -29,6 +29,8 @@ export const getInterviewScheduled = (state, weekLabel) => state.kpi.dataEmploye
 // Business Manager
 export const getIntake = (state, weekLabel) => state.kpi.dataEmployee.datasBusinessManager.INTAKE[weekLabel]
 export const getCVSent = (state, weekLabel) => state.kpi.dataEmployee.datasBusinessManager.CV_SENT[weekLabel]
+
+const getCalls = (state, weekLabel) => state.kpi.dataEmployee.datasRecruitment.CONTACTED_BY_PHONE[weekLabel]
 
 export function* getGaugeLimit() {
     try {
@@ -95,6 +97,25 @@ export function* calculateWeeklySpeedRecruitmentForAllWeeks(objectCategories, oc
     }
 }
 
+const ID_IOS_DEVELOPER = 1444970
+const ID_BUSINESS_MANAGER = 1438945
+const ID_ANDROID_DEVELOPER = 1444969
+
+const sourcingOfficerPoints = new Map([
+  [ID_IOS_DEVELOPER, {
+    points: 2,
+    type: 'iOS Developer',
+  }],
+  [ID_BUSINESS_MANAGER, {
+    points: 3,
+    type: 'Business Manager',
+  }],
+  [ID_ANDROID_DEVELOPER, {
+    points: 2,
+    type: 'Android Developer',
+  }],
+])
+
 export function* calculateWeeklySpeedForRecruitment(categories, weekLabel, occupation) {
     let weeklySpeed = 0
     let isAlreadyCounted = false
@@ -102,17 +123,27 @@ export function* calculateWeeklySpeedForRecruitment(categories, weekLabel, occup
         if (!isNil(categories) && categories.length !== 0) {
             for (let i = 0; i < categories.length; i++) {
                 if (categories[i].length > 0) {
-                    for (var key of Object.keys(gaugeCountData.TALENT_ACQUISITION)) {
-                        if (gaugeCountData.TALENT_ACQUISITION[key].includes(categories[i][0].id)) {
-                            weeklySpeed += parseInt(key)
-                            isAlreadyCounted = true
-                            break;
+                    for (const key of sourcingOfficerPoints.keys()) {
+                        const firstCategoryId = categories[i][0].id
+                        const allCategoryIds = categories[i].map(({ id }) => id) ?? []
+                        if ((key === firstCategoryId && [ID_IOS_DEVELOPER, ID_BUSINESS_MANAGER].includes(key)) || (allCategoryIds.includes(key) && key === ID_ANDROID_DEVELOPER)) {
+                          const points = sourcingOfficerPoints.get(key).points
+                          weeklySpeed += points
+                          isAlreadyCounted = true
+                          break
                         }
                     }
                 }
                 if (!isAlreadyCounted) weeklySpeed++
                 isAlreadyCounted = false
             }
+        }
+
+        if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
+          const numberofCalls = yield select(getCalls, weekLabel)
+          if (numberofCalls > 0) {
+            weeklySpeed += numberofCalls * POINT_CALL
+          }
         }
 
         let numberOfInterviewScheduled = yield select(getInterviewScheduled, weekLabel)

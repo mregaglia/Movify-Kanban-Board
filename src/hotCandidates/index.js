@@ -14,6 +14,7 @@ import {
 } from "../hooks"
 import TableHead from "./TableHead"
 import TableBody from "./TableBody"
+import getMapValue from "../utils/getMapValue"
 
 const db = new Dexie("hot-candidates")
 
@@ -45,12 +46,6 @@ const statusKeys = new Map([
   ["Intake", "intake"],
   ["WF Feedback", "wfFeedback"],
 ])
-
-const getMapValue = (map, key) => map.get(key) ?? "other"
-
-// #17b978
-// #46c3db
-// #dee1ec
 
 const HotCandidatesPage = () => {
   const [query, setQuery] = useState("")
