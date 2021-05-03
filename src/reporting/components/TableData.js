@@ -26,10 +26,8 @@ const TableData = ({ occupation, dates, className }) => {
           </TableTheadTr>
         </thead>
         <tbody>
-          {[BUSINESS_MANAGER].includes(occupation) && <BusinessManager />}
-          {[BUSINESS_MANAGER, SOURCING_OFFICER, TALENT_ACQUISITION].includes(
-            occupation
-          ) && (
+          {occupation.includes(BUSINESS_MANAGER) && <BusinessManager />}
+          {(occupation.includes(BUSINESS_MANAGER) || occupation.includes(SOURCING_OFFICER) || occupation.includes(TALENT_ACQUISITION)) && (
             <>
               <TalentAcquisition />
               <GaugeScore />

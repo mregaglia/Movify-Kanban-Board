@@ -85,31 +85,35 @@ export const THIRD_WEEK = "THIRD_WEEK"
 export const FOURTH_WEEK = "FOURTH_WEEK"
 
 export function* getKpiDataEmployee(action) {
-    let weekNumberOfTheYear = moment().isoWeek()
+    try {
+        let weekNumberOfTheYear = moment().isoWeek()
 
-    let dates = getLast4weeksDate();
-    let dateStartOfThisYear = getStartDateOfYear()
-    let dateStartOfThisYearTimestamp = getStartDateOfYearTimestamp()
+        let dates = getLast4weeksDate();
+        let dateStartOfThisYear = getStartDateOfYear()
+        let dateStartOfThisYearTimestamp = getStartDateOfYearTimestamp()
 
-    let idEmployee = path(["payload", "id"], action);
-    let occupation = path(["payload", "occupation"], action);
+        let idEmployee = path(["payload", "id"], action);
+        let occupation = path(["payload", "occupation"], action);
+        occupation = occupation.split("@")[0]
 
-    let objectDataBusinessManager = initalizeObjectBusinessManager(occupation);
-    let objectDataRecruitment = initalizeObjectRecruitment(occupation)
-    let objectDateEmployee = initializeObjectDate();
+        let objectDataBusinessManager = initalizeObjectBusinessManager(occupation);
+        let objectDataRecruitment = initalizeObjectRecruitment(occupation)
+        let objectDateEmployee = initializeObjectDate();
 
-    let objectYTDBusinessManager = initializeObjectConversionYTDBusinessManager();
-    let objectYTDRecruitment = initializeObjectConversionYTDRecruitment();
+        let objectYTDBusinessManager = initializeObjectConversionYTDBusinessManager();
+        let objectYTDRecruitment = initializeObjectConversionYTDRecruitment();
 
-    if (occupation === BUSINESS_MANAGER) {
-        yield call(getLast4WeekDataBusinessManager, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
-        yield call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp, dates)
-    } else {
-        const datasRecruitment = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
-        yield call(calculateWeeklySpeedRecruitmentForAllWeeks, datasRecruitment.CATEGORIES, occupation)
-        yield call(getAllDataFromIdsForExpandView, datasRecruitment, occupation)
-        yield call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear)
-
+        if (occupation === BUSINESS_MANAGER) {
+            yield call(getLast4WeekDataBusinessManager, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
+            yield call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp, dates)
+        } else {
+            const datasRecruitment = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
+            yield call(calculateWeeklySpeedRecruitmentForAllWeeks, datasRecruitment.CATEGORIES, occupation)
+            yield call(getAllDataFromIdsForExpandView, datasRecruitment, occupation)
+            yield call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear)
+        }
+    } catch (error) {
+        //
     }
 }
 
