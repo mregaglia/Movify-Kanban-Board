@@ -100,7 +100,7 @@ const TablePercentageBusinessManager = ({
               )
             }
           }
-        } else if (key === "NO_SHOW") {
+        } else if (key === "PROJECT_START") {
           return (
             <tr key={i}>
               <TableContentTd>
