@@ -46,9 +46,12 @@ const DeleteButton = styled.button`
   }
 `
 
-const HotCandidate = ({ hotCandidate: { name, role, dateAvailable, id, ...statusesData }, onOpenDeleteModal }) => {
+const HotCandidate = ({ hotCandidate: { name, role, dateAvailable, id, ...statusesData }, onOpenDeleteModal, onOpenAddCompanyModal }) => {
   const handleClickOpenDeleteModal = () => {
     onOpenDeleteModal(id)
+  }
+  const handleClickOpenAddCompanyModal = () => {
+    onOpenAddCompanyModal(id)
   }
   return (
     <Container>
@@ -61,6 +64,8 @@ const HotCandidate = ({ hotCandidate: { name, role, dateAvailable, id, ...status
         board="hot-candidates"
         statuses={HOT_CANDIDATE_STATUSES}
         statusesData={statusesData}
+        onOpenAddCompanyModal={handleClickOpenAddCompanyModal}
+        candidateId={id}
       />
       <DeleteButton onClick={handleClickOpenDeleteModal}>
         <Trash size={16} />
@@ -72,6 +77,7 @@ const HotCandidate = ({ hotCandidate: { name, role, dateAvailable, id, ...status
 HotCandidate.propTypes = {
   hotCandidate: PropTypes.object,
   onOpenDeleteModal: PropTypes.func,
+  onOpenAddCompanyModal: PropTypes.func,
 }
 
 export default HotCandidate

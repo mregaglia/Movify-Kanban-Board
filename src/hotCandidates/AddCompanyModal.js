@@ -5,17 +5,18 @@ import { Modal, Title } from '../components/modal'
 import { useDebounce, useFind, useIndexedDb } from "../hooks"
 import { generateOptions } from "./utils"
 
-const AddCandidateModal = ({ isOpen, onClose, title }) => {
+const AddCompanyModal = ({ isOpen, onClose, candidateId }) => {
   const [query, setQuery] = useState("")
   const debouncedQuery = useDebounce(query, 500)
-  const { data: users } = useFind(debouncedQuery)
+  const { data: companies } = useFind(debouncedQuery)
   const db = useIndexedDb()
 
-  const handleChange = async (user) => {
-    if (user?.label && user?.value) {
-      const alreadyAdded = await db.users.get(user.value)
-      if (!alreadyAdded) {
-        await db.users.add({ name: user.label, id: user.value, type: title })
+  const handleChange = async (company) => {
+    if (company?.label && company?.value) {
+      const user = await db.users.get(candidateId)
+      if (user) {
+        const identifiedCompanies = user?.identifiedCompanies?.length > 0 ? [...user.identifiedCompanies, company.label] : [company.label]
+        await db.users.update(candidateId, { identifiedCompanies })
         onClose()
       }
     }
@@ -27,22 +28,23 @@ const AddCandidateModal = ({ isOpen, onClose, title }) => {
 
   const selectOptions = useMemo(() => {
     let options = []
-    if (users?.data?.length > 0) {
-      options = generateOptions(users?.data)
+    const data = companies?.data?.filter((single) => single.entityType === "ClientCorporation") ?? []
+    if (data?.length > 0) {
+      options = generateOptions(data)
     }
     return options
-  }, [users])
+  }, [companies])
 
-  const noOptionsMessage = () => "No users found"
+  const noOptionsMessage = () => "No companies found"
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <Title>{`Add a candidate to ${title}`}</Title>
+      <Title>Add a company</Title>
       <Select
         options={selectOptions}
         onChange={handleChange}
         onInputChange={handleInputChange}
-        placeholder="Search user"
+        placeholder="Search company"
         isClearable
         noOptionsMessage={noOptionsMessage}
       />
@@ -50,11 +52,12 @@ const AddCandidateModal = ({ isOpen, onClose, title }) => {
   )
 }
 
-AddCandidateModal.propTypes = {
+AddCompanyModal.propTypes = {
   isOpen: PropTypes.bool,
   onAdd: PropTypes.func,
   onClose: PropTypes.func,
   title: PropTypes.string,
+  candidateId: PropTypes.number,
 }
 
-export default AddCandidateModal
+export default AddCompanyModal

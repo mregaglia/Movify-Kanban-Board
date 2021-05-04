@@ -1,5 +1,5 @@
 import React from "react"
-import { array, string } from "prop-types"
+import { array, string, func, number } from "prop-types"
 import styled, { css } from "styled-components"
 import { Droppable } from "react-beautiful-dnd"
 import { STATUS_IDENTIFIED, STATUS_NO_GO } from "../../utils/kanban"
@@ -7,6 +7,8 @@ import Candidates from "./Candidates"
 import { statusLabels } from "../../utils/statusLabels"
 import { useLocation } from "react-router"
 import AddButton from "../AddButton"
+import HotCandidateCompanies from "./HotCandidateCompanies"
+import HotCandidateCompaniesIdentified from "./HotCandidateCompaniesIdentified"
 
 const getBackgroundColor = (isNoGo, snapshot, theme) => {
   if (snapshot?.isDraggingOver) return theme.colors.transparentRed
@@ -62,7 +64,7 @@ const StyledAddButton = styled(AddButton)`
 
 const getStatusLabel = (status) => statusLabels.get(status) ?? status
 
-const Column = ({ board, columnId, jobSubmissions, status, statusData }) => {
+const Column = ({ board, columnId, jobSubmissions, status, statusData, onOpenAddCompanyModal, candidateId }) => {
   const { pathname } = useLocation()
 
   return (
@@ -73,13 +75,19 @@ const Column = ({ board, columnId, jobSubmissions, status, statusData }) => {
           {(provided, snapshot) => (
             <Content snapshot={snapshot} isNoGo={status === STATUS_NO_GO}>
               <div ref={provided.innerRef} {...provided.droppableProps} style={{ minHeight: 65, height: "100%" }}>
-                {pathname === "/hot-candidates" ? "" : <Candidates board={board} jobSubmissions={jobSubmissions} />}
+                {(pathname === "/hot-candidates" && status !== STATUS_IDENTIFIED) ? (
+                  <HotCandidateCompanies companies={statusData} />
+                ) : status === STATUS_IDENTIFIED ? (
+                  <HotCandidateCompaniesIdentified candidateId={candidateId} />
+                ) : (
+                  <Candidates board={board} jobSubmissions={jobSubmissions} />
+                )}
                 {provided.placeholder}
               </div>
             </Content>
           )}
         </Droppable>
-        {status === STATUS_IDENTIFIED ? <StyledAddButton title="Add company" /> : null}
+        {status === STATUS_IDENTIFIED ? <StyledAddButton title="Add company" onClick={onOpenAddCompanyModal} /> : null}
       </ContentContainer>
     </Container>
   )
@@ -90,5 +98,7 @@ Column.propTypes = {
   jobSubmissions: array,
   status: string,
   statusData: array,
+  onOpenAddCompanyModal: func,
+  candidateId: number,
 }
 export default Column

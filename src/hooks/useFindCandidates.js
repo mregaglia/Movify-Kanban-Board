@@ -4,9 +4,9 @@ import { get } from "../utils/api"
 const useFindCandidates = (candidatesIdb = []) =>
   useQueries(
     candidatesIdb?.map((candidate) => ({
-      queryKey: ["find-candidate", candidate?.referenceId],
+      queryKey: ["find-candidate", candidate?.id],
       queryFn: () =>
-        get(`entity/Candidate/${candidate?.referenceId}`, {
+        get(`entity/Candidate/${candidate?.id}`, {
           fields: "id,firstName,lastName,dateAvailable,occupation,submissions,owner",
         }),
     }))

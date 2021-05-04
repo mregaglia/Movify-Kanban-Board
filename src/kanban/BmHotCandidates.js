@@ -6,7 +6,7 @@ import { number, object, string, oneOf, array, func } from "prop-types";
 import styled, { css } from "styled-components";
 import { Column } from "../components";
 import ClientCorporation from "./ClientCorporation";
-import { ADD, DELETE } from "../hotCandidates/utils";
+import { ADD, ADD_COMPANY, DELETE } from "../hotCandidates/utils";
 import AddButton from "../components/AddButton";
 import TitleBackground from "../components/svgs/TitleBackground"
 
@@ -95,6 +95,10 @@ const Bm = ({ bm, color, title, data, kanbanType = BUSINESS, onOpenModal }) => {
     onOpenModal(title, DELETE, candidateIdToDelete)
   }
 
+  const handleClickAddCompanyButton = (candidateId) => {
+    onOpenModal(title, ADD_COMPANY, candidateId)
+  }
+
   return (
     <Container ref={containerRef}>
       <Title color={color} height={height}>
@@ -112,6 +116,7 @@ const Bm = ({ bm, color, title, data, kanbanType = BUSINESS, onOpenModal }) => {
             data={kanbanType === HOT_CANDIDATES ? single : null}
             index={index}
             onOpenDeleteModal={handleClickDeleteButton}
+            onOpenAddCompanyModal={handleClickAddCompanyButton}
           />
         )) : <NoCandidatesMessage>No candidates added yet, click the button below to add a candidate.</NoCandidatesMessage>}
       </StyledColumn>
@@ -129,6 +134,7 @@ Bm.propTypes = {
   data: array,
   kanbanType: oneOf(['HOT_CANDIDATES', 'BUSINESS']),
   onOpenModal: func,
+  onOpenAddCompanyModal: func,
 };
 
 export default connect((state, { bmId }) => ({

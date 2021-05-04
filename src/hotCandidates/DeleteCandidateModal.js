@@ -7,7 +7,7 @@ const DeleteCandidateModal = ({ isOpen, onClose, title, candidateId }) => {
   const db = useIndexedDb()
 
   const handleRemoveCandidate = async () => {
-    await db.users.where({ referenceId: candidateId }).delete()
+    await db.users.where({ id: candidateId }).delete()
     onClose()
   }
 

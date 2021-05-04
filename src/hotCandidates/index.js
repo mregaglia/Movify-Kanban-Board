@@ -12,7 +12,8 @@ import Bm from "../kanban/BmHotCandidates"
 import { STATUS_IDENTIFIED, STATUS_INTAKE, STATUS_TO_SEND, STATUS_WF_FEEDBACK_2, STATUS_WF_RESPONSE } from "../utils/kanban"
 import AddCandidateModal from "./AddCandidateModal"
 import DeleteCandidateModal from "./DeleteCandidateModal"
-import { ADD } from "./utils"
+import AddCompanyModal from "./AddCompanyModal"
+import { ADD, ADD_COMPANY } from "./utils"
 import { useLiveQuery } from "dexie-react-hooks"
 import getMapValue from "../utils/getMapValue"
 
@@ -37,12 +38,17 @@ const initialModalState = {
   delete: {
     isOpen: false,
     title: BENCH,
-    id: null,
+    candidateId: null,
   },
   add: {
     isOpen: false,
     title: BENCH,
   },
+  addCompany: {
+    isOpen: false,
+    title: BENCH,
+    candidateId: null,
+  }
 }
 
 const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobOrders = [], bench, projectRotations, wfp }) => {
@@ -54,7 +60,7 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
     identified: [],
   }
 
-  const type = candidatesIdb?.find((hotCandidate) => hotCandidate?.referenceId === candidate?.id)?.type
+  const type = candidatesIdb?.find((hotCandidate) => hotCandidate?.id === candidate?.id)?.type
 
   for (const jobSubmission of jobSubmissions) {
     const jobSubmissionFromCurrentCandidate = jobSubmission.candidate.id === candidate.id
@@ -156,18 +162,32 @@ const HotCandidatesPage = () => {
   }
 
   const handleOpenModal = (title, modalType, candidateId = null) => {
-    const newModalState = modalType === ADD ? {
-      ...initialModalState,
-      add: {
-        isOpen: true,
-        title,
+    let newModalState = {}
+    if (modalType === ADD_COMPANY) {
+      newModalState = {
+        ...initialModalState,
+        addCompany: {
+          isOpen: true,
+          title,
+          candidateId,
+        }
       }
-    } : {
-      ...initialModalState,
-      delete: {
-        isOpen: true,
-        title,
-        candidateId,
+    } else if (modalType === ADD) {
+      newModalState = {
+        ...initialModalState,
+        add: {
+          isOpen: true,
+          title,
+        }
+      }
+    } else {
+      newModalState = {
+        ...initialModalState,
+        delete: {
+          isOpen: true,
+          title,
+          candidateId,
+        }
       }
     }
 
@@ -183,6 +203,7 @@ const HotCandidatesPage = () => {
       </Main>
       <AddCandidateModal isOpen={modalState.add.isOpen} title={modalState.add.title} onClose={handleCloseModal} />
       <DeleteCandidateModal isOpen={modalState.delete.isOpen} title={modalState.delete.title} candidateId={modalState.delete.candidateId} onClose={handleCloseModal} />
+      <AddCompanyModal isOpen={modalState.addCompany.isOpen} title={modalState.addCompany.title} candidateId={modalState.addCompany.candidateId} onClose={handleCloseModal} />
     </>
   )
 }

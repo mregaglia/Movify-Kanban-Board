@@ -14,6 +14,7 @@ const ClientCorporation = ({
   kanbanType,
   data,
   onOpenDeleteModal,
+  onOpenAddCompanyModal,
 }) => {
   const shouldRenderHeader = kanbanType === BUSINESS
   return (
@@ -26,7 +27,7 @@ const ClientCorporation = ({
       <Row>
         <Column>
           {kanbanType === HOT_CANDIDATES
-            ? <HotCandidate hotCandidate={data} onOpenDeleteModal={onOpenDeleteModal} />
+            ? <HotCandidate hotCandidate={data} onOpenDeleteModal={onOpenDeleteModal} onOpenAddCompanyModal={onOpenAddCompanyModal} />
             : clientCorporation?.bmIds[
                 bmId
               ]?.filteredJobOrders?.map((jobOrder) => (
@@ -51,6 +52,7 @@ ClientCorporation.propTypes = {
   data: object,
   index: number,
   onOpenDeleteModal: func,
+  onOpenAddCompanyModal: func,
 }
 
 export default connect((state, { ccId }) => ({

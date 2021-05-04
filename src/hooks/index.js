@@ -1,5 +1,5 @@
 export { default as useDebounce } from "./useDebounce"
-export { default as useFindCandidate } from "./useFindCandidate"
+export { default as useFind } from "./useFind"
 export { default as useHotCandidates } from "./useHotCandidates"
 export { default as useFindCandidates } from "./useFindCandidates"
 export { default as useJobOrders } from "./useJobOrders"
