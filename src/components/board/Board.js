@@ -4,7 +4,8 @@ import { array, number, object, string } from "prop-types"
 import styled, { css } from "styled-components"
 import { createColumnId } from "../../utils/kanban"
 import Column from "./Column"
-import { getMapValue, hotCandidatesStatusKeys } from "../../hotCandidates"
+import { hotCandidatesStatusKeys } from "../../hotCandidates"
+import getMapValue from "../../utils/getMapValue"
 
 const Container = styled.div`
   ${({ theme: { colors, dimensions } }) => css`

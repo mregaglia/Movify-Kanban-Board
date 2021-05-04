@@ -11,7 +11,7 @@ import {
     LABEL_PROSPECTION_MEETING_SCHEDULE,
     LABEL_INTERVIEW_SCHEDULED,
     LABEL_NEW_VACANCY,
-    LABEL_NO_SHOW,
+    LABEL_PROJECT_START,
 } from "../../utils/reporting";
 import {
     INTAKES,
@@ -162,7 +162,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
 
                             </TableContentTbodyTr>
                         )
-                    } else if (datas[key].TITLE === LABEL_NO_SHOW) {
+                    } else if (datas[key].TITLE === LABEL_PROJECT_START) {
                         return (
                             <tr key={i}>
                                 <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>

@@ -26,30 +26,11 @@ const GaugeDataDisplaying = styled.p`
 const GaugeComponent = ({
   className,
   gaugeGreenStart,
-  gaugeGreenEnd,
-  gaugeOrangeStart,
-  gaugeOrangeEnd,
-  gaugeRedStart,
-  gaugeRedEnd,
   weeklySpeedScore,
   hasCalculatedWeeklySpeed,
   cvsSent,
 }) => {
   const [key, setKey] = useState(new Date())
-
-  const endGreenGaugeConverted = 1
-  const startGreenGaugeConverted = (gaugeGreenStart / gaugeGreenEnd).toFixed(2)
-  const numberGapGreen = endGreenGaugeConverted - startGreenGaugeConverted
-
-  const endOrangeGaugeConverted = (gaugeOrangeEnd / gaugeGreenEnd).toFixed(2)
-  const startOrangeGaugeConverted = (gaugeOrangeStart / gaugeGreenEnd).toFixed(
-    2
-  )
-  const numberGapOrange = endOrangeGaugeConverted - startOrangeGaugeConverted
-
-  const endRedGaugeConverted = (gaugeRedEnd / gaugeGreenEnd).toFixed(2)
-  const startRedGaugeConverted = (gaugeRedStart / gaugeGreenEnd).toFixed(2)
-  const numberGapRed = endRedGaugeConverted - startRedGaugeConverted
 
   const weeklySpeedScoreWeek4 = cvsSent?.FOURTH_WEEK
     ? weeklySpeedScore.FOURTH_WEEK + cvsSent.FOURTH_WEEK * POINT_CV_SENT
@@ -68,7 +49,7 @@ const GaugeComponent = ({
     // Issue: https://github.com/Martin36/react-gauge-chart/issues/35
     // Once this PR is merged (https://github.com/Martin36/react-gauge-chart/pull/59),
     // the issue should be resolved and we can remove all this logic
-    // The library seems rather dead though 🥲
+    // The library seems to be rather dead though 🥲
     const handleResize = () => {
       setKey(new Date())
     }
@@ -88,7 +69,7 @@ const GaugeComponent = ({
       <GaugeChart
         id="gauge-chart5"
         nrOfLevels={420}
-        arcsLength={[numberGapRed, numberGapOrange, numberGapGreen]}
+        arcsLength={[0.7, 0.15, 0.15]}
         colors={[theme.bmColors[0], theme.colors.yellow, theme.bmColors[8]]}
         percent={weeklySpeedGaugeDisplayed}
         arcPadding={0.02}
@@ -103,11 +84,6 @@ const GaugeComponent = ({
 
 GaugeComponent.propTypes = {
   gaugeGreenStart: number,
-  gaugeGreenEnd: number,
-  gaugeOrangeStart: number,
-  gaugeOrangeEnd: number,
-  gaugeRedStart: number,
-  gaugeRedEnd: number,
   weeklySpeedScore: object,
   cvsSent: object,
   hasCalculatedWeeklySpeed: bool,
@@ -118,26 +94,6 @@ export default connect(
   (state) => ({
     gaugeGreenStart: path(
       ["weeklySpeed", "gaugeLimitForEmployeeSelected", "GREEN", "START"],
-      state
-    ),
-    gaugeGreenEnd: path(
-      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "GREEN", "END"],
-      state
-    ),
-    gaugeOrangeStart: path(
-      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "ORANGE", "START"],
-      state
-    ),
-    gaugeOrangeEnd: path(
-      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "ORANGE", "END"],
-      state
-    ),
-    gaugeRedStart: path(
-      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "START"],
-      state
-    ),
-    gaugeRedEnd: path(
-      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "RED", "END"],
       state
     ),
     weeklySpeedScore: path(["weeklySpeed", "weeklySpeedScores"], state),

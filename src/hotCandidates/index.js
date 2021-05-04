@@ -14,6 +14,7 @@ import AddCandidateModal from "./AddCandidateModal"
 import DeleteCandidateModal from "./DeleteCandidateModal"
 import { ADD } from "./utils"
 import { useLiveQuery } from "dexie-react-hooks"
+import getMapValue from "../utils/getMapValue"
 
 const Main = styled.main`
   display: grid;
@@ -27,8 +28,6 @@ export const hotCandidatesStatusKeys = new Map([
   [STATUS_WF_FEEDBACK_2, "wfFeedback"],
   [STATUS_IDENTIFIED, "identified"],
 ])
-
-export const getMapValue = (map, key) => map.get(key) ?? key
 
 const BENCH = 'Bench'
 const PROJECT_ROTATIONS = 'Project Rotations'
