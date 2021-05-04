@@ -79,8 +79,8 @@ export default {
     "#7758B3"
   ],
   hotCandidateStatusColors: {
-    green: '#17b978',
-    blue: '#46c3db',
-    grey: '#dee1ec',
+    green: '#26D86D',
+    blue: '#029AFF',
+    grey: '#dcdcdc',
   }
 };

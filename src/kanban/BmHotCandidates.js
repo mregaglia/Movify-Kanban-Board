@@ -8,6 +8,7 @@ import { Column } from "../components";
 import ClientCorporation from "./ClientCorporation";
 import { ADD, DELETE } from "../hotCandidates/utils";
 import AddButton from "../components/AddButton";
+import TitleBackground from "../components/svgs/TitleBackground"
 
 export const HOT_CANDIDATES = 'HOT_CANDIDATES'
 export const BUSINESS = 'BUSINESS'
@@ -23,42 +24,30 @@ const StyledAddButton = styled(AddButton)`
 
 const Container = styled.div`
   display: grid;
-  min-height: 200px;
+  min-height: 357px;
   height: 100%;
   grid-template-rows: auto 1fr auto;
 `
 
 const Title = styled.p`
   ${({ color, height, theme: { colors } }) => css`
-    background-color: ${color};
     color: ${colors.white};
     text-transform: uppercase;
     padding: 1rem;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
     position: relative;
-    height: max-content;
-    width: max-content;
     grid-column: 1;
     grid-row: 1;
     text-shadow: 1px 1px 2px #00000021;
-    &::before,
     &::after {
       content: '';
-      position: absolute;
-      height: calc(${height}px - 100%);
-      width: 5.5rem;
-      left: 0;
-      top: calc(100% - 1px);
-    }
-    &::before {
-      z-index: -1;
-      border-top-left-radius: 100%;
-      background-color: ${colors.white};
-    }
-    &::after {
-      z-index: -2;
       background-color: ${color};
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 0.625rem;
+      height: ${height}px;
+      border-radius: 0.625rem;
+      z-index: -1;
     }
   `}
 `
@@ -73,6 +62,14 @@ const StyledColumn = styled(Column)`
 const NoCandidatesMessage = styled.p`
   margin: 0;
   padding-top: 1rem;
+`
+
+const StyledTitleBackground = styled(TitleBackground)`
+  width: 200px;
+  position: absolute;
+  left: 0;
+  z-index: -1;
+  top: 0;
 `
 
 const Bm = ({ bm, color, title, data, kanbanType = BUSINESS, onOpenModal }) => {
@@ -102,6 +99,7 @@ const Bm = ({ bm, color, title, data, kanbanType = BUSINESS, onOpenModal }) => {
     <Container ref={containerRef}>
       <Title color={color} height={height}>
         {title}
+        <StyledTitleBackground color={color} />
       </Title>
       <StyledColumn>
         {dataToRender?.length > 0 ? dataToRender?.map((single, index) => (
