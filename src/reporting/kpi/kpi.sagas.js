@@ -103,7 +103,7 @@ export function* getKpiDataEmployee(action) {
         let objectYTDBusinessManager = initializeObjectConversionYTDBusinessManager();
         let objectYTDRecruitment = initializeObjectConversionYTDRecruitment();
 
-        if (occupation === BUSINESS_MANAGER) {
+        if (occupation.includes(BUSINESS_MANAGER)) {
             yield call(getLast4WeekDataBusinessManager, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
             yield call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp, dates)
         } else {
@@ -263,7 +263,7 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
         objectCvSent
 
     // BUSINESS MANAGER DATA
-    if ((occupation.includes(BUSINESS_MANAGER))) {
+    if (occupation.includes(BUSINESS_MANAGER)) {
         objectProspectionDone = initializeObjectByDatesTable()
         objectIntakes = initializeObjectByDatesTable()
         objectProspectionsScheduled = initializeObjectByDatesTable()
@@ -272,7 +272,7 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
     }
 
     // TALENT ACQUISITION AND SOURCING OFFICER DATA
-    if ([TALENT_ACQUISITION, SOURCING_OFFICER].includes(occupation)) {
+    if (occupation.includes(SOURCING_OFFICER) || occupation.includes(TALENT_ACQUISITION)) {
         objectCategories = initializeObjectByDates()
     }
 
@@ -280,7 +280,7 @@ export function* getLast4WeekKpiData(employeeId, dates, objectDateEmployee, obje
     if (occupation.includes(SOURCING_OFFICER)) objectLinkedInMail = initializeObjectByDates()
 
     // BUSINESS MANAGER, SOURCING OFFICER AND TALENT ACQUISITION DATA
-    if ([BUSINESS_MANAGER, TALENT_ACQUISITION, SOURCING_OFFICER].includes(occupation)) {
+    if (occupation.includes(BUSINESS_MANAGER) || occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
         objectInterviewsScheduled = initializeObjectByDates()
         objectInterviewsDone = initializeObjectByDatesTable()
     }
