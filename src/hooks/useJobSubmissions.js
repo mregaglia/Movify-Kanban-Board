@@ -12,6 +12,7 @@ const useJobSubmissions = (candidateIds, maxNumberOfPossibleJobSubmissions) => {
       }),
     {
       enabled: !!(candidateIds?.length && maxNumberOfPossibleJobSubmissions),
+      refetchOnWindowFocus: false,
     }
   )
 }

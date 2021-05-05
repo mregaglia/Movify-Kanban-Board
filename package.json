@@ -10,6 +10,7 @@
     "serve": "node server.js"
   },
   "dependencies": {
+    "@welldone-software/why-did-you-render": "^6.1.1",
     "cors": "2.8.5",
     "date-fns": "^2.21.1",
     "dexie": "^3.1.0-alpha.9",

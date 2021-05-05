@@ -12,6 +12,7 @@ const useJobOrders = (jobOrders, maxNumberOfPossibleJobOrders) => {
     {
       // Enable once we have jobOrders
       enabled: !!(jobOrders?.length && maxNumberOfPossibleJobOrders),
+      refetchOnWindowFocus: false,
     }
   )
 }

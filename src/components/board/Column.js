@@ -87,7 +87,7 @@ const Column = ({ board, columnId, jobSubmissions, status, statusData, onOpenAdd
             </Content>
           )}
         </Droppable>
-        {status === STATUS_IDENTIFIED ? <StyledAddButton title="Add company" onClick={onOpenAddCompanyModal} /> : null}
+        {status === STATUS_IDENTIFIED ? (<StyledAddButton title="Add company" onClick={onOpenAddCompanyModal} />) : null}
       </ContentContainer>
     </Container>
   )

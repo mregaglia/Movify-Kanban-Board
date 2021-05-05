@@ -7,19 +7,19 @@ import {
   HotCandidateCompany,
 } from "./styledComponents"
 
-const HotCandidateCompanies = ({ candidateId }) => {
+const HotCandidateCompaniesIdentified = ({ candidateId }) => {
   const db = useIndexedDb()
-  const user = useLiveQuery(() => db.users.get(candidateId))
+  const user = useLiveQuery(() => db.users.get(candidateId), [candidateId])
   const companies = user?.identifiedCompanies
   return (
     <HotCandidateCompaniesContainer>
-      {companies?.map((single) => <HotCandidateCompany key={single}>{single}</HotCandidateCompany>)}
+      {companies?.length > 0 ? companies?.map((single) => <HotCandidateCompany key={single}>{single}</HotCandidateCompany>) : null}
     </HotCandidateCompaniesContainer>
   )
 }
 
-HotCandidateCompanies.propTypes = {
+HotCandidateCompaniesIdentified.propTypes = {
   candidateId: PropTypes.number
 }
 
-export default HotCandidateCompanies
+export default HotCandidateCompaniesIdentified
