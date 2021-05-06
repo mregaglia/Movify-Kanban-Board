@@ -47,7 +47,7 @@ export const TOTAL_YTD = "TOTAL_YTD"
 
 
 export const initalizeObjectBusinessManager = (occupation) => {
-  if (occupation === BUSINESS_MANAGER) {
+  if (occupation.includes(BUSINESS_MANAGER)) {
     return {
       CALL: { TITLE: LABEL_CALL, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
       PROSPECTION_MEETING_SCHEDULE: { TITLE: LABEL_PROSPECTION_MEETING_SCHEDULE, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -103,7 +103,7 @@ export const initalizeObjectRecruitment = (occupation) => {
     HIRED: { TITLE: LABEL_HIRED, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
   }
 
-  if (occupation === BUSINESS_MANAGER) {
+  if (occupation.includes(BUSINESS_MANAGER)) {
     dataObject = {
       ...dataObject,
       PEOPLE_MANAGEMENT_ACTIVITIES: { TITLE: LABEL_PEOPLE_MANAGEMENT_ACTIVITIES, FIRST_WEEK: 0, SECOND_WEEK: 0, THIRD_WEEK: 0, FOURTH_WEEK: 0 },
@@ -547,11 +547,11 @@ export const calculateAverageYTDData = (totalYTD, weekNumberOfTheYear) => {
 }
 
 export const getGaugeLimitFromFile = (occupation) => {
-  if (occupation === BUSINESS_MANAGER) {
+  if (occupation.includes(BUSINESS_MANAGER)) {
     return GaugeLimitFile.BUSINESS_MANAGER
-  } else if (occupation === SOURCING_OFFICER) {
+  } else if (occupation.includes(SOURCING_OFFICER)) {
     return GaugeLimitFile.SOURCING_OFFICER
-  } else if (occupation === TALENT_ACQUISITION) {
+  } else if (occupation.includes(TALENT_ACQUISITION)) {
     return GaugeLimitFile.TALENT_ACQUISITION
   }
 }

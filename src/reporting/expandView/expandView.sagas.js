@@ -28,7 +28,7 @@ const tableWeek = [FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK]
 export function* getAllDataFromIdsForExpandView(datas, occupation) {
     try {
 
-        if (occupation === BUSINESS_MANAGER) {
+        if (occupation.includes(BUSINESS_MANAGER)) {
 
             const dataCvSent = yield select(getExpandedViewDataCvSent)
 
@@ -62,7 +62,7 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
             yield all(datas.PROSPECTIONS_SCHEDULED.THIRD_WEEK.map(prospectionDone => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone), prop("clientContacts", prospectionDone), PROSPECTION_MEETING_SCHEDULED, THIRD_WEEK, IS_CLIENT))))
             yield all(datas.PROSPECTIONS_SCHEDULED.FOURTH_WEEK.map(prospectionDone => put(getDetailData(pathOr(0, ["clientContacts", "data", 0, "id"], prospectionDone), prop("clientContacts", prospectionDone), PROSPECTION_MEETING_SCHEDULED, FOURTH_WEEK, IS_CLIENT))))
 
-        } else if (occupation === TALENT_ACQUISITION || occupation === SOURCING_OFFICER) {
+        } else if (occupation.includes(TALENT_ACQUISITION) || occupation.includes(SOURCING_OFFICER)) {
 
             yield all(datas.INTERVIEW_SCHEDULED.FIRST_WEEK.map(interviewScheduled => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewScheduled), prop("candidates", interviewScheduled), INTERVIEW_SCHEDULED, FIRST_WEEK, IS_CANDIDATE))))
             yield all(datas.INTERVIEW_SCHEDULED.SECOND_WEEK.map(interviewScheduled => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewScheduled), prop("candidates", interviewScheduled), INTERVIEW_SCHEDULED, SECOND_WEEK, IS_CANDIDATE))))
@@ -71,7 +71,7 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
 
         }
 
-        if (occupation === BUSINESS_MANAGER || occupation === TALENT_ACQUISITION) {
+        if (occupation.includes(BUSINESS_MANAGER) || occupation.includes(TALENT_ACQUISITION)) {
 
             yield all(datas.INTERVIEWS_DONE.FIRST_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), INTERVIEW_DONE, FIRST_WEEK, IS_CANDIDATE))))
             yield all(datas.INTERVIEWS_DONE.SECOND_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), INTERVIEW_DONE, SECOND_WEEK, IS_CANDIDATE))))
@@ -80,7 +80,7 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
 
         }
 
-        if (occupation === SOURCING_OFFICER) {
+        if (occupation.includes(SOURCING_OFFICER)) {
             yield all(datas.LINKED_INMAIL.FIRST_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), LINKED_INMAIL, FIRST_WEEK, IS_CANDIDATE))))
             yield all(datas.LINKED_INMAIL.SECOND_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), LINKED_INMAIL, SECOND_WEEK, IS_CANDIDATE))))
             yield all(datas.LINKED_INMAIL.THIRD_WEEK.map(interviewsDone => put(getDetailData(pathOr(0, ["candidates", "data", 0, "id"], interviewsDone), prop("candidates", interviewsDone), LINKED_INMAIL, THIRD_WEEK, IS_CANDIDATE))))

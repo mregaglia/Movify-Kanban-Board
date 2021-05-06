@@ -97,7 +97,7 @@ const TalentAcquisition = () => {
                                 }
                             </TableContentTbodyTr>
                         )
-                    } else if ((title === LABEL_PEOPLE_MANAGEMENT_ACTIVITIES && occupation === BUSINESS_MANAGER) || (title === HIRED && occupation !== BUSINESS_MANAGER)) {
+                    } else if ((title === LABEL_PEOPLE_MANAGEMENT_ACTIVITIES && occupation.includes(BUSINESS_MANAGER)) || (title === HIRED && !occupation.includes(BUSINESS_MANAGER))) {
                         return (
                             <tr key={uuid()}>
                                 <TableContentTdLabel>{title}</TableContentTdLabel>
