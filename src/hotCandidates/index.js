@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react"
-import { isPast, isToday, isWithinInterval, addWeeks, addDays, addMonths, differenceInDays, differenceInWeeks, differenceInMonths, intlFormat } from "date-fns"
+import { isPast, isToday, isWithinInterval, addWeeks, addDays, addMonths, intlFormat } from "date-fns"
 import styled from "styled-components"
 import {
   useJobSubmissions,
@@ -103,13 +103,6 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
     const inOneMonth = addMonths(now, 1)
     const inTwoMonths = addMonths(now, 2)
 
-    dateAvailable = addMonths(now, 4)
-
-    const relativeTime = new Intl.RelativeTimeFormat("en-GB", {
-      numeric: "auto",
-      styled: "long",
-    })
-
     // Available now
     if (isToday(dateAvailable) || isPast(dateAvailable)) {
       dateAvailable = "now"
@@ -117,26 +110,22 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
 
       // Between tomorrow and 2 weeks
     } else if (isWithinInterval(dateAvailable, { start: tomorrow, end: inTwoWeeks })) {
-      const difference = differenceInDays(dateAvailable, now)
-      dateAvailable = relativeTime.format(difference, "day")
+      dateAvailable = formatDate(dateAvailable)
       dateColorCode = theme.dateAvailableStatusColors.betweenTomorrorowAndTwoWeeks
 
       // Between 2 weeks and 1 month
     } else if (isWithinInterval(dateAvailable, { start: inTwoWeeks, end: inOneMonth })) {
-      const difference = differenceInDays(dateAvailable, now)
-      dateAvailable = relativeTime.format(difference, "day")
+      dateAvailable = formatDate(dateAvailable)
       dateColorCode = theme.dateAvailableStatusColors.betweenTwoWeeksAndOneMonth
 
       // Between 1 and 2 months
     } else if (isWithinInterval(dateAvailable, { start: inOneMonth, end: inTwoMonths })) {
-      const difference = differenceInWeeks(dateAvailable, now)
-      dateAvailable = relativeTime.format(difference, "week")
+      dateAvailable = formatDate(dateAvailable)
       dateColorCode = theme.dateAvailableStatusColors.betweenOneAndTwoMonths
 
       // Should always be longer than 2 months
     } else {
-      const difference = differenceInMonths(dateAvailable, now)
-      dateAvailable = relativeTime.format(difference, "month")
+      dateAvailable = formatDate(dateAvailable)
       dateColorCode = theme.dateAvailableStatusColors.twoMonthsOrLonger
     }
   } else {
