@@ -38,7 +38,7 @@ const Title = styled.p`
     grid-column: 1;
     grid-row: 1;
     text-shadow: 1px 1px 2px #00000021;
-    &::after {
+    &::before {
       content: '';
       background-color: ${color};
       position: absolute;
@@ -46,6 +46,17 @@ const Title = styled.p`
       top: 0;
       width: 0.625rem;
       height: ${height}px;
+      border-radius: 0.625rem;
+      z-index: -1;
+    }
+    &::after {
+      content: '';
+      background-color: ${color};
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      height: 0.625rem;
+      width: 100%;
       border-radius: 0.625rem;
       z-index: -1;
     }
@@ -76,6 +87,7 @@ const Bm = ({ bm, color, title, data, kanbanType = BUSINESS, onOpenModal }) => {
   const containerRef = useRef(null)
   const [height, setHeight] = useState(0)
 
+  // eslint-disable-next-line
   useEffect(() => {
     const dimensions = containerRef.current.getBoundingClientRect()
     setHeight(dimensions?.height ?? 200)

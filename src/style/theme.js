@@ -82,5 +82,20 @@ export default {
     green: '#26D86D',
     blue: '#029AFF',
     grey: '#dcdcdc',
+  },
+  dateAvailableStatusColors: {
+    now: "#ff3838",
+    betweenTomorrorowAndTwoWeeks: "#FCAD56",
+    betweenTwoWeeksAndOneMonth: "#F7E06B",
+    betweenOneAndTwoMonths: "#26D86D",
+    twoMonthsOrLonger: "#029AFF",
+    noData: "#dcdcdc",
+  },
+  businessManagerColors: {
+    charles: "#FF5757",
+    john: "#6BD7DA",
+    louis: "#FF8A40",
+    michiel: "#FFBF53",
+    sacha: "#E14E45",
   }
 };

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react"
-import { isPast, isToday, intlFormat } from "date-fns"
+import { isPast, isToday, isWithinInterval, addWeeks, addDays, addMonths, differenceInDays, differenceInWeeks, differenceInMonths, intlFormat } from "date-fns"
 import styled from "styled-components"
 import {
   useJobSubmissions,
@@ -51,6 +51,14 @@ const initialModalState = {
   }
 }
 
+const formatDate = (dateAvailable) => intlFormat(dateAvailable, {
+  month: 'numeric',
+  day: 'numeric',
+  year: 'numeric',
+}, {
+  locale: 'nl-BE'
+})
+
 const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobOrders = [], bench, projectRotations, wfp }) => {
   let statusObject = {
     toSend: [],
@@ -67,6 +75,7 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
     if (jobSubmissionFromCurrentCandidate) {
       const currentStatusKey = getMapValue(hotCandidatesStatusKeys, jobSubmission.status)
 
+      const jobOrderId = jobSubmission?.jobOrder?.id ? String(jobSubmission.jobOrder.id) : ""
       const jobTitle = jobSubmission?.jobOrder?.title ?? ''
       const company = jobOrders?.find((jobOrder) => jobOrder?.id === jobSubmission?.jobOrder?.id)?.clientCorporation?.name ?? ''
       statusObject = {
@@ -76,19 +85,63 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
           {
             jobTitle,
             company,
+            jobOrderId,
+            jobSubmissionId: String(jobSubmission.id)
           }
         ]
       }
     }
   }
 
-  const dateAvailable = !candidate?.dateAvailable ? "/" : isPast(candidate.dateAvailable) || isToday(candidate.dateAvailable) ? "NOW" : intlFormat(candidate.dateAvailable, {
-    month: 'numeric',
-    day: 'numeric',
-    year: 'numeric',
-  }, {
-    locale: 'nl-BE'
-  })
+  let dateAvailable = candidate?.dateAvailable
+  let dateColorCode = theme.dateAvailableStatusColors.noData
+
+  if (dateAvailable) {
+    const now = new Date()
+    const tomorrow = addDays(now, 1)
+    const inTwoWeeks = addWeeks(now, 2)
+    const inOneMonth = addMonths(now, 1)
+    const inTwoMonths = addMonths(now, 2)
+
+    dateAvailable = addMonths(now, 4)
+
+    const relativeTime = new Intl.RelativeTimeFormat("en-GB", {
+      numeric: "auto",
+      styled: "long",
+    })
+
+    // Available now
+    if (isToday(dateAvailable) || isPast(dateAvailable)) {
+      dateAvailable = "now"
+      dateColorCode = theme.dateAvailableStatusColors.now
+
+      // Between tomorrow and 2 weeks
+    } else if (isWithinInterval(dateAvailable, { start: tomorrow, end: inTwoWeeks })) {
+      const difference = differenceInDays(dateAvailable, now)
+      dateAvailable = relativeTime.format(difference, "day")
+      dateColorCode = theme.dateAvailableStatusColors.betweenTomorrorowAndTwoWeeks
+
+      // Between 2 weeks and 1 month
+    } else if (isWithinInterval(dateAvailable, { start: inTwoWeeks, end: inOneMonth })) {
+      const difference = differenceInDays(dateAvailable, now)
+      dateAvailable = relativeTime.format(difference, "day")
+      dateColorCode = theme.dateAvailableStatusColors.betweenTwoWeeksAndOneMonth
+
+      // Between 1 and 2 months
+    } else if (isWithinInterval(dateAvailable, { start: inOneMonth, end: inTwoMonths })) {
+      const difference = differenceInWeeks(dateAvailable, now)
+      dateAvailable = relativeTime.format(difference, "week")
+      dateColorCode = theme.dateAvailableStatusColors.betweenOneAndTwoMonths
+
+      // Should always be longer than 2 months
+    } else {
+      const difference = differenceInMonths(dateAvailable, now)
+      dateAvailable = relativeTime.format(difference, "month")
+      dateColorCode = theme.dateAvailableStatusColors.twoMonthsOrLonger
+    }
+  } else {
+    dateAvailable = "unknown"
+  }
 
   const mappedCandidate = {
     name:
@@ -96,6 +149,7 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
         ? `${candidate?.firstName} ${candidate?.lastName}`
         : "/",
     dateAvailable,
+    dateColorCode,
     role: candidate?.occupation ?? "/",
     identified: [],
     type,
@@ -112,7 +166,6 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
   }
 }
 
-// Default show date available but allow reordering
 const HotCandidatesPage = () => {
   const [modalState, setModalState] = useState(initialModalState)
   const db = useIndexedDb()
@@ -141,6 +194,7 @@ const HotCandidatesPage = () => {
 
   jobOrders = jobOrders?.data ?? []
 
+  console.log("LOGGER ~ candidates", candidates)
   const data = useMemo(() => {
     const wfp = []
     const bench = []

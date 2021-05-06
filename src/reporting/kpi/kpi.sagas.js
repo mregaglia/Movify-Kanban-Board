@@ -105,7 +105,7 @@ export function* getKpiDataEmployee(action) {
 
         if (occupation.includes(BUSINESS_MANAGER)) {
             yield call(getLast4WeekDataBusinessManager, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
-            yield call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp, dates)
+            yield call(getYTDData, idEmployee, dateStartOfThisYear, dates[3].end, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dates[3].endTimestamp)
         } else {
             const datasRecruitment = yield call(getLast4WeekKpiData, idEmployee, dates, objectDateEmployee, objectDataRecruitment, objectDataBusinessManager, occupation)
             yield call(calculateWeeklySpeedRecruitmentForAllWeeks, datasRecruitment.CATEGORIES, occupation)
@@ -129,7 +129,7 @@ export function* getLast4WeekDataBusinessManager(idEmployee, dates, objectDateEm
     }
 }
 
-export function* getYTDData(idEmployee, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dateEndTimestamp, dates) {
+export function* getYTDData(idEmployee, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear, dateStartOfThisYearTimestamp, dateEndTimestamp) {
     try {
         yield all([
             call(calculateTotalYTD, idEmployee, dateStartOfThisYear, dateEnd, occupation, objectYTDBusinessManager, objectYTDRecruitment, weekNumberOfTheYear),

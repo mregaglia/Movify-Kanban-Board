@@ -20,6 +20,7 @@ import { addCandidate } from "./transition/transition.actions";
 import Header from "./Header";
 import Reporting from './reporting/components/Reporting'
 import HotCandidates from "./hotCandidates";
+import useUpdateJobSubmission from "./hooks/useUpdateJobSubmission";
 
 const Container = styled.div({
     paddingLeft: 25,
@@ -35,12 +36,23 @@ const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecru
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [updateModalData, setUpdateModalData] = useState(undefined);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const updateJobSubmissionMutation = useUpdateJobSubmission();
 
     const board = propOr(" ", "pathname", location).substring(1);
 
-    const onDnd = result => {
-        if (!prop("destination", result)) return;
-        const jobSubmissionId = prop("draggableId", result);
+    const handleDragEnd = async (result) => {
+        const { destination, source, draggableId } = result
+
+        if (!destination) return;
+
+        if (
+            destination.droppableId === source.droppableId &&
+            destination.index === source.index
+        ) {
+            return;
+        }
+
+        const jobSubmissionId = draggableId;
         const src = getColumnData(path(["source", "droppableId"], result));
         const dest = getColumnData(path(["destination", "droppableId"], result));
         const srcStatus = prop("status", src);
@@ -70,6 +82,9 @@ const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecru
                 jobOrderId,
                 destJobOrderId
             );
+        } else if (board === "hot-candidates") {
+            const newStatus = destination.droppableId.split("@")[0]
+            await updateJobSubmissionMutation.mutate({ jobSubmissionId, status: newStatus })
         }
     };
 
@@ -128,7 +143,7 @@ const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecru
     }
 
     return (
-        <DragDropContext onDragEnd={onDnd}>
+        <DragDropContext onDragEnd={handleDragEnd}>
             <Header board={board} />
             <Container>
                 <Route exact path="/" component={Home} />

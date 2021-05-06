@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import Board from './board/Board'
 import { HOT_CANDIDATE_STATUSES } from '../utils/kanban'
 import { Trash } from './svgs'
+import enforceHighContrast from '../utils/enforceHighContrast'
 
 const Container = styled.div`
   display: grid;
@@ -13,6 +14,7 @@ const Container = styled.div`
 
 const Name = styled.p`
   font-weight: 600;
+  margin: 0;
 `
 
 const StyledBoard = styled(Board)`
@@ -46,7 +48,22 @@ const DeleteButton = styled.button`
   }
 `
 
-const HotCandidate = ({ hotCandidate: { name, role, dateAvailable, id, ...statusesData }, onOpenDeleteModal, onOpenAddCompanyModal }) => {
+const Role = styled.p`
+  margin: 0;
+`
+
+const DateAvailable = styled.p`
+  ${({ colorCode }) => css`
+    background-color: ${colorCode};
+    width: max-content;
+    padding: 0.5rem;
+    border-radius: 6px;
+    color: ${enforceHighContrast(colorCode)};
+    margin: 0;
+  `}
+`
+
+const HotCandidate = ({ hotCandidate: { name, role, dateAvailable, id, dateColorCode, ...statusesData }, onOpenDeleteModal, onOpenAddCompanyModal }) => {
   const handleClickOpenDeleteModal = () => {
     onOpenDeleteModal(id)
   }
@@ -57,8 +74,8 @@ const HotCandidate = ({ hotCandidate: { name, role, dateAvailable, id, ...status
     <Container>
       <Text>
         <Name>{name}</Name>
-        <p>{role}</p>
-        <p>{dateAvailable}</p>
+        <Role>{role}</Role>
+        <DateAvailable colorCode={dateColorCode}>{dateAvailable}</DateAvailable>
       </Text>
       <StyledBoard
         board="hot-candidates"

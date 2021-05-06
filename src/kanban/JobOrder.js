@@ -55,6 +55,10 @@ const AddButton = styled.div(({ color, theme }) => ({
   marginRight: 8
 }));
 
+const StyledRow = styled(Row)`
+  padding: 0.5rem 0;
+`
+
 const Tooltip = styled(ReactTooltip)`
   ${({ theme: { fonts, textDimensions, colors } }) => css`
     font-family: ${fonts.fontFamily};
@@ -90,7 +94,7 @@ const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
     );
 
   return (
-    <Row>
+    <StyledRow>
       <Column>
         <Row>
           <Title data-tip={prop("description", jobOrder)}>
@@ -160,7 +164,7 @@ const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
         clientCorporationId={prop("clientCorporationId", jobOrder)}
         jobOrderId={prop("id", jobOrder)}
       />
-    </Row>
+    </StyledRow>
   );
 };
 

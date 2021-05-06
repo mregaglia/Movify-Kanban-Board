@@ -1,6 +1,7 @@
 import React from "react"
 import { array, string, func, number } from "prop-types"
 import styled, { css } from "styled-components"
+import { v4 as uuid } from "uuid"
 import { Droppable } from "react-beautiful-dnd"
 import { STATUS_IDENTIFIED, STATUS_NO_GO } from "../../utils/kanban"
 import Candidates from "./Candidates"
@@ -66,12 +67,13 @@ const getStatusLabel = (status) => statusLabels.get(status) ?? status
 
 const Column = ({ board, columnId, jobSubmissions, status, statusData, onOpenAddCompanyModal, candidateId }) => {
   const { pathname } = useLocation()
+  const droppableId = pathname === "/hot-candidates" ? `${status}@${uuid()}` : columnId
 
   return (
     <Container>
       <Title>{getStatusLabel(status)}</Title>
       <ContentContainer>
-        <Droppable droppableId={columnId}>
+        <Droppable droppableId={droppableId}>
           {(provided, snapshot) => (
             <Content snapshot={snapshot} isNoGo={status === STATUS_NO_GO}>
               <div ref={provided.innerRef} {...provided.droppableProps} style={{ minHeight: 65, height: "100%" }}>
