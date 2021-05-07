@@ -61,8 +61,9 @@ const Transition = ({ board }) => {
 
   let hotCandidates = useFindCandidates(hotCandidateIds?.map((id) => ({ id })))
 
+  // Temp add hot candidates
   const doNotRender =
-    board === "reporting" || (board === "kanban" && !candidates?.length > 0 && !hotCandidates?.length > 0)
+    board === "reporting" || board === "hot-candidates" || (board === "kanban" && !candidates?.length > 0 && !hotCandidates?.length > 0)
 
   if (doNotRender) return null
 
