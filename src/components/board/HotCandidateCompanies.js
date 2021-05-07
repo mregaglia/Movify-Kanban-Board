@@ -10,6 +10,8 @@ const HotCandidateCompanies = ({ companies }) => {
         <HotCandidateCompany
           draggableId={single.jobSubmissionId}
           company={single.company}
+          owner={single.owner}
+          jobTitle={single.jobTitle}
           key={single.jobOrderId}
           index={index}
         />

@@ -6,7 +6,7 @@ const useJobOrders = (jobOrders, maxNumberOfPossibleJobOrders) => {
     ["find-job-orders", jobOrders?.join()],
     () =>
       get(`entity/JobOrder/${jobOrders?.join()}`, {
-        fields: "id,clientCorporation",
+        fields: "id,clientCorporation,owner",
         count: maxNumberOfPossibleJobOrders
       }),
     {

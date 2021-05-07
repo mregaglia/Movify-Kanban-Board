@@ -2,7 +2,6 @@ import React from "react"
 import { propOr } from "ramda"
 import { array, number, object, string, func } from "prop-types"
 import styled, { css } from "styled-components"
-import { createColumnId } from "../../utils/kanban"
 import Column from "./Column"
 import { hotCandidatesStatusKeys } from "../../hotCandidates"
 import getMapValue from "../../utils/getMapValue"
@@ -39,17 +38,14 @@ const Board = ({
         <Column
           board={board}
           key={status}
-          status={status}
           jobSubmissions={propOr([], status, jobSubmissions)}
           statusData={statusesData?.[getMapValue(hotCandidatesStatusKeys, status)]}
           onOpenAddCompanyModal={onOpenAddCompanyModal}
           candidateId={candidateId}
-          columnId={createColumnId(
-            bmId,
-            clientCorporationId,
-            jobOrderId,
-            status
-          )}
+          bmId={bmId}
+          clientCorporationId={clientCorporationId}
+          jobOrderId={jobOrderId}
+          status={status}
         />
       )})}
     </Container>
@@ -58,10 +54,10 @@ const Board = ({
 
 Board.propTypes = {
   bmId: number,
-  board: string,
-  className: string,
   clientCorporationId: number,
   jobOrderId: number,
+  board: string,
+  className: string,
   jobSubmissions: object,
   statuses: array,
   statusesData: object,

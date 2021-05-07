@@ -38,6 +38,7 @@ const Title = styled.p`
     grid-column: 1;
     grid-row: 1;
     text-shadow: 1px 1px 2px #00000021;
+    margin: 0;
     &::before {
       content: '';
       background-color: ${color};

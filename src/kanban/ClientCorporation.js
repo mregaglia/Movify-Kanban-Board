@@ -1,4 +1,5 @@
 import React from "react"
+import { Droppable } from "react-beautiful-dnd"
 import { connect } from "react-redux"
 import { pathOr } from "ramda"
 import { number, object, string, oneOf, func } from "prop-types"
@@ -15,28 +16,34 @@ const ClientCorporation = ({
   data,
   onOpenDeleteModal,
   onOpenAddCompanyModal,
+  index,
 }) => {
   const shouldRenderHeader = kanbanType === BUSINESS
+
   return (
     <div>
-      {shouldRenderHeader && (
-        <ColorRowText color={color}>
-          {clientCorporation?.name ?? ""}
-        </ColorRowText>
-      )}
+      {shouldRenderHeader && <ColorRowText color={color}>{clientCorporation?.name ?? ""}</ColorRowText>}
       <Row>
         <Column>
-          {kanbanType === HOT_CANDIDATES
-            ? <HotCandidate hotCandidate={data} onOpenDeleteModal={onOpenDeleteModal} onOpenAddCompanyModal={onOpenAddCompanyModal} />
-            : clientCorporation?.bmIds[
-                bmId
-              ]?.filteredJobOrders?.map((jobOrder) => (
-                <JobOrder
-                  key={jobOrder?.id}
-                  joId={jobOrder?.id}
-                  color={color}
-                />
-              ))}
+          {kanbanType === HOT_CANDIDATES ? (
+            <Droppable droppableId={`NO_STATUS@${data.id}`}>
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  <HotCandidate
+                    hotCandidate={data}
+                    onOpenDeleteModal={onOpenDeleteModal}
+                    onOpenAddCompanyModal={onOpenAddCompanyModal}
+                    index={index}
+                  />
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          ) : (
+            clientCorporation?.bmIds[bmId]?.filteredJobOrders?.map((jobOrder) => (
+              <JobOrder key={jobOrder?.id} joId={jobOrder?.id} color={color} />
+            ))
+          )}
         </Column>
       </Row>
     </div>

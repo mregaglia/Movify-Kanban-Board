@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled, { css } from 'styled-components'
+import { Draggable } from "react-beautiful-dnd"
 import Board from './board/Board'
 import { HOT_CANDIDATE_STATUSES } from '../utils/kanban'
 import { Trash } from './svgs'
@@ -63,20 +64,32 @@ const DateAvailable = styled.p`
   `}
 `
 
-const HotCandidate = ({ hotCandidate: { name, role, dateAvailable, id, dateColorCode, ...statusesData }, onOpenDeleteModal, onOpenAddCompanyModal }) => {
+const HotCandidate = ({ hotCandidate: { name, role, dateAvailable, id, dateColorCode, ...statusesData }, onOpenDeleteModal, onOpenAddCompanyModal, index }) => {
   const handleClickOpenDeleteModal = () => {
     onOpenDeleteModal(id)
   }
   const handleClickOpenAddCompanyModal = () => {
     onOpenAddCompanyModal(id)
   }
+
+  const draggableId = `NO_STATUS@${id}`
+
   return (
     <Container>
-      <Text>
-        <Name>{name}</Name>
-        <Role>{role}</Role>
-        <DateAvailable colorCode={dateColorCode}>{dateAvailable}</DateAvailable>
-      </Text>
+      <Draggable draggableId={draggableId} index={index}>
+        {(provided, snapshot) => (
+          <Text
+            {...provided.draggableProps}
+            {...provided.dragHandleProps}
+            ref={provided.innerRef}
+            isDragging={snapshot.isDragging}
+          >
+            <Name>{name}</Name>
+            <Role>{role}</Role>
+            <DateAvailable colorCode={dateColorCode}>{dateAvailable}</DateAvailable>
+          </Text>
+        )}
+      </Draggable>
       <StyledBoard
         board="hot-candidates"
         statuses={HOT_CANDIDATE_STATUSES}
@@ -95,6 +108,7 @@ HotCandidate.propTypes = {
   hotCandidate: PropTypes.object,
   onOpenDeleteModal: PropTypes.func,
   onOpenAddCompanyModal: PropTypes.func,
+  index: PropTypes.number,
 }
 
 export default HotCandidate

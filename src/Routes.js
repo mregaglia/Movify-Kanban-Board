@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { func, object } from "prop-types";
-import { path, prop, propOr } from "ramda"
+import { prop, propOr } from "ramda"
 import styled from "styled-components";
 import { Route, withRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -16,7 +16,7 @@ import Kanban from "./kanban/Kanban";
 import Recruitment from "./recruitment/Recruitment";
 import { updateJobSubmission as updateKanbanJobSubmission } from "./kanban/kanban.actions";
 import { updateJobSubmission as updateRecruitmentJobSubmission } from "./recruitment/recruitment.actions";
-import { addCandidate } from "./transition/transition.actions";
+import { addCandidate, addHotCandidate } from "./transition/transition.actions";
 import Header from "./Header";
 import Reporting from './reporting/components/Reporting'
 import HotCandidates from "./hotCandidates";
@@ -29,7 +29,7 @@ const Container = styled.div({
     paddingBottom: 25
 });
 
-const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecruitmentJobSubmission }) => {
+const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmission, updateRecruitmentJobSubmission }) => {
     const [duplicateModalData, setDuplicateModalData] = useState(undefined);
     const [addModalData, setAddModalData] = useState(undefined);
     const [isDuplicateModalOpen, setIsDuplicateModalOpen] = useState(false);
@@ -52,46 +52,66 @@ const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecru
             return;
         }
 
-        const jobSubmissionId = draggableId;
-        const src = getColumnData(path(["source", "droppableId"], result));
-        const dest = getColumnData(path(["destination", "droppableId"], result));
-        const srcStatus = prop("status", src);
-        const destStatus = prop("status", dest);
-        const jobOrderId = prop("jobOrderId", src);
-        const destJobOrderId = prop("jobOrderId", dest);
+        if (["kanban", "recruitment"].includes(board)) {
+            const jobSubmissionId = "draggableId";
+            const src = getColumnData(result?.source?.droppableId);
+            const dest = getColumnData(result?.destination?.droppableId);
+            const srcStatus = prop("status", src);
+            const destStatus = prop("status", dest);
+            const jobOrderId = prop("jobOrderId", src);
+            const destJobOrderId = prop("jobOrderId", dest);
 
-        if (board === "kanban") {
-            onDndKanban(
-                result,
-                jobSubmissionId,
-                src,
-                dest,
-                srcStatus,
-                destStatus,
-                jobOrderId,
-                destJobOrderId
-            );
-        } else if (board === "recruitment") {
-            onDndRecruitment(
-                result,
-                jobSubmissionId,
-                src,
-                dest,
-                srcStatus,
-                destStatus,
-                jobOrderId,
-                destJobOrderId
-            );
+            if (board === "kanban") {
+                onDndKanban(
+                    result,
+                    jobSubmissionId,
+                    src,
+                    dest,
+                    srcStatus,
+                    destStatus,
+                    jobOrderId,
+                    destJobOrderId
+                );
+            } else if (board === "recruitment") {
+                onDndRecruitment(
+                    result,
+                    jobSubmissionId,
+                    src,
+                    dest,
+                    srcStatus,
+                    destStatus,
+                    jobOrderId,
+                    destJobOrderId
+                );
+            }
         } else if (board === "hot-candidates") {
-            const newStatus = destination.droppableId.split("@")[0]
-            await updateJobSubmissionMutation.mutate({ jobSubmissionId, status: newStatus })
+            const destinationDroppableId = destination.droppableId
+            const isDestinationTransition = destinationDroppableId === "transition"
+
+            const sourceDroppableId = source.droppableId
+            const isSourceTransition = sourceDroppableId === "transition"
+
+            const { 0: oldStatus, 1: candidateId } = sourceDroppableId.split("@")
+
+            if (isSourceTransition) {
+                return
+            } else if (isDestinationTransition) {
+                if (oldStatus === "NO_STATUS") {
+                    addHotCandidate("hot-candidates", candidateId)
+                }
+            } else {
+                const newStatus = destinationDroppableId.split("@")[0]
+                if (oldStatus !== newStatus && draggableId) {
+                    await updateJobSubmissionMutation.mutate({ jobSubmissionId: draggableId, status: newStatus })
+                }
+            }
         }
     };
 
     const onDndKanban = (result, jobSubmissionId, src, dest, srcStatus, destStatus, jobOrderId, destJobOrderId) => {
-        if (path(["destination", "droppableId"], result) === "transition") {
+        if (result?.destination?.droppableId === "transition") {
             return;
-        } else if (path(["source", "droppableId"], result) === "transition") {
+        } else if (result?.source?.droppableId === "transition") {
             setIsAddModalOpen(true);
             setAddModalData({
                 jobOrderId: destJobOrderId,
@@ -120,9 +140,9 @@ const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecru
     };
 
     const onDndRecruitment = (result, jobSubmissionId, src, dest, srcStatus, destStatus, jobOrderId, destJobOrderId) => {
-        if (path(["source", "droppableId"], result) === "transition") {
+        if (result?.source?.droppableId === "transition") {
             return;
-        } else if (path(["destination", "droppableId"], result) === "transition") {
+        } else if (result?.destination?.droppableId === "transition") {
             addCandidate("recruitment", jobSubmissionId);
         } else if (isFromSameBoard(src, dest) && src.status !== dest.status) {
             updateRecruitmentJobSubmission(
@@ -187,6 +207,7 @@ const Routes = ({ addCandidate, location, updateKanbanJobSubmission, updateRecru
 
 Routes.propTypes = {
     addCandidate: func,
+    addHotCandidate: func,
     location: object,
     updateKanbanJobSubmission: func,
     updateRecruitmentJobSubmission: func
@@ -196,6 +217,6 @@ export default compose(
     withRouter,
     connect(
         null,
-        { addCandidate, updateKanbanJobSubmission, updateRecruitmentJobSubmission }
+        { addCandidate, addHotCandidate, updateKanbanJobSubmission, updateRecruitmentJobSubmission }
     ))(Routes);
 

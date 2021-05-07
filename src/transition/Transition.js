@@ -1,29 +1,30 @@
-import React from "react";
-import { connect } from "react-redux";
-import { pathOr, prop } from "ramda";
-import styled from "styled-components";
-import { array, string } from "prop-types";
-import { Droppable } from "react-beautiful-dnd";
-import CandidateCard from "./CandidateCard";
+import React from "react"
+import { prop } from "ramda"
+import styled from "styled-components"
+import { string } from "prop-types"
+import { Draggable, Droppable } from "react-beautiful-dnd"
+import CandidateCard from "./CandidateCard"
+import { useSelector } from "react-redux"
+import { useFindCandidates } from "../hooks"
 
 const getBackgroundColor = (isNoGo, snapshot, theme) => {
-  if (snapshot.isDraggingOver) return theme.colors.transparentRed;
-  if (snapshot.draggingFromThisWith) return theme.colors.transparentGrey;
-  return theme.colors.lightGrey;
-};
+  if (snapshot.isDraggingOver) return theme.colors.transparentRed
+  if (snapshot.draggingFromThisWith) return theme.colors.transparentGrey
+  return theme.colors.lightGrey
+}
 
 const Container = styled.div(({ theme }) => ({
   padding: 8,
   marginBottom: 16,
   backgroundColor: theme.colors.lightGrey,
-  borderRadius: theme.dimensions.borderRadius
-}));
+  borderRadius: theme.dimensions.borderRadius,
+}))
 
 const Content = styled.div(({ isNoGo, snapshot, theme }) => ({
   padding: 8,
   backgroundColor: getBackgroundColor(isNoGo, snapshot, theme),
-  borderRadius: theme.dimensions.borderRadius
-}));
+  borderRadius: theme.dimensions.borderRadius,
+}))
 
 const Title = styled.div(({ theme }) => ({
   display: "inline-block",
@@ -34,12 +35,41 @@ const Title = styled.div(({ theme }) => ({
   paddingRight: 12,
   paddingTop: 8,
   textOverflow: "ellipsis",
-  overflow: "hidden"
-}));
+  overflow: "hidden",
+}))
 
-const Transition = ({ board, candidates }) => {
-  if (board === "reporting" || (board === "kanban" && !prop("length", candidates))) return null;
-  
+export const HotCandidateCompany = styled.p`
+  background-color: #d3d3d340;
+  border-radius: 6px;
+  margin: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: center;
+  padding: 0.6rem;
+  width: max-content;
+  height: max-content;
+  font-size: 0.875rem;
+  line-height: 1.3;
+  min-width: 8rem;
+`
+
+const Transition = ({ board }) => {
+  const { candidates, hotCandidateIds } = useSelector(({ transition }) => ({
+    candidates: transition?.candidates ?? [],
+    hotCandidateIds: transition?.hotCandidates ?? [],
+  }))
+
+  let hotCandidates = useFindCandidates(hotCandidateIds?.map((id) => ({ id })))
+
+  const doNotRender =
+    board === "reporting" || (board === "kanban" && !candidates?.length > 0 && !hotCandidates?.length > 0)
+
+  if (doNotRender) return null
+
+  const queriesFailed = hotCandidates?.some((hotCandidate) => !hotCandidate.isSuccess)
+
+  hotCandidates = hotCandidates?.map((hotCandidate) => hotCandidate?.data?.data) ?? []
+
   return (
     <Container>
       <Title>Transition board</Title>
@@ -51,27 +81,34 @@ const Transition = ({ board, candidates }) => {
               {...provided.droppableProps}
               style={{ minHeight: 65, height: "100%", display: "flex" }}
             >
-              {candidates.map((candidate, index) => (
-                <CandidateCard
-                  index={index}
-                  key={`${index}.${prop("id", candidate)}`}
-                  candidate={candidate}
-                />
-              ))}
+              {hotCandidates?.length > 0 && !queriesFailed
+                ? hotCandidates?.map(({ id, firstName, lastName }, index) => (
+                    <Draggable draggableId={id} index={index} key={id}>
+                      {(provided) => (
+                        <HotCandidateCompany
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                        >{`${firstName} ${lastName}`}</HotCandidateCompany>
+                      )}
+                    </Draggable>
+                  ))
+                : candidates?.length > 0
+                ? candidates.map((candidate, index) => (
+                    <CandidateCard index={index} key={`${index}.${prop("id", candidate)}`} candidate={candidate} />
+                  ))
+                : null}
               {provided.placeholder}
             </div>
           </Content>
         )}
       </Droppable>
     </Container>
-  );
-};
+  )
+}
 
 Transition.propTypes = {
   board: string,
-  candidates: array
-};
+}
 
-export default connect(state => ({
-  candidates: pathOr([], ["transition", "candidates"], state)
-}))(Transition);
+export default Transition

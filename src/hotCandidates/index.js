@@ -77,7 +77,10 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
 
       const jobOrderId = jobSubmission?.jobOrder?.id ? String(jobSubmission.jobOrder.id) : ""
       const jobTitle = jobSubmission?.jobOrder?.title ?? ''
-      const company = jobOrders?.find((jobOrder) => jobOrder?.id === jobSubmission?.jobOrder?.id)?.clientCorporation?.name ?? ''
+      const jobOrder = jobOrders?.find((single) => single?.id === jobSubmission?.jobOrder?.id)
+      const company = jobOrder?.clientCorporation?.name ?? ''
+      const owner = jobOrder?.owner
+
       statusObject = {
         ...statusObject,
         [currentStatusKey]: [
@@ -86,7 +89,8 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
             jobTitle,
             company,
             jobOrderId,
-            jobSubmissionId: String(jobSubmission.id)
+            jobSubmissionId: String(jobSubmission.id),
+            owner,
           }
         ]
       }
@@ -183,7 +187,6 @@ const HotCandidatesPage = () => {
 
   jobOrders = jobOrders?.data ?? []
 
-  console.log("LOGGER ~ candidates", candidates)
   const data = useMemo(() => {
     const wfp = []
     const bench = []

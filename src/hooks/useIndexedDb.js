@@ -2,7 +2,7 @@ import Dexie from "dexie"
 
 const db = new Dexie("hot-candidates")
 
-db.version(3).stores({ users: "id,name,type,*identifiedCompanies" })
+db.version(1).stores({ users: "id,name,type,*identifiedCompanies" })
 
 const useIndexedDb = () => db
 

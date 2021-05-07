@@ -1,7 +1,7 @@
 import React from "react"
 import { array, string, func, number } from "prop-types"
 import styled, { css } from "styled-components"
-import { v4 as uuid } from "uuid"
+import { createColumnId } from "../../utils/kanban"
 import { Droppable } from "react-beautiful-dnd"
 import { STATUS_IDENTIFIED, STATUS_NO_GO } from "../../utils/kanban"
 import Candidates from "./Candidates"
@@ -65,9 +65,15 @@ const StyledAddButton = styled(AddButton)`
 
 const getStatusLabel = (status) => statusLabels.get(status) ?? status
 
-const Column = ({ board, columnId, jobSubmissions, status, statusData, onOpenAddCompanyModal, candidateId }) => {
+const Column = ({ board, jobSubmissions, status, statusData, onOpenAddCompanyModal, candidateId, clientCorporationId, jobOrderId, bmId }) => {
   const { pathname } = useLocation()
-  const droppableId = pathname === "/hot-candidates" ? `${status}@${uuid()}` : columnId
+
+  const droppableId = pathname === "/hot-candidates" ? `${status}@${candidateId}` : createColumnId(
+    bmId,
+    clientCorporationId,
+    jobOrderId,
+    status,
+  )
 
   return (
     <Container>
@@ -95,10 +101,12 @@ const Column = ({ board, columnId, jobSubmissions, status, statusData, onOpenAdd
   )
 }
 Column.propTypes = {
-  board: string,
-  columnId: string,
-  jobSubmissions: array,
+  bmId: number,
+  clientCorporationId: number,
+  jobOrderId: number,
   status: string,
+  board: string,
+  jobSubmissions: array,
   statusData: array,
   onOpenAddCompanyModal: func,
   candidateId: number,
