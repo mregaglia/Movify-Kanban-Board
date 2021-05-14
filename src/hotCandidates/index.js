@@ -59,6 +59,14 @@ const formatDate = (dateAvailable) => intlFormat(dateAvailable, {
   locale: 'nl-BE'
 })
 
+// If only one result is return from the API, respone.data will not be an array but a single object
+const transformToArrayIfNecessary = (data) => {
+  if (Array.isArray(data)) {
+    return data
+  }
+  return [data]
+}
+
 const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobOrders = [], bench, projectRotations, wfp }) => {
   let statusObject = {
     toSend: [],
@@ -176,6 +184,7 @@ const HotCandidatesPage = () => {
   )
 
   jobSubmissions = jobSubmissions?.data ?? []
+  jobSubmissions = transformToArrayIfNecessary(jobSubmissions)
 
   const jobOrderIds = [...new Set(jobSubmissions?.map((jobSubmission) => jobSubmission.jobOrder.id))] ?? []
   const maxNumberOfPossibleJobOrders = jobOrderIds?.length
@@ -186,6 +195,7 @@ const HotCandidatesPage = () => {
   )
 
   jobOrders = jobOrders?.data ?? []
+  jobOrders = transformToArrayIfNecessary(jobOrders)
 
   const data = useMemo(() => {
     const wfp = []
