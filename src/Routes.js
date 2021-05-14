@@ -41,7 +41,7 @@ const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmis
 
     const board = propOr(" ", "pathname", location).substring(1);
 
-    const handleDragEnd = async (result) => {
+    const handleDragEnd = (result) => {
         const { destination, source, draggableId } = result
 
         if (!destination) return;
@@ -104,7 +104,7 @@ const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmis
                 if (oldStatus !== destinationStatus && draggableId) {
                     const updatedJobSubmissionData = { jobSubmissionId: draggableId, status: destinationStatus }
                     setUpdatedJobSubmission(updatedJobSubmissionData)
-                    await updateJobSubmissionMutation.mutate(updatedJobSubmissionData)
+                    updateJobSubmissionMutation.mutate(updatedJobSubmissionData)
                 }
             }
         }
