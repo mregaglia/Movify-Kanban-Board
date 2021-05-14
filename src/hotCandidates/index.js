@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react"
 import { isPast, isToday, isWithinInterval, addWeeks, addDays, addMonths, intlFormat } from "date-fns"
 import styled from "styled-components"
+import PropTypes from "prop-types"
 import {
   useJobSubmissions,
   useJobOrders,
@@ -67,7 +68,7 @@ const transformToArrayIfNecessary = (data) => {
   return [data]
 }
 
-const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobOrders = [], bench, projectRotations, wfp }) => {
+const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobOrders = [], bench, projectRotations, wfp, updatedJobSubmission }) => {
   let statusObject = {
     toSend: [],
     wfResponse: [],
@@ -81,13 +82,17 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
   for (const jobSubmission of jobSubmissions) {
     const jobSubmissionFromCurrentCandidate = jobSubmission.candidate.id === candidate.id
     if (jobSubmissionFromCurrentCandidate) {
-      const currentStatusKey = getMapValue(hotCandidatesStatusKeys, jobSubmission.status)
+      let currentStatusKey = getMapValue(hotCandidatesStatusKeys, jobSubmission.status)
 
       const jobOrderId = jobSubmission?.jobOrder?.id ? String(jobSubmission.jobOrder.id) : ""
       const jobTitle = jobSubmission?.jobOrder?.title ?? ''
       const jobOrder = jobOrders?.find((single) => single?.id === jobSubmission?.jobOrder?.id)
       const company = jobOrder?.clientCorporation?.name ?? ''
       const owner = jobOrder?.owner
+
+      if (updatedJobSubmission && String(jobSubmission.id) === updatedJobSubmission?.jobSubmissionId) {
+        currentStatusKey = getMapValue(hotCandidatesStatusKeys, updatedJobSubmission.status)
+      }
 
       statusObject = {
         ...statusObject,
@@ -167,7 +172,7 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
   }
 }
 
-const HotCandidatesPage = () => {
+const HotCandidatesPage = ({ updatedJobSubmission }) => {
   const [modalState, setModalState] = useState(initialModalState)
   const db = useIndexedDb()
   const candidatesIdb = useLiveQuery(() => db.users.toArray())
@@ -203,7 +208,7 @@ const HotCandidatesPage = () => {
     const projectRotations = []
 
     for (const candidate of candidates) {
-      mapCandidate({ candidate, candidatesIdb, jobSubmissions, jobOrders, bench, projectRotations, wfp })
+      mapCandidate({ candidate, candidatesIdb, jobSubmissions, jobOrders, bench, projectRotations, wfp, updatedJobSubmission })
     }
 
     return {
@@ -211,7 +216,7 @@ const HotCandidatesPage = () => {
       projectRotations,
       wfp,
     }
-  }, [candidates, jobSubmissions, jobOrders, candidatesIdb])
+  }, [candidates, jobSubmissions, jobOrders, candidatesIdb, updatedJobSubmission])
 
   const handleCloseModal = () => {
     setModalState(initialModalState)
@@ -263,5 +268,13 @@ const HotCandidatesPage = () => {
     </>
   )
 }
+
+HotCandidatesPage.propTypes = {
+  updatedJobSubmission: PropTypes.shape({
+    jobSubmissionId: PropTypes.string,
+    status: PropTypes.string,
+  })
+}
+
 
 export default HotCandidatesPage

@@ -36,6 +36,7 @@ const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmis
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [updateModalData, setUpdateModalData] = useState(undefined);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [updatedJobSubmission, setUpdatedJobSubmission] = useState()
     const updateJobSubmissionMutation = useUpdateJobSubmission();
 
     const board = propOr(" ", "pathname", location).substring(1);
@@ -102,7 +103,9 @@ const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmis
             } else {
                 const newStatus = destinationDroppableId.split("@")[0]
                 if (oldStatus !== newStatus && draggableId) {
-                    await updateJobSubmissionMutation.mutate({ jobSubmissionId: draggableId, status: newStatus })
+                    const updatedJobSubmissionData = { jobSubmissionId: draggableId, status: newStatus }
+                    setUpdatedJobSubmission(updatedJobSubmissionData)
+                    await updateJobSubmissionMutation.mutate(updatedJobSubmissionData)
                 }
             }
         }
@@ -191,6 +194,7 @@ const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmis
                     exact
                     path="/hot-candidates"
                     component={HotCandidates}
+                    updatedJobSubmission={updatedJobSubmission}
                 />
 
                 <AuthenticatedRoute

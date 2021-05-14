@@ -40,7 +40,7 @@ const HotCandidateCompaniesIdentified = ({ candidateId }) => {
   return (
     <HotCandidateCompaniesContainer>
       {companies?.length > 0 ? companies?.map((single) => (
-        <HotCandidateCompany key={single} dataSource="IDB">
+        <HotCandidateCompany key={single}>
           {single}
           <DeleteCompanyButton title={`Delete identified company ${single}`} onClick={() => handleDeleteCompany(single)} />
         </HotCandidateCompany>
