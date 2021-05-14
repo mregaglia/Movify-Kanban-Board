@@ -28,7 +28,8 @@ const AddCandidateModal = ({ isOpen, onClose, title }) => {
   const selectOptions = useMemo(() => {
     let options = []
     if (users?.data?.length > 0) {
-      options = generateOptions(users?.data)
+      const data = users?.data?.filter((single) => single.entityType === "Candidate") ?? []
+      options = generateOptions(data)
     }
     return options
   }, [users])
