@@ -12,12 +12,13 @@ const AddModal = ({
   data,
   isOpen,
   jobOrder,
-  onClose
+  onClose,
+  hotCandidates
 }) => {
   const candidate =
     candidates.find(
-      candidate => prop("id", candidate) === prop("candidateId", data)
-    ) || {};
+      candidate => String(candidate?.id) === String(data?.candidateId)
+      ) || { id: hotCandidates.find(hotCandidateId => String(hotCandidateId) === String(data?.candidateId))  }
 
   const onConfirm = () => {
     createJobSubmission(
@@ -25,7 +26,7 @@ const AddModal = ({
       {
         candidate
       },
-      prop(["status"], data)
+      data?.status
     );
     removeCandidate(prop("candidateId", data));
     onClose();
@@ -52,6 +53,7 @@ const AddModal = ({
 
 AddModal.propTypes = {
   candidates: array,
+  hotCandidates: array,
   createJobSubmission: func,
   isOpen: bool,
   jobOrder: object,
@@ -72,7 +74,8 @@ export default connect(
       ["kanban", "jobOrders", prop(["jobOrderId"], data)],
       state
     ),
-    candidates: pathOr({}, ["transition", "candidates"], state)
+    candidates: pathOr({}, ["transition", "candidates"], state),
+    hotCandidates: pathOr({}, ["transition", "hotCandidates"], state),
   }),
   { createJobSubmission, removeCandidate }
 )(AddModal);

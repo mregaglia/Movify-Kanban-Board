@@ -1,11 +1,14 @@
 import React from "react"
 import { prop } from "ramda"
-import styled from "styled-components"
+import styled, { css } from "styled-components"
 import { string } from "prop-types"
 import { Draggable, Droppable } from "react-beautiful-dnd"
 import CandidateCard from "./CandidateCard"
 import { useSelector } from "react-redux"
 import { useFindCandidates } from "../hooks"
+import { connect } from "react-redux"
+import { removeHotCandidate } from "./transition.actions";
+import { func } from "prop-types"
 
 const getBackgroundColor = (isNoGo, snapshot, theme) => {
   if (snapshot.isDraggingOver) return theme.colors.transparentRed
@@ -38,7 +41,7 @@ const Title = styled.div(({ theme }) => ({
   overflow: "hidden",
 }))
 
-export const HotCandidateCompany = styled.p`
+export const HotCandidate = styled.p`
   background-color: #d3d3d340;
   border-radius: 6px;
   margin: 0;
@@ -51,9 +54,41 @@ export const HotCandidateCompany = styled.p`
   font-size: 0.875rem;
   line-height: 1.3;
   min-width: 8rem;
+  position: relative;
 `
 
-const Transition = ({ board }) => {
+const RemoveHotCandidate = styled.button`
+  ${({ theme: { colors } }) => css`
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    padding: 0;
+    border: none;
+    background: none;
+    right: 0.3rem;
+    bottom: 0.3rem;
+    &:hover {
+      cursor: pointer;
+    }
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      height: 10px;
+      width: 2px;
+      background-color: ${colors.darkGrey};
+      top: 0;
+    }
+    &::before {
+      transform: rotate(45deg);
+    }
+    &::after {
+      transform: rotate(-45deg);
+    }
+  `}
+`
+
+const Transition = ({ board, removeHotCandidate }) => {
   const { candidates, hotCandidateIds } = useSelector(({ transition }) => ({
     candidates: transition?.candidates ?? [],
     hotCandidateIds: transition?.hotCandidates ?? [],
@@ -85,11 +120,14 @@ const Transition = ({ board }) => {
                 ? hotCandidates?.map(({ id, firstName, lastName }, index) => (
                     <Draggable draggableId={id} index={index} key={id}>
                       {(provided) => (
-                        <HotCandidateCompany
+                        <HotCandidate
                           ref={provided.innerRef}
                           {...provided.draggableProps}
                           {...provided.dragHandleProps}
-                        >{`${firstName} ${lastName}`}</HotCandidateCompany>
+                        >
+                          {`${firstName} ${lastName}`}
+                          <RemoveHotCandidate onClick={() => removeHotCandidate(id)} />
+                        </HotCandidate>
                       )}
                     </Draggable>
                   ))
@@ -109,6 +147,7 @@ const Transition = ({ board }) => {
 
 Transition.propTypes = {
   board: string,
+  removeHotCandidate: func,
 }
 
-export default Transition
+export default connect(null, { removeHotCandidate })(Transition)

@@ -1,6 +1,6 @@
 {
   "name": "movify-kanban-board",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "start": "set PORT=4200 && react-scripts start",
@@ -13,7 +13,7 @@
     "@welldone-software/why-did-you-render": "^6.1.1",
     "cors": "2.8.5",
     "date-fns": "^2.21.1",
-    "dexie": "^3.1.0-alpha.9",
+    "dexie": "^3.1.0-alpha.10",
     "dexie-react-hooks": "^1.0.6",
     "moment": "2.29.1",
     "prop-types": "^15.7.2",

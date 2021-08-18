@@ -36,11 +36,12 @@ const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmis
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [updateModalData, setUpdateModalData] = useState(undefined);
     const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+    const [updatedJobSubmission, setUpdatedJobSubmission] = useState()
     const updateJobSubmissionMutation = useUpdateJobSubmission();
 
     const board = propOr(" ", "pathname", location).substring(1);
 
-    const handleDragEnd = async (result) => {
+    const handleDragEnd = (result) => {
         const { destination, source, draggableId } = result
 
         if (!destination) return;
@@ -53,7 +54,7 @@ const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmis
         }
 
         if (["kanban", "recruitment"].includes(board)) {
-            const jobSubmissionId = "draggableId";
+            const jobSubmissionId = draggableId;
             const src = getColumnData(result?.source?.droppableId);
             const dest = getColumnData(result?.destination?.droppableId);
             const srcStatus = prop("status", src);
@@ -88,6 +89,8 @@ const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmis
             const destinationDroppableId = destination.droppableId
             const isDestinationTransition = destinationDroppableId === "transition"
 
+            const { 0: destinationStatus } = destinationDroppableId.split("@")
+
             const sourceDroppableId = source.droppableId
             const isSourceTransition = sourceDroppableId === "transition"
 
@@ -95,14 +98,13 @@ const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmis
 
             if (isSourceTransition) {
                 return
-            } else if (isDestinationTransition) {
-                if (oldStatus === "NO_STATUS") {
-                    addHotCandidate("hot-candidates", candidateId)
-                }
-            } else {
-                const newStatus = destinationDroppableId.split("@")[0]
-                if (oldStatus !== newStatus && draggableId) {
-                    await updateJobSubmissionMutation.mutate({ jobSubmissionId: draggableId, status: newStatus })
+            } else if (isDestinationTransition && oldStatus === "NO_STATUS") {
+                addHotCandidate("hot-candidates", candidateId)
+            } else if (!["NO_STATUS", "Identified", "transition"].includes(destinationStatus)) {
+                if (oldStatus !== destinationStatus && draggableId) {
+                    const updatedJobSubmissionData = { jobSubmissionId: draggableId, status: destinationStatus }
+                    setUpdatedJobSubmission(updatedJobSubmissionData)
+                    updateJobSubmissionMutation.mutate(updatedJobSubmissionData)
                 }
             }
         }
@@ -191,6 +193,7 @@ const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmis
                     exact
                     path="/hot-candidates"
                     component={HotCandidates}
+                    updatedJobSubmission={updatedJobSubmission}
                 />
 
                 <AuthenticatedRoute
