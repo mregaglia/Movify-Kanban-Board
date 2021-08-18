@@ -4,6 +4,7 @@ import {
   ADD_CANDIDATE,
   ADD_HOT_CANDIDATE,
   REMOVE_CANDIDATE,
+  REMOVE_HOT_CANDIDATE,
   setCandidates,
   setHotCandidates,
 } from "./transition.actions";
@@ -50,10 +51,20 @@ export function* removeCandidate(action) {
   yield put(setCandidates(candidates));
 }
 
+export function* removeHotCandidate(action) {
+  const candidateId = action?.payload
+
+  let hotCandidates = yield select(getHotCandidates);
+  hotCandidates = hotCandidates.filter((hotCandidate) => String(hotCandidate) !== String(candidateId))
+
+  yield put(setHotCandidates(hotCandidates));
+}
+
 export default function transitionSagas() {
   return [
     takeEvery(ADD_CANDIDATE, addCandidate),
     takeEvery(ADD_HOT_CANDIDATE, addHotCandidate),
-    takeEvery(REMOVE_CANDIDATE, removeCandidate)
+    takeEvery(REMOVE_CANDIDATE, removeCandidate),
+    takeEvery(REMOVE_HOT_CANDIDATE, removeHotCandidate),
   ];
 }
