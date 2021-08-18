@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react"
-import { isPast, isToday, isWithinInterval, addWeeks, addDays, addMonths, intlFormat } from "date-fns"
+import { isPast, isToday, isWithinInterval, addWeeks, addDays, addMonths, intlFormat, formatDistanceToNow } from "date-fns"
 import styled from "styled-components"
 import PropTypes from "prop-types"
 import {
@@ -52,13 +52,18 @@ const initialModalState = {
   }
 }
 
-const formatDate = (dateAvailable) => intlFormat(dateAvailable, {
-  month: 'numeric',
-  day: 'numeric',
-  year: 'numeric',
-}, {
-  locale: 'nl-BE'
-})
+const formatDate = (dateAvailable) => {
+  const relativeDate = formatDistanceToNow(dateAvailable)
+  const exactDate = intlFormat(dateAvailable, {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+  }, {
+    locale: 'nl-BE'
+  })
+
+  return { exactDate, relativeDate }
+}
 
 // If only one result is return from the API, respone.data will not be an array but a single object
 const transformToArrayIfNecessary = (data) => {
@@ -122,7 +127,8 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
 
     // Available now
     if (isToday(dateAvailable) || isPast(dateAvailable)) {
-      dateAvailable = "now"
+      dateAvailable = formatDate(dateAvailable)
+      dateAvailable = { ...dateAvailable, relativeDate: "now" }
       dateColorCode = theme.dateAvailableStatusColors.now
 
       // Between tomorrow and 2 weeks
@@ -146,7 +152,10 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
       dateColorCode = theme.dateAvailableStatusColors.twoMonthsOrLonger
     }
   } else {
-    dateAvailable = "unknown"
+    dateAvailable = {
+      relativeDate: "unknown",
+      exactDate: "unknown",
+    }
   }
 
   const mappedCandidate = {
