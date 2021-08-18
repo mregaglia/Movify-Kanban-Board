@@ -1,6 +1,6 @@
 {
   "name": "movify-kanban-board",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "start": "set PORT=4200 && react-scripts start",
