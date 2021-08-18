@@ -27,9 +27,8 @@ const LinkContainer = styled.a({
     textDecoration: "none"
 })
 
-const LinkedinLink = ({ firstName, lastName }) => (
-
-    <LinkContainer href={getLinkedinUrl({ firstName, lastName })} target="_blank" rel="noopener noreferrer">
+const LinkedinLink = ({ firstName, lastName, className }) => (
+    <LinkContainer href={getLinkedinUrl({ firstName, lastName })} target="_blank" rel="noopener noreferrer" className={className}>
         <SquareContainer>
             <Text>in</Text>
         </SquareContainer>
@@ -38,7 +37,8 @@ const LinkedinLink = ({ firstName, lastName }) => (
 
 LinkedinLink.propTypes = {
     firstName: string,
-    lastName: string
+    lastName: string,
+    className: string,
 };
 
 export default LinkedinLink;

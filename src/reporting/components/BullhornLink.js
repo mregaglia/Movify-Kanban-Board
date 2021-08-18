@@ -2,6 +2,8 @@ import React from "react";
 import { number } from "prop-types";
 import styled from "styled-components";
 import { getBullhornUrl, getBullhornUrlClientContact } from "../../utils/bullhorn";
+import { bool } from "prop-types";
+import { string } from "prop-types";
 
 const Img = styled.img({
     height: 12,
@@ -25,11 +27,11 @@ const LinkContainer = styled.a({
     textDecoration: "none"
 })
 
-const BullhornLink = ({ candidateId, isClient }) => {
+const BullhornLink = ({ candidateId, isClient, className }) => {
     const bullhornUrl = isClient ? getBullhornUrlClientContact({ id: candidateId }): getBullhornUrl({ id: candidateId })
-    
+
     return (
-        <LinkContainer href={bullhornUrl} target="_blank" rel="noopener noreferrer">
+        <LinkContainer href={bullhornUrl} target="_blank" rel="noopener noreferrer" className={className}>
             <SquareContainer>
                 <Img alt="bh" src={require("../../assets/bullhorn.png")} />
             </SquareContainer>
@@ -38,7 +40,9 @@ const BullhornLink = ({ candidateId, isClient }) => {
 };
 
 BullhornLink.propTypes = {
-    candidateId: number
+    candidateId: number,
+    isClient: bool,
+    className: string,
 };
 
 export default BullhornLink;

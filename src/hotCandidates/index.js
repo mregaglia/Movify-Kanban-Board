@@ -163,6 +163,8 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
       candidate?.firstName && candidate?.lastName
         ? `${candidate?.firstName} ${candidate?.lastName}`
         : "/",
+    firstName: candidate?.firstName,
+    lastName: candidate?.lastName,
     dateAvailable,
     dateColorCode,
     role: candidate?.occupation ?? "/",

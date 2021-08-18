@@ -8,6 +8,8 @@ import { HOT_CANDIDATE_STATUSES } from '../utils/kanban'
 import { Trash } from './svgs'
 import enforceHighContrast from '../utils/enforceHighContrast'
 import useUpdateDateAvailableCandidate from '../hooks/useUpdateDateAvailableCandidate'
+import BullhornLink from '../reporting/components/BullhornLink'
+import LinkedinLink from '../reporting/components/LinkedinLink'
 
 const Container = styled.div`
   display: grid;
@@ -155,8 +157,17 @@ const CloseDateAvailableInputButton = styled.button`
     }
   `}
 `
+const StyledLinkedinLink = styled(LinkedinLink)`
+  text-align: center;
+`
 
-const HotCandidate = ({ hotCandidate: { name, role, dateAvailable: initialDateAvailable, id, dateColorCode, ...statusesData }, onOpenDeleteModal, onOpenAddCompanyModal, index }) => {
+const Links = styled.div`
+  justify-self: end;
+  display: grid;
+  grid-auto-flow: column;
+`
+
+const HotCandidate = ({ hotCandidate: { name, role, dateAvailable: initialDateAvailable, id, dateColorCode, firstName, lastName, ...statusesData }, onOpenDeleteModal, onOpenAddCompanyModal, index }) => {
   const [isDateAvailableInputOpen, setIsDateAvailableInputOpen] = useState(false)
   const [dateAvailable, setDateAvailable] = useState()
   const updateDateAvailableCandidate = useUpdateDateAvailableCandidate(id)
@@ -211,6 +222,10 @@ const HotCandidate = ({ hotCandidate: { name, role, dateAvailable: initialDateAv
                   <ConfirmDateAvailableButton type="submit" title="Update availability date">Confirm</ConfirmDateAvailableButton>
                 </DateAvailableInputWrapper> : null}
             </DateAvailableWrapper>
+            <Links>
+              <BullhornLink candidateId={id} isClient={false} />
+              <StyledLinkedinLink firstName={firstName} lastName={lastName} />
+            </Links>
           </Text>
         )}
       </Draggable>
