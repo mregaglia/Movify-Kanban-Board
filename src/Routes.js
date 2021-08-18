@@ -54,7 +54,7 @@ const Routes = ({ addCandidate, addHotCandidate, location, updateKanbanJobSubmis
         }
 
         if (["kanban", "recruitment"].includes(board)) {
-            const jobSubmissionId = "draggableId";
+            const jobSubmissionId = draggableId;
             const src = getColumnData(result?.source?.droppableId);
             const dest = getColumnData(result?.destination?.droppableId);
             const srcStatus = prop("status", src);
