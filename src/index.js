@@ -10,11 +10,13 @@ import { ReactQueryDevtools } from "react-query/devtools"
 const queryClient = new QueryClient()
 
 ReactDOM.render(
-  <Provider store={store}>
-    <QueryClientProvider client={queryClient}>
-      <App />
-      <ReactQueryDevtools />
-    </QueryClientProvider>
-  </Provider>,
+  <React.StrictMode>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <App />
+        <ReactQueryDevtools />
+      </QueryClientProvider>
+    </Provider>
+  </React.StrictMode>,
   document.getElementById("root")
 )
