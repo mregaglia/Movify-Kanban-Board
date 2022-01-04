@@ -314,6 +314,9 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
   for (let i = 0; i < data.length; i++) {
 
     let action = data[i].action
+    if(data[i].candidates.total === 0 && data[i].clientContacts.total === 0) {
+        continue;
+    }
 
     switch (action) {
       case NO_SHOW:
