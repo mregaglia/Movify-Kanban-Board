@@ -146,12 +146,15 @@ export function* getKpiDataEmployee(action) {
         objectDataBusinessManager,
         occupation
       );
+
       yield call(
         calculateWeeklySpeedRecruitmentForAllWeeks,
         datasRecruitment.CATEGORIES,
         occupation
       );
+      
       yield call(getAllDataFromIdsForExpandView, datasRecruitment, occupation);
+
       yield call(
         calculateTotalYTD,
         idEmployee,

@@ -85,7 +85,6 @@ export function* getCandidatesCategory(idsCandidate) {
 
 export function* calculateWeeklySpeedRecruitmentForAllWeeks(objectCategories, occupation) {
     try {
-        console.log("1")
         yield all([
             
             call(calculateWeeklySpeedForRecruitment, objectCategories[FIRST_WEEK], FIRST_WEEK, occupation),
@@ -93,7 +92,6 @@ export function* calculateWeeklySpeedRecruitmentForAllWeeks(objectCategories, oc
             call(calculateWeeklySpeedForRecruitment, objectCategories[THIRD_WEEK], THIRD_WEEK, occupation),
             call(calculateWeeklySpeedForRecruitment, objectCategories[FOURTH_WEEK], FOURTH_WEEK, occupation),
         ])
-        console.log("2")
     } catch (e) {
         //
     }

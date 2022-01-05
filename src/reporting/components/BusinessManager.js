@@ -21,7 +21,7 @@ import {
     NEW_VACANCY,
     CV_SENT,
 } from '../expandView/expandView.sagas'
-import TableCellWithTooltip, { REGULAR } from './TableCellWithTooltip'
+import TableCellWithTooltip, { BOLD } from './TableCellWithTooltip'
 import {
     FIRST_WEEK, SECOND_WEEK, FOURTH_WEEK, THIRD_WEEK
 } from '../kpi/kpi.sagas'
@@ -29,6 +29,7 @@ import {
 const tableWeek = [FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK]
 
 const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
+    console.log(datas)
     return (
         <>
             <TableContentTbodyTrNoLine>
@@ -41,7 +42,7 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                         if (isCvSentWeekLoading) {
                             return (
                                 <TableContentTbodyTr key={i}>
-                                    <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
+                                    <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
                                     <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
                                     <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
                                     <TableContentTd><Loader type="ThreeDots" color="#00BFFF" height={15} width={20} /></TableContentTd>
@@ -51,14 +52,14 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                         } else {
                             return (
                                 <TableContentTbodyTr key={i}>
-                                    <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
+                                    <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
                                     {
                                         tableWeek.map((week) => {
                                             if (datas[key][week] === 0) {
-                                                return (<TableContentTd key={week}>0</TableContentTd>)
+                                                return (<TableContentTdBold key={week}>0</TableContentTdBold>)
                                             } else {
                                                 return (
-                                                    <TableCellWithTooltip fontWeight={REGULAR} key={week} week={week} title={CV_SENT} text={datas[key][week]} />
+                                                    <TableCellWithTooltip fontWeight={BOLD} key={week} week={week} title={CV_SENT} text={datas[key][week]} />
                                                 )
                                             }
                                         }
@@ -108,14 +109,14 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                     } else if (datas[key].TITLE === LABEL_PROSPECTION_MEETING_SCHEDULE) {
                         return (
                             <TableContentTbodyTr key={i}>
-                                <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
+                                <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
                                 {
                                     tableWeek.map((week) => {
                                         if (datas[key][week] === 0) {
-                                            return (<TableContentTd key={week}>0</TableContentTd>)
+                                            return (<TableContentTdBold key={week}>0</TableContentTdBold>)
                                         } else {
                                             return (
-                                                <TableCellWithTooltip fontWeight={REGULAR} key={week} week={week} title={PROSPECTION_MEETING_SCHEDULED} text={datas[key][week]} />
+                                                <TableCellWithTooltip fontWeight={BOLD} key={week} week={week} title={PROSPECTION_MEETING_SCHEDULED} text={datas[key][week]} />
                                             )
                                         }
                                     }
@@ -146,14 +147,14 @@ const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
                     } else if (datas[key].TITLE === LABEL_NEW_VACANCY) {
                         return (
                             <TableContentTbodyTr key={i}>
-                                <TableContentTdLabel>{datas[key].TITLE}</TableContentTdLabel>
+                                <TableContentTdLabelBold>{datas[key].TITLE}</TableContentTdLabelBold>
                                 {
                                     tableWeek.map((week) => {
                                         if (datas[key][week] === 0) {
-                                            return (<TableContentTd key={week}>0</TableContentTd>)
+                                            return (<TableContentTdBold key={week}>0</TableContentTdBold>)
                                         } else {
                                             return (
-                                                <TableCellWithTooltip fontWeight={REGULAR} key={week} week={week} title={NEW_VACANCY} text={datas[key][week]} />
+                                                <TableCellWithTooltip fontWeight={BOLD} key={week} week={week} title={NEW_VACANCY} text={datas[key][week]} />
                                             )
                                         }
                                     }

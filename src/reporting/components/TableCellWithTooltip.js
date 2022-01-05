@@ -13,8 +13,8 @@ export const BOLD = 700
 export const REGULAR = 400
 
 const Tooltip = styled(ReactTooltip)`
-  max-height: 50vh;
-  overflow: scroll;
+  max-height: 40vh;
+  overflow: auto;
   pointer-events: auto !important;
   &:hover {
     visibility: visible !important;

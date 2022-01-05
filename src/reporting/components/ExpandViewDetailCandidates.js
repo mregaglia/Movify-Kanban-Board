@@ -2,7 +2,7 @@ import React from 'react'
 import { v4 as uuid } from 'uuid'
 import { connect } from "react-redux"
 import { pathOr, propOr, prop } from 'ramda'
-import { array } from 'prop-types'
+import { array, string } from 'prop-types'
 import styled from 'styled-components'
 import BullhornLink from './BullhornLink'
 import LinkedinLink from './LinkedinLink'
@@ -17,8 +17,8 @@ const Row = styled.div({
     alignItems: "center"
 });
 
-const ExpandViewDetailCandidates = ({ week, title, dataToDisplay }) => {
-
+const ExpandViewDetailCandidates = ({ dataToDisplay }) => {
+    
     const filteredData = dataToDisplay?.reduce((accumulator, current) => {
         const isEqual = accumulator.some(item => ((item.ID === current.ID) && (item.ID !== 0 && current.ID !== 0)))
         if (!isEqual) {
@@ -41,11 +41,12 @@ const ExpandViewDetailCandidates = ({ week, title, dataToDisplay }) => {
         </>
 
     )
-
 }
 
 ExpandViewDetailCandidates.propTypes = {
-    dataToDisplay: array
+    dataToDisplay: array,
+    week: string,
+    title: string,
 };
 
 export default connect(

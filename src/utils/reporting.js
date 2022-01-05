@@ -361,7 +361,7 @@ export const countNoteForRecruitmentAndIdsSourcing = (labelWeek, notes, objectDa
         break;
     }
   }
-
+  
   return {
     OBJECT_DATA_RECRUITMENT: objectDataRecruitment,
     SOURCING_IDS: sourcingIds,
