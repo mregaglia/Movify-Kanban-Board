@@ -170,15 +170,6 @@ export function* getJobSubmissions(action, start = 0) {
       }, {})
     )
 
-    // for (let js of jsList) {
-    //   const candidateResponse = yield call(
-    //     getCandidate,
-    //     path(["candidate", "id"], js)
-    //   );
-    //   const candidate = propOr({}, "data", candidateResponse);
-    //   jobSubmissions[prop("id", js)].candidate = candidate;
-    // }
-
     yield put(updateJobSubmissions(jobSubmissions))
     yield put(updateJobOrders(jobOrders))
 

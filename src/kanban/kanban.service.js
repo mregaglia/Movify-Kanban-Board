@@ -30,9 +30,8 @@ export const getJobSubmissions = (jobOrderId, start = 0) =>
       start,
     },
     {
-      // fields:
-      // "id,jobOrder,owners,sendingUser,status,dateLastModified,candidate(firstName, lastName, owner, middleName, employmentPreference,category)",
-      fields: "id,candidate,jobOrder,owners,sendingUser,status,dateLastModified",
+      fields:
+        "id,jobOrder,owners,sendingUser,status,dateLastModified,candidate(firstName, lastName, owner, middleName, employmentPreference,category)",
     }
   )
 
