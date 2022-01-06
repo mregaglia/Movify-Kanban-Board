@@ -16,7 +16,7 @@
     "mocha": true,
     "jest": true
   },
-  "extends": ["eslint:recommended", "plugin:react/recommended"],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:react-hooks/recommended"],
   "rules": {
     "react/display-name": 0
   }
