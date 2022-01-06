@@ -66,6 +66,7 @@ import {
   GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN,
   setJobSubmissionsStatusFromWeekRetrieved,
   setCvSentExpandedView,
+  setIsLoadingYTDCVSent,
 } from "./kpi.actions";
 import {
   getNoteFromEmployee,
@@ -276,15 +277,12 @@ export function* calculateConversionYTDCVSent() {
   try {
     let cvSentYTD = yield select(getCVSentTotalYTD);
     let newVacancyYTD = yield select(getNewVacancyTotalYTD);
-
     let conversionCVSentYTD = Math.round((cvSentYTD / newVacancyYTD) * 100);
     conversionCVSentYTD =
       isNaN(conversionCVSentYTD) || conversionCVSentYTD === Infinity
         ? "0 %"
         : conversionCVSentYTD + " %";
-
     yield put(setConversionYTDCVSent(conversionCVSentYTD));
-
     yield put(setLoadingYTDConversionCVSent(false));
   } catch (e) {
     //
@@ -694,20 +692,25 @@ export function* calculateTotalCvSentYTD(
   dateStartTimestamp,
   dateEndTimestamp
 ) {
-  yield all(
-    jobOrderOfTheYear.map((jobOrder) =>
-      put(
-        getJobSubmissionsByJobOrderIdAction(
-          prop("id", jobOrder),
-          dateStartTimestamp,
-          dateEndTimestamp
+  if (jobOrderOfTheYear?.length > 0) {
+    yield all(
+      jobOrderOfTheYear.map((jobOrder) =>
+        put(
+          getJobSubmissionsByJobOrderIdAction(
+            prop("id", jobOrder),
+            dateStartTimestamp,
+            dateEndTimestamp
+          )
         )
       )
-    )
-  );
+    );
+  } else {
+    yield put(setIsLoadingYTDCVSent(false))
+  }
 }
 
 export function* getJobSubmissionByJobOrderIdSaga(action) {
+  
   let id = action.payload.ID;
   let dateStartTimestamp = action.payload.DATE_START;
   let dateEndTimestamp = action.payload.DATE_END;
