@@ -4,7 +4,7 @@ import {
   put,
   select,
   takeEvery,
-  takeLatest
+  takeLatest,
 } from "redux-saga/effects";
 import { ascend, dissoc, path, pathOr, prop, propOr, sortWith } from "ramda";
 import { toast } from "react-toastify";
@@ -24,7 +24,7 @@ import {
   setJobSubmissions,
   updateJobSubmissions,
   setBms,
-  removeJobSubmission
+  removeJobSubmission,
 } from "./kanban.actions";
 import {
   getBusinessManagers,
@@ -33,18 +33,21 @@ import {
   updateJobSubmissionStatus as updateJobSubmissionStatusService,
   createJobSubmission as createJobSubmissionService,
   getJobSubmission,
-  deleteJobSubmission as deleteJobSubmissionService
+  deleteJobSubmission as deleteJobSubmissionService,
 } from "./kanban.service";
 import { getCandidate } from "../recruitment/recruitment.service";
 import en from "../lang/en";
-import { filterJobOrdersPerPriority, getStateFilter } from "../priorityFilter/priorityFilter.sagas";
+import {
+  filterJobOrdersPerPriority,
+  getStateFilter,
+} from "../priorityFilter/priorityFilter.sagas";
 
-export const getStateBms = state => pathOr([], ["kanban", "bmList"], state);
+export const getStateBms = (state) => pathOr([], ["kanban", "bmList"], state);
 export const getStateJobOrder = (state, joId) =>
   pathOr({}, ["kanban", "jobOrders", joId], state);
-export const getStateJobOrders = state =>
+export const getStateJobOrders = (state) =>
   pathOr([], ["kanban", "jobOrders"], state);
-export const getStateJobSubmissions = state =>
+export const getStateJobSubmissions = (state) =>
   pathOr([], ["kanban", "jobSubmissions"], state);
 
 export function* getKanbanBoard() {
@@ -62,9 +65,9 @@ export function* getBms(start = 0) {
       )
     );
     yield put(updateBms(bms));
-    yield all(bmList.map(bm => put(getJobOrdersAction(prop("id", bm)))));
+    yield all(bmList.map((bm) => put(getJobOrdersAction(prop("id", bm)))));
 
-    const bmIds = yield all(bmList.map(bm => prop("id", bm)));
+    const bmIds = yield all(bmList.map((bm) => prop("id", bm)));
     const stateBms = yield select(getStateBms);
     yield put(setBms(stateBms.concat(bmIds)));
 
@@ -81,7 +84,7 @@ export function* getBms(start = 0) {
 export function* getClientCorporations(bmId, jobOrders) {
   const bms = {};
   const joClientCorporations = yield all(
-    jobOrders.map(jo => prop("clientCorporation", jo))
+    jobOrders.map((jo) => prop("clientCorporation", jo))
   );
 
   const clientCorporations = yield all(
@@ -90,11 +93,11 @@ export function* getClientCorporations(bmId, jobOrders) {
 
       if (
         !pathOr([], [bmId, "clientCorporations"], bms).find(
-          ccId => ccId === joccId
+          (ccId) => ccId === joccId
         )
       ) {
         const bmcc = pathOr([], [bmId, "clientCorporations"], bms).concat([
-          joccId
+          joccId,
         ]);
         bms[bmId] = { clientCorporations: bmcc };
       }
@@ -130,23 +133,28 @@ export function* getJobOrders(action, start = 0) {
           [],
           [ccId, "bmIds", bmId, "jobOrders"],
           clientCorporations
-        ).concat([{ id: jobOrder.id, employmentType: jobOrder.employmentType }]);
+        ).concat([
+          { id: jobOrder.id, employmentType: jobOrder.employmentType },
+        ]);
         const sortedCcjos = sortWith([ascend(prop("employmentType"))], ccjos);
 
         clientCorporations[ccId] = {
           bmIds: {
             [bmId]: {
               jobOrders: sortedCcjos,
-              filteredJobOrders: filterJobOrdersPerPriority(sortedCcjos, stateFilter)
-            }
-          }
+              filteredJobOrders: filterJobOrdersPerPriority(
+                sortedCcjos,
+                stateFilter
+              ),
+            },
+          },
         };
 
         acc[jobOrder.id] = {
           ...jobOrder,
           bmId,
           clientCorporationId: ccId,
-          jobSubmissions: {}
+          jobSubmissions: {},
         };
         return acc;
       }, {})
@@ -156,7 +164,7 @@ export function* getJobOrders(action, start = 0) {
     yield put(updateClientCorporations(clientCorporations));
 
     yield all(
-      jobOrderList.map(jobOrder =>
+      jobOrderList.map((jobOrder) =>
         put(
           getJobSubmissionsAction(
             bmId,
@@ -179,7 +187,7 @@ export function* getJobOrders(action, start = 0) {
 
 export function* getJobSubmissions(action, start = 0) {
   const {
-    payload: { bmId, clientCorporationId, jobOrderId }
+    payload: { bmId, clientCorporationId, jobOrderId },
   } = action;
   try {
     const jobOrders = {};
@@ -200,29 +208,29 @@ export function* getJobSubmissions(action, start = 0) {
         jobOrders[jobOrderId] = {
           jobSubmissions: {
             ...pathOr({}, [jobOrderId, "jobSubmissions"], jobOrders),
-            [js.status]: jojss
-          }
+            [js.status]: jojss,
+          },
         };
 
         acc[js.id] = {
           ...js,
           bmId,
           clientCorporationId,
-          jobOrderId
+          jobOrderId,
         };
 
         return acc;
       }, {})
     );
 
-    for (let js of jsList) {
-      const candidateResponse = yield call(
-        getCandidate,
-        path(["candidate", "id"], js)
-      );
-      const candidate = propOr({}, "data", candidateResponse);
-      jobSubmissions[prop("id", js)].candidate = candidate;
-    }
+    // for (let js of jsList) {
+    //   const candidateResponse = yield call(
+    //     getCandidate,
+    //     path(["candidate", "id"], js)
+    //   );
+    //   const candidate = propOr({}, "data", candidateResponse);
+    //   jobSubmissions[prop("id", js)].candidate = candidate;
+    // }
 
     yield put(updateJobSubmissions(jobSubmissions));
     yield put(updateJobOrders(jobOrders));
@@ -239,7 +247,7 @@ export function* getJobSubmissions(action, start = 0) {
 
 export function* updateJobSubmission(action) {
   const {
-    payload: { prevStatus, jobSubmissionId, status }
+    payload: { prevStatus, jobSubmissionId, status },
   } = action;
   try {
     yield call(updateJobSubmissionStatus, action);
@@ -248,7 +256,7 @@ export function* updateJobSubmission(action) {
   } catch (e) {
     yield call(updateJobSubmissionStatus, {
       ...action,
-      payload: { ...action.payload, status: prevStatus, prevStatus: status }
+      payload: { ...action.payload, status: prevStatus, prevStatus: status },
     });
     yield call(toast.error, en.UPDATE_STATUS_ERROR);
   }
@@ -256,7 +264,7 @@ export function* updateJobSubmission(action) {
 
 export function* updateJobSubmissionStatus(action) {
   const {
-    payload: { jobOrderId, prevStatus, jobSubmissionId, status }
+    payload: { jobOrderId, prevStatus, jobSubmissionId, status },
   } = action;
 
   const stateJobSubmissions = yield select(getStateJobSubmissions);
@@ -266,8 +274,8 @@ export function* updateJobSubmissionStatus(action) {
     [jobSubmissionId]: {
       ...jobSubmission,
       status,
-      dateLastModified: new Date().getTime()
-    }
+      dateLastModified: new Date().getTime(),
+    },
   };
 
   yield put(setJobSubmissions(jobSubmissions));
@@ -279,16 +287,16 @@ export function* updateJobSubmissionStatus(action) {
       [],
       ["jobSubmissions", prevStatus],
       stateJobOrder
-    ).filter(jsId => jsId !== jobSubmissionId),
+    ).filter((jsId) => jsId !== jobSubmissionId),
     [status]: pathOr([], ["jobSubmissions", status], stateJobOrder).concat([
-      jobSubmissionId
-    ])
+      jobSubmissionId,
+    ]),
   };
   const jobOrder = {
     [jobOrderId]: {
       ...stateJobOrder,
-      jobSubmissions: jojss
-    }
+      jobSubmissions: jojss,
+    },
   };
 
   const stateJobOrders = yield select(getStateJobOrders);
@@ -300,7 +308,7 @@ export const createTempId = (jobOrder, jobSubmission) =>
 
 export function* createJobSubmission(action) {
   const {
-    payload: { jobOrder, jobSubmission, status }
+    payload: { jobOrder, jobSubmission, status },
   } = action;
 
   const tempJs = {
@@ -311,7 +319,7 @@ export function* createJobSubmission(action) {
     status,
     bmId: prop("bmId", jobOrder),
     clientCorporationId: prop("clientCorporationId", jobOrder),
-    jobOrderId: prop("id", jobOrder)
+    jobOrderId: prop("id", jobOrder),
   };
 
   try {
@@ -321,7 +329,7 @@ export function* createJobSubmission(action) {
       candidate: { id: path(["candidate", "id"], jobSubmission) },
       jobOrder: { id: prop("id", jobOrder) },
       sendingUser: { id: prop("bmId", jobOrder) },
-      status
+      status,
     };
 
     const putJobSubmissionResponse = yield call(createJobSubmissionService, js);
@@ -331,7 +339,7 @@ export function* createJobSubmission(action) {
       ...propOr({}, "data", jobSubmissionResponse),
       bmId: prop("bmId", jobOrder),
       clientCorporationId: prop("clientCorporationId", jobOrder),
-      jobOrderId: prop("id", jobOrder)
+      jobOrderId: prop("id", jobOrder),
     };
     yield call(addJobSubmission, newJobSubmission);
     yield call(toast.success, en.CREATE_CANDIDATE_SUCCESS);
@@ -347,7 +355,7 @@ export function* addJobSubmission(jobSubmission) {
   const stateJobSubmissions = yield select(getStateJobSubmissions);
   var jobSubmissions = {
     ...stateJobSubmissions,
-    [jobSubmissionId]: jobSubmission
+    [jobSubmissionId]: jobSubmission,
   };
 
   if (!jobSubmissionId.toString().includes("temp"))
@@ -361,14 +369,14 @@ export function* addJobSubmission(jobSubmission) {
   const jojss = {
     ...prop("jobSubmissions", stateJobOrder),
     [status]: pathOr([], ["jobSubmissions", status], stateJobOrder)
-      .filter(joId => joId !== tempId)
-      .concat([jobSubmissionId])
+      .filter((joId) => joId !== tempId)
+      .concat([jobSubmissionId]),
   };
   const jobOrder = {
     [jobOrderId]: {
       ...stateJobOrder,
-      jobSubmissions: jojss
-    }
+      jobSubmissions: jojss,
+    },
   };
 
   const stateJobOrders = yield select(getStateJobOrders);
@@ -388,14 +396,14 @@ export function* removeTempJobSubmission(jobSubmission) {
   const jojss = {
     ...prop("jobSubmissions", stateJobOrder),
     [status]: pathOr([], ["jobSubmissions", status], stateJobOrder).filter(
-      jsId => jsId !== jobSubmissionId
-    )
+      (jsId) => jsId !== jobSubmissionId
+    ),
   };
   const jobOrder = {
     [jobOrderId]: {
       ...stateJobOrder,
-      jobSubmissions: jojss
-    }
+      jobSubmissions: jojss,
+    },
   };
 
   const stateJobOrders = yield select(getStateJobOrders);
@@ -415,14 +423,14 @@ export function* deleteJobSubmission(action) {
     const jojss = {
       ...prop("jobSubmissions", stateJobOrder),
       [status]: pathOr([], ["jobSubmissions", status], stateJobOrder).filter(
-        jsId => jsId !== jobSubmissionId
-      )
+        (jsId) => jsId !== jobSubmissionId
+      ),
     };
     const jobOrder = {
       [jobOrderId]: {
         ...stateJobOrder,
-        jobSubmissions: jojss
-      }
+        jobSubmissions: jojss,
+      },
     };
 
     const stateJobOrders = yield select(getStateJobOrders);
@@ -441,6 +449,6 @@ export default function kanbanSagas() {
     takeEvery(GET_JOB_SUBMISSIONS, getJobSubmissions),
     takeEvery(UPDATE_JOB_SUBMISSION, updateJobSubmission),
     takeEvery(CREATE_JOB_SUBMISSION, createJobSubmission),
-    takeEvery(DELETE_JOB_SUBMISSION, deleteJobSubmission)
+    takeEvery(DELETE_JOB_SUBMISSION, deleteJobSubmission),
   ];
 }
