@@ -31,7 +31,7 @@ DeleteCandidateModal.propTypes = {
   onAdd: PropTypes.func,
   onClose: PropTypes.func,
   title: PropTypes.string,
-  jobSubmissionId: PropTypes.string,
+  jobSubmissionId: PropTypes.number,
 }
 
 export default DeleteCandidateModal

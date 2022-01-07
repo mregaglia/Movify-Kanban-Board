@@ -7,7 +7,7 @@ import Board from "./board/Board"
 import { HOT_CANDIDATE_STATUSES } from "../utils/kanban"
 import { Trash } from "./svgs"
 import enforceHighContrast from "../utils/enforceHighContrast"
-import useUpdateDateAvailableCandidate from "../hooks/useUpdateDateAvailableCandidate"
+import { useUpdateDateAvailableCandidate } from "../hooks"
 import BullhornLink from "../reporting/components/BullhornLink"
 import LinkedinLink from "../reporting/components/LinkedinLink"
 
