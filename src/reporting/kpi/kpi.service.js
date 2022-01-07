@@ -44,7 +44,7 @@ export const getJobOrders = (idEmployee, dateStartTimestamp, dateEndTimestamp) =
 export const getAllJobOrdersOpen = (idEmployee) =>
     get("query/JobOrder", {
         fields: "id",
-        where: `owner.id=${idEmployee} AND isDeleted=false AND isOpen=true`,
+        where: `owner.id=${idEmployee} AND isDeleted=false`,
         count: "50"
     }).then(response => prop("data", response))
 
