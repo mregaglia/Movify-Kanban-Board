@@ -60,8 +60,7 @@ export function* getAllDataFromIdsForExpandView(datas, occupation) {
             )
           )
         )
-      );
-      console.log(dataCvSent.FIRST_WEEK)               
+      );           
       yield all(
         dataCvSent.FIRST_WEEK.map((cvSent) =>
           put(

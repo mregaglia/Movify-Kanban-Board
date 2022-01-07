@@ -385,7 +385,9 @@ export const countNoteForBusinessManager = (labelWeek, notes, objectDataBusiness
 
     switch (action) {
       case CALL:
-        if (data[i].clientContacts.total) objectDataBusinessManager.CALL[labelWeek]++
+        if (data[i].clientContacts.total) {
+          objectDataBusinessManager.CALL[labelWeek]++
+        }
         break;
       case NO_SHOW: {
         const typeOfPersonWhoDidNotShowUp = findTypeOfPersonWhiDidNotShowUp(data[i])
@@ -482,7 +484,7 @@ export const calculateTotalYTDRecruitment = (notesOfyear, objectYTDRecruitment) 
 export const calculateTotalYTDBusinessManager = (notesOfyear, objectYTDBusinessManager) => {
 
   if (notesOfyear.length === 0) return objectYTDBusinessManager
-
+  console.log(notesOfyear)
   for (let i = 0; i < notesOfyear.length; i++) {
 
     const action = notesOfyear[i].action

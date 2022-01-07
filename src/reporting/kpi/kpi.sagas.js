@@ -253,11 +253,13 @@ export function* calculateConversionYTDNewVacancy() {
     let totalProspectionMeetingDoneYTD = yield select(
       getProspectionMeetingDoneTotalYTD
     );
+
     let totalNewVacancyYTD = yield select(getNewVacancyTotalYTD);
 
     let conversionNewVacancyYTD = Math.round(
       (totalNewVacancyYTD / totalProspectionMeetingDoneYTD) * 100
     );
+
     conversionNewVacancyYTD =
       isNaN(conversionNewVacancyYTD) || conversionNewVacancyYTD === Infinity
         ? "0 %"
@@ -535,7 +537,7 @@ export function* getLast4WeekKpiData(
           objectDataBusinessManager.NEW_VACANCY[weekLabel] = kpiJobOrder.count;
 
           objectNewVacancy[weekLabel] = kpiJobOrder.data;
-
+          
           objectDataBusinessManager.CALL[weekLabel] =
             objectDataBusinessManager.PROSPECTION_MEETING_SCHEDULE[weekLabel] +
             objectDataBusinessManager.CALL[weekLabel];
@@ -692,6 +694,8 @@ export function* calculateTotalCvSentYTD(
   dateStartTimestamp,
   dateEndTimestamp
 ) {
+  console.log(dateStartTimestamp,
+    dateEndTimestamp, jobOrderOfTheYear)
   if (jobOrderOfTheYear?.length > 0) {
     yield all(
       jobOrderOfTheYear.map((jobOrder) =>
@@ -782,6 +786,7 @@ export function* getJobSubmissionStatusByJobSubmissionOpenSaga(action) {
 
     if (jobStatusChanged.count > 0) {
       const jobSubmissions = yield call(getJobSubmissionById, id);
+      
       const weekLabel = filterCvSentStatusForWeeks(jobStatusChanged, dates);
       if (weekLabel) {
         yield put(setCvSent(weekLabel));

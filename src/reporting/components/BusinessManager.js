@@ -29,7 +29,6 @@ import {
 const tableWeek = [FIRST_WEEK, SECOND_WEEK, THIRD_WEEK, FOURTH_WEEK]
 
 const BusinessManager = ({ datas, isCvSentWeekLoading }) => {
-    console.log(datas)
     return (
         <>
             <TableContentTbodyTrNoLine>
