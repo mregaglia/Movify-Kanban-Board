@@ -274,7 +274,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
 
       return candidates
     },
-    [getJobSubmissionsCandidatePerStatus, jobOrdersWithJobSubmission?.data?.data, jobSubmissionsCandidates?.data?.data]
+    [getJobSubmissionsCandidatePerStatus, jobOrdersWithJobSubmission, jobSubmissionsCandidates]
   )
 
   const data = useMemo(() => {

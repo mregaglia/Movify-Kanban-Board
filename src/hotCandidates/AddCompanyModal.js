@@ -4,6 +4,7 @@ import Select from "react-select"
 import { Modal, Title } from "../components/modal"
 import { useDebounce, useFind, useUpdateIdentifiedCompanies, useIdentifiedCompanies } from "../hooks"
 import { generateOptions } from "./utils"
+import transformToArrayIfNecessary from "../utils/transformToArrayIfNecessary"
 
 const AddCompanyModal = ({ isOpen, onClose, candidateId, identified }) => {
   const [query, setQuery] = useState("")
@@ -14,7 +15,8 @@ const AddCompanyModal = ({ isOpen, onClose, candidateId, identified }) => {
 
   const handleChange = (company) => {
     if (company?.label && company?.value && identifiedCompanies.isSuccess) {
-      const identifiedCompaniesData = identifiedCompanies.data?.data?.map(({ id }) => id)
+      let identifiedCompaniesData = transformToArrayIfNecessary(identifiedCompanies.data?.data)
+      identifiedCompaniesData = identifiedCompaniesData?.map(({ id }) => id)
       const updatedIdentifiedCompanies = [...new Set([...identifiedCompaniesData, company.value])]
 
       if (identifiedCompaniesData.length !== updatedIdentifiedCompanies.length) {
