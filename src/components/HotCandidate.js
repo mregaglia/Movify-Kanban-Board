@@ -191,7 +191,7 @@ const HotCandidate = ({
     onOpenDeleteModal(jobSubmissionId)
   }
   const handleClickOpenAddCompanyModal = () => {
-    onOpenAddCompanyModal(id)
+    onOpenAddCompanyModal(id, statusesData.identified)
   }
 
   const handleToggleDateAvailableInput = () => {

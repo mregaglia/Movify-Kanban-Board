@@ -85,6 +85,7 @@ const initialModalState = {
     candidateId: null,
     jobOrderId: null,
     jobSubmissionId: null,
+    identified: null,
   },
   add: {
     isOpen: false,
@@ -92,6 +93,7 @@ const initialModalState = {
     candidateId: null,
     jobOrderId: null,
     jobSubmissionId: null,
+    identified: null,
   },
   addCompany: {
     isOpen: false,
@@ -99,6 +101,7 @@ const initialModalState = {
     candidateId: null,
     jobOrderId: null,
     jobSubmissionId: null,
+    identified: null,
   },
 }
 
@@ -295,7 +298,14 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
     setModalState(initialModalState)
   }
 
-  const handleOpenModal = ({ title, modalType, candidateId = null, jobOrderId = null, jobSubmissionId = null }) => {
+  const handleOpenModal = ({
+    title,
+    modalType,
+    candidateId = null,
+    jobOrderId = null,
+    jobSubmissionId = null,
+    identified,
+  }) => {
     let newModalState = {}
     if (modalType === ADD_COMPANY) {
       newModalState = {
@@ -304,6 +314,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
           isOpen: true,
           title,
           candidateId,
+          identified,
         },
       }
     } else if (modalType === ADD) {
@@ -373,6 +384,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
         isOpen={modalState.addCompany.isOpen}
         title={modalState.addCompany.title}
         candidateId={modalState.addCompany.candidateId}
+        identified={modalState.addCompany.identified}
         onClose={handleCloseModal}
       />
     </>

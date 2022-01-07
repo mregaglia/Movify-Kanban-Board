@@ -111,8 +111,8 @@ const Bm = ({ bm, jobOrderId, color, title, data, kanbanType = BUSINESS, onOpenM
     onOpenModal({ title, modalType: DELETE, jobSubmissionId: jobSubmissionIdToDelete })
   }
 
-  const handleClickAddCompanyButton = (candidateId) => {
-    onOpenModal({ title, modalType: ADD_COMPANY, candidateId })
+  const handleClickAddCompanyButton = (candidateId, identified) => {
+    onOpenModal({ title, modalType: ADD_COMPANY, candidateId, identified })
   }
 
   return (
