@@ -11,7 +11,7 @@ import {
 } from "date-fns"
 import styled from "styled-components"
 import PropTypes from "prop-types"
-import { useJobOrdersWithJobSubmissions, useJobSubmissions } from "../hooks"
+import { useJobOrdersWithJobSubmissions, useJobSubmissions, IDENTIFIED_COMPANIES_FIELD_KEY } from "../hooks"
 import theme from "../style/theme"
 import Bm from "../kanban/BmHotCandidates"
 import {
@@ -25,6 +25,7 @@ import AddCandidateModal from "./AddCandidateModal"
 import DeleteCandidateModal from "./DeleteCandidateModal"
 import AddCompanyModal from "./AddCompanyModal"
 import { ADD, ADD_COMPANY } from "./utils"
+import transformToArrayIfNecessary from "../utils/transformToArrayIfNecessary"
 import getMapValue from "../utils/getMapValue"
 
 const Main = styled.main`
@@ -109,14 +110,6 @@ const formatDate = (dateAvailable) => {
   )
 
   return { exactDate, relativeDate }
-}
-
-// If only one result is return from the API, response.data will not be an array but a single object
-const transformToArrayIfNecessary = (data) => {
-  if (Array.isArray(data)) {
-    return data
-  }
-  return [data]
 }
 
 const getDateAvailableAndDateColorCode = (candidate) => {
@@ -224,6 +217,14 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
           }
         }
       }
+
+      if (candidate?.[IDENTIFIED_COMPANIES_FIELD_KEY]) {
+        jobSubmissionsCandidatePerStatus = {
+          ...jobSubmissionsCandidatePerStatus,
+          identified: candidate?.[IDENTIFIED_COMPANIES_FIELD_KEY],
+        }
+      }
+
       return jobSubmissionsCandidatePerStatus
     },
     [updatedJobSubmission]
@@ -262,7 +263,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
 
       return candidates
     },
-    [getJobSubmissionsCandidatePerStatus, jobOrdersWithJobSubmission?.data?.data, jobSubmissionsCandidates?.data]
+    [getJobSubmissionsCandidatePerStatus, jobOrdersWithJobSubmission?.data?.data, jobSubmissionsCandidates?.data?.data]
   )
 
   const data = useMemo(() => {
