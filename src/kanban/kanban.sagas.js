@@ -28,7 +28,6 @@ import {
   getJobSubmission,
   deleteJobSubmission as deleteJobSubmissionService,
 } from "./kanban.service"
-import { getCandidate } from "../recruitment/recruitment.service"
 import en from "../lang/en"
 import { filterJobOrdersPerPriority, getStateFilter } from "../priorityFilter/priorityFilter.sagas"
 
