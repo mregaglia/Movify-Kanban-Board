@@ -10,7 +10,6 @@ const useIdentifiedCompanies = (companyIds) => {
       }),
     {
       enabled: !!companyIds?.length,
-      refetchOnWindowFocus: false,
     }
   )
 }

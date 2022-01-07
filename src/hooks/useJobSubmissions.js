@@ -13,7 +13,6 @@ const useJobSubmissions = (candidateIds) => {
       }),
     {
       enabled: !!candidateIds?.length,
-      refetchOnWindowFocus: false,
     }
   )
 }
