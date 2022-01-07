@@ -4,7 +4,6 @@ export { default as useDeleteJobSubmission } from "./useDeleteJobSubmission"
 export { default as useFind } from "./useFind"
 export { default as useFindCandidates } from "./useFindCandidates"
 export { default as useIdentifiedCompanies } from "./useIdentifiedCompanies"
-export { default as useJobOrders } from "./useJobOrders"
 export {
   default as useJobOrdersWithJobSubmissions,
   IDENTIFIED_COMPANIES_FIELD_KEY,
