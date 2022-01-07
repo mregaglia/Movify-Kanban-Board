@@ -84,18 +84,21 @@ const initialModalState = {
     title: BENCH_TITLE,
     candidateId: null,
     jobOrderId: null,
+    jobSubmissionId: null,
   },
   add: {
     isOpen: false,
     title: BENCH_TITLE,
     candidateId: null,
     jobOrderId: null,
+    jobSubmissionId: null,
   },
   addCompany: {
     isOpen: false,
     title: BENCH_TITLE,
     candidateId: null,
     jobOrderId: null,
+    jobSubmissionId: null,
   },
 }
 
@@ -242,7 +245,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
 
       const candidates = []
 
-      for (const { candidate } of data) {
+      for (const { id, candidate } of data) {
         const { dateAvailable, dateColorCode } = getDateAvailableAndDateColorCode(candidate)
 
         const jobSubmissionsCandidatePerStatus = getJobSubmissionsCandidatePerStatus(
@@ -252,6 +255,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
 
         const updatedCandidate = {
           id: candidate.id,
+          jobSubmissionId: id,
           name: candidate.name,
           firstName: candidate.firstName,
           lastName: candidate.lastName,
@@ -291,7 +295,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
     setModalState(initialModalState)
   }
 
-  const handleOpenModal = ({ title, modalType, candidateId = null, jobOrderId = null }) => {
+  const handleOpenModal = ({ title, modalType, candidateId = null, jobOrderId = null, jobSubmissionId = null }) => {
     let newModalState = {}
     if (modalType === ADD_COMPANY) {
       newModalState = {
@@ -317,7 +321,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
         delete: {
           isOpen: true,
           title,
-          candidateId,
+          jobSubmissionId,
         },
       }
     }
@@ -362,8 +366,8 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
       <DeleteCandidateModal
         isOpen={modalState.delete.isOpen}
         title={modalState.delete.title}
-        candidateId={modalState.delete.candidateId}
         onClose={handleCloseModal}
+        jobSubmissionId={modalState.delete.jobSubmissionId}
       />
       <AddCompanyModal
         isOpen={modalState.addCompany.isOpen}

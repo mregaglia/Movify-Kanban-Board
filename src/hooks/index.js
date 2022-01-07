@@ -9,6 +9,7 @@ export {
 } from "./useJobOrdersWithJobSubmissions"
 export { default as useIdentifiedCompanies } from "./useIdentifiedCompanies"
 export { default as useAddJobSubmission } from "./useAddJobSubmission"
+export { default as useDeleteJobSubmission } from "./useDeleteJobSubmission"
 export { default as useQuery } from "./useQuery"
 export { default as useScrollBlock } from "./useScrollBlock"
 export { default as useIndexedDb } from "./useIndexedDb"
