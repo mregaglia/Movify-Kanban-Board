@@ -57,8 +57,8 @@ export function* getCandidatesCategory(idsCandidate) {
 
     let categories = []
     try {
-
         while (idsCandidate.length > maxCall) {
+
             const [candidateCategoryOne, candidateCategoryTwo, candidateCategoryThree, candidateCategoryFour, candidateCategoryFive] = yield all([
                 call(getCandidateCategory, idsCandidate[0], '/candidateCategoryOne'),
                 call(getCandidateCategory, idsCandidate[1], '/candidateCategoryTwo'),
@@ -66,7 +66,6 @@ export function* getCandidatesCategory(idsCandidate) {
                 call(getCandidateCategory, idsCandidate[3], '/candidateCategoryFour'),
                 call(getCandidateCategory, idsCandidate[4], '/candidateCategoryFive'),
             ])
-
             categories = [...categories, candidateCategoryOne, candidateCategoryTwo, candidateCategoryThree, candidateCategoryFour, candidateCategoryFive]
 
             idsCandidate = idsCandidate.slice(5, idsCandidate.length)
@@ -87,6 +86,7 @@ export function* getCandidatesCategory(idsCandidate) {
 export function* calculateWeeklySpeedRecruitmentForAllWeeks(objectCategories, occupation) {
     try {
         yield all([
+            
             call(calculateWeeklySpeedForRecruitment, objectCategories[FIRST_WEEK], FIRST_WEEK, occupation),
             call(calculateWeeklySpeedForRecruitment, objectCategories[SECOND_WEEK], SECOND_WEEK, occupation),
             call(calculateWeeklySpeedForRecruitment, objectCategories[THIRD_WEEK], THIRD_WEEK, occupation),
@@ -119,6 +119,7 @@ const sourcingOfficerPoints = new Map([
 export function* calculateWeeklySpeedForRecruitment(categories, weekLabel, occupation) {
     let weeklySpeed = 0
     let isAlreadyCounted = false
+
     try {
         if (!isNil(categories) && categories.length !== 0) {
             for (let i = 0; i < categories.length; i++) {
@@ -155,7 +156,6 @@ export function* calculateWeeklySpeedForRecruitment(categories, weekLabel, occup
         } else if (occupation.includes(SOURCING_OFFICER)) {
             if (numberOfInterviewScheduled > 0) weeklySpeed += (numberOfInterviewScheduled * POINT_FOR_INTERVIEW_SCHEDULED_SO)
         }
-
         yield put(setWeeklySpeed(weekLabel, weeklySpeed))
     } catch (e) {
         //

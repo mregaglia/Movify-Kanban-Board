@@ -43,6 +43,7 @@ export const setObjectYTD = (objectConversionYTDRecruitment, objectConvertionYTD
 export const setKpiLoading = (isLoadingKpi) => ({ type: SET_LOADING_KPI, payload: isLoadingKpi });
 
 export const setCvSent = (weekLabel) => ({ type: SET_CV_SENT, payload: weekLabel })
+export const setIsLoadingYTDCVSent = (isLoadingYTDCVSent) => ({ type: SET_LOADING_YTD_CV_SENT, payload: isLoadingYTDCVSent })
 export const setCvSentExpandedView = ({ data, weekLabel }) => ({ type: SET_CV_SENT_EXPANDED_VIEW, payload: { data, weekLabel } })
 export const setYTDTotalBusinessManager = (ytdTotalBusinessManager) => ({ type: SET_YTD_TOTAL_BUSINESS_MANAGER, payload: ytdTotalBusinessManager })
 export const setYTDTotalRecruitment = (ytdTotalRecruitment) => ({ type: SET_YTD_TOTAL_RECRUITMENT, payload: ytdTotalRecruitment })
