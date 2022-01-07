@@ -1,23 +1,20 @@
-import React, { useMemo, useState } from 'react'
-import PropTypes from 'prop-types'
+import React, { useMemo, useState } from "react"
+import PropTypes from "prop-types"
 import Select from "react-select"
-import { Modal, Title } from '../components/modal'
-import { useDebounce, useFind, useIndexedDb } from "../hooks"
+import { Modal, Title } from "../components/modal"
+import { useDebounce, useFind, useAddJobSubmission } from "../hooks"
 import { generateOptions } from "./utils"
 
-const AddCandidateModal = ({ isOpen, onClose, title }) => {
+const AddCandidateModal = ({ isOpen, onClose, title, jobOrderId }) => {
   const [query, setQuery] = useState("")
   const debouncedQuery = useDebounce(query, 500)
   const { data: users } = useFind(debouncedQuery)
-  const db = useIndexedDb()
+  const addJobSubmission = useAddJobSubmission()
 
   const handleChange = async (user) => {
     if (user?.label && user?.value) {
-      const alreadyAdded = await db.users.get(user.value)
-      if (!alreadyAdded) {
-        await db.users.add({ name: user.label, id: user.value, type: title })
-        onClose()
-      }
+      addJobSubmission.mutate({ jobOrderId, candidateId: user.value })
+      onClose()
     }
   }
 
@@ -56,6 +53,7 @@ AddCandidateModal.propTypes = {
   onAdd: PropTypes.func,
   onClose: PropTypes.func,
   title: PropTypes.string,
+  jobOrderId: PropTypes.string,
 }
 
 export default AddCandidateModal

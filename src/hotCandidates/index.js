@@ -83,15 +83,19 @@ const initialModalState = {
     isOpen: false,
     title: BENCH_TITLE,
     candidateId: null,
+    jobOrderId: null,
   },
   add: {
     isOpen: false,
     title: BENCH_TITLE,
+    candidateId: null,
+    jobOrderId: null,
   },
   addCompany: {
     isOpen: false,
     title: BENCH_TITLE,
     candidateId: null,
+    jobOrderId: null,
   },
 }
 
@@ -287,7 +291,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
     setModalState(initialModalState)
   }
 
-  const handleOpenModal = (title, modalType, candidateId = null) => {
+  const handleOpenModal = ({ title, modalType, candidateId = null, jobOrderId = null }) => {
     let newModalState = {}
     if (modalType === ADD_COMPANY) {
       newModalState = {
@@ -304,6 +308,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
         add: {
           isOpen: true,
           title,
+          jobOrderId,
         },
       }
     } else {
@@ -329,6 +334,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
           data={data.bench}
           title={BENCH_TITLE}
           onOpenModal={handleOpenModal}
+          jobOrderId={BENCH_ID}
         />
         <Bm
           color={theme.hotCandidateStatusColors.blue}
@@ -336,6 +342,7 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
           data={data.projectRotations}
           title={PROJECT_ROTATIONS_TITLE}
           onOpenModal={handleOpenModal}
+          jobOrderId={PROJECT_ROTATIONS_ID}
         />
         <Bm
           color={theme.hotCandidateStatusColors.grey}
@@ -343,9 +350,15 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
           data={data.wfp}
           title={WFP_TITLE}
           onOpenModal={handleOpenModal}
+          jobOrderId={WFP_ID}
         />
       </Main>
-      <AddCandidateModal isOpen={modalState.add.isOpen} title={modalState.add.title} onClose={handleCloseModal} />
+      <AddCandidateModal
+        isOpen={modalState.add.isOpen}
+        title={modalState.add.title}
+        onClose={handleCloseModal}
+        jobOrderId={modalState.add.jobOrderId}
+      />
       <DeleteCandidateModal
         isOpen={modalState.delete.isOpen}
         title={modalState.delete.title}
