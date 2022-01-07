@@ -16,7 +16,10 @@ const AddCompanyModal = ({ isOpen, onClose, candidateId, identified }) => {
     if (company?.label && company?.value && identifiedCompanies.isSuccess) {
       const identifiedCompaniesData = identifiedCompanies.data?.data?.map(({ id }) => id)
       const updatedIdentifiedCompanies = [...new Set([...identifiedCompaniesData, company.value])]
-      updateIdentifiedCompanies.mutate({ identifiedCompanies: updatedIdentifiedCompanies })
+
+      if (identifiedCompaniesData.length !== updatedIdentifiedCompanies.length) {
+        updateIdentifiedCompanies.mutate({ identifiedCompanies: updatedIdentifiedCompanies })
+      }
       onClose()
     }
   }
