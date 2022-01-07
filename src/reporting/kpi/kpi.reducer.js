@@ -282,6 +282,7 @@ const kpi = {
       }
     },
     cvSentLoadingYTDCounter: state.cvSentLoadingYTDCounter - 1,
+    // C'est ICI 
     isLoadingYTDCVSent: state.cvSentLoadingYTDCounter > 1
   }),
   [SET_LOADING_YTD_CV_SENT]: (state, payload) => ({
