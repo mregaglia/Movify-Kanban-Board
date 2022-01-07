@@ -7,8 +7,7 @@ const useJobSubmissions = (candidateIds) => {
     () =>
       get(`query/JobSubmission`, {
         // Might not need everything here
-        fields:
-          "id, jobOrder(id, clientCorporation, owner), status, candidate(id, firstName, lastName, name, dateAvailable, occupation, owner)",
+        fields: "id, jobOrder(id, clientCorporation, owner), status, candidate(id)",
         where: `candidate.id IN (${candidateIds?.join()}) AND status IN ('WF Response', 'To Send', 'Intake', 'WF Feedback')`,
         count: 50,
       }),

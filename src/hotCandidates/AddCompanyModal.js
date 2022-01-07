@@ -14,11 +14,13 @@ const AddCompanyModal = ({ isOpen, onClose, candidateId, identified }) => {
   const updateIdentifiedCompanies = useUpdateIdentifiedCompanies(candidateId)
 
   const handleChange = (company) => {
-    if (company?.label && company?.value && identifiedCompanies.isSuccess) {
-      let identifiedCompaniesData = transformToArrayIfNecessary(identifiedCompanies.data?.data)
-      identifiedCompaniesData = identifiedCompaniesData?.map(({ id }) => id)
+    if (company?.label && company?.value) {
+      let identifiedCompaniesData = []
+      if (identifiedCompanies.data?.data) {
+        identifiedCompaniesData = transformToArrayIfNecessary(identifiedCompanies.data?.data)
+        identifiedCompaniesData = identifiedCompaniesData?.map(({ id }) => id)
+      }
       const updatedIdentifiedCompanies = [...new Set([...identifiedCompaniesData, company.value])]
-
       if (identifiedCompaniesData.length !== updatedIdentifiedCompanies.length) {
         updateIdentifiedCompanies.mutate({ identifiedCompanies: updatedIdentifiedCompanies })
       }
