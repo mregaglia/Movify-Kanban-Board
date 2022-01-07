@@ -1,13 +1,13 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Action, Modal, Row, Title } from '../components/modal'
-import { useIndexedDb } from "../hooks"
+import React from "react"
+import PropTypes from "prop-types"
+import { Action, Modal, Row, Title } from "../components/modal"
+import { useDeleteJobSubmission } from "../hooks"
 
-const DeleteCandidateModal = ({ isOpen, onClose, title, candidateId }) => {
-  const db = useIndexedDb()
+const DeleteCandidateModal = ({ isOpen, onClose, title, jobSubmissionId }) => {
+  const deleteJobSubmission = useDeleteJobSubmission(jobSubmissionId)
 
-  const handleRemoveCandidate = async () => {
-    await db.users.where({ id: candidateId }).delete()
+  const handleRemoveCandidate = () => {
+    deleteJobSubmission.mutate()
     onClose()
   }
 
@@ -31,7 +31,7 @@ DeleteCandidateModal.propTypes = {
   onAdd: PropTypes.func,
   onClose: PropTypes.func,
   title: PropTypes.string,
-  candidateId: PropTypes.number,
+  jobSubmissionId: PropTypes.number,
 }
 
 export default DeleteCandidateModal

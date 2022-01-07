@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
-import { getTime, parseISO } from 'date-fns'
-import styled, { css } from 'styled-components'
+import React, { useState } from "react"
+import PropTypes from "prop-types"
+import { getTime, parseISO } from "date-fns"
+import styled, { css } from "styled-components"
 import { Draggable } from "react-beautiful-dnd"
-import Board from './board/Board'
-import { HOT_CANDIDATE_STATUSES } from '../utils/kanban'
-import { Trash } from './svgs'
-import enforceHighContrast from '../utils/enforceHighContrast'
-import useUpdateDateAvailableCandidate from '../hooks/useUpdateDateAvailableCandidate'
-import BullhornLink from '../reporting/components/BullhornLink'
-import LinkedinLink from '../reporting/components/LinkedinLink'
+import Board from "./board/Board"
+import { HOT_CANDIDATE_STATUSES } from "../utils/kanban"
+import { Trash } from "./svgs"
+import enforceHighContrast from "../utils/enforceHighContrast"
+import { useUpdateDateAvailableCandidate } from "../hooks"
+import BullhornLink from "../reporting/components/BullhornLink"
+import LinkedinLink from "../reporting/components/LinkedinLink"
 
 const Container = styled.div`
   display: grid;
@@ -142,7 +142,7 @@ const CloseDateAvailableInputButton = styled.button`
     }
     &::before,
     &::after {
-      content: '';
+      content: "";
       position: absolute;
       height: 10px;
       width: 2px;
@@ -167,16 +167,31 @@ const Links = styled.div`
   grid-auto-flow: column;
 `
 
-const HotCandidate = ({ hotCandidate: { name, role, dateAvailable: initialDateAvailable, id, dateColorCode, firstName, lastName, ...statusesData }, onOpenDeleteModal, onOpenAddCompanyModal, index }) => {
+const HotCandidate = ({
+  hotCandidate: {
+    name,
+    role,
+    jobSubmissionId,
+    dateAvailable: initialDateAvailable,
+    id,
+    dateColorCode,
+    firstName,
+    lastName,
+    ...statusesData
+  },
+  onOpenDeleteModal,
+  onOpenAddCompanyModal,
+  index,
+}) => {
   const [isDateAvailableInputOpen, setIsDateAvailableInputOpen] = useState(false)
   const [dateAvailable, setDateAvailable] = useState()
   const updateDateAvailableCandidate = useUpdateDateAvailableCandidate(id)
 
   const handleClickOpenDeleteModal = () => {
-    onOpenDeleteModal(id)
+    onOpenDeleteModal(jobSubmissionId)
   }
   const handleClickOpenAddCompanyModal = () => {
-    onOpenAddCompanyModal(id)
+    onOpenAddCompanyModal(id, statusesData.identified)
   }
 
   const handleToggleDateAvailableInput = () => {
@@ -213,14 +228,28 @@ const HotCandidate = ({ hotCandidate: { name, role, dateAvailable: initialDateAv
             <Name>{name}</Name>
             <Role>{role}</Role>
             <DateAvailableWrapper>
-              <DateAvailable title={initialDateAvailable?.exactDate} colorCode={dateColorCode} onClick={handleToggleDateAvailableInput}>{initialDateAvailable?.relativeDate}</DateAvailable>
-              {isDateAvailableInputOpen ?
+              <DateAvailable
+                title={initialDateAvailable?.exactDate}
+                colorCode={dateColorCode}
+                onClick={handleToggleDateAvailableInput}
+              >
+                {initialDateAvailable?.relativeDate}
+              </DateAvailable>
+              {isDateAvailableInputOpen ? (
                 <DateAvailableInputWrapper onSubmit={handleSubmitDateAvailable}>
                   <DateAvailableLabel htmlFor="dateAvailable">Change date of availability</DateAvailableLabel>
                   <CloseDateAvailableInputButton onClick={handleToggleDateAvailableInput} />
-                  <DateAvailableInput type="date" id="dateAvailable" name="dateAvailable" onChange={handleChangeDateAvailable} />
-                  <ConfirmDateAvailableButton type="submit" title="Update availability date">Confirm</ConfirmDateAvailableButton>
-                </DateAvailableInputWrapper> : null}
+                  <DateAvailableInput
+                    type="date"
+                    id="dateAvailable"
+                    name="dateAvailable"
+                    onChange={handleChangeDateAvailable}
+                  />
+                  <ConfirmDateAvailableButton type="submit" title="Update availability date">
+                    Confirm
+                  </ConfirmDateAvailableButton>
+                </DateAvailableInputWrapper>
+              ) : null}
             </DateAvailableWrapper>
             <Links>
               <BullhornLink candidateId={id} isClient={false} />

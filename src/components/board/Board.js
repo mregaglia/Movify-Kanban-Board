@@ -3,7 +3,7 @@ import { propOr } from "ramda"
 import { array, number, object, string, func } from "prop-types"
 import styled, { css } from "styled-components"
 import Column from "./Column"
-import { hotCandidatesStatusKeys } from "../../hotCandidates"
+import { JOB_SUBMISSION_STATUSES_MAP } from "../../hotCandidates"
 import getMapValue from "../../utils/getMapValue"
 
 const Container = styled.div`
@@ -35,19 +35,20 @@ const Board = ({
     <Container className={className}>
       {statuses.map((status) => {
         return (
-        <Column
-          board={board}
-          key={status}
-          jobSubmissions={propOr([], status, jobSubmissions)}
-          statusData={statusesData?.[getMapValue(hotCandidatesStatusKeys, status)]}
-          onOpenAddCompanyModal={onOpenAddCompanyModal}
-          candidateId={candidateId}
-          bmId={bmId}
-          clientCorporationId={clientCorporationId}
-          jobOrderId={jobOrderId}
-          status={status}
-        />
-      )})}
+          <Column
+            board={board}
+            key={status}
+            jobSubmissions={propOr([], status, jobSubmissions)}
+            statusData={statusesData?.[getMapValue(JOB_SUBMISSION_STATUSES_MAP, status)]}
+            onOpenAddCompanyModal={onOpenAddCompanyModal}
+            candidateId={candidateId}
+            bmId={bmId}
+            clientCorporationId={clientCorporationId}
+            jobOrderId={jobOrderId}
+            status={status}
+          />
+        )
+      })}
     </Container>
   )
 }

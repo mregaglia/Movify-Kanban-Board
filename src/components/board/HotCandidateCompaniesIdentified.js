@@ -1,12 +1,9 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from "react"
+import PropTypes from "prop-types"
 import styled, { css } from "styled-components"
-import { useLiveQuery } from 'dexie-react-hooks'
-import { useIndexedDb } from '../../hooks'
-import {
-  HotCandidateCompaniesContainer,
-  HotCandidateCompany,
-} from "./styledComponents"
+import { useIdentifiedCompanies, useUpdateIdentifiedCompanies } from "../../hooks"
+import transformToArrayIfNecessary from "../../utils/transformToArrayIfNecessary"
+import { HotCandidateCompaniesContainer, HotCandidateCompany } from "./styledComponents"
 
 const DeleteCompanyButton = styled.button`
   ${({ theme: { colors } }) => css`
@@ -27,30 +24,43 @@ const DeleteCompanyButton = styled.button`
   `}
 `
 
-const HotCandidateCompaniesIdentified = ({ candidateId }) => {
-  const db = useIndexedDb()
-  const user = useLiveQuery(() => db.users.get(candidateId), [candidateId])
-  const companies = user?.identifiedCompanies ?? []
+const HotCandidateCompaniesIdentified = ({ identified = [], candidateId }) => {
+  const identifiedCompanies = useIdentifiedCompanies(identified)
+  const updateIdentifiedCompanies = useUpdateIdentifiedCompanies(candidateId)
 
-  const handleDeleteCompany = async (companyName) => {
-    const updatedCompanies = companies.filter((company) => company !== companyName)
-    await db.users.update(candidateId, { identifiedCompanies: updatedCompanies })
+  if (!identifiedCompanies.isSuccess) {
+    return null
+  }
+
+  const identifiedCompaniesData = transformToArrayIfNecessary(identifiedCompanies?.data?.data)
+
+  const handleDeleteCompany = async (companyId) => {
+    const indexOfCompanyToDelete = identified.indexOf(String(companyId))
+    const updatedIdentifiedCompanies = identified
+    if (indexOfCompanyToDelete > -1) {
+      updatedIdentifiedCompanies.splice(indexOfCompanyToDelete, 1)
+      updateIdentifiedCompanies.mutate({ identifiedCompanies: updatedIdentifiedCompanies })
+    }
   }
 
   return (
     <HotCandidateCompaniesContainer>
-      {companies?.length > 0 ? companies?.map((single) => (
-        <HotCandidateCompany key={single}>
-          {single}
-          <DeleteCompanyButton title={`Delete identified company ${single}`} onClick={() => handleDeleteCompany(single)} />
+      {identifiedCompaniesData?.map((identifiedCompany) => (
+        <HotCandidateCompany key={identifiedCompany.id}>
+          {identifiedCompany.name}
+          <DeleteCompanyButton
+            title={`Delete identified company ${identifiedCompany.name}`}
+            onClick={() => handleDeleteCompany(identifiedCompany.id)}
+          />
         </HotCandidateCompany>
-      )) : null}
+      ))}
     </HotCandidateCompaniesContainer>
   )
 }
 
 HotCandidateCompaniesIdentified.propTypes = {
-  candidateId: PropTypes.number
+  identified: PropTypes.arrayOf(PropTypes.string),
+  candidateId: PropTypes.number,
 }
 
 export default HotCandidateCompaniesIdentified

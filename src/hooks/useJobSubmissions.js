@@ -1,18 +1,18 @@
 import { useQuery } from "react-query"
 import { get } from "../utils/api"
 
-const useJobSubmissions = (candidateIds, maxNumberOfPossibleJobSubmissions) => {
+const useJobSubmissions = (candidateIds) => {
   return useQuery(
-    ["find-candidate-job-submissions", candidateIds.join()],
+    ["find-job-submissions-candidates", candidateIds.join()],
     () =>
       get(`query/JobSubmission`, {
-        fields: "id,jobOrder,status,candidate",
-        where: `candidate.id IN (${candidateIds?.join()}) AND status IN ('WF Response', 'To Send', 'Intake', 'WF Feedback') AND isDeleted=false`,
-        count: maxNumberOfPossibleJobSubmissions
+        // Might not need everything here
+        fields: "id, jobOrder(id, clientCorporation, owner), status, candidate(id)",
+        where: `candidate.id IN (${candidateIds?.join()}) AND status IN ('WF Response', 'To Send', 'Intake', 'WF Feedback') AND jobOrder.isOpen=true`,
+        count: 50,
       }),
     {
-      enabled: !!(candidateIds?.length && maxNumberOfPossibleJobSubmissions),
-      refetchOnWindowFocus: false,
+      enabled: !!candidateIds?.length,
     }
   )
 }

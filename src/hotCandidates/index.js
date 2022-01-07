@@ -1,21 +1,31 @@
-import React, { useMemo, useState } from "react"
-import { isPast, isToday, isWithinInterval, addWeeks, addDays, addMonths, intlFormat, formatDistanceToNow } from "date-fns"
+import React, { useCallback, useMemo, useState } from "react"
+import {
+  isPast,
+  isToday,
+  isWithinInterval,
+  addWeeks,
+  addDays,
+  addMonths,
+  intlFormat,
+  formatDistanceToNow,
+} from "date-fns"
 import styled from "styled-components"
 import PropTypes from "prop-types"
-import {
-  useJobSubmissions,
-  useJobOrders,
-  useFindCandidates,
-} from "../hooks"
+import { useJobOrdersWithJobSubmissions, useJobSubmissions, IDENTIFIED_COMPANIES_FIELD_KEY } from "../hooks"
 import theme from "../style/theme"
-import { useIndexedDb } from "../hooks"
 import Bm from "../kanban/BmHotCandidates"
-import { STATUS_IDENTIFIED, STATUS_INTAKE, STATUS_TO_SEND, STATUS_WF_FEEDBACK_2, STATUS_WF_RESPONSE } from "../utils/kanban"
+import {
+  STATUS_IDENTIFIED,
+  STATUS_INTAKE,
+  STATUS_TO_SEND,
+  STATUS_WF_FEEDBACK_2,
+  STATUS_WF_RESPONSE,
+} from "../utils/kanban"
 import AddCandidateModal from "./AddCandidateModal"
 import DeleteCandidateModal from "./DeleteCandidateModal"
 import AddCompanyModal from "./AddCompanyModal"
 import { ADD, ADD_COMPANY } from "./utils"
-import { useLiveQuery } from "dexie-react-hooks"
+import transformToArrayIfNecessary from "../utils/transformToArrayIfNecessary"
 import getMapValue from "../utils/getMapValue"
 
 const Main = styled.main`
@@ -23,7 +33,7 @@ const Main = styled.main`
   gap: 2rem;
 `
 
-export const hotCandidatesStatusKeys = new Map([
+export const JOB_SUBMISSION_STATUSES_MAP = new Map([
   [STATUS_TO_SEND, "toSend"],
   [STATUS_WF_RESPONSE, "wfResponse"],
   [STATUS_INTAKE, "intake"],
@@ -31,90 +41,88 @@ export const hotCandidatesStatusKeys = new Map([
   [STATUS_IDENTIFIED, "identified"],
 ])
 
-const BENCH = 'Bench'
-const PROJECT_ROTATIONS = 'Project Rotations'
-const WFP = 'WFP++'
+const BENCH_TITLE = "Bench"
+const BENCH_TYPE = "Bench"
+const BENCH_ID = 380
+const PROJECT_ROTATIONS_TITLE = "Project Rotations"
+const PROJECT_ROTATIONS_TYPE = "Project Rotations"
+const PROJECT_ROTATIONS_ID = 1180
+const WFP_TITLE = "WFP++"
+const WFP_TYPE = "WFP++"
+const WFP_ID = 1181
+
+const PANEL_DATA_MAP = new Map([
+  [
+    BENCH_ID,
+    {
+      id: BENCH_ID,
+      title: BENCH_TITLE,
+      type: BENCH_TYPE,
+    },
+  ],
+  [
+    PROJECT_ROTATIONS_ID,
+    {
+      id: PROJECT_ROTATIONS_ID,
+      title: PROJECT_ROTATIONS_TITLE,
+      type: PROJECT_ROTATIONS_TYPE,
+    },
+  ],
+  [
+    WFP_ID,
+    {
+      id: WFP_ID,
+      title: WFP_TITLE,
+      type: WFP_TYPE,
+    },
+  ],
+])
 
 const initialModalState = {
   delete: {
     isOpen: false,
-    title: BENCH,
+    title: BENCH_TITLE,
     candidateId: null,
+    jobOrderId: null,
+    jobSubmissionId: null,
+    identified: null,
   },
   add: {
     isOpen: false,
-    title: BENCH,
+    title: BENCH_TITLE,
+    candidateId: null,
+    jobOrderId: null,
+    jobSubmissionId: null,
+    identified: null,
   },
   addCompany: {
     isOpen: false,
-    title: BENCH,
+    title: BENCH_TITLE,
     candidateId: null,
-  }
+    jobOrderId: null,
+    jobSubmissionId: null,
+    identified: null,
+  },
 }
 
 const formatDate = (dateAvailable) => {
   const relativeDate = formatDistanceToNow(dateAvailable)
-  const exactDate = intlFormat(dateAvailable, {
-    month: 'numeric',
-    day: 'numeric',
-    year: 'numeric',
-  }, {
-    locale: 'nl-BE'
-  })
+  const exactDate = intlFormat(
+    dateAvailable,
+    {
+      month: "numeric",
+      day: "numeric",
+      year: "numeric",
+    },
+    {
+      locale: "nl-BE",
+    }
+  )
 
   return { exactDate, relativeDate }
 }
 
-// If only one result is return from the API, respone.data will not be an array but a single object
-const transformToArrayIfNecessary = (data) => {
-  if (Array.isArray(data)) {
-    return data
-  }
-  return [data]
-}
-
-const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobOrders = [], bench, projectRotations, wfp, updatedJobSubmission }) => {
-  let statusObject = {
-    toSend: [],
-    wfResponse: [],
-    intake: [],
-    wfFeedback: [],
-    identified: [],
-  }
-
-  const type = candidatesIdb?.find((hotCandidate) => hotCandidate?.id === candidate?.id)?.type
-
-  for (const jobSubmission of jobSubmissions) {
-    const jobSubmissionFromCurrentCandidate = jobSubmission.candidate.id === candidate.id
-    if (jobSubmissionFromCurrentCandidate) {
-      let currentStatusKey = getMapValue(hotCandidatesStatusKeys, jobSubmission.status)
-
-      const jobOrderId = jobSubmission?.jobOrder?.id ? String(jobSubmission.jobOrder.id) : ""
-      const jobTitle = jobSubmission?.jobOrder?.title ?? ''
-      const jobOrder = jobOrders?.find((single) => single?.id === jobSubmission?.jobOrder?.id)
-      const company = jobOrder?.clientCorporation?.name ?? ''
-      const owner = jobOrder?.owner
-
-      if (updatedJobSubmission && String(jobSubmission.id) === updatedJobSubmission?.jobSubmissionId) {
-        currentStatusKey = getMapValue(hotCandidatesStatusKeys, updatedJobSubmission.status)
-      }
-
-      statusObject = {
-        ...statusObject,
-        [currentStatusKey]: [
-          ...statusObject[currentStatusKey],
-          {
-            jobTitle,
-            company,
-            jobOrderId,
-            jobSubmissionId: String(jobSubmission.id),
-            owner,
-          }
-        ]
-      }
-    }
-  }
-
+const getDateAvailableAndDateColorCode = (candidate) => {
   let dateAvailable = candidate?.dateAvailable
   let dateColorCode = theme.dateAvailableStatusColors.noData
 
@@ -158,82 +166,146 @@ const mapCandidate = ({ candidate, candidatesIdb = [], jobSubmissions = [], jobO
     }
   }
 
-  const mappedCandidate = {
-    name:
-      candidate?.firstName && candidate?.lastName
-        ? `${candidate?.firstName} ${candidate?.lastName}`
-        : "/",
-    firstName: candidate?.firstName,
-    lastName: candidate?.lastName,
+  return {
     dateAvailable,
     dateColorCode,
-    role: candidate?.occupation ?? "/",
-    identified: [],
-    type,
-    id: candidate?.id,
-    ...statusObject,
-  }
-
-  if (type === BENCH) {
-    bench.push(mappedCandidate)
-  } else if (type === PROJECT_ROTATIONS) {
-    projectRotations.push(mappedCandidate)
-  } else if (type === WFP) {
-    wfp.push(mappedCandidate)
   }
 }
 
 const HotCandidatesPage = ({ updatedJobSubmission }) => {
   const [modalState, setModalState] = useState(initialModalState)
-  const db = useIndexedDb()
-  const candidatesIdb = useLiveQuery(() => db.users.toArray())
 
-  let candidates = useFindCandidates(candidatesIdb)
-  candidates = candidates?.map((candidate) => candidate?.data?.data)
+  const jobOrdersWithJobSubmission = useJobOrdersWithJobSubmissions()
 
-  const maxNumberOfPossibleJobSubmissions = candidates?.reduce((accumulator, current) => accumulator + current?.submissions?.total, 0)
-  const candidateIds = [...new Set(candidates?.map((candidate) => candidate?.id))]
+  const candidateIds = [
+    ...new Set(
+      jobOrdersWithJobSubmission?.data?.data?.flatMap(({ submissions }) =>
+        submissions?.data?.map(({ candidate }) => candidate.id)
+      )
+    ),
+  ]
 
-  let { data: jobSubmissions } = useJobSubmissions(
-    candidateIds ?? [],
-    maxNumberOfPossibleJobSubmissions,
+  const jobSubmissionsCandidates = useJobSubmissions(candidateIds ?? [])
+
+  const getJobSubmissionsCandidatePerStatus = useCallback(
+    (jobSubmissionsCandidatesData, candidate) => {
+      let jobSubmissionsCandidatePerStatus = {
+        toSend: [],
+        wfResponse: [],
+        intake: [],
+        wfFeedback: [],
+        identified: [],
+      }
+
+      for (const jobSubmissionCandidate of jobSubmissionsCandidatesData) {
+        const isJobSubmissionFromCurrentCandidate = jobSubmissionCandidate?.candidate?.id === candidate?.id
+
+        if (isJobSubmissionFromCurrentCandidate) {
+          let currentStatusKey = getMapValue(JOB_SUBMISSION_STATUSES_MAP, jobSubmissionCandidate.status)
+          const jobOrderId = jobSubmissionCandidate?.jobOrder?.id ? String(jobSubmissionCandidate.jobOrder.id) : ""
+          const jobTitle = jobSubmissionCandidate?.jobOrder?.title
+          const company = jobSubmissionCandidate?.jobOrder?.clientCorporation?.name
+          const owner = jobSubmissionCandidate?.jobOrder?.owner
+          const jobSubmissionId = String(jobSubmissionCandidate.id)
+
+          if (jobSubmissionId === updatedJobSubmission?.jobSubmissionId) {
+            currentStatusKey = getMapValue(JOB_SUBMISSION_STATUSES_MAP, updatedJobSubmission.status)
+          }
+
+          jobSubmissionsCandidatePerStatus = {
+            ...jobSubmissionsCandidatePerStatus,
+            [currentStatusKey]: [
+              ...jobSubmissionsCandidatePerStatus[currentStatusKey],
+              {
+                jobTitle,
+                company,
+                jobOrderId,
+                jobSubmissionId,
+                owner,
+              },
+            ],
+          }
+        }
+      }
+
+      if (candidate?.[IDENTIFIED_COMPANIES_FIELD_KEY]) {
+        jobSubmissionsCandidatePerStatus = {
+          ...jobSubmissionsCandidatePerStatus,
+          identified: candidate?.[IDENTIFIED_COMPANIES_FIELD_KEY],
+        }
+      }
+
+      return jobSubmissionsCandidatePerStatus
+    },
+    [updatedJobSubmission]
   )
 
-  jobSubmissions = jobSubmissions?.data ?? []
-  jobSubmissions = transformToArrayIfNecessary(jobSubmissions)
+  const getPerPanelData = useCallback(
+    (bullhornId) => {
+      const data = jobOrdersWithJobSubmission?.data?.data?.find(({ id }) => id === bullhornId)?.submissions?.data
+      let jobSubmissionsCandidatesData = jobSubmissionsCandidates?.data?.data ?? []
+      jobSubmissionsCandidatesData = transformToArrayIfNecessary(jobSubmissionsCandidatesData)
 
-  const jobOrderIds = [...new Set(jobSubmissions?.map((jobSubmission) => jobSubmission.jobOrder.id))] ?? []
-  const maxNumberOfPossibleJobOrders = jobOrderIds?.length
+      const candidates = []
 
-  let { data: jobOrders } = useJobOrders(
-    jobOrderIds,
-    maxNumberOfPossibleJobOrders,
+      for (const { id, candidate } of data) {
+        const { dateAvailable, dateColorCode } = getDateAvailableAndDateColorCode(candidate)
+
+        const jobSubmissionsCandidatePerStatus = getJobSubmissionsCandidatePerStatus(
+          jobSubmissionsCandidatesData,
+          candidate
+        )
+
+        const updatedCandidate = {
+          id: candidate.id,
+          jobSubmissionId: id,
+          name: candidate.name,
+          firstName: candidate.firstName,
+          lastName: candidate.lastName,
+          dateAvailable,
+          dateColorCode,
+          role: candidate.occupation,
+          type: PANEL_DATA_MAP.get(bullhornId).type,
+          ...jobSubmissionsCandidatePerStatus,
+        }
+
+        candidates.push(updatedCandidate)
+      }
+
+      return candidates
+    },
+    [getJobSubmissionsCandidatePerStatus, jobOrdersWithJobSubmission, jobSubmissionsCandidates]
   )
-
-  jobOrders = jobOrders?.data ?? []
-  jobOrders = transformToArrayIfNecessary(jobOrders)
 
   const data = useMemo(() => {
-    const wfp = []
-    const bench = []
-    const projectRotations = []
+    let bench = []
+    let wfp = []
+    let projectRotations = []
 
-    for (const candidate of candidates) {
-      mapCandidate({ candidate, candidatesIdb, jobSubmissions, jobOrders, bench, projectRotations, wfp, updatedJobSubmission })
+    if (jobOrdersWithJobSubmission.isSuccess && jobSubmissionsCandidates.isSuccess) {
+      bench = getPerPanelData(BENCH_ID)
+      wfp = getPerPanelData(WFP_ID)
+      projectRotations = getPerPanelData(PROJECT_ROTATIONS_ID)
     }
-
     return {
       bench,
-      projectRotations,
       wfp,
+      projectRotations,
     }
-  }, [candidates, jobSubmissions, jobOrders, candidatesIdb, updatedJobSubmission])
+  }, [getPerPanelData, jobOrdersWithJobSubmission.isSuccess, jobSubmissionsCandidates.isSuccess])
 
   const handleCloseModal = () => {
     setModalState(initialModalState)
   }
 
-  const handleOpenModal = (title, modalType, candidateId = null) => {
+  const handleOpenModal = ({
+    title,
+    modalType,
+    candidateId = null,
+    jobOrderId = null,
+    jobSubmissionId = null,
+    identified,
+  }) => {
     let newModalState = {}
     if (modalType === ADD_COMPANY) {
       newModalState = {
@@ -242,7 +314,8 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
           isOpen: true,
           title,
           candidateId,
-        }
+          identified,
+        },
       }
     } else if (modalType === ADD) {
       newModalState = {
@@ -250,7 +323,8 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
         add: {
           isOpen: true,
           title,
-        }
+          jobOrderId,
+        },
       }
     } else {
       newModalState = {
@@ -258,8 +332,8 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
         delete: {
           isOpen: true,
           title,
-          candidateId,
-        }
+          jobSubmissionId,
+        },
       }
     }
 
@@ -269,13 +343,50 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
   return (
     <>
       <Main>
-        <Bm color={theme.hotCandidateStatusColors.green} kanbanType="HOT_CANDIDATES" data={data.bench} title={BENCH} onOpenModal={handleOpenModal} />
-        <Bm color={theme.hotCandidateStatusColors.blue} kanbanType="HOT_CANDIDATES" data={data.projectRotations} title={PROJECT_ROTATIONS} onOpenModal={handleOpenModal} />
-        <Bm color={theme.hotCandidateStatusColors.grey} kanbanType="HOT_CANDIDATES" data={data.wfp} title={WFP} onOpenModal={handleOpenModal} />
+        <Bm
+          color={theme.hotCandidateStatusColors.green}
+          kanbanType="HOT_CANDIDATES"
+          data={data.bench}
+          title={BENCH_TITLE}
+          onOpenModal={handleOpenModal}
+          jobOrderId={BENCH_ID}
+        />
+        <Bm
+          color={theme.hotCandidateStatusColors.blue}
+          kanbanType="HOT_CANDIDATES"
+          data={data.projectRotations}
+          title={PROJECT_ROTATIONS_TITLE}
+          onOpenModal={handleOpenModal}
+          jobOrderId={PROJECT_ROTATIONS_ID}
+        />
+        <Bm
+          color={theme.hotCandidateStatusColors.grey}
+          kanbanType="HOT_CANDIDATES"
+          data={data.wfp}
+          title={WFP_TITLE}
+          onOpenModal={handleOpenModal}
+          jobOrderId={WFP_ID}
+        />
       </Main>
-      <AddCandidateModal isOpen={modalState.add.isOpen} title={modalState.add.title} onClose={handleCloseModal} />
-      <DeleteCandidateModal isOpen={modalState.delete.isOpen} title={modalState.delete.title} candidateId={modalState.delete.candidateId} onClose={handleCloseModal} />
-      <AddCompanyModal isOpen={modalState.addCompany.isOpen} title={modalState.addCompany.title} candidateId={modalState.addCompany.candidateId} onClose={handleCloseModal} />
+      <AddCandidateModal
+        isOpen={modalState.add.isOpen}
+        title={modalState.add.title}
+        onClose={handleCloseModal}
+        jobOrderId={modalState.add.jobOrderId}
+      />
+      <DeleteCandidateModal
+        isOpen={modalState.delete.isOpen}
+        title={modalState.delete.title}
+        onClose={handleCloseModal}
+        jobSubmissionId={modalState.delete.jobSubmissionId}
+      />
+      <AddCompanyModal
+        isOpen={modalState.addCompany.isOpen}
+        title={modalState.addCompany.title}
+        candidateId={modalState.addCompany.candidateId}
+        identified={modalState.addCompany.identified}
+        onClose={handleCloseModal}
+      />
     </>
   )
 }
@@ -284,8 +395,7 @@ HotCandidatesPage.propTypes = {
   updatedJobSubmission: PropTypes.shape({
     jobSubmissionId: PropTypes.string,
     status: PropTypes.string,
-  })
+  }),
 }
-
 
 export default HotCandidatesPage

@@ -9,7 +9,6 @@ const useFindCandidates = (candidatesIdb = []) =>
         get(`entity/Candidate/${candidate?.id}`, {
           fields: "id,firstName,lastName,dateAvailable,occupation,submissions,owner",
         }),
-        refetchOnWindowFocus: false,
     }))
   )
 

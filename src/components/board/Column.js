@@ -65,15 +65,23 @@ const StyledAddButton = styled(AddButton)`
 
 const getStatusLabel = (status) => statusLabels.get(status) ?? status
 
-const Column = ({ board, jobSubmissions, status, statusData, onOpenAddCompanyModal, candidateId, clientCorporationId, jobOrderId, bmId }) => {
+const Column = ({
+  board,
+  jobSubmissions,
+  status,
+  statusData,
+  onOpenAddCompanyModal,
+  candidateId,
+  clientCorporationId,
+  jobOrderId,
+  bmId,
+}) => {
   const { pathname } = useLocation()
 
-  const droppableId = pathname === "/hot-candidates" ? `${status}@${candidateId}` : createColumnId(
-    bmId,
-    clientCorporationId,
-    jobOrderId,
-    status,
-  )
+  const droppableId =
+    pathname === "/hot-candidates"
+      ? `${status}@${candidateId}`
+      : createColumnId(bmId, clientCorporationId, jobOrderId, status)
 
   return (
     <Container>
@@ -83,10 +91,10 @@ const Column = ({ board, jobSubmissions, status, statusData, onOpenAddCompanyMod
           {(provided, snapshot) => (
             <Content snapshot={snapshot} isNoGo={status === STATUS_NO_GO}>
               <div ref={provided.innerRef} {...provided.droppableProps} style={{ minHeight: 65, height: "100%" }}>
-                {(pathname === "/hot-candidates" && status !== STATUS_IDENTIFIED) ? (
+                {pathname === "/hot-candidates" && status !== STATUS_IDENTIFIED ? (
                   <HotCandidateCompanies companies={statusData} />
                 ) : status === STATUS_IDENTIFIED ? (
-                  <HotCandidateCompaniesIdentified candidateId={candidateId} />
+                  <HotCandidateCompaniesIdentified identified={statusData} candidateId={candidateId} />
                 ) : (
                   <Candidates board={board} jobSubmissions={jobSubmissions} />
                 )}
@@ -95,7 +103,7 @@ const Column = ({ board, jobSubmissions, status, statusData, onOpenAddCompanyMod
             </Content>
           )}
         </Droppable>
-        {status === STATUS_IDENTIFIED ? (<StyledAddButton title="Add company" onClick={onOpenAddCompanyModal} />) : null}
+        {status === STATUS_IDENTIFIED ? <StyledAddButton title="Add company" onClick={onOpenAddCompanyModal} /> : null}
       </ContentContainer>
     </Container>
   )
