@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { v4 as uuid } from "uuid"
 import { connect } from "react-redux"
 import { pathOr } from "ramda"
-import { number, object, string, oneOf, array, func } from "prop-types"
+import { number, object, string, oneOf, array, func, oneOfType } from "prop-types"
 import styled, { css } from "styled-components"
 import { Column } from "../components"
 import ClientCorporation from "./ClientCorporation"
@@ -153,7 +153,7 @@ Bm.propTypes = {
   color: string,
   title: string,
   data: array,
-  jobOrderId: string,
+  jobOrderId: oneOfType([string, number]),
   kanbanType: oneOf(["HOT_CANDIDATES", "BUSINESS"]),
   onOpenModal: func,
   onOpenAddCompanyModal: func,

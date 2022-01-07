@@ -1,7 +1,7 @@
 import React from "react"
 import PropTypes from "prop-types"
 import styled, { css } from "styled-components"
-import { useIdentifiedCompanies } from "../../hooks"
+import { useIdentifiedCompanies, useUpdateIdentifiedCompanies } from "../../hooks"
 import transformToArrayIfNecessary from "../../utils/transformToArrayIfNecessary"
 import { HotCandidateCompaniesContainer, HotCandidateCompany } from "./styledComponents"
 
@@ -24,8 +24,9 @@ const DeleteCompanyButton = styled.button`
   `}
 `
 
-const HotCandidateCompaniesIdentified = ({ identified = [] }) => {
+const HotCandidateCompaniesIdentified = ({ identified = [], candidateId }) => {
   const identifiedCompanies = useIdentifiedCompanies(identified)
+  const updateIdentifiedCompanies = useUpdateIdentifiedCompanies(candidateId)
 
   if (!identifiedCompanies.isSuccess) {
     return null
@@ -34,8 +35,12 @@ const HotCandidateCompaniesIdentified = ({ identified = [] }) => {
   const identifiedCompaniesData = transformToArrayIfNecessary(identifiedCompanies?.data?.data)
 
   const handleDeleteCompany = async (companyId) => {
-    // const updatedCompanies = companies.filter((company) => company !== companyName)
-    // await db.users.update(candidateId, { identifiedCompanies: updatedCompanies })
+    const indexOfCompanyToDelete = identified.indexOf(String(companyId))
+    const updatedIdentifiedCompanies = identified
+    if (indexOfCompanyToDelete > -1) {
+      updatedIdentifiedCompanies.splice(indexOfCompanyToDelete, 1)
+      updateIdentifiedCompanies.mutate({ identifiedCompanies: updatedIdentifiedCompanies })
+    }
   }
 
   return (
@@ -55,6 +60,7 @@ const HotCandidateCompaniesIdentified = ({ identified = [] }) => {
 
 HotCandidateCompaniesIdentified.propTypes = {
   identified: PropTypes.arrayOf(PropTypes.string),
+  candidateId: PropTypes.number,
 }
 
 export default HotCandidateCompaniesIdentified

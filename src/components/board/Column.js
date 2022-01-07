@@ -94,7 +94,7 @@ const Column = ({
                 {pathname === "/hot-candidates" && status !== STATUS_IDENTIFIED ? (
                   <HotCandidateCompanies companies={statusData} />
                 ) : status === STATUS_IDENTIFIED ? (
-                  <HotCandidateCompaniesIdentified identified={statusData} />
+                  <HotCandidateCompaniesIdentified identified={statusData} candidateId={candidateId} />
                 ) : (
                   <Candidates board={board} jobSubmissions={jobSubmissions} />
                 )}
