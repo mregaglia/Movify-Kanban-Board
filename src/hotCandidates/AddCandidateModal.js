@@ -1,12 +1,14 @@
-import React, { useMemo, useState } from "react"
-import PropTypes from "prop-types"
-import Select from "react-select"
-import { Modal, Title } from "../components/modal"
-import { useDebounce, useFind, useAddJobSubmission } from "../hooks"
-import { generateOptions } from "./utils"
+import React, { useMemo, useState } from 'react'
+import Select from 'react-select'
+import PropTypes from 'prop-types'
+
+import { Modal, Title } from '../components/modal'
+import { useAddJobSubmission, useDebounce, useFind } from '../hooks'
+
+import { generateOptions } from './utils'
 
 const AddCandidateModal = ({ isOpen, onClose, title, jobOrderId }) => {
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState('')
   const debouncedQuery = useDebounce(query, 500)
   const { data: users } = useFind(debouncedQuery)
   const addJobSubmission = useAddJobSubmission()
@@ -25,13 +27,13 @@ const AddCandidateModal = ({ isOpen, onClose, title, jobOrderId }) => {
   const selectOptions = useMemo(() => {
     let options = []
     if (users?.data?.length > 0) {
-      const data = users?.data?.filter((single) => single.entityType === "Candidate") ?? []
+      const data = users?.data?.filter((single) => single.entityType === 'Candidate') ?? []
       options = generateOptions(data)
     }
     return options
   }, [users])
 
-  const noOptionsMessage = () => "No users found"
+  const noOptionsMessage = () => 'No users found'
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -50,7 +52,6 @@ const AddCandidateModal = ({ isOpen, onClose, title, jobOrderId }) => {
 
 AddCandidateModal.propTypes = {
   isOpen: PropTypes.bool,
-  onAdd: PropTypes.func,
   onClose: PropTypes.func,
   title: PropTypes.string,
   jobOrderId: PropTypes.string,

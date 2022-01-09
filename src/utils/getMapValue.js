@@ -1,3 +1,3 @@
-const getMapValue = (map, key, fallback = "other") => map.get(key) ?? fallback
+const getMapValue = (map, key, fallback = 'other') => map.get(key) ?? fallback
 
 export default getMapValue

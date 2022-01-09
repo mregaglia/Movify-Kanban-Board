@@ -1,14 +1,14 @@
-import React from "react"
-import { prop } from "ramda"
-import styled, { css } from "styled-components"
-import { string } from "prop-types"
-import { Draggable, Droppable } from "react-beautiful-dnd"
-import CandidateCard from "./CandidateCard"
-import { useSelector } from "react-redux"
-import { useFindCandidates } from "../hooks"
-import { connect } from "react-redux"
-import { removeHotCandidate } from "./transition.actions";
-import { func } from "prop-types"
+import React from 'react'
+import { Draggable, Droppable } from 'react-beautiful-dnd'
+import { connect, useSelector } from 'react-redux'
+import { func, string } from 'prop-types'
+import { prop } from 'ramda'
+import styled, { css } from 'styled-components'
+
+import { useFindCandidates } from '../hooks'
+
+import CandidateCard from './CandidateCard'
+import { removeHotCandidate } from './transition.actions'
 
 const getBackgroundColor = (isNoGo, snapshot, theme) => {
   if (snapshot.isDraggingOver) return theme.colors.transparentRed
@@ -30,15 +30,15 @@ const Content = styled.div(({ isNoGo, snapshot, theme }) => ({
 }))
 
 const Title = styled.div(({ theme }) => ({
-  display: "inline-block",
+  display: 'inline-block',
   fontFamily: theme.fonts.fontFamily,
   fontSize: theme.textDimensions.medium,
   fontWeight: 600,
   paddingLeft: 12,
   paddingRight: 12,
   paddingTop: 8,
-  textOverflow: "ellipsis",
-  overflow: "hidden",
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
 }))
 
 export const HotCandidate = styled.p`
@@ -88,7 +88,7 @@ const RemoveHotCandidate = styled.button`
   `}
 `
 
-const Transition = ({ board, removeHotCandidate }) => {
+const Transition = ({ board, removeHotCandidate: removeHotCandidateProp }) => {
   const { candidates, hotCandidateIds } = useSelector(({ transition }) => ({
     candidates: transition?.candidates ?? [],
     hotCandidateIds: transition?.hotCandidates ?? [],
@@ -97,13 +97,35 @@ const Transition = ({ board, removeHotCandidate }) => {
   let hotCandidates = useFindCandidates(hotCandidateIds?.map((id) => ({ id })))
 
   const doNotRender =
-    board === "reporting" || (board === "kanban" && !candidates?.length > 0 && !hotCandidates?.length > 0)
+    board === 'reporting' || (board === 'kanban' && !candidates?.length > 0 && !hotCandidates?.length > 0)
 
   if (doNotRender) return null
 
   const queriesFailed = hotCandidates?.some((hotCandidate) => !hotCandidate.isSuccess)
 
   hotCandidates = hotCandidates?.map((hotCandidate) => hotCandidate?.data?.data) ?? []
+
+  const renderContent = () => {
+    if (hotCandidates?.length > 0 && !queriesFailed) {
+      return hotCandidates?.map(({ id, firstName, lastName }, index) => (
+        <Draggable draggableId={id} index={index} key={id}>
+          {(provided2) => (
+            <HotCandidate ref={provided2.innerRef} {...provided2.draggableProps} {...provided2.dragHandleProps}>
+              {`${firstName} ${lastName}`}
+              <RemoveHotCandidate onClick={() => removeHotCandidateProp(id)} />
+            </HotCandidate>
+          )}
+        </Draggable>
+      ))
+    }
+    if (candidates?.length > 0) {
+      return candidates.map((candidate, index) => (
+        <CandidateCard index={index} key={`${index}.${prop('id', candidate)}`} candidate={candidate} />
+      ))
+    }
+
+    return null
+  }
 
   return (
     <Container>
@@ -114,28 +136,9 @@ const Transition = ({ board, removeHotCandidate }) => {
             <div
               ref={provided.innerRef}
               {...provided.droppableProps}
-              style={{ minHeight: 65, height: "100%", display: "flex" }}
+              style={{ minHeight: 65, height: '100%', display: 'flex' }}
             >
-              {hotCandidates?.length > 0 && !queriesFailed
-                ? hotCandidates?.map(({ id, firstName, lastName }, index) => (
-                    <Draggable draggableId={id} index={index} key={id}>
-                      {(provided) => (
-                        <HotCandidate
-                          ref={provided.innerRef}
-                          {...provided.draggableProps}
-                          {...provided.dragHandleProps}
-                        >
-                          {`${firstName} ${lastName}`}
-                          <RemoveHotCandidate onClick={() => removeHotCandidate(id)} />
-                        </HotCandidate>
-                      )}
-                    </Draggable>
-                  ))
-                : candidates?.length > 0
-                ? candidates.map((candidate, index) => (
-                    <CandidateCard index={index} key={`${index}.${prop("id", candidate)}`} candidate={candidate} />
-                  ))
-                : null}
+              {renderContent()}
               {provided.placeholder}
             </div>
           </Content>

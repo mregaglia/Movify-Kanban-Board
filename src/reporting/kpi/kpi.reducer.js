@@ -1,33 +1,33 @@
-import { bindReducer } from "../../utils/reducer"
+import { bindReducer } from '../../utils/reducer'
 
 import {
-  SET_EMPLOYEE_KPI,
-  SET_OBJECT_YTD,
-  SET_CV_SENT,
-  SET_YTD_TOTAL_BUSINESS_MANAGER,
-  SET_YTD_TOTAL_RECRUITMENT,
+  GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT,
+  GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN,
   SET_AVERAGE_YTD_BUSINESS_MANAGER,
   SET_AVERAGE_YTD_RECRUITMENT,
   SET_CONVERSION_YTD_BUSINESS_MANAGER,
-  SET_CONVERSION_YTD_RECRUITMENT,
-  SET_LOADING_YTD_TOTAL,
-  SET_LOADING_YTD_AVERAGE,
-  SET_LOADING_YTD_CONVERSION,
-  SET_LOADING_YTD_NEW_VACANCY,
-  SET_NEW_VACANCY_YTD,
   SET_CONVERSION_YTD_NEW_VACANCY,
-  SET_LOADING_YTD_CONVERSION_NEW_VACANCY,
-  SET_LOADING_YTD_CV_SENT,
-  SET_CV_SENT_YTD,
-  SET_LOADING_YTD_CONVERSION_CV_SENT,
+  SET_CONVERSION_YTD_RECRUITMENT,
+  SET_CV_SENT,
   SET_CV_SENT_CONVERSION_YTD,
-  SET_LOADING_KPI,
-  GET_JOBSUBMISSION_STATUS_CHANGED_CV_SENT,
-  GET_JOBSUBMISSION_STATUS_FROM_JOBSUBMISSION_OPEN,
+  SET_CV_SENT_EXPANDED_VIEW,
+  SET_CV_SENT_YTD,
+  SET_EMPLOYEE_KPI,
   SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED,
   SET_LOADING_DATA,
-  SET_CV_SENT_EXPANDED_VIEW,
-} from "./kpi.actions"
+  SET_LOADING_KPI,
+  SET_LOADING_YTD_AVERAGE,
+  SET_LOADING_YTD_CONVERSION,
+  SET_LOADING_YTD_CONVERSION_CV_SENT,
+  SET_LOADING_YTD_CONVERSION_NEW_VACANCY,
+  SET_LOADING_YTD_CV_SENT,
+  SET_LOADING_YTD_NEW_VACANCY,
+  SET_LOADING_YTD_TOTAL,
+  SET_NEW_VACANCY_YTD,
+  SET_OBJECT_YTD,
+  SET_YTD_TOTAL_BUSINESS_MANAGER,
+  SET_YTD_TOTAL_RECRUITMENT,
+} from './kpi.actions'
 
 export const initialState = {
   cvSentLoadingYTDCounter: 0,
@@ -35,7 +35,7 @@ export const initialState = {
   dataEmployee: {},
   dataYTDEmployee: {
     CONVERSION_YTD_BM: {
-      CALL: "-",
+      CALL: '-',
       PROSPECTION_MEETING_SCHEDULE: 0,
       NO_SHOW: 0,
       PROSPECTION_MEETING_DONE: 0,
@@ -85,14 +85,14 @@ export const initialState = {
       PEOPLE_MANAGEMENT: 0,
     },
     CONVERSION_YTD_RE: {
-      CONTACTED_BY_INMAIL: "-",
-      CONTACTED_BY_PHONE: "-",
+      CONTACTED_BY_INMAIL: '-',
+      CONTACTED_BY_PHONE: '-',
       INTERVIEW_SCHEDULED: 0,
       NO_SHOW: 0,
       INTERVIEW_DONE: 0,
       CONTRACT_PROPOSED: 0,
       HIRED: 0,
-      PEOPLE_MANAGEMENT: "-",
+      PEOPLE_MANAGEMENT: '-',
     },
   },
   isLoadingKpi: false,
@@ -309,13 +309,11 @@ const kpi = {
     ...state,
     cvSentLoadingCounter: state.cvSentLoadingCounter + 1,
   }),
-  [SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED]: (state) => {
-    return {
-      ...state,
-      cvSentLoadingCounter: state.cvSentLoadingCounter - 1,
-      isCvSentWeekLoading: state.cvSentLoadingCounter > 1,
-    }
-  },
+  [SET_JOB_SUBMISSIONS_STATUS_FROM_WEEK_RETRIEVED]: (state) => ({
+    ...state,
+    cvSentLoadingCounter: state.cvSentLoadingCounter - 1,
+    isCvSentWeekLoading: state.cvSentLoadingCounter > 1,
+  }),
 }
 
 export default (state, action) => bindReducer(state, action, kpi, initialState)

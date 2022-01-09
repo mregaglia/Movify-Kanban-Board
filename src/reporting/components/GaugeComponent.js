@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from "react"
-import { connect } from "react-redux"
-import GaugeChart from "react-gauge-chart"
-import theme from "../../style/theme"
-import { number, object, bool, string } from "prop-types"
-import { path } from "ramda"
-import styled from "styled-components"
-import debounce from "../../utils/debounce"
-import { POINT_CV_SENT } from "../weeklySpeed/weeklySpeed.sagas"
+import React, { useEffect, useState } from 'react'
+import GaugeChart from 'react-gauge-chart'
+import { connect } from 'react-redux'
+import { bool, number, object, string } from 'prop-types'
+import { path } from 'ramda'
+import styled from 'styled-components'
+
+import theme from '../../style/theme'
+import debounce from '../../utils/debounce'
+import { POINT_CV_SENT } from '../weeklySpeed/weeklySpeed.sagas'
 
 const BoxGauge = styled.div`
   width: 410px;
@@ -23,13 +24,7 @@ const GaugeDataDisplaying = styled.p`
   text-align: center;
 `
 
-const GaugeComponent = ({
-  className,
-  gaugeGreenStart,
-  weeklySpeedScore,
-  hasCalculatedWeeklySpeed,
-  cvsSent,
-}) => {
+const GaugeComponent = ({ className, gaugeGreenStart, weeklySpeedScore, hasCalculatedWeeklySpeed, cvsSent }) => {
   const [key, setKey] = useState(new Date())
 
   const weeklySpeedScoreWeek4 = cvsSent?.FOURTH_WEEK
@@ -58,10 +53,10 @@ const GaugeComponent = ({
     const debouncedHandleResize = debounce(handleResize, 1000)
 
     // Subscribe to the event
-    window.addEventListener("resize", debouncedHandleResize)
+    window.addEventListener('resize', debouncedHandleResize)
 
     // Unsubscribe from the event
-    return () => window.removeEventListener("resize", handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   })
 
   return (
@@ -92,15 +87,9 @@ GaugeComponent.propTypes = {
 
 export default connect(
   (state) => ({
-    gaugeGreenStart: path(
-      ["weeklySpeed", "gaugeLimitForEmployeeSelected", "GREEN", "START"],
-      state
-    ),
-    weeklySpeedScore: path(["weeklySpeed", "weeklySpeedScores"], state),
-    hasCalculatedWeeklySpeed: path(
-      ["weeklySpeed", "hasCalculatedWeeklySpeed"],
-      state
-    ),
+    gaugeGreenStart: path(['weeklySpeed', 'gaugeLimitForEmployeeSelected', 'GREEN', 'START'], state),
+    weeklySpeedScore: path(['weeklySpeed', 'weeklySpeedScores'], state),
+    hasCalculatedWeeklySpeed: path(['weeklySpeed', 'hasCalculatedWeeklySpeed'], state),
     cvsSent: state?.kpi?.dataEmployee?.datasBusinessManager?.CV_SENT,
   }),
   {}

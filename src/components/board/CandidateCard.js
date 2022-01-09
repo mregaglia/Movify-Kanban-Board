@@ -1,129 +1,118 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
-import { path, pathOr, prop, propOr } from "ramda";
-import { func, number, object, oneOfType, string } from "prop-types";
-import styled from "styled-components";
-import { Draggable } from "react-beautiful-dnd";
-import { ContextMenuTrigger } from "react-contextmenu";
-import { deleteJobSubmission } from "../../kanban/kanban.actions";
-import { deleteJobSubmission as deleteRecJobSubmission } from "../../recruitment/recruitment.actions";
-import { getCandidateUpdatedComponent, isFreelance } from "../../utils/kanban";
-import BullhornBadge from "../BullhornBadge";
-import LinkedinBadge from "../LinkedinBadge";
-import Function from "./Function";
-import CandidateMenu from "./CandidateMenu";
-import ConfirmationModal from "../ConfirmationModal";
+import React, { useState } from 'react'
+import { Draggable } from 'react-beautiful-dnd'
+import { ContextMenuTrigger } from 'react-contextmenu'
+import { connect } from 'react-redux'
+import { func, number, object, oneOfType, string } from 'prop-types'
+import { path, pathOr, prop, propOr } from 'ramda'
+import styled from 'styled-components'
+
+import { deleteJobSubmission } from '../../kanban/kanban.actions'
+import { deleteJobSubmission as deleteRecJobSubmission } from '../../recruitment/recruitment.actions'
+import { getCandidateUpdatedComponent, isFreelance } from '../../utils/kanban'
+import BullhornBadge from '../BullhornBadge'
+import ConfirmationModal from '../ConfirmationModal'
+import LinkedinBadge from '../LinkedinBadge'
+
+import CandidateMenu from './CandidateMenu'
+import Function from './Function'
 
 const Container = styled.div(({ borderColor, theme }) => ({
-  display: "flex",
+  display: 'flex',
   backgroundColor: theme.colors.grey,
   borderRadius: theme.dimensions.borderRadius,
-  borderBottomColor: path(["colors", borderColor], theme),
+  borderBottomColor: path(['colors', borderColor], theme),
   borderBottomWidth: borderColor ? 4 : 0,
-  borderBottomStyle: borderColor ? "solid" : "none",
+  borderBottomStyle: borderColor ? 'solid' : 'none',
   margin: 5,
-  textOverflow: "ellipsis",
-  overflow: "hidden",
-  textAlign: "center"
-}));
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  textAlign: 'center',
+}))
 
 export const Text = styled.div(({ theme }) => ({
-  display: "flex",
+  display: 'flex',
   flex: 1,
-  alignSelf: "center",
+  alignSelf: 'center',
   marginTop: 10,
   marginBottom: 10,
   marginLeft: 15,
   marginRight: 4,
   fontFamily: theme.fonts.fontFamily,
   fontSize: theme.textDimensions.regular,
-  textOverflow: "ellipsis",
-  overflow: "hidden"
-}));
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+}))
 
 const Column = styled.div({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "space-between"
-});
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+})
 
 const TextColumn = styled.div({
-  display: "flex",
-  flexDirection: "column",
+  display: 'flex',
+  flexDirection: 'column',
   flex: 1,
-  textOverflow: "ellipsis",
-  overflow: "hidden"
-});
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+})
 
 const CandidateCard = ({
   board,
-  deleteJobSubmission,
-  deleteRecJobSubmission,
+  deleteJobSubmission: deleteJobSubmissionProp,
+  deleteRecJobSubmission: deleteRecJobSubmissionProp,
   index,
   jobSubmissionId,
-  jobSubmission
+  jobSubmission,
 }) => {
-  const [displayDeleteModal, setDisplayDeleteModal] = useState(false);
+  const [displayDeleteModal, setDisplayDeleteModal] = useState(false)
 
   const getDeleteText = () => {
-    if (board === "kanban")
-      return `Do you want to delete this candidate for the vacancy ${pathOr(
-        "",
-        ["jobOrder", "title"],
-        jobSubmission
-      )}?`;
+    if (board === 'kanban')
+      return `Do you want to delete this candidate for the vacancy ${pathOr('', ['jobOrder', 'title'], jobSubmission)}?`
 
-    if (board === "recruitment")
+    if (board === 'recruitment')
       return `Do you want to delete this candidate for the vacancy ${pathOr(
-        "",
-        ["jobOrder", "title"],
+        '',
+        ['jobOrder', 'title'],
         jobSubmission
-      )}? Beware that it will also delete this candidate in all the other pipelines.`;
-  };
+      )}? Beware that it will also delete this candidate in all the other pipelines.`
+  }
 
-  const onClose = () => setDisplayDeleteModal(false);
+  const onClose = () => setDisplayDeleteModal(false)
 
   const onDelete = () => {
-    if (board === "kanban") deleteJobSubmission(jobSubmission);
-    if (board === "recruitment") deleteRecJobSubmission(jobSubmission);
-    setDisplayDeleteModal(false);
-  };
+    if (board === 'kanban') deleteJobSubmissionProp(jobSubmission)
+    if (board === 'recruitment') deleteRecJobSubmissionProp(jobSubmission)
+    setDisplayDeleteModal(false)
+  }
 
   return (
     <ContextMenuTrigger id={`${jobSubmissionId}`}>
       <Draggable draggableId={jobSubmissionId} index={index}>
-        {provided => (
-          <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-          >
-            <Container
-              borderColor={isFreelance(propOr({}, "candidate", jobSubmission)) ? "darkGrey" : undefined}
-            >
+        {(provided) => (
+          <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+            <Container borderColor={isFreelance(propOr({}, 'candidate', jobSubmission)) ? 'darkGrey' : undefined}>
               <Column>
-                <BullhornBadge candidate={prop("candidate", jobSubmission)} />
-                {getCandidateUpdatedComponent(prop("dateLastModified", jobSubmission))}
+                <BullhornBadge candidate={prop('candidate', jobSubmission)} />
+                {getCandidateUpdatedComponent(prop('dateLastModified', jobSubmission))}
               </Column>
               <TextColumn>
                 <Text>
-                  {pathOr("", ["candidate", "firstName"], jobSubmission)}{" "}
-                  {pathOr("", ["candidate", "lastName"], jobSubmission)}
+                  {pathOr('', ['candidate', 'firstName'], jobSubmission)}{' '}
+                  {pathOr('', ['candidate', 'lastName'], jobSubmission)}
                 </Text>
-                {board === "recruitment" && (
+                {board === 'recruitment' && (
                   <Function
                     board={board}
-                    functionTitle={path(
-                      ["candidate", "category", "name"],
-                      jobSubmission
-                    )}
-                    ccId={prop("clientCorporationId", jobSubmission)}
+                    functionTitle={path(['candidate', 'category', 'name'], jobSubmission)}
+                    ccId={prop('clientCorporationId', jobSubmission)}
                   />
                 )}
               </TextColumn>
               <Column>
-                <LinkedinBadge candidate={prop("candidate", jobSubmission)} />
+                <LinkedinBadge candidate={prop('candidate', jobSubmission)} />
               </Column>
             </Container>
 
@@ -131,23 +120,20 @@ const CandidateCard = ({
               isOpen={displayDeleteModal}
               onClose={onClose}
               onConfirm={onDelete}
-              title={`Candidate ${pathOr(
-                "",
-                ["candidate", "firstName"],
+              title={`Candidate ${pathOr('', ['candidate', 'firstName'], jobSubmission)} ${pathOr(
+                '',
+                ['candidate', 'firstName'],
                 jobSubmission
-              )} ${pathOr("", ["candidate", "lastName"], jobSubmission)}`}
+              )}`}
               text={getDeleteText()}
             />
           </div>
         )}
       </Draggable>
-      <CandidateMenu
-        id={jobSubmissionId}
-        onDelete={() => setDisplayDeleteModal(true)}
-      />
+      <CandidateMenu id={jobSubmissionId} onDelete={() => setDisplayDeleteModal(true)} />
     </ContextMenuTrigger>
-  );
-};
+  )
+}
 
 CandidateCard.propTypes = {
   board: string,
@@ -156,16 +142,12 @@ CandidateCard.propTypes = {
   deleteRecJobSubmission: func,
   index: number,
   jobSubmissionId: oneOfType([number, string]),
-  jobSubmission: object
-};
+  jobSubmission: object,
+}
 
 export default connect(
   (state, { board, jobSubmissionId }) => ({
-    jobSubmission: pathOr(
-      {},
-      [board, "jobSubmissions", jobSubmissionId],
-      state
-    )
+    jobSubmission: pathOr({}, [board, 'jobSubmissions', jobSubmissionId], state),
   }),
   { deleteJobSubmission, deleteRecJobSubmission }
-)(CandidateCard);
+)(CandidateCard)

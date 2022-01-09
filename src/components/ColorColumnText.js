@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled, { css } from 'styled-components'
 
 export const ColorColumnText = styled.p`
   ${({ theme: { fonts, textDimensions }, color, title }) => css`
@@ -13,7 +13,8 @@ export const ColorColumnText = styled.p`
     border-radius: 4px 0 4px 4px;
     padding-left: 4px;
     margin: 0;
-    ${title && css`
+    ${title &&
+    css`
       writing-mode: vertical-rl;
       text-orientation: upright;
       text-transform: uppercase;
@@ -22,4 +23,4 @@ export const ColorColumnText = styled.p`
   `}
 `
 
-export default ColorColumnText;
+export default ColorColumnText

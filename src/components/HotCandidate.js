@@ -1,15 +1,17 @@
-import React, { useState } from "react"
-import PropTypes from "prop-types"
-import { getTime, parseISO } from "date-fns"
-import styled, { css } from "styled-components"
-import { Draggable } from "react-beautiful-dnd"
-import Board from "./board/Board"
-import { HOT_CANDIDATE_STATUSES } from "../utils/kanban"
-import { Trash } from "./svgs"
-import enforceHighContrast from "../utils/enforceHighContrast"
-import { useUpdateDateAvailableCandidate } from "../hooks"
-import BullhornLink from "../reporting/components/BullhornLink"
-import LinkedinLink from "../reporting/components/LinkedinLink"
+import React, { useState } from 'react'
+import { Draggable } from 'react-beautiful-dnd'
+import { getTime, parseISO } from 'date-fns'
+import PropTypes from 'prop-types'
+import styled, { css } from 'styled-components'
+
+import { useUpdateDateAvailableCandidate } from '../hooks'
+import BullhornLink from '../reporting/components/BullhornLink'
+import LinkedinLink from '../reporting/components/LinkedinLink'
+import enforceHighContrast from '../utils/enforceHighContrast'
+import { HOT_CANDIDATE_STATUSES } from '../utils/kanban'
+
+import Board from './board/Board'
+import { Trash } from './svgs'
 
 const Container = styled.div`
   display: grid;
@@ -142,7 +144,7 @@ const CloseDateAvailableInputButton = styled.button`
     }
     &::before,
     &::after {
-      content: "";
+      content: '';
       position: absolute;
       height: 10px;
       width: 2px;

@@ -1,4 +1,4 @@
-export const UPDATE_REPORTING_ACCESS = "UPDATE_REPORTING_ACCESS"
+export const UPDATE_REPORTING_ACCESS = 'UPDATE_REPORTING_ACCESS'
 
 export const updateReportingAccess = (
   hasAccess,

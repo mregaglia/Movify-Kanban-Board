@@ -1,55 +1,54 @@
-import React from "react";
-import { connect } from "react-redux";
-import { pathOr, prop, propOr } from "ramda";
-import { array, bool, func, object } from "prop-types";
-import ConfirmationModal from "../components/ConfirmationModal";
-import { createJobSubmission } from "./kanban.actions";
-import { removeCandidate } from "../transition/transition.actions";
+import React from 'react'
+import { connect } from 'react-redux'
+import { array, bool, func, object } from 'prop-types'
+import { pathOr, prop, propOr } from 'ramda'
+
+import ConfirmationModal from '../components/ConfirmationModal'
+import { removeCandidate } from '../transition/transition.actions'
+
+import { createJobSubmission } from './kanban.actions'
 
 const AddModal = ({
   candidates,
-  createJobSubmission,
+  createJobSubmission: createJobSubmissionProp,
   data,
   isOpen,
   jobOrder,
   onClose,
-  hotCandidates
+  hotCandidates,
 }) => {
-  const candidate =
-    candidates.find(
-      candidate => String(candidate?.id) === String(data?.candidateId)
-      ) || { id: hotCandidates.find(hotCandidateId => String(hotCandidateId) === String(data?.candidateId))  }
+  const candidate = candidates.find(
+    (currentCandidate) => String(currentCandidate?.id) === String(data?.candidateId)
+  ) || {
+    id: hotCandidates.find((hotCandidateId) => String(hotCandidateId) === String(data?.candidateId)),
+  }
 
   const onConfirm = () => {
-    createJobSubmission(
+    createJobSubmissionProp(
       jobOrder,
       {
-        candidate
+        candidate,
       },
       data?.status
-    );
-    removeCandidate(prop("candidateId", data));
-    onClose();
-  };
+    )
+    removeCandidate(prop('candidateId', data))
+    onClose()
+  }
 
   return (
     <ConfirmationModal
       isOpen={isOpen}
       onClose={onClose}
       onConfirm={onConfirm}
-      title={`Candidate ${propOr("", "firstName", candidate)} ${propOr(
-        "",
-        "lastName",
-        candidate
-      )}`}
-      text={`Do you want to add this candidate for the vacancy ${propOr(
-        "",
-        "title",
+      title={`Candidate ${propOr('', 'firstName', candidate)} ${propOr('', 'lastName', candidate)}`}
+      text={`Do you want to add this candidate for the vacancy ${propOr('', 'title', jobOrder)} from ${pathOr(
+        '',
+        ['clientCorporation', 'name'],
         jobOrder
-      )} from ${pathOr("", ["clientCorporation", "name"], jobOrder)} ?`}
+      )} ?`}
     />
-  );
-};
+  )
+}
 
 AddModal.propTypes = {
   candidates: array,
@@ -59,23 +58,18 @@ AddModal.propTypes = {
   jobOrder: object,
   data: object,
   onClose: func,
-  removeCandidate: func
-};
+}
 
 AddModal.defaultProps = {
   isOpen: false,
-  onClose: () => null
-};
+  onClose: () => null,
+}
 
 export default connect(
   (state, { data }) => ({
-    jobOrder: pathOr(
-      {},
-      ["kanban", "jobOrders", prop(["jobOrderId"], data)],
-      state
-    ),
-    candidates: pathOr({}, ["transition", "candidates"], state),
-    hotCandidates: pathOr({}, ["transition", "hotCandidates"], state),
+    jobOrder: pathOr({}, ['kanban', 'jobOrders', prop(['jobOrderId'], data)], state),
+    candidates: pathOr({}, ['transition', 'candidates'], state),
+    hotCandidates: pathOr({}, ['transition', 'hotCandidates'], state),
   }),
   { createJobSubmission, removeCandidate }
-)(AddModal);
+)(AddModal)

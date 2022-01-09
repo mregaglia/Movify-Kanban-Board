@@ -1,10 +1,12 @@
-import React from "react"
-import { propOr } from "ramda"
-import { array, number, object, string, func } from "prop-types"
-import styled, { css } from "styled-components"
-import Column from "./Column"
-import { JOB_SUBMISSION_STATUSES_MAP } from "../../hotCandidates"
-import getMapValue from "../../utils/getMapValue"
+import React from 'react'
+import { array, func, number, object, string } from 'prop-types'
+import { propOr } from 'ramda'
+import styled, { css } from 'styled-components'
+
+import { JOB_SUBMISSION_STATUSES_MAP } from '../../hotCandidates'
+import getMapValue from '../../utils/getMapValue'
+
+import Column from './Column'
 
 const Container = styled.div`
   ${({ theme: { colors, dimensions } }) => css`
@@ -30,28 +32,24 @@ const Board = ({
   statusesData,
   onOpenAddCompanyModal,
   candidateId,
-}) => {
-  return (
-    <Container className={className}>
-      {statuses.map((status) => {
-        return (
-          <Column
-            board={board}
-            key={status}
-            jobSubmissions={propOr([], status, jobSubmissions)}
-            statusData={statusesData?.[getMapValue(JOB_SUBMISSION_STATUSES_MAP, status)]}
-            onOpenAddCompanyModal={onOpenAddCompanyModal}
-            candidateId={candidateId}
-            bmId={bmId}
-            clientCorporationId={clientCorporationId}
-            jobOrderId={jobOrderId}
-            status={status}
-          />
-        )
-      })}
-    </Container>
-  )
-}
+}) => (
+  <Container className={className}>
+    {statuses.map((status) => (
+      <Column
+        board={board}
+        key={status}
+        jobSubmissions={propOr([], status, jobSubmissions)}
+        statusData={statusesData?.[getMapValue(JOB_SUBMISSION_STATUSES_MAP, status)]}
+        onOpenAddCompanyModal={onOpenAddCompanyModal}
+        candidateId={candidateId}
+        bmId={bmId}
+        clientCorporationId={clientCorporationId}
+        jobOrderId={jobOrderId}
+        status={status}
+      />
+    ))}
+  </Container>
+)
 
 Board.propTypes = {
   bmId: number,

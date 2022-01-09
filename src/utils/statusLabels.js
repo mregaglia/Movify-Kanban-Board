@@ -1,13 +1,13 @@
 import {
-  STATUS_NO_GO,
+  STATUS_INTAKE,
   STATUS_ITV1,
   STATUS_ITV2,
-  STATUS_TO_SEND,
-  STATUS_WF_RESPONSE,
-  STATUS_INTAKE,
-  STATUS_WF_FEEDBACK,
+  STATUS_NO_GO,
   STATUS_OFFER,
-} from "./kanban"
+  STATUS_TO_SEND,
+  STATUS_WF_FEEDBACK,
+  STATUS_WF_RESPONSE,
+} from './kanban'
 
 export const statusLabels = new Map([
   [STATUS_ITV1, 'Backlog'],

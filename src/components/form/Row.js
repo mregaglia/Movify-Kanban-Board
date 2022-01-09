@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Row = styled.div({
-  display: "flex",
-  flexDirection: "row",
-  paddingBottom: 16
-});
+  display: 'flex',
+  flexDirection: 'row',
+  paddingBottom: 16,
+})
 
-export default Row;
+export default Row

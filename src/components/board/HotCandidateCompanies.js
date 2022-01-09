@@ -1,24 +1,23 @@
-import React from "react"
-import PropTypes from "prop-types"
-import { HotCandidateCompaniesContainer } from "./styledComponents"
-import HotCandidateCompany from "./HotCandidateCompany"
+import React from 'react'
+import PropTypes from 'prop-types'
 
-const HotCandidateCompanies = ({ companies }) => {
-  return (
-    <HotCandidateCompaniesContainer>
-      {companies?.map((single, index) => (
-        <HotCandidateCompany
-          draggableId={single.jobSubmissionId}
-          company={single.company}
-          owner={single.owner}
-          jobTitle={single.jobTitle}
-          key={single.jobOrderId}
-          index={index}
-        />
-      ))}
-    </HotCandidateCompaniesContainer>
-  )
-}
+import HotCandidateCompany from './HotCandidateCompany'
+import { HotCandidateCompaniesContainer } from './styledComponents'
+
+const HotCandidateCompanies = ({ companies }) => (
+  <HotCandidateCompaniesContainer>
+    {companies?.map((single, index) => (
+      <HotCandidateCompany
+        draggableId={single.jobSubmissionId}
+        company={single.company}
+        owner={single.owner}
+        jobTitle={single.jobTitle}
+        key={single.jobOrderId}
+        index={index}
+      />
+    ))}
+  </HotCandidateCompaniesContainer>
+)
 
 HotCandidateCompanies.propTypes = {
   companies: PropTypes.arrayOf(

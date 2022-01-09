@@ -1,6 +1,8 @@
-import { useMutation, useQueryClient } from "react-query"
-import { post } from "../utils/api"
-import { IDENTIFIED_COMPANIES_FIELD_KEY } from "."
+import { useMutation, useQueryClient } from 'react-query'
+
+import { post } from '../utils/api'
+
+import { IDENTIFIED_COMPANIES_FIELD_KEY } from '.'
 
 const useUpdateIdentifiedCompanies = (candidateId) => {
   const queryClient = useQueryClient()
@@ -9,7 +11,7 @@ const useUpdateIdentifiedCompanies = (candidateId) => {
       post(`entity/Candidate/${candidateId}`, { [IDENTIFIED_COMPANIES_FIELD_KEY]: identifiedCompanies }),
     {
       onSettled: () => {
-        queryClient.invalidateQueries("find-job-orders-with-job-submissions")
+        queryClient.invalidateQueries('find-job-orders-with-job-submissions')
       },
     }
   )

@@ -1,6 +1,6 @@
-import React from "react";
-import { string } from "prop-types";
-import styled from "styled-components";
+import React from 'react'
+import { string } from 'prop-types'
+import styled from 'styled-components'
 
 const StyledLabel = styled.div(({ theme }) => ({
   color: theme.colors.red,
@@ -9,13 +9,13 @@ const StyledLabel = styled.div(({ theme }) => ({
   marginRight: 8,
   minWidth: 80,
   maxWidth: 80,
-  width: 80
-}));
+  width: 80,
+}))
 
-export const Label = ({ label }) => <StyledLabel>{label}</StyledLabel>;
+export const Label = ({ label }) => <StyledLabel>{label}</StyledLabel>
 
 Label.propTypes = {
-  label: string
-};
+  label: string,
+}
 
-export default Label;
+export default Label

@@ -1,49 +1,42 @@
-import { bindReducer } from "../utils/reducer";
-import {
-  AUTHORIZE,
-  LOGIN,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  AUTH_SUCCESS,
-  AUTH_FAIL
-} from "./auth.actions";
+import { bindReducer } from '../utils/reducer'
+
+import { AUTH_FAIL, AUTH_SUCCESS, AUTHORIZE, LOGIN, LOGIN_FAIL, LOGIN_SUCCESS } from './auth.actions'
 
 export const initialState = {
   isCheckingAuth: true,
   loading: false,
-  authenticated: undefined
-};
+  authenticated: undefined,
+}
 
 const auth = {
-  [AUTHORIZE]: state => ({
+  [AUTHORIZE]: (state) => ({
     ...state,
-    loading: true
+    loading: true,
   }),
-  [LOGIN]: state => ({
+  [LOGIN]: (state) => ({
     ...state,
-    loading: true
+    loading: true,
   }),
-  [LOGIN_SUCCESS]: state => ({
-    ...state,
-    loading: false,
-    authenticated: true
-  }),
-  [LOGIN_FAIL]: state => ({
+  [LOGIN_SUCCESS]: (state) => ({
     ...state,
     loading: false,
-    authenticated: false
+    authenticated: true,
   }),
-  [AUTH_SUCCESS]: state => ({
+  [LOGIN_FAIL]: (state) => ({
+    ...state,
+    loading: false,
+    authenticated: false,
+  }),
+  [AUTH_SUCCESS]: (state) => ({
     ...state,
     authenticated: true,
-    isCheckingAuth: false
+    isCheckingAuth: false,
   }),
-  [AUTH_FAIL]: state => ({
+  [AUTH_FAIL]: (state) => ({
     ...state,
     authenticated: false,
-    isCheckingAuth: false
-  })
-};
+    isCheckingAuth: false,
+  }),
+}
 
-export default (state, action) =>
-  bindReducer(state, action, auth, initialState);
+export default (state, action) => bindReducer(state, action, auth, initialState)

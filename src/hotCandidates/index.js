@@ -1,32 +1,34 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from 'react'
 import {
+  addDays,
+  addMonths,
+  addWeeks,
+  formatDistanceToNow,
+  intlFormat,
   isPast,
   isToday,
   isWithinInterval,
-  addWeeks,
-  addDays,
-  addMonths,
-  intlFormat,
-  formatDistanceToNow,
-} from "date-fns"
-import styled from "styled-components"
-import PropTypes from "prop-types"
-import { useJobOrdersWithJobSubmissions, useJobSubmissions, IDENTIFIED_COMPANIES_FIELD_KEY } from "../hooks"
-import theme from "../style/theme"
-import Bm from "../kanban/BmHotCandidates"
+} from 'date-fns'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
+
+import { IDENTIFIED_COMPANIES_FIELD_KEY, useJobOrdersWithJobSubmissions, useJobSubmissions } from '../hooks'
+import Bm from '../kanban/BmHotCandidates'
+import theme from '../style/theme'
+import getMapValue from '../utils/getMapValue'
 import {
   STATUS_IDENTIFIED,
   STATUS_INTAKE,
   STATUS_TO_SEND,
   STATUS_WF_FEEDBACK_2,
   STATUS_WF_RESPONSE,
-} from "../utils/kanban"
-import AddCandidateModal from "./AddCandidateModal"
-import DeleteCandidateModal from "./DeleteCandidateModal"
-import AddCompanyModal from "./AddCompanyModal"
-import { ADD, ADD_COMPANY } from "./utils"
-import transformToArrayIfNecessary from "../utils/transformToArrayIfNecessary"
-import getMapValue from "../utils/getMapValue"
+} from '../utils/kanban'
+import transformToArrayIfNecessary from '../utils/transformToArrayIfNecessary'
+
+import AddCandidateModal from './AddCandidateModal'
+import AddCompanyModal from './AddCompanyModal'
+import DeleteCandidateModal from './DeleteCandidateModal'
+import { ADD, ADD_COMPANY } from './utils'
 
 const Main = styled.main`
   display: grid;
@@ -34,21 +36,21 @@ const Main = styled.main`
 `
 
 export const JOB_SUBMISSION_STATUSES_MAP = new Map([
-  [STATUS_TO_SEND, "toSend"],
-  [STATUS_WF_RESPONSE, "wfResponse"],
-  [STATUS_INTAKE, "intake"],
-  [STATUS_WF_FEEDBACK_2, "wfFeedback"],
-  [STATUS_IDENTIFIED, "identified"],
+  [STATUS_TO_SEND, 'toSend'],
+  [STATUS_WF_RESPONSE, 'wfResponse'],
+  [STATUS_INTAKE, 'intake'],
+  [STATUS_WF_FEEDBACK_2, 'wfFeedback'],
+  [STATUS_IDENTIFIED, 'identified'],
 ])
 
-const BENCH_TITLE = "Bench"
-const BENCH_TYPE = "Bench"
+const BENCH_TITLE = 'Bench'
+const BENCH_TYPE = 'Bench'
 const BENCH_ID = 380
-const PROJECT_ROTATIONS_TITLE = "Project Rotations"
-const PROJECT_ROTATIONS_TYPE = "Project Rotations"
+const PROJECT_ROTATIONS_TITLE = 'Project Rotations'
+const PROJECT_ROTATIONS_TYPE = 'Project Rotations'
 const PROJECT_ROTATIONS_ID = 1180
-const WFP_TITLE = "WFP++"
-const WFP_TYPE = "WFP++"
+const WFP_TITLE = 'WFP++'
+const WFP_TYPE = 'WFP++'
 const WFP_ID = 1181
 
 const PANEL_DATA_MAP = new Map([
@@ -110,12 +112,12 @@ const formatDate = (dateAvailable) => {
   const exactDate = intlFormat(
     dateAvailable,
     {
-      month: "numeric",
-      day: "numeric",
-      year: "numeric",
+      month: 'numeric',
+      day: 'numeric',
+      year: 'numeric',
     },
     {
-      locale: "nl-BE",
+      locale: 'nl-BE',
     }
   )
 
@@ -136,7 +138,7 @@ const getDateAvailableAndDateColorCode = (candidate) => {
     // Available now
     if (isToday(dateAvailable) || isPast(dateAvailable)) {
       dateAvailable = formatDate(dateAvailable)
-      dateAvailable = { ...dateAvailable, relativeDate: "now" }
+      dateAvailable = { ...dateAvailable, relativeDate: 'now' }
       dateColorCode = theme.dateAvailableStatusColors.now
 
       // Between tomorrow and 2 weeks
@@ -161,8 +163,8 @@ const getDateAvailableAndDateColorCode = (candidate) => {
     }
   } else {
     dateAvailable = {
-      relativeDate: "unknown",
-      exactDate: "unknown",
+      relativeDate: 'unknown',
+      exactDate: 'unknown',
     }
   }
 
@@ -197,12 +199,16 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
         identified: [],
       }
 
-      for (const jobSubmissionCandidate of jobSubmissionsCandidatesData) {
+      let i = 0
+
+      while (jobSubmissionsCandidatesData[i]) {
+        const jobSubmissionCandidate = jobSubmissionsCandidatesData[i]
+
         const isJobSubmissionFromCurrentCandidate = jobSubmissionCandidate?.candidate?.id === candidate?.id
 
         if (isJobSubmissionFromCurrentCandidate) {
           let currentStatusKey = getMapValue(JOB_SUBMISSION_STATUSES_MAP, jobSubmissionCandidate.status)
-          const jobOrderId = jobSubmissionCandidate?.jobOrder?.id ? String(jobSubmissionCandidate.jobOrder.id) : ""
+          const jobOrderId = jobSubmissionCandidate?.jobOrder?.id ? String(jobSubmissionCandidate.jobOrder.id) : ''
           const jobTitle = jobSubmissionCandidate?.jobOrder?.title
           const company = jobSubmissionCandidate?.jobOrder?.clientCorporation?.name
           const owner = jobSubmissionCandidate?.jobOrder?.owner
@@ -226,6 +232,8 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
             ],
           }
         }
+
+        i += 1
       }
 
       if (candidate?.[IDENTIFIED_COMPANIES_FIELD_KEY]) {
@@ -242,13 +250,17 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
 
   const getPerPanelData = useCallback(
     (bullhornId) => {
-      const data = jobOrdersWithJobSubmission?.data?.data?.find(({ id }) => id === bullhornId)?.submissions?.data
+      const jobSubmissions = jobOrdersWithJobSubmission?.data?.data?.find(({ id }) => id === bullhornId)?.submissions
+        ?.data
       let jobSubmissionsCandidatesData = jobSubmissionsCandidates?.data?.data ?? []
       jobSubmissionsCandidatesData = transformToArrayIfNecessary(jobSubmissionsCandidatesData)
 
       const candidates = []
 
-      for (const { id, candidate } of data) {
+      let i = 0
+
+      while (jobSubmissions[i]) {
+        const { id, candidate } = jobSubmissions[i]
         const { dateAvailable, dateColorCode } = getDateAvailableAndDateColorCode(candidate)
 
         const jobSubmissionsCandidatePerStatus = getJobSubmissionsCandidatePerStatus(
@@ -270,11 +282,13 @@ const HotCandidatesPage = ({ updatedJobSubmission }) => {
         }
 
         candidates.push(updatedCandidate)
+
+        i += 1
       }
 
       return candidates
     },
-    [getJobSubmissionsCandidatePerStatus, jobOrdersWithJobSubmission, jobSubmissionsCandidates]
+    [getJobSubmissionsCandidatePerStatus, jobOrdersWithJobSubmission?.data?.data, jobSubmissionsCandidates?.data?.data]
   )
 
   const data = useMemo(() => {

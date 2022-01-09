@@ -1,14 +1,16 @@
-import React from "react"
-import ReactTooltip from "react-tooltip"
-import { string, number, oneOf } from "prop-types"
-import { v4 as uuid } from "uuid"
-import styled from "styled-components"
-import ExpandViewDetailCandidates from "./ExpandViewDetailCandidates"
-import ExpandViewDetailClient from "./ExpandViewDetailClient"
-import { ClickableTableCell } from "../../style/table_style"
+import React from 'react'
+import ReactTooltip from 'react-tooltip'
+import { number, oneOf, string } from 'prop-types'
+import styled from 'styled-components'
+import { v4 as uuid } from 'uuid'
 
-export const CLIENT = "CLIENT"
-export const CANDIDATE = "CANDIDATE"
+import { ClickableTableCell } from '../../style/table_style'
+
+import ExpandViewDetailCandidates from './ExpandViewDetailCandidates'
+import ExpandViewDetailClient from './ExpandViewDetailClient'
+
+export const CLIENT = 'CLIENT'
+export const CANDIDATE = 'CANDIDATE'
 export const BOLD = 700
 export const REGULAR = 400
 

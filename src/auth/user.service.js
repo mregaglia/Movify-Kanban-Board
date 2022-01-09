@@ -1,12 +1,10 @@
-import { prop, path } from "ramda";
-import { get } from "../utils/api";
+import { path, prop } from 'ramda'
 
-export const getUserId = () => {
-    return get("/settings/userId")
-        .then(response => prop("userId", response))
-}
+import { get } from '../utils/api'
 
-export const getUserOccupation = (userId) => {
-    return get("/entity/CorporateUser/" + userId, { fields: "occupation" })
-        .then(response => path(["data", "occupation"], response))
-}
+export const getUserId = () => get('/settings/userId').then((response) => prop('userId', response))
+
+export const getUserOccupation = (userId) =>
+  get(`/entity/CorporateUser/${userId}`, { fields: 'occupation' }).then((response) =>
+    path(['data', 'occupation'], response)
+  )

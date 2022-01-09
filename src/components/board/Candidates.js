@@ -1,20 +1,16 @@
-import React from "react";
-import { array, string } from "prop-types";
-import CandidateCard from "./CandidateCard";
+import React from 'react'
+import { array, string } from 'prop-types'
+
+import CandidateCard from './CandidateCard'
 
 const Candidates = ({ board, jobSubmissions }) =>
   jobSubmissions.map((jobSubmissionId, index) => (
-    <CandidateCard
-      board={board}
-      key={jobSubmissionId}
-      jobSubmissionId={jobSubmissionId}
-      index={index}
-    />
-  ));
+    <CandidateCard board={board} key={jobSubmissionId} jobSubmissionId={jobSubmissionId} index={index} />
+  ))
 
 Candidates.propTypes = {
   board: string,
-  jobSubmissions: array
-};
+  jobSubmissions: array,
+}
 
-export default Candidates;
+export default Candidates

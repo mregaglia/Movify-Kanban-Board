@@ -1,11 +1,12 @@
 const hexToRGB = (hex) => {
   let clean = hex
-  if (clean.includes("#")) {
-    clean = hex.split("#")[1]
+  if (clean.includes('#')) {
+    ;[, clean] = hex.split('#')
+    // clean = hex.split('#')[1]
   }
 
   if (clean.length !== 6) {
-    throw new Error("Only six-digit hex colors are allowed.")
+    throw new Error('Only six-digit hex colors are allowed.')
   }
 
   const aRgbHex = clean.match(/.{1,2}/g)

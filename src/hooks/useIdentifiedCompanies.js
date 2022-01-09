@@ -1,17 +1,17 @@
-import { useQuery } from "react-query"
-import { get } from "../utils/api"
+import { useQuery } from 'react-query'
 
-const useIdentifiedCompanies = (companyIds) => {
-  return useQuery(
-    ["find-identified-companies", companyIds?.join()],
+import { get } from '../utils/api'
+
+const useIdentifiedCompanies = (companyIds) =>
+  useQuery(
+    ['find-identified-companies', companyIds?.join()],
     () =>
       get(`entity/ClientCorporation/${companyIds?.join()}`, {
-        fields: "id, name",
+        fields: 'id, name',
       }),
     {
       enabled: !!companyIds?.length,
     }
   )
-}
 
 export default useIdentifiedCompanies

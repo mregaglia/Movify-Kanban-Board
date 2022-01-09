@@ -1,26 +1,28 @@
-import React, { useState } from "react"
-import { compose } from "redux"
-import { connect } from "react-redux"
-import { func, object } from "prop-types"
-import { prop, propOr } from "ramda"
-import styled from "styled-components"
-import { Route, withRouter } from "react-router-dom"
-import { ToastContainer } from "react-toastify"
-import "react-toastify/dist/ReactToastify.css"
-import { DragDropContext } from "react-beautiful-dnd"
-import { getColumnData, isFromSameBoard } from "./utils/kanban"
-import AuthenticatedRoute from "./components/AuthenticatedRoute"
-import Home from "./auth/Home"
-import Login from "./auth/Login"
-import Kanban from "./kanban/Kanban"
-import Recruitment from "./recruitment/Recruitment"
-import { updateJobSubmission as updateKanbanJobSubmission } from "./kanban/kanban.actions"
-import { updateJobSubmission as updateRecruitmentJobSubmission } from "./recruitment/recruitment.actions"
-import { addCandidate, addHotCandidate } from "./transition/transition.actions"
-import Header from "./Header"
-import Reporting from "./reporting/components/Reporting"
-import HotCandidates from "./hotCandidates"
-import { useUpdateJobSubmission } from "./hooks"
+import React, { useState } from 'react'
+import { DragDropContext } from 'react-beautiful-dnd'
+import { connect } from 'react-redux'
+import { Route, withRouter } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import { func, object } from 'prop-types'
+import { prop, propOr } from 'ramda'
+import { compose } from 'redux'
+import styled from 'styled-components'
+
+import Home from './auth/Home'
+import Login from './auth/Login'
+import AuthenticatedRoute from './components/AuthenticatedRoute'
+import Kanban from './kanban/Kanban'
+import { updateJobSubmission as updateKanbanJobSubmission } from './kanban/kanban.actions'
+import Recruitment from './recruitment/Recruitment'
+import { updateJobSubmission as updateRecruitmentJobSubmission } from './recruitment/recruitment.actions'
+import Reporting from './reporting/components/Reporting'
+import { addCandidate, addHotCandidate } from './transition/transition.actions'
+import { getColumnData, isFromSameBoard } from './utils/kanban'
+import Header from './Header'
+import { useUpdateJobSubmission } from './hooks'
+import HotCandidates from './hotCandidates'
+
+import 'react-toastify/dist/ReactToastify.css'
 
 const Container = styled.div({
   paddingLeft: 25,
@@ -30,11 +32,11 @@ const Container = styled.div({
 })
 
 const Routes = ({
-  addCandidate,
-  addHotCandidate,
+  addCandidate: addCandidateProp,
+  addHotCandidate: addHotCandidateProp,
   location,
-  updateKanbanJobSubmission,
-  updateRecruitmentJobSubmission,
+  updateKanbanJobSubmission: updateKanbanJobSubmissionProp,
+  updateRecruitmentJobSubmission: updateRecruitmentJobSubmissionProp,
 }) => {
   const [duplicateModalData, setDuplicateModalData] = useState(undefined)
   const [addModalData, setAddModalData] = useState(undefined)
@@ -45,7 +47,7 @@ const Routes = ({
   const [updatedJobSubmission, setUpdatedJobSubmission] = useState()
   const updateJobSubmissionMutation = useUpdateJobSubmission()
 
-  const board = propOr(" ", "pathname", location).substring(1)
+  const board = propOr(' ', 'pathname', location).substring(1)
 
   const handleDragEnd = (result) => {
     const { destination, source, draggableId } = result
@@ -56,64 +58,90 @@ const Routes = ({
       return
     }
 
-    if (["kanban", "recruitment"].includes(board)) {
+    const onDndRecruitment = (
+      resultDnd,
+      jobSubmissionId,
+      src,
+      dest,
+      srcStatus,
+      destStatus,
+      jobOrderId,
+      destJobOrderId
+    ) => {
+      if (resultDnd?.source?.droppableId === 'transition') {
+        //
+      } else if (resultDnd?.destination?.droppableId === 'transition') {
+        addCandidateProp('recruitment', jobSubmissionId)
+      } else if (isFromSameBoard(src, dest) && src.status !== dest.status) {
+        updateRecruitmentJobSubmissionProp(jobOrderId, srcStatus, jobOrderId, jobSubmissionId, destStatus)
+      } else if (!isFromSameBoard(src, dest)) {
+        setIsUpdateModalOpen(true)
+        setUpdateModalData({
+          jobOrderId: destJobOrderId,
+          jobSubmissionId,
+          status: destStatus,
+        })
+      }
+    }
+
+    const onDndKanban = (resultDnd, jobSubmissionId, src, dest, srcStatus, destStatus, jobOrderId, destJobOrderId) => {
+      if (resultDnd?.destination?.droppableId === 'transition') {
+        //
+      } else if (resultDnd?.source?.droppableId === 'transition') {
+        setIsAddModalOpen(true)
+        setAddModalData({
+          jobOrderId: destJobOrderId,
+          candidateId: jobSubmissionId,
+          status: destStatus,
+        })
+      } else if (isFromSameBoard(src, dest) && src.status !== dest.status) {
+        updateKanbanJobSubmissionProp(jobOrderId, srcStatus, jobSubmissionId, destStatus)
+      } else if (!isFromSameBoard(src, dest)) {
+        setIsDuplicateModalOpen(true)
+        setDuplicateModalData({
+          jobOrderId: destJobOrderId,
+          jobSubmissionId,
+          status: destStatus,
+        })
+      }
+    }
+
+    if (['kanban', 'recruitment'].includes(board)) {
       const jobSubmissionId = draggableId
       const src = getColumnData(result?.source?.droppableId)
       const dest = getColumnData(result?.destination?.droppableId)
-      const srcStatus = prop("status", src)
-      const destStatus = prop("status", dest)
-      const jobOrderId = prop("jobOrderId", src)
-      const destJobOrderId = prop("jobOrderId", dest)
+      const srcStatus = prop('status', src)
+      const destStatus = prop('status', dest)
+      const jobOrderId = prop('jobOrderId', src)
+      const destJobOrderId = prop('jobOrderId', dest)
 
-      if (board === "kanban") {
+      if (board === 'kanban') {
         onDndKanban(result, jobSubmissionId, src, dest, srcStatus, destStatus, jobOrderId, destJobOrderId)
-      } else if (board === "recruitment") {
+      } else if (board === 'recruitment') {
         onDndRecruitment(result, jobSubmissionId, src, dest, srcStatus, destStatus, jobOrderId, destJobOrderId)
       }
-    } else if (board === "hot-candidates") {
+    } else if (board === 'hot-candidates') {
       const destinationDroppableId = destination.droppableId
-      const isDestinationTransition = destinationDroppableId === "transition"
+      const isDestinationTransition = destinationDroppableId === 'transition'
 
-      const { 0: destinationStatus } = destinationDroppableId.split("@")
+      const { 0: destinationStatus } = destinationDroppableId.split('@')
 
       const sourceDroppableId = source.droppableId
-      const isSourceTransition = sourceDroppableId === "transition"
+      const isSourceTransition = sourceDroppableId === 'transition'
 
-      const { 0: oldStatus, 1: candidateId } = sourceDroppableId.split("@")
+      const { 0: oldStatus, 1: candidateId } = sourceDroppableId.split('@')
 
       if (isSourceTransition) {
-        return
-      } else if (isDestinationTransition && oldStatus === "NO_STATUS") {
-        addHotCandidate("hot-candidates", candidateId)
-      } else if (!["NO_STATUS", "Identified", "transition"].includes(destinationStatus)) {
+        //
+      } else if (isDestinationTransition && oldStatus === 'NO_STATUS') {
+        addHotCandidateProp('hot-candidates', candidateId)
+      } else if (!['NO_STATUS', 'Identified', 'transition'].includes(destinationStatus)) {
         if (oldStatus !== destinationStatus && draggableId) {
           const updatedJobSubmissionData = { jobSubmissionId: draggableId, status: destinationStatus }
           setUpdatedJobSubmission(updatedJobSubmissionData)
           updateJobSubmissionMutation.mutate(updatedJobSubmissionData)
         }
       }
-    }
-  }
-
-  const onDndKanban = (result, jobSubmissionId, src, dest, srcStatus, destStatus, jobOrderId, destJobOrderId) => {
-    if (result?.destination?.droppableId === "transition") {
-      return
-    } else if (result?.source?.droppableId === "transition") {
-      setIsAddModalOpen(true)
-      setAddModalData({
-        jobOrderId: destJobOrderId,
-        candidateId: jobSubmissionId,
-        status: destStatus,
-      })
-    } else if (isFromSameBoard(src, dest) && src.status !== dest.status) {
-      updateKanbanJobSubmission(jobOrderId, srcStatus, jobSubmissionId, destStatus)
-    } else if (!isFromSameBoard(src, dest)) {
-      setIsDuplicateModalOpen(true)
-      setDuplicateModalData({
-        jobOrderId: destJobOrderId,
-        jobSubmissionId,
-        status: destStatus,
-      })
     }
   }
 
@@ -124,23 +152,6 @@ const Routes = ({
 
   const onCloseRecruitmentModal = () => {
     setIsUpdateModalOpen(false)
-  }
-
-  const onDndRecruitment = (result, jobSubmissionId, src, dest, srcStatus, destStatus, jobOrderId, destJobOrderId) => {
-    if (result?.source?.droppableId === "transition") {
-      return
-    } else if (result?.destination?.droppableId === "transition") {
-      addCandidate("recruitment", jobSubmissionId)
-    } else if (isFromSameBoard(src, dest) && src.status !== dest.status) {
-      updateRecruitmentJobSubmission(jobOrderId, srcStatus, jobOrderId, jobSubmissionId, destStatus)
-    } else if (!isFromSameBoard(src, dest)) {
-      setIsUpdateModalOpen(true)
-      setUpdateModalData({
-        jobOrderId: destJobOrderId,
-        jobSubmissionId,
-        status: destStatus,
-      })
-    }
   }
 
   return (

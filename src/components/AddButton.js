@@ -1,8 +1,10 @@
-import React from "react"
-import styled, { css } from "styled-components"
-import PropTypes from "prop-types"
-import { Add } from "./svgs"
-import theme from "../style/theme"
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled, { css } from 'styled-components'
+
+import theme from '../style/theme'
+
+import { Add } from './svgs'
 
 const Button = styled.button`
   ${({ color }) => css`
@@ -20,13 +22,11 @@ const Button = styled.button`
   `}
 `
 
-const AddButton = ({ backgroundColor, color = theme.colors.white, onClick, title, className }) => {
-  return (
-    <Button color={backgroundColor} onClick={onClick} title={title} className={className}>
-      <Add color={color} />
-    </Button>
-  )
-}
+const AddButton = ({ backgroundColor, color = theme.colors.white, onClick, title, className }) => (
+  <Button color={backgroundColor} onClick={onClick} title={title} className={className}>
+    <Add color={color} />
+  </Button>
+)
 
 AddButton.propTypes = {
   backgroundColor: PropTypes.string,

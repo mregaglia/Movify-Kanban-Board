@@ -1,17 +1,19 @@
-import { dissoc, mergeDeepWith, union } from "ramda";
-import { bindReducer } from "../utils/reducer";
-import { unionArrays } from "../utils/kanban";
+import { dissoc, mergeDeepWith, union } from 'ramda'
+
+import { unionArrays } from '../utils/kanban'
+import { bindReducer } from '../utils/reducer'
+
 import {
   GET_RECRUITMENT,
-  UPDATE_RECRUITMENT_CLIENT_CORPORATIONS,
+  REMOVE_RECRUITMENT_JOB_SUBMISSION,
   SET_RECRUITMENT_JOB_ORDERS,
-  UPDATE_RECRUITMENT_JOB_ORDERS,
   SET_RECRUITMENT_JOB_SUBMISSIONS,
-  UPDATE_RECRUITMENT_JOB_SUBMISSIONS,
-  UPDATE_RECRUITMENT_CLIENT_CORPORATIONS_IDS,
   UPDATE_HRS,
-  REMOVE_RECRUITMENT_JOB_SUBMISSION
-} from "./recruitment.actions";
+  UPDATE_RECRUITMENT_CLIENT_CORPORATIONS,
+  UPDATE_RECRUITMENT_CLIENT_CORPORATIONS_IDS,
+  UPDATE_RECRUITMENT_JOB_ORDERS,
+  UPDATE_RECRUITMENT_JOB_SUBMISSIONS,
+} from './recruitment.actions'
 
 export const initialState = {
   loading: false,
@@ -19,52 +21,47 @@ export const initialState = {
   clientCorporations: {},
   jobOrders: {},
   jobSubmissions: {},
-  hrs: []
-};
+  hrs: [],
+}
 
 const recruitment = {
   [GET_RECRUITMENT]: () => ({
     ...initialState,
-    loading: true
+    loading: true,
   }),
   [UPDATE_RECRUITMENT_CLIENT_CORPORATIONS_IDS]: (state, payload) => ({
     ...state,
-    clientList: union(state.clientList, payload)
+    clientList: union(state.clientList, payload),
   }),
   [UPDATE_RECRUITMENT_CLIENT_CORPORATIONS]: (state, payload) => ({
     ...state,
-    clientCorporations: mergeDeepWith(
-      unionArrays,
-      state.clientCorporations,
-      payload
-    )
+    clientCorporations: mergeDeepWith(unionArrays, state.clientCorporations, payload),
   }),
   [SET_RECRUITMENT_JOB_ORDERS]: (state, payload) => ({
     ...state,
-    jobOrders: payload
+    jobOrders: payload,
   }),
   [UPDATE_RECRUITMENT_JOB_ORDERS]: (state, payload) => ({
     ...state,
-    jobOrders: mergeDeepWith(unionArrays, state.jobOrders, payload)
+    jobOrders: mergeDeepWith(unionArrays, state.jobOrders, payload),
   }),
   [SET_RECRUITMENT_JOB_SUBMISSIONS]: (state, payload) => ({
     ...state,
-    jobSubmissions: payload
+    jobSubmissions: payload,
   }),
   [UPDATE_RECRUITMENT_JOB_SUBMISSIONS]: (state, payload) => ({
     ...state,
     loading: false,
-    jobSubmissions: mergeDeepWith(unionArrays, state.jobSubmissions, payload)
+    jobSubmissions: mergeDeepWith(unionArrays, state.jobSubmissions, payload),
   }),
   [UPDATE_HRS]: (state, payload) => ({
     ...state,
-    hrs: union(state.hrs, payload)
+    hrs: union(state.hrs, payload),
   }),
   [REMOVE_RECRUITMENT_JOB_SUBMISSION]: (state, payload) => ({
     ...state,
-    jobSubmissions: dissoc(payload, state.jobSubmissions)
-  })
-};
+    jobSubmissions: dissoc(payload, state.jobSubmissions),
+  }),
+}
 
-export default (state, action) =>
-  bindReducer(state, action, recruitment, initialState);
+export default (state, action) => bindReducer(state, action, recruitment, initialState)

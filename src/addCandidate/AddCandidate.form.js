@@ -1,11 +1,13 @@
-import React from "react";
-import { Field, reduxForm } from "redux-form";
-import { array, bool, func } from "prop-types";
-import { isRequired } from "../utils/validate";
-import { Action, Row } from "../components/modal";
-import { Select } from "../components/form";
-import CandidateInput from "./CandidateInput";
-import { statusLabels } from "../utils/statusLabels";
+import React from 'react'
+import { array, bool, func } from 'prop-types'
+import { Field, reduxForm } from 'redux-form'
+
+import { Select } from '../components/form'
+import { Action, Row } from '../components/modal'
+import { statusLabels } from '../utils/statusLabels'
+import { isRequired } from '../utils/validate'
+
+import { CandidateInput } from './CandidateInput'
 
 const AddCandidateForm = ({ handleSubmit, onClose, statuses, valid }) => (
   <form onSubmit={handleSubmit}>
@@ -16,7 +18,7 @@ const AddCandidateForm = ({ handleSubmit, onClose, statuses, valid }) => (
       component={Select}
       validate={isRequired}
       renderOptions={() =>
-        statuses.map(option => (
+        statuses.map((option) => (
           <option key={option} value={option}>
             {statusLabels.get(option)}
           </option>
@@ -32,15 +34,15 @@ const AddCandidateForm = ({ handleSubmit, onClose, statuses, valid }) => (
       </Action>
     </Row>
   </form>
-);
+)
 
 AddCandidateForm.propTypes = {
   handleSubmit: func,
   onClose: func,
   statuses: array,
-  valid: bool
-};
+  valid: bool,
+}
 
 export default reduxForm({
-  form: "addCandidate"
-})(AddCandidateForm);
+  form: 'addCandidate',
+})(AddCandidateForm)

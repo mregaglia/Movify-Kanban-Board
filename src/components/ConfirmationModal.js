@@ -1,15 +1,16 @@
-import React from "react";
-import { bool, func, string } from "prop-types";
-import styled from "styled-components";
-import { Action, Modal, Row, Title } from "../components/modal";
+import React from 'react'
+import { bool, func, string } from 'prop-types'
+import styled from 'styled-components'
+
+import { Action, Modal, Row, Title } from './modal'
 
 const Text = styled.div(({ theme }) => ({
   fontFamily: theme.fonts.fontFamily,
   fontSize: theme.textDimensions.regular,
-  textAlign: "justify",
+  textAlign: 'justify',
   marginTop: 8,
-  marginBottom: 24
-}));
+  marginBottom: 24,
+}))
 
 const ConfirmationModal = ({ isOpen, onConfirm, onClose, title, text }) => (
   <Modal isOpen={isOpen} onClose={onClose}>
@@ -24,19 +25,19 @@ const ConfirmationModal = ({ isOpen, onConfirm, onClose, title, text }) => (
       </Row>
     </div>
   </Modal>
-);
+)
 
 ConfirmationModal.propTypes = {
   isOpen: bool,
   onConfirm: func,
   onClose: func,
   title: string,
-  text: string
-};
+  text: string,
+}
 
 ConfirmationModal.defaultProps = {
   isOpen: false,
-  onClose: () => null
-};
+  onClose: () => null,
+}
 
-export default ConfirmationModal;
+export default ConfirmationModal

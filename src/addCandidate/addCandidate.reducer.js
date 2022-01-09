@@ -1,16 +1,16 @@
-import { bindReducer } from "../utils/reducer";
-import { SET_CANDIDATE_SUGGESTIONS } from "./addCandidate.actions";
+import { bindReducer } from '../utils/reducer'
+
+import { SET_CANDIDATE_SUGGESTIONS } from './addCandidate.actions'
 
 export const initialState = {
-  suggestions: []
-};
+  suggestions: [],
+}
 
 const addCandidate = {
   [SET_CANDIDATE_SUGGESTIONS]: (state, payload) => ({
     ...state,
-    suggestions: payload
-  })
-};
+    suggestions: payload,
+  }),
+}
 
-export default (state, action) =>
-  bindReducer(state, action, addCandidate, initialState);
+export default (state, action) => bindReducer(state, action, addCandidate, initialState)

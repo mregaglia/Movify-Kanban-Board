@@ -1,9 +1,11 @@
-import React from "react"
-import PropTypes from "prop-types"
-import styled, { css } from "styled-components"
-import { useIdentifiedCompanies, useUpdateIdentifiedCompanies } from "../../hooks"
-import transformToArrayIfNecessary from "../../utils/transformToArrayIfNecessary"
-import { HotCandidateCompaniesContainer, HotCandidateCompany } from "./styledComponents"
+import React from 'react'
+import PropTypes from 'prop-types'
+import styled, { css } from 'styled-components'
+
+import { useIdentifiedCompanies, useUpdateIdentifiedCompanies } from '../../hooks'
+import transformToArrayIfNecessary from '../../utils/transformToArrayIfNecessary'
+
+import { HotCandidateCompaniesContainer, HotCandidateCompany } from './styledComponents'
 
 const DeleteCompanyButton = styled.button`
   ${({ theme: { colors } }) => css`
@@ -18,7 +20,7 @@ const DeleteCompanyButton = styled.button`
     border: none;
     cursor: pointer;
     &::before {
-      content: "x";
+      content: 'x';
       color: ${colors.white};
     }
   `}

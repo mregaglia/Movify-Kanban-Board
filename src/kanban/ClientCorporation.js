@@ -1,12 +1,14 @@
-import React from "react"
-import { Droppable } from "react-beautiful-dnd"
-import { connect } from "react-redux"
-import { pathOr } from "ramda"
-import { number, object, string, oneOf, func } from "prop-types"
-import { ColorRowText, Column, Row } from "../components"
-import JobOrder from "./JobOrder"
-import { BUSINESS, HOT_CANDIDATES } from "./Bm"
-import HotCandidate from "../components/HotCandidate"
+import React from 'react'
+import { Droppable } from 'react-beautiful-dnd'
+import { connect } from 'react-redux'
+import { func, number, object, oneOf, string } from 'prop-types'
+import { pathOr } from 'ramda'
+
+import { ColorRowText, Column, Row } from '../components'
+import HotCandidate from '../components/HotCandidate'
+
+import { BUSINESS, HOT_CANDIDATES } from './Bm'
+import JobOrder from './JobOrder'
 
 const ClientCorporation = ({
   bmId,
@@ -22,7 +24,7 @@ const ClientCorporation = ({
 
   return (
     <div>
-      {shouldRenderHeader && <ColorRowText color={color}>{clientCorporation?.name ?? ""}</ColorRowText>}
+      {shouldRenderHeader && <ColorRowText color={color}>{clientCorporation?.name ?? ''}</ColorRowText>}
       <Row>
         <Column>
           {kanbanType === HOT_CANDIDATES ? (
@@ -55,7 +57,7 @@ ClientCorporation.propTypes = {
   ccId: number,
   clientCorporation: object,
   color: string,
-  kanbanType: oneOf(["HOT_CANDIDATES", "BUSINESS"]),
+  kanbanType: oneOf(['HOT_CANDIDATES', 'BUSINESS']),
   data: object,
   index: number,
   onOpenDeleteModal: func,
@@ -63,5 +65,5 @@ ClientCorporation.propTypes = {
 }
 
 export default connect((state, { ccId }) => ({
-  clientCorporation: pathOr({}, ["kanban", "clientCorporations", ccId], state),
+  clientCorporation: pathOr({}, ['kanban', 'clientCorporations', ccId], state),
 }))(ClientCorporation)

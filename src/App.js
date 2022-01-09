@@ -1,26 +1,27 @@
-import React, { useEffect } from "react";
-import { connect } from "react-redux";
-import { func, object } from "prop-types";
-import { ThemeProvider } from "styled-components";
-import { BrowserRouter as Router } from "react-router-dom";
-import Modal from "react-modal";
-import { getToken, getBaseUrl } from "./utils/storage";
-import { setToken, setBaseUrl } from "./utils/api";
-import theme from "./style/theme";
-import { checkAuth } from "./auth/auth.actions";
-import Routes from "./Routes"
+import React, { useEffect } from 'react'
+import Modal from 'react-modal'
+import { connect } from 'react-redux'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { func } from 'prop-types'
+import { ThemeProvider } from 'styled-components'
 
-const App = ({ checkAuth }) => {
+import { checkAuth } from './auth/auth.actions'
+import theme from './style/theme'
+import { setBaseUrl, setToken } from './utils/api'
+import { getBaseUrl, getToken } from './utils/storage'
+import Routes from './Routes'
+
+const App = ({ checkAuth: checkAuthProp }) => {
   useEffect(() => {
-    Modal.setAppElement("body");
+    Modal.setAppElement('body')
 
-    const token = getToken();
-    const baseUrl = getBaseUrl();
-    if (token) setToken(token);
-    if (baseUrl) setBaseUrl(baseUrl);
+    const token = getToken()
+    const baseUrl = getBaseUrl()
+    if (token) setToken(token)
+    if (baseUrl) setBaseUrl(baseUrl)
 
-    checkAuth();
-  }, [checkAuth]);
+    checkAuthProp()
+  }, [checkAuthProp])
 
   return (
     <Router>
@@ -28,18 +29,11 @@ const App = ({ checkAuth }) => {
         <Routes />
       </ThemeProvider>
     </Router>
-  );
+  )
 }
 
 App.propTypes = {
-  addCandidate: func,
   checkAuth: func,
-  location: object,
-  updateKanbanJobSubmission: func,
-  updateRecruitmentJobSubmission: func
-};
+}
 
-export default connect(
-  null,
-  { checkAuth }
-)(App);
+export default connect(null, { checkAuth })(App)

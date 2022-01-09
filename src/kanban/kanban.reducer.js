@@ -1,18 +1,20 @@
-import { dissoc, mergeDeepRight, mergeDeepWith } from "ramda";
-import { bindReducer } from "../utils/reducer";
-import { unionArrays } from "../utils/kanban";
+import { dissoc, mergeDeepRight, mergeDeepWith } from 'ramda'
+
+import { unionArrays } from '../utils/kanban'
+import { bindReducer } from '../utils/reducer'
+
 import {
   GET_KANBAN,
+  REMOVE_JOB_SUBMISSION,
   SET_BMS,
+  SET_JOB_ORDERS,
+  SET_JOB_SUBMISSIONS,
   UPDATE_BMS,
   UPDATE_CLIENT_CORPORATIONS,
   UPDATE_FILTERED_JOB_ORDERS,
-  SET_JOB_ORDERS,
   UPDATE_JOB_ORDERS,
-  SET_JOB_SUBMISSIONS,
   UPDATE_JOB_SUBMISSIONS,
-  REMOVE_JOB_SUBMISSION
-} from "./kanban.actions";
+} from './kanban.actions'
 
 export const initialState = {
   loading: false,
@@ -20,60 +22,52 @@ export const initialState = {
   bms: {},
   clientCorporations: {},
   jobOrders: {},
-  jobSubmissions: {}
-};
+  jobSubmissions: {},
+}
 
 const kanban = {
   [GET_KANBAN]: () => ({
     ...initialState,
-    loading: true
+    loading: true,
   }),
   [SET_BMS]: (state, payload) => ({
     ...state,
-    bmList: payload
+    bmList: payload,
   }),
   [UPDATE_BMS]: (state, payload) => ({
     ...state,
-    bms: mergeDeepWith(unionArrays, state.bms, payload)
+    bms: mergeDeepWith(unionArrays, state.bms, payload),
   }),
   [UPDATE_CLIENT_CORPORATIONS]: (state, payload) => ({
     ...state,
-    clientCorporations: mergeDeepWith(
-      unionArrays,
-      state.clientCorporations,
-      payload
-    )
+    clientCorporations: mergeDeepWith(unionArrays, state.clientCorporations, payload),
   }),
   [UPDATE_FILTERED_JOB_ORDERS]: (state, payload) => ({
     ...state,
-    clientCorporations: mergeDeepRight(
-      state.clientCorporations,
-      payload
-    )
+    clientCorporations: mergeDeepRight(state.clientCorporations, payload),
   }),
   [SET_JOB_ORDERS]: (state, payload) => ({
     ...state,
-    jobOrders: payload
+    jobOrders: payload,
   }),
   [UPDATE_JOB_ORDERS]: (state, payload) => ({
     ...state,
-    jobOrders: mergeDeepWith(unionArrays, state.jobOrders, payload)
+    jobOrders: mergeDeepWith(unionArrays, state.jobOrders, payload),
   }),
   [SET_JOB_SUBMISSIONS]: (state, payload) => ({
     ...state,
     loading: false,
-    jobSubmissions: payload
+    jobSubmissions: payload,
   }),
   [UPDATE_JOB_SUBMISSIONS]: (state, payload) => ({
     ...state,
     loading: false,
-    jobSubmissions: mergeDeepWith(unionArrays, state.jobSubmissions, payload)
+    jobSubmissions: mergeDeepWith(unionArrays, state.jobSubmissions, payload),
   }),
   [REMOVE_JOB_SUBMISSION]: (state, payload) => ({
     ...state,
-    jobSubmissions: dissoc(payload, state.jobSubmissions)
-  })
-};
+    jobSubmissions: dissoc(payload, state.jobSubmissions),
+  }),
+}
 
-export default (state, action) =>
-  bindReducer(state, action, kanban, initialState);
+export default (state, action) => bindReducer(state, action, kanban, initialState)

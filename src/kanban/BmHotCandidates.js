@@ -1,17 +1,19 @@
-import React, { useEffect, useRef, useState } from "react"
-import { v4 as uuid } from "uuid"
-import { connect } from "react-redux"
-import { pathOr } from "ramda"
-import { number, object, string, oneOf, array, func, oneOfType } from "prop-types"
-import styled, { css } from "styled-components"
-import { Column } from "../components"
-import ClientCorporation from "./ClientCorporation"
-import { ADD, ADD_COMPANY, DELETE } from "../hotCandidates/utils"
-import AddButton from "../components/AddButton"
-import TitleBackground from "../components/svgs/TitleBackground"
+import React, { useEffect, useRef, useState } from 'react'
+import { connect } from 'react-redux'
+import { array, func, number, object, oneOf, oneOfType, string } from 'prop-types'
+import { pathOr } from 'ramda'
+import styled, { css } from 'styled-components'
+import { v4 as uuid } from 'uuid'
 
-export const HOT_CANDIDATES = "HOT_CANDIDATES"
-export const BUSINESS = "BUSINESS"
+import { Column } from '../components'
+import AddButton from '../components/AddButton'
+import TitleBackground from '../components/svgs/TitleBackground'
+import { ADD, ADD_COMPANY, DELETE } from '../hotCandidates/utils'
+
+import ClientCorporation from './ClientCorporation'
+
+export const HOT_CANDIDATES = 'HOT_CANDIDATES'
+export const BUSINESS = 'BUSINESS'
 
 export const KANBAN_TYPES = [HOT_CANDIDATES, BUSINESS]
 
@@ -40,7 +42,7 @@ const Title = styled.p`
     text-shadow: 1px 1px 2px #00000021;
     margin: 0;
     &::before {
-      content: "";
+      content: '';
       background-color: ${color};
       position: absolute;
       left: 0;
@@ -51,7 +53,7 @@ const Title = styled.p`
       z-index: -1;
     }
     &::after {
-      content: "";
+      content: '';
       background-color: ${color};
       position: absolute;
       right: 0;
@@ -149,16 +151,14 @@ const Bm = ({ bm, jobOrderId, color, title, data, kanbanType = BUSINESS, onOpenM
 
 Bm.propTypes = {
   bm: object,
-  bmId: number,
   color: string,
   title: string,
   data: array,
   jobOrderId: oneOfType([string, number]),
-  kanbanType: oneOf(["HOT_CANDIDATES", "BUSINESS"]),
+  kanbanType: oneOf(['HOT_CANDIDATES', 'BUSINESS']),
   onOpenModal: func,
-  onOpenAddCompanyModal: func,
 }
 
 export default connect((state, { bmId }) => ({
-  bm: pathOr({}, ["kanban", "bms", bmId], state),
+  bm: pathOr({}, ['kanban', 'bms', bmId], state),
 }))(Bm)

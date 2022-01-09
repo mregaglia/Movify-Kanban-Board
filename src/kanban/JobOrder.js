@@ -1,25 +1,27 @@
-import React, { useState, useRef } from "react";
-import { connect } from "react-redux";
-import { pathOr, prop, propOr } from "ramda";
-import { func, number, object, string } from "prop-types";
-import styled, { css } from "styled-components";
-import ReactTooltip from "react-tooltip";
-import { AVAILABLE_STATUSES } from "../utils/kanban";
-import PriorityBadge from "../components/PriorityBadge";
-import { Row } from "../components";
-import { Add } from "../components/svgs";
-import Board from "../components/board/Board";
-import AddCandidateModal from "../addCandidate/AddCandidateModal";
-import { createJobSubmission } from "./kanban.actions";
+import React, { useRef, useState } from 'react'
+import { connect } from 'react-redux'
+import ReactTooltip from 'react-tooltip'
+import { func, object, string } from 'prop-types'
+import { pathOr, prop, propOr } from 'ramda'
+import styled, { css } from 'styled-components'
+
+import AddCandidateModal from '../addCandidate/AddCandidateModal'
+import { Row } from '../components'
+import Board from '../components/board/Board'
+import PriorityBadge from '../components/PriorityBadge'
+import { Add } from '../components/svgs'
+import { AVAILABLE_STATUSES } from '../utils/kanban'
+
+import { createJobSubmission } from './kanban.actions'
 
 const Column = styled.div({
-  display: "flex",
-  flexDirection: "column",
-  width: "16%"
-});
+  display: 'flex',
+  flexDirection: 'column',
+  width: '16%',
+})
 
 const Title = styled.div(({ theme }) => ({
-  display: "flex",
+  display: 'flex',
   flex: 1,
   fontFamily: theme.fonts.fontFamily,
   fontSize: theme.textDimensions.medium,
@@ -29,31 +31,31 @@ const Title = styled.div(({ theme }) => ({
   paddingLeft: 12,
   paddingBottom: 12,
   marginTop: 4,
-  textOverflow: "ellipsis",
-  overflow: "hidden"
-}));
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+}))
 
 const Text = styled.div(({ theme }) => ({
-  display: "flex",
+  display: 'flex',
   flex: 1,
   fontFamily: theme.fonts.fontFamily,
   fontSize: theme.textDimensions.regular,
   padding: 12,
-  textOverflow: "ellipsis",
-  overflow: "hidden"
-}));
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+}))
 
 const AddButton = styled.div(({ color, theme }) => ({
-  alignSelf: "center",
-  textAlign: "center",
-  cursor: "pointer",
+  alignSelf: 'center',
+  textAlign: 'center',
+  cursor: 'pointer',
   backgroundColor: color,
   color: theme.colors.darkWhite,
   height: 30,
   width: 30,
   borderRadius: 15,
-  marginRight: 8
-}));
+  marginRight: 8,
+}))
 
 const StyledRow = styled(Row)`
   padding: 0.5rem 0;
@@ -80,27 +82,21 @@ const Tooltip = styled(ReactTooltip)`
       }
     }
   `}
-`;
+`
 
-const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const JobOrder = ({ color, createJobSubmission: createJobSubmissionProp, jobOrder }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const infoTooltipRef = useRef(null)
 
-  const onAddCandidate = values =>
-    createJobSubmission(
-      jobOrder,
-      { candidate: prop("candidate", values) },
-      prop("status", values)
-    );
+  const onAddCandidate = (values) =>
+    createJobSubmissionProp(jobOrder, { candidate: prop('candidate', values) }, prop('status', values))
 
   return (
     <StyledRow>
       <Column>
         <Row>
-          <Title data-tip={prop("description", jobOrder)}>
-            {propOr("", "title", jobOrder)}
-          </Title>
-          <PriorityBadge priority={prop("employmentType", jobOrder)} />
+          <Title data-tip={prop('description', jobOrder)}>{propOr('', 'title', jobOrder)}</Title>
+          <PriorityBadge priority={prop('employmentType', jobOrder)} />
           <Tooltip
             className="jobDescription"
             place="right"
@@ -113,9 +109,9 @@ const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
               // If so we override the position
               // Issue: https://github.com/wwayne/react-tooltip/issues/599
 
-              const { tooltipRef } = infoTooltipRef?.current
+              if (!infoTooltipRef?.current?.tooltipRef) return
 
-              if (!tooltipRef) return
+              const { tooltipRef } = infoTooltipRef.current
 
               const tooltipRectangle = tooltipRef.getBoundingClientRect()
               const overflownTop = tooltipRectangle.top < 0
@@ -132,15 +128,13 @@ const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
           />
         </Row>
         <Row>
-          <Title style={{ paddingTop: 0, marginTop: 0 }}>
-            {propOr("", "id", jobOrder)}
-          </Title>
+          <Title style={{ paddingTop: 0, marginTop: 0 }}>{propOr('', 'id', jobOrder)}</Title>
         </Row>
         <Row>
           <Text>
-            {`${pathOr("", ["clientContact", "firstName"], jobOrder)} ${pathOr(
-              "",
-              ["clientContact", "lastName"],
+            {`${pathOr('', ['clientContact', 'firstName'], jobOrder)} ${pathOr(
+              '',
+              ['clientContact', 'lastName'],
               jobOrder
             )} `}
           </Text>
@@ -158,26 +152,25 @@ const JobOrder = ({ color, createJobSubmission, jobOrder }) => {
       </Column>
       <Board
         board="kanban"
-        jobSubmissions={prop("jobSubmissions", jobOrder)}
+        jobSubmissions={prop('jobSubmissions', jobOrder)}
         statuses={AVAILABLE_STATUSES}
-        bmId={prop("bmId", jobOrder)}
-        clientCorporationId={prop("clientCorporationId", jobOrder)}
-        jobOrderId={prop("id", jobOrder)}
+        bmId={prop('bmId', jobOrder)}
+        clientCorporationId={prop('clientCorporationId', jobOrder)}
+        jobOrderId={prop('id', jobOrder)}
       />
     </StyledRow>
-  );
-};
+  )
+}
 
 JobOrder.propTypes = {
   color: string,
   createJobSubmission: func,
-  joId: number,
-  jobOrder: object
-};
+  jobOrder: object,
+}
 
 export default connect(
   (state, { joId }) => ({
-    jobOrder: pathOr({}, ["kanban", "jobOrders", joId], state)
+    jobOrder: pathOr({}, ['kanban', 'jobOrders', joId], state),
   }),
   { createJobSubmission }
-)(JobOrder);
+)(JobOrder)

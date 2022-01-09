@@ -1,14 +1,16 @@
-import React from "react";
-import { v4 as uuid } from "uuid"
-import { connect } from "react-redux";
-import { pathOr } from "ramda";
-import { number, object, string, oneOf, array, func } from "prop-types";
-import styled, { css } from "styled-components";
-import { formatBmName } from "../utils/kanban";
-import { ColorColumnText, Column, Row } from "../components";
-import ClientCorporation from "./ClientCorporation";
-import { Add } from "../components/svgs";
-import { ADD, DELETE } from "../hotCandidates/utils";
+import React from 'react'
+import { connect } from 'react-redux'
+import { array, func, object, oneOf, string } from 'prop-types'
+import { pathOr } from 'ramda'
+import styled, { css } from 'styled-components'
+import { v4 as uuid } from 'uuid'
+
+import { ColorColumnText, Column, Row } from '../components'
+import { Add } from '../components/svgs'
+import { ADD, DELETE } from '../hotCandidates/utils'
+import { formatBmName } from '../utils/kanban'
+
+import ClientCorporation from './ClientCorporation'
 
 export const HOT_CANDIDATES = 'HOT_CANDIDATES'
 export const BUSINESS = 'BUSINESS'
@@ -53,11 +55,14 @@ const StyledColumn = styled(Column)`
 `
 
 const Bm = ({ bm, color, title, data, kanbanType = BUSINESS, onOpenModal }) => {
-  const dataToRender = kanbanType === BUSINESS ? bm?.clientCorporations?.map((ccId) => ({
-    ccId,
-    color,
-    bmId: bm?.id,
-  })) : data
+  const dataToRender =
+    kanbanType === BUSINESS
+      ? bm?.clientCorporations?.map((ccId) => ({
+          ccId,
+          color,
+          bmId: bm?.id,
+        }))
+      : data
 
   const handleClickAddButton = () => {
     onOpenModal(title, ADD)
@@ -92,18 +97,18 @@ const Bm = ({ bm, color, title, data, kanbanType = BUSINESS, onOpenModal }) => {
         </AddButton>
       ) : null}
     </StyledRow>
-  )}
+  )
+}
 
 Bm.propTypes = {
   bm: object,
-  bmId: number,
   color: string,
   title: string,
   data: array,
   kanbanType: oneOf(['HOT_CANDIDATES', 'BUSINESS']),
   onOpenModal: func,
-};
+}
 
 export default connect((state, { bmId }) => ({
-  bm: pathOr({}, ["kanban", "bms", bmId], state)
-}))(Bm);
+  bm: pathOr({}, ['kanban', 'bms', bmId], state),
+}))(Bm)

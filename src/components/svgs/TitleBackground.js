@@ -1,6 +1,7 @@
-import React from "react"
-import PropTypes from "prop-types"
-import theme from "../../style/theme"
+import React from 'react'
+import PropTypes from 'prop-types'
+
+import theme from '../../style/theme'
 
 const TitleBackground = ({ color = theme.colors.black, className }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 406 723" className={className}>

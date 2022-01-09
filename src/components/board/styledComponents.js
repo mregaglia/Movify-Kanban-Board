@@ -20,9 +20,10 @@ export const HotCandidateCompany = styled.p`
     font-size: 0.875rem;
     line-height: 1.3;
     position: relative;
-    ${owner && css`
+    ${owner &&
+    css`
       &::after {
-        content: "";
+        content: '';
         position: absolute;
         right: 2px;
         top: 2px;

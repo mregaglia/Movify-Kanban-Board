@@ -1,74 +1,74 @@
 import {
-  LOGIN,
-  login,
-  loginSuccess,
-  LOGIN_SUCCESS,
-  loginFail,
-  LOGIN_FAIL,
+  AUTH_FAIL,
+  AUTH_SUCCESS,
+  authFail,
+  authSuccess,
   CHECK_AUTH,
   checkAuth,
-  authSuccess,
-  AUTH_SUCCESS,
-  AUTH_FAIL,
-  authFail,
+  LOGIN,
+  login,
+  LOGIN_FAIL,
+  LOGIN_SUCCESS,
+  loginFail,
+  loginSuccess,
+  REFRESH_TOKEN,
   refreshToken,
-  REFRESH_TOKEN
-} from "../auth.actions";
+} from '../auth.actions'
 
-describe("login action", () => {
-  it("should return LOGIN action", () => {
-    const code = "code";
+describe('login action', () => {
+  it('should return LOGIN action', () => {
+    const code = 'code'
     expect(login(code)).toEqual({
       type: LOGIN,
-      payload: code
-    });
-  });
-});
+      payload: code,
+    })
+  })
+})
 
-describe("loginSuccess action", () => {
-  it("should return LOGIN_SUCCESS action", () => {
+describe('loginSuccess action', () => {
+  it('should return LOGIN_SUCCESS action', () => {
     expect(loginSuccess()).toEqual({
-      type: LOGIN_SUCCESS
-    });
-  });
-});
+      type: LOGIN_SUCCESS,
+    })
+  })
+})
 
-describe("loginFail action", () => {
-  it("should return LOGIN_FAIL action", () => {
+describe('loginFail action', () => {
+  it('should return LOGIN_FAIL action', () => {
     expect(loginFail()).toEqual({
-      type: LOGIN_FAIL
-    });
-  });
-});
+      type: LOGIN_FAIL,
+    })
+  })
+})
 
-describe("checkAuth action", () => {
-  it("should return CHECK_AUTH action", () => {
+describe('checkAuth action', () => {
+  it('should return CHECK_AUTH action', () => {
     expect(checkAuth()).toEqual({
-      type: CHECK_AUTH
-    });
-  });
-});
+      type: CHECK_AUTH,
+    })
+  })
+})
 
-describe("authSuccess action", () => {
-  it("should return AUTH_SUCCESS action", () => {
+describe('authSuccess action', () => {
+  it('should return AUTH_SUCCESS action', () => {
     expect(authSuccess()).toEqual({
-      type: AUTH_SUCCESS
-    });
-  });
-});
+      type: AUTH_SUCCESS,
+    })
+  })
+})
 
-describe("authFail action", () => {
-  it("should return AUTH_FAIL action", () => {
+describe('authFail action', () => {
+  it('should return AUTH_FAIL action', () => {
     expect(authFail()).toEqual({
-      type: AUTH_FAIL
-    });
-  });
-});
+      type: AUTH_FAIL,
+    })
+  })
+})
 
-describe("refreshToken action", () => {
-  it("should return REFRESH_TOKEN action", () => {
+describe('refreshToken action', () => {
+  it('should return REFRESH_TOKEN action', () => {
     expect(refreshToken()).toEqual({
-      type: REFRESH_TOKEN
-    });
-  });
-});
+      type: REFRESH_TOKEN,
+    })
+  })
+})

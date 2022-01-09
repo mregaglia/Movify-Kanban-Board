@@ -1,15 +1,16 @@
-import React from "react"
-import { array, string, func, number } from "prop-types"
-import styled, { css } from "styled-components"
-import { createColumnId } from "../../utils/kanban"
-import { Droppable } from "react-beautiful-dnd"
-import { STATUS_IDENTIFIED, STATUS_NO_GO } from "../../utils/kanban"
-import Candidates from "./Candidates"
-import { statusLabels } from "../../utils/statusLabels"
-import { useLocation } from "react-router"
-import AddButton from "../AddButton"
-import HotCandidateCompanies from "./HotCandidateCompanies"
-import HotCandidateCompaniesIdentified from "./HotCandidateCompaniesIdentified"
+import React from 'react'
+import { Droppable } from 'react-beautiful-dnd'
+import { useLocation } from 'react-router-dom'
+import { array, func, number, string } from 'prop-types'
+import styled, { css } from 'styled-components'
+
+import { createColumnId, STATUS_IDENTIFIED, STATUS_NO_GO } from '../../utils/kanban'
+import { statusLabels } from '../../utils/statusLabels'
+import AddButton from '../AddButton'
+
+import Candidates from './Candidates'
+import HotCandidateCompanies from './HotCandidateCompanies'
+import HotCandidateCompaniesIdentified from './HotCandidateCompaniesIdentified'
 
 const getBackgroundColor = (isNoGo, snapshot, theme) => {
   if (snapshot?.isDraggingOver) return theme.colors.transparentRed
@@ -26,10 +27,10 @@ const Container = styled.div`
 `
 
 const Content = styled.div(({ isNoGo, snapshot, theme }) => ({
-  display: "flex",
-  flexDirection: "column",
+  display: 'flex',
+  flexDirection: 'column',
   maxHeight: 250,
-  overflowY: "auto",
+  overflowY: 'auto',
   flexGrow: 1,
   padding: 8,
   backgroundColor: getBackgroundColor(isNoGo, snapshot, theme),
@@ -39,11 +40,11 @@ const Content = styled.div(({ isNoGo, snapshot, theme }) => ({
 const Title = styled.div(({ theme }) => ({
   fontFamily: theme.fonts.fontFamily,
   fontSize: theme.textDimensions.medium,
-  textAlign: "center",
+  textAlign: 'center',
   paddingTop: 4,
   paddingBottom: 4,
-  textOverflow: "ellipsis",
-  overflow: "hidden",
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
 }))
 
 const ContentContainer = styled.div`
@@ -79,9 +80,19 @@ const Column = ({
   const { pathname } = useLocation()
 
   const droppableId =
-    pathname === "/hot-candidates"
+    pathname === '/hot-candidates'
       ? `${status}@${candidateId}`
       : createColumnId(bmId, clientCorporationId, jobOrderId, status)
+
+  const renderContent = () => {
+    if (pathname === '/hot-candidates' && status !== STATUS_IDENTIFIED) {
+      return <HotCandidateCompanies companies={statusData} />
+    }
+    if (status === STATUS_IDENTIFIED) {
+      return <HotCandidateCompaniesIdentified identified={statusData} candidateId={candidateId} />
+    }
+    return <Candidates board={board} jobSubmissions={jobSubmissions} />
+  }
 
   return (
     <Container>
@@ -90,14 +101,8 @@ const Column = ({
         <Droppable droppableId={droppableId}>
           {(provided, snapshot) => (
             <Content snapshot={snapshot} isNoGo={status === STATUS_NO_GO}>
-              <div ref={provided.innerRef} {...provided.droppableProps} style={{ minHeight: 65, height: "100%" }}>
-                {pathname === "/hot-candidates" && status !== STATUS_IDENTIFIED ? (
-                  <HotCandidateCompanies companies={statusData} />
-                ) : status === STATUS_IDENTIFIED ? (
-                  <HotCandidateCompaniesIdentified identified={statusData} candidateId={candidateId} />
-                ) : (
-                  <Candidates board={board} jobSubmissions={jobSubmissions} />
-                )}
+              <div ref={provided.innerRef} {...provided.droppableProps} style={{ minHeight: 65, height: '100%' }}>
+                {renderContent()}
                 {provided.placeholder}
               </div>
             </Content>

@@ -1,13 +1,14 @@
-import { useQuery } from "react-query"
-import { get } from "../utils/api"
+import { useQuery } from 'react-query'
 
-const useJobSubmissions = (candidateIds) => {
-  return useQuery(
-    ["find-job-submissions-candidates", candidateIds.join()],
+import { get } from '../utils/api'
+
+const useJobSubmissions = (candidateIds) =>
+  useQuery(
+    ['find-job-submissions-candidates', candidateIds.join()],
     () =>
       get(`query/JobSubmission`, {
         // Might not need everything here
-        fields: "id, jobOrder(id, clientCorporation, owner), status, candidate(id)",
+        fields: 'id, jobOrder(id, clientCorporation, owner), status, candidate(id)',
         where: `candidate.id IN (${candidateIds?.join()}) AND status IN ('WF Response', 'To Send', 'Intake', 'WF Feedback') AND jobOrder.isOpen=true`,
         count: 50,
       }),
@@ -15,6 +16,5 @@ const useJobSubmissions = (candidateIds) => {
       enabled: !!candidateIds?.length,
     }
   )
-}
 
 export default useJobSubmissions

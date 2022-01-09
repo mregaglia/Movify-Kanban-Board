@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const Column = styled.div({
-  display: "flex",
-  flexDirection: "column",
-  flex: 1
-});
+  display: 'flex',
+  flexDirection: 'column',
+  flex: 1,
+})
 
-export default Column;
+export default Column
