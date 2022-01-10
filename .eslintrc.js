@@ -60,24 +60,5 @@ module.exports = {
     'import/first': 'error',
     'import/newline-after-import': 'error',
     'import/no-duplicates': 'error',
-    // 'import/order': [
-    //   'error',
-    //   {
-    //     groups: ['builtin', 'external', 'internal'],
-    //     pathGroups: [
-    //       {
-    //         pattern: 'react',
-    //         group: 'external',
-    //         position: 'before',
-    //       },
-    //     ],
-    //     pathGroupsExcludedImportTypes: ['react'],
-    //     'newlines-between': 'always',
-    //     alphabetize: {
-    //       order: 'asc',
-    //       caseInsensitive: true,
-    //     },
-    //   },
-    // ],
   },
 }

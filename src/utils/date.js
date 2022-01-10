@@ -1,46 +1,38 @@
-import moment from 'moment'
+import { endOfISOWeek, format, startOfISOWeek, startOfYear, subWeeks } from 'date-fns'
 
 export const DIFF_DAY = 24 * 60 * 60 * 1000
 export const DIFF_5_DAYS = 5 * DIFF_DAY
 export const DIFF_10_DAYS = 10 * DIFF_DAY
 export const DAYS_AGO = 365
-const time = '23:59:59'
 
 export const isOverDiff = (timestamp, diff) => {
   const now = new Date().getTime()
   return now - timestamp > diff
 }
 
-export const getDateFrom365daysAgo = () => moment().subtract(1, 'years').format('YYYYDDMM')
-
-const getEndWeekDataWithTime = (date) => {
-  const now = date.format('YYYY-MM-DD')
-  return moment(`${now} ${time}`)
-}
-
 const getWeekDateAndTimestamp = (week) => {
   let startWeek
   let endWeek
   if (week !== 0) {
-    startWeek = moment().subtract(week, 'weeks').startOf('isoWeek')
-    const endWeekDate = moment().subtract(week, 'weeks').endOf('isoWeek')
-    endWeek = getEndWeekDataWithTime(endWeekDate)
+    startWeek = startOfISOWeek(subWeeks(new Date(), week))
+    const endWeekDate = endOfISOWeek(subWeeks(new Date(), week))
+    endWeek = new Date(endWeekDate.getFullYear(), endWeekDate.getMonth(), endWeekDate.getDate(), 23, 59, 59)
   } else {
-    startWeek = moment().startOf('isoWeek')
-    const endWeekDate = moment().endOf('isoWeek')
-    endWeek = getEndWeekDataWithTime(endWeekDate)
+    startWeek = startOfISOWeek(new Date())
+    const endWeekDate = endOfISOWeek(new Date())
+    endWeek = endWeekDate
   }
 
   return {
-    start: parseInt(startWeek.format('YYYYMMDD')),
-    end: parseInt(endWeek.format('YYYYMMDD')),
+    start: parseInt(format(startWeek, 'yyyyMMdd').valueOf()),
+    end: parseInt(format(endWeek, 'yyyyMMdd').valueOf()),
     startTimestamp: startWeek.valueOf(),
     endTimestamp: endWeek.valueOf(),
   }
 }
 
 export const getLast4weeksDate = () => {
-  const day = moment().day()
+  const day = new Date().getDay()
   let tableWeek = []
   if (day >= 1 && day <= 3) {
     tableWeek = [4, 3, 2, 1]
@@ -53,9 +45,9 @@ export const getLast4weeksDate = () => {
   return dates
 }
 
-export const getStartDateOfYear = () => parseInt(moment().startOf('year').format('YYYYMMDD'))
+export const getStartDateOfYear = () => parseInt(format(startOfYear(new Date()), 'yyyyMMdd'))
 
-export const getStartDateOfYearTimestamp = () => parseInt(moment().startOf('year').valueOf())
+export const getStartDateOfYearTimestamp = () => parseInt(startOfYear(new Date()).valueOf())
 
 export const getDateString = (date) => {
   let day = date.toString().substring(6, 7).replace('0', '')

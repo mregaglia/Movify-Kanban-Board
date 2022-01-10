@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import moment from 'moment'
+import { getISOWeek } from 'date-fns'
 import { path, prop } from 'ramda'
 import { all, call, put, select, takeEvery, takeLatest } from 'redux-saga/effects'
 
@@ -488,7 +488,7 @@ export function* getYTDData(
 
 export function* getKpiDataEmployee(action) {
   try {
-    const weekNumberOfTheYear = moment().isoWeek()
+    const weekNumberOfTheYear = getISOWeek(new Date())
 
     const dates = getLast4weeksDate()
     const dateStartOfThisYear = getStartDateOfYear()
